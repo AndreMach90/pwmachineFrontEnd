@@ -18,6 +18,7 @@ export class Environments {
     version: string = 'v.1.0.1.3';
     es:      number = 5;
     hash:    number = 10;
+    encode:  number = 20;
 
     apiurl(): string {
         const  env:string = this.apingRok+'/api/';
