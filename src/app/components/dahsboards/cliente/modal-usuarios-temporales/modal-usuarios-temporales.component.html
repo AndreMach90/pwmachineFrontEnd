@@ -1,0 +1,60 @@
+<div class="spinner-overlay"  *ngIf="_show_spinner" >
+    <div class="spinner-container">
+      <span class="loader"></span>
+    </div>
+</div>
+<div class="dashworks p-2 m-2 rounded-3 shadow "
+     [ngStyle]="{'background-color': 'white'}">
+
+    <div class="register d-flex justify-content-between w-100">
+        <div class="p-3 w-100" *ngIf="viewForm">
+           <div class="">
+            <h2>
+                Cuentas registradas a este equipo <span class="text-primary"> ({{cuentaslista.length}})</span>
+            </h2>
+            <div class="table-responsive w-100">
+                <table class="table table-warning table-bordered table-hover table-striped align-middle w-100">
+                    <thead class="bg-black text-light" >
+                       <th class="p-1" *ngIf="permisonUsers"></th>
+                       <th class="p-1">Banco                 </th>
+                       <th class="p-1">N. Cta.               </th>
+                       <th class="p-1">T. Cta.               </th>
+                       <th class="p-1">Observacion           </th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let cuenta of cuentaslista; let i = index;">
+                            <td *ngIf="permisonUsers">
+                                <div class="d-flex">
+                                    <div [style]="'background-image: url( '+edit+' )'"
+                                         (click)="openDialogCuentasBancarias(cuenta, 'E')"
+                                         class="icono-btn">
+                                    </div>
+                                    <div [style]="'background-image: url( '+delete+' )'"
+                                         *ngIf="cuenta.delete"
+                                         (click)="eliminarCuentaCliente(cuenta, i)"
+                                         class="icono-btn">
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                {{cuenta.nombanco}}
+                            </td>
+                            <td>
+                                {{cuenta.numerocuenta}}
+                            </td>
+                            <td>
+                                {{cuenta.tipoCuenta}}
+                            </td>
+                            <td>
+                                {{cuenta.observacion}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+           </div>
+        </div>
+    </div>
+
+</div>
+

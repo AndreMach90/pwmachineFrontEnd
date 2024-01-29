@@ -1,0 +1,19 @@
+.form-filter {
+    width: 300px;
+    border: groove 2px rgba(255, 255, 255, 0.75);
+    border-radius: 5px;
+    margin: 5px;
+    padding: 10px;
+}
+
+.data-preview {
+    max-height: 550px;
+    overflow: auto;
+    // width: 75%;
+}
+
+.formcontent {
+    background-color: rgb(234, 234, 234);
+    border-radius: 3px;
+    margin: 5px;
+}

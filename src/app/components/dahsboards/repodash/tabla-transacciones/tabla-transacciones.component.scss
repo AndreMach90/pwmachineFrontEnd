@@ -1,0 +1,23 @@
+#tabla-tran-total {
+    background-color: rgb(191, 245, 191) !important;
+    text-align: right;
+    transition: ease all 0.5s;
+}
+
+#tabla-tran-total:hover {
+    transition: ease all 0.5s;
+    background-color: rgb(151, 217, 215) !important;
+}
+
+.btnorder {
+    position: absolute;
+    right: 20px;
+    opacity: 0.6;
+    cursor: pointer;
+    transition: ease all 0.5s;
+}
+
+.btnorder:hover {
+    opacity: 1;   
+    transition: ease all 0.5s;
+}

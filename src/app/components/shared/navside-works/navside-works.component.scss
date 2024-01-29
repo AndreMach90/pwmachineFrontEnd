@@ -1,0 +1,16 @@
+.nav-side-content {
+
+    transition: ease all 2s;
+    // border: groove 2px #c2c436;
+    border-radius: 5px;
+    margin: 2px;
+    cursor: pointer;
+
+}
+
+.nav-side-content:hover {
+    transition: ease all 0.5s;
+    // background-color: rgb(95, 96, 36) !important;
+    // color: #E3E566;
+    transform: scale(0.9);
+}

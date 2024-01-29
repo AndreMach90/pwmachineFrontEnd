@@ -1,0 +1,411 @@
+<div class="rounded-3 p-3 m-2 " style="background-color: rgb(243, 243, 243); border: dashed 1px gray;" >
+
+    <div class="p-1 fs-5" >
+        <strong> Detalle Transacccional del equipo </strong>
+    </div>
+    <hr>
+    <div class=" transacciones d-flex flex-column">
+        <div> 
+            <div class="d-flex flex-column w-100" >
+                <div class="table-responsive w-100 ">
+                    <div class="bg-secondary text-light p-2 rounded-top-3 w-50 fs-6 " > Transacciones Automáticas </div>
+                    <table class="table table-secondary" >
+                        <thead class="bg-warning text-dark">
+                            <th class="p-2">
+                                Cantidad de Billetes
+                            </th>
+                            <th class="p-2">
+                                Monto de Billetes
+                            </th>
+                            <th class="p-2">
+                                Cantidad de Monedas
+                            </th>
+                            <th class="p-2"> 
+                                Monto de Monedas
+                            </th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let detequipo of listaDetalleequipoTransa" >
+                                <td class="fs-5">
+                                    <div class="d-flex flex-column" >
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $100 </div>
+                                            <div> {{ detequipo.depositoCant100 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $50 </div>
+                                            <div> {{ detequipo.depositoCant50 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $20 </div>
+                                            <div> {{ detequipo.depositoCant20 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $10 </div>
+                                            <div> {{ detequipo.depositoCant10 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $5 </div>
+                                            <div> {{ detequipo.depositoCant5 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $2 </div>
+                                            <div> {{ detequipo.depositoCant2 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $1 </div>
+                                            <div> {{ detequipo.depositoCant1 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1 rounded-end-2" style="border-bottom: dashed 1px gray; background-color: rgb(201, 201, 201);" >
+                                            <div> Total Cantidad de Billetes: </div>
+                                            <div> <strong> {{totalBilletesCantidadT}} </strong> </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="fs-5">
+                                    <div class="d-flex flex-column" >
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> {{ detequipo.depositoMont100 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div></div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMont50 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMont20 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMont10 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> </div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMont5 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMont2 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success" > $ {{ detequipo.depositoMont1 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1 rounded-end-2" style="border-bottom: dashed 1px gray; background-color: rgb(201, 201, 201);" >
+                                            <div> Total Monto de billetes: </div>
+                                            <div class="text-success" > <strong> $ {{totalBilletesMontoT | number : '1.2-2'}} </strong> </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="fs-5">
+                                    <div class="d-flex flex-column" >
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $100.00 </div>
+                                            <div> {{ detequipo.depositoCantCoin100 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $0.50 </div>
+                                            <div> $ {{ detequipo.depositoCantCoin50 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $0.25 </div>
+                                            <div> $ {{ detequipo.depositoCantCoin25 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $0.10 </div>
+                                            <div> $ {{ detequipo.depositoCantCoin10 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $0.05 </div>
+                                            <div> $ {{ detequipo.depositoCantCoin5 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $0.01 </div>
+                                            <div> $ {{ detequipo.depositoCantCoin1 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1"  >
+                                            <div> </div>
+                                            <div> </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1"  >
+                                            <div> </div>
+                                            <div> </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1"  >
+                                            <div> </div>
+                                            <div> </div>
+                                        </div>
+
+                                        <div class="w-100 d-flex justify-content-between p-1 rounded-end-2" style="border-bottom: dashed 1px gray; background-color: rgb(201, 201, 201);" >
+                                            <div> Total Cantidad de Monedas: </div>
+                                            <div> <strong> $ {{totalMonedasCantidadT}} </strong></div>
+                                        </div>                                        
+                                    </div>
+                                </td>
+                                <td class="fs-5">
+                                    <div class="d-flex flex-column" >
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> {{ detequipo.depositoMontCoin100 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMontCoin50 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMontCoin25 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMontCoin10 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMontCoin5 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMontCoin1 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1"  >
+                                            <div>  </div>
+                                            <div class="text-success"> </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1"  >
+                                            <div>  </div>
+                                            <div class="text-success"> </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1"  >
+                                            <div>  </div>
+                                            <div class="text-success"> </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1 rounded-end-2" style="border-bottom: dashed 1px gray; background-color: rgb(201, 201, 201);" >
+                                            <div> Total Monto de Monedas: </div>
+                                            <div class="text-success"> <strong> $ {{totalMonedasMontoT | number : '1.2-2'}} </strong> </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-responsive w-100 ">
+                    <div class="bg-secondary text-light p-2 rounded-top-3 w-50 fs-6 " > Transacciones Manuales </div>
+                    <table class="table table-secondary" >
+                        <thead class="bg-warning text-dark">
+                            <th class="p-2">
+                                Cantidad de Billetes
+                            </th>
+                            <th class="p-2">
+                                Monto de Billetes
+                            </th>
+                            <th class="p-2">
+                                Cantidad de Monedas
+                            </th>
+                            <th class="p-2"> 
+                                Monto de Monedas
+                            </th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let detequipo of listaDetalleequipoManual" >
+                                <td class="fs-5">
+                                    <div class="d-flex flex-column" >
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $100 </div>
+                                            <div> {{ detequipo.depositoCant100 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $50 </div>
+                                            <div> {{ detequipo.depositoCant50 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $20 </div>
+                                            <div> {{ detequipo.depositoCant20 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $10 </div>
+                                            <div> {{ detequipo.depositoCant10 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $5 </div>
+                                            <div> {{ detequipo.depositoCant5 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $2 </div>
+                                            <div> {{ detequipo.depositoCant2 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $1 </div>
+                                            <div> {{ detequipo.depositoCant1 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1 rounded-end-2" style="border-bottom: dashed 1px gray; background-color: rgb(201, 201, 201);" >
+                                            <div> Total Cantidad de Billetes: </div>
+                                            <div> <strong> {{totalBilletesCantidadM}} </strong> </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="fs-5">
+                                    <div class="d-flex flex-column" >
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMont100 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMont50 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMont20 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMont10 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMont5 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMont2 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success" > $ {{ detequipo.depositoMont1 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1 rounded-end-2" style="border-bottom: dashed 1px gray; background-color: rgb(201, 201, 201);" >
+                                            <div> Total Monto de Billetes </div>
+                                            <div class="text-success" > <strong> $ {{totalBilletesMontoM | number : '1.2-2'}} </strong> </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="fs-5">
+                                    <div class="d-flex flex-column" >
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $0.100 </div>
+                                            <div> {{ detequipo.depositoCantCoin100 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $0.50 </div>
+                                            <div> $ {{ detequipo.depositoCantCoin50 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $0.25 </div>
+                                            <div> $ {{ detequipo.depositoCantCoin25 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $0.10 </div>
+                                            <div> $ {{ detequipo.depositoCantCoin10 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $0.05 </div>
+                                            <div> $ {{ detequipo.depositoCantCoin5 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div> $0.01 </div>
+                                            <div> $ {{ detequipo.depositoCantCoin1 }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" >
+                                            <div> </div>
+                                            <div> </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" >
+                                            <div></div>
+                                            <div></div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" >
+                                            <div></div>
+                                            <div></div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1 rounded-end-2" style="border-bottom: dashed 1px gray; background-color: rgb(201, 201, 201);" >
+                                            <div>Total Cantidad de Monedas:</div>
+                                            <div> <strong> $ {{totalMonedasCantidadM}} </strong> </div>
+                                        </div>
+                                        
+                                    </div>
+                                </td>
+                                <td class="fs-5">
+                                    <div class="d-flex flex-column" >
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> {{ detequipo.depositoMontCoin100 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMontCoin50 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMontCoin25 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMontCoin10 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMontCoin5 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" style="border-bottom: dashed 1px gray" >
+                                            <div>  </div>
+                                            <div class="text-success"> $ {{ detequipo.depositoMontCoin1 | number : '1.2-2' }} </div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" >
+                                            <div></div>
+                                            <div class="text-success"></div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" >
+                                            <div></div>
+                                            <div class="text-success"></div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1" >
+                                            <div></div>
+                                            <div class="text-success"></div>
+                                        </div>
+                                        <div class="w-100 d-flex justify-content-between p-1 rounded-end-2" style="border-bottom: dashed 1px gray; background-color: rgb(201, 201, 201);" >
+                                            <div> Total Monto de Monedas: </div>
+                                            <div class="text-success"> <strong> $ {{totalMonedasMontoM | number : '1.2-2'}} </strong> </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-end p-1 rounded-3 w-100  " style="background-color: rgb(211, 211, 211);" >
+
+            <div class="d-flex flex-column  rounded-2 p-2 shadow-sm " style="background-color: rgba(240, 240, 240, 0.9); border: groove 1px white; " >
+                <span>
+                    Sumatoria de montos totales de Billetes, manual y automático:
+                </span>
+                <span class="fs-5 text-primary">
+                    <strong> $ {{totalBilletesMontoM + totalBilletesMontoT  | number : '1.2-2' }} </strong>
+                </span>
+            </div>            
+            <div class="d-flex flex-column rounded-2 p-2 shadow-sm " style="background-color: rgba(240, 240, 240, 0.9); border: groove 1px white; " >
+                <span>
+                    Sumatoria de montos totales de Monedas, manual y automático:
+                </span>
+                <span class="fs-5 text-primary">
+                    <strong> $ {{totalMonedasMontoM + totalMonedasMontoT | number : '1.2-2' }}</strong>
+                </span>
+            </div>            
+            <div class="d-flex flex-column rounded-2 p-2 shadow-sm " style="background-color: rgba(240, 240, 240, 0.9); border: groove 1px white; " >
+                <span>
+                    Sumatoria de montos totales, manual y automático:
+                </span>
+                <span class="fs-4 text-dark">
+                    <strong> $ {{totalMonedasMontoM + totalBilletesMontoM + totalMonedasMontoT + totalBilletesMontoT  | number : '1.2-2'}} </strong>
+                </span>
+            </div>            
+
+        </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,35 @@
+.navside {
+    // width: 250px;
+    border-right: groove 1px rgb(73, 122, 228);
+    height: 100vh;
+    // border-top-right-radius:    5px;
+    border-bottom-right-radius: 5px;
+}
+
+// :host ::ng-deep .mdc-tab__text-label {
+//     background-color: rgb(24, 13, 4) !important;
+// }
+
+.apps-controllers {
+    overflow: auto;
+}
+
+#icono-modulo {
+    transition: ease-in-out all 1s;
+    cursor: pointer;
+}
+
+#icono-modulo:hover {
+    transition: ease-in-out all 0.5s;
+    transform: rotate(-25deg);
+}
+
+:host ::ng-deep .mdc-tab__text-label {
+    background-color: aqua;
+    color: rgb(56, 56, 56) !important;
+    font-size: 18pt;
+}
+
+// .mat-mdc-tab-group, .mat-mdc-tab-group-stretch-tabs, .mat-mdc-tab-header, .mat-mdc-tab {
+
+// }

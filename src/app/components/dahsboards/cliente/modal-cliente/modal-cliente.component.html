@@ -1,0 +1,85 @@
+
+<div class="spinner-overlay"  *ngIf="_show_spinner" >
+    <div class="spinner-container">
+      <span class="loader"></span>
+    </div>
+</div>
+
+<div class="contdiv p-4" style="background-color: whitesmoke;">
+    
+    <h2 class="m-0" >
+        <span>Añadir cuenta bancaria al cliente: </span> <br>
+        <span class="text-primary" > {{data.nombreCliente | uppercase}} </span> 
+    </h2>
+    <hr>
+    <div>
+        <form [formGroup]="ctaBancariaForm" class="mb-2" (ngSubmit)="onSubmit()">
+            <div class="mb-3 w-100">
+                <label for="nombanco"
+                       class="form-label text-secondary">
+                       Nombre del banco:
+                </label>
+                <input type="text"
+                       class="form-control"
+                       formControlName="nombanco"
+                       #nombanco
+                       id="nombanco"
+                       placeholder="Banco de ..."
+                       (keyup)="validateInputText(nombanco)">
+            </div>
+            <div class="mb-3 w-100">
+                <label for="numerocuenta" class="form-label text-secondary ">
+                    Número de cuenta:
+                </label>
+                <input type="text"
+                       class="form-control"
+                       formControlName="numerocuenta"
+                       #numerocuenta
+                       id="numerocuenta"
+                       placeholder=""
+                       (keyup)="validateInputNumber(numerocuenta)">
+            </div>
+
+            <div>
+                <div class="d-flex">
+                    <label for="ahorro" class="p-1">
+                        Cuenta de Ahorro
+                    </label>
+                    <input type="radio" [checked]="ahorro" class="p-1" id="ahorro" name="cuenta" (click)="seleccionarCuenta('ahorro')">
+                </div>
+                <div class="d-flex">
+                    <label for="corriente" class="p-1">
+                        Cuenta Corriente
+                    </label>
+                    <input type="radio" [checked]="corriente" class="p-1" id="corriente" name="cuenta" (click)="seleccionarCuenta('corriente')">
+                </div>
+            </div>
+            <div class="mt-2 mb-2">
+                <label for="observacion" class="p-1">Observación</label>
+                <textarea name="" formControlName="observacion"
+                #observacion
+                id="observacion" class="form-control form-control-sm p-2" id="observacion" rows="4"></textarea>
+            </div>
+
+            <div class="d-flex flex-wrap justify-content-between mt-2" >
+                <div class="floating-button">
+                    <button type="button"
+                            class="btn btn-danger btn-sm"
+                            (click)="limpiar()">
+                            <div [style]="'background-image: url( '+cancel+' )' " class="icono" ></div>
+                    </button>
+                    <button type="submit" class="d-flex align-items-center btn btn-sm btn-primary"
+                            *ngIf="_create_show">
+                            <div [style]="'background-image: url( '+crear+' )' " class="icono" ></div>
+                            <div >{{_action_butto}} Cuenta</div>
+                    </button>  
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+</div>
+
+
+

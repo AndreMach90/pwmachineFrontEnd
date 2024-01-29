@@ -1,0 +1,65 @@
+<div class="contdiv p-4" style="background-color: white;" >
+    <div  class="d-flex flex-wrap align-items-center  ">
+        <div class="d-flex justify-content-between align-items-center w-100" >
+            <div>
+                <h2 class="m-0" >
+                    <span>Cuentas bancarias del cliente &nbsp;&nbsp;
+                        <strong class="text-primary" >{{nombreCliente}} ({{cuentaslista.length}})</strong>
+                    </span> 
+                </h2>
+            </div>
+            <div class="w-50">
+                <section class="filtros mt-2 mb-2">                
+                    <div class="mb-2 d-flex">
+                      <input class=" w-100 shadow-sm form-control rounded-pill"
+                             fxFlex="auto" type="text"                             
+                             [(ngModel)]="filterTransacc"
+                             (keyup)="filterTransaccos()" 
+                             #input placeholder="Búsqueda de cuentas bancarias registradas en este cliente...">
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <div class="w-100"> 
+            <div class="table-responsive w-100">
+                <table class="table table-secondary w-100">
+                    <thead class="bg-warning text-dark">
+                        <th class="p-1">
+                            <input type="checkbox"                              
+                                   style="width: 25px; height: 25px;"
+                                   class="form-check-input" [(ngModel)]="selectAll"
+                                   (change)="selectAllAccounts()" />
+                        </th>
+                        <th class="p-1">Banco</th>
+                        <th class="p-1">Número de cuenta</th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let cuenta of cuentaslista">
+                            <td>
+                                <input type="checkbox" style="width: 25px; height: 25px;"
+                                       class="form-check-input" [(ngModel)]="cuenta.selected" (change)="accountSelected(cuenta)" />
+                            </td>
+                            <td>
+                                {{ cuenta.nombanco }}
+                            </td>
+                            <td>
+                                {{ cuenta.numerocuenta }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>                
+            </div>
+        </div>
+        <div class="btn-setts d-flex justify-content-end align-items-center w-100" >
+            <button class="d-flex align-items-center btn btn-sm btn-danger" (click)="closeDialog(1)" >
+                <div [style]="'background-image: url( '+cancel+' )' " class="icono" ></div>
+            </button>
+            <button class="d-flex align-items-center btn btn-sm btn-primary" (click)="closeDialog(2)" >
+                <div [style]="'background-image: url( '+add+' )' " class="icono" ></div>
+                <div>Agregar cuenta(s)</div>
+            </button>
+        </div>
+
+    </div>
+</div>

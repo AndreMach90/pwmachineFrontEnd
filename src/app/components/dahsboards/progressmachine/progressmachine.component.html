@@ -1,0 +1,16 @@
+
+<div class="box-a d-flex justify-content-evenly flex-wrap" id="box-a-a">
+    <div class="maquinarias d-flex flex-column"
+         *ngFor="let equipos of listaEsquipo">
+         <div class="progress">
+            <div [class]="colorBarProgressBilletes"
+                 role="progressbar" 
+                 [style.width]="porcentaje + '%'"
+                 [attr.aria-valuenow]="porcentaje"
+                 aria-valuemin="0"
+                 aria-valuemax="100">
+                 {{ porcentaje | number : '1.2-2' }}%
+            </div>
+        </div>
+    </div>                        
+</div>

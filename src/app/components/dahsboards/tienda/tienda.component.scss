@@ -1,0 +1,14 @@
+
+
+:host ::ng-deep .mdc-text-field--filled {
+    background-color: transparent !important;
+    cursor: pointer;
+}
+
+:host ::ng-deep .mat-mdc-standard-chip {
+    background-color: rgb(21, 143, 152) !important;
+    color: white !important;
+    width: auto !important;
+    cursor: pointer;
+    height:  50px !important;
+}

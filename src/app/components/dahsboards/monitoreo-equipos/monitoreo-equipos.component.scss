@@ -1,0 +1,80 @@
+.tienda-box {
+    transition: ease all 0.5s;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.tienda-box:hover {
+    transition: ease all 0.5s;
+    border-radius: 10px;
+    background-color: rgb(213, 213, 213);
+}
+
+:host ::ng-deep .mat-tab-label {
+  // background-color: rgb(12, 37, 150);
+  border: solid 2px gray !important;
+  // border-bottom: solid 2px rgb(255, 213, 0) ;
+  // border-top-left-radius: 10px;
+  // border-top-right-radius: 10px;
+}
+
+.transacciones {
+    width: 350px;
+}
+
+.box-a {
+    width: 20%;
+    height: 78vh;
+    overflow: auto;
+}
+
+.balance {
+    transition: ease all 0.5s;
+    border: groove 1px rgb(46, 46, 46);
+    cursor: pointer;
+}
+
+.balance:hover {
+    transition: ease all 0.5s;
+    background-color: green;
+}
+
+#box-a-a {
+    width: 75%;
+    border: solid 1px rgb(230, 230, 230);
+    border-radius: 10px;
+    // background-color: gray;
+}
+
+.maquinarias {
+    border-radius: 10px;
+    border: groove 1px gray;
+    padding: 10px;
+    background: rgb(230,230,230);
+    background: linear-gradient(357deg, rgba(230,230,230,1) 0%, rgba(255,255,255,1) 100%);
+    min-height: 250px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.img-box {
+    width: 200px;
+    // border: solid 1px gray;
+    margin: 10px;
+}
+
+.round-box {
+    border-radius: 100%;
+    width: 10px;
+    height: 10px;
+}
+
+.data-box {
+    border-bottom: dashed 1px gray;
+}
+
+.text-response {
+    padding: 15px;
+    border-radius: 10px;
+    transition: ease all 0.5s;
+}

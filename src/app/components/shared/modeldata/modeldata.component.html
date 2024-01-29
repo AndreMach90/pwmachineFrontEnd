@@ -1,0 +1,464 @@
+<div class="spinner-overlay"  *ngIf="_show_spinner" >
+    <div class="spinner-container d-flex flex-column">        
+        <div class="loader"></div>
+        <div class="d-flex justify-content-center mt-2" *ngIf="conttransaccion">
+            <span class="fs-4 text-warning" > Enviando a acreditación... </span>
+        </div>
+    </div>
+</div>
+
+<div class="contdiv p-4" style="background-color: whitesmoke;">
+    <div class="m-0 d-flex justify-content-between align-items-center">
+        <span>
+            <h1> Configuración de exportación de datos: </h1>
+        </span>
+        <span class="text-primary">
+            <div class="d-flex justify-content-end align-items-center">
+                <div class="formcontent d-flex">
+                    <div class="d-flex">
+                        <div class="m-1">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   id="clientecheck"
+                                   (change)="checktiendas = !checktiendas; choicetiendas = false"/>
+                                   <label for="clientecheck">
+                                       <span> Filtrar por cliente </span>
+                                   </label>
+                        </div>
+                        <div class="m-1" *ngIf="checktiendas">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   id="tiendacheck"
+                                   (change)="choicetiendas = !choicetiendas"/>
+                                   <label for="tiendacheck">
+                                       <span> Filtrar por tiendas </span>
+                                   </label>
+                        </div>
+                    </div>
+                    <div *ngIf="_transaction_show">
+                        <form [formGroup]="transac"
+                              (ngSubmit)="submitTransacFilter()">
+                              <div class="d-flex">
+                                  <div class="m-1">
+                                    <input type="checkbox"
+                                           class="form-check-input"
+                                           id="manualTransactions"
+                                           formControlName="manualTransactions"
+                                           (change)="transaccionesManuealesSolo()"/>
+                                    <label for="manualTransactions">
+                                        <span>Transacciones Manuales</span>
+                                    </label>
+                                  </div>
+                                  <div class="m-1">
+                                      <input type="checkbox" class="form-check-input"
+                                             id="automaticTransactions"
+                                             (change)="transaccionesAutomaticasSolo()"
+                                             formControlName="automaticTransactions"/>
+                                             <label for="automaticTransactions">
+                                                 <span>Transacciones Automáticas</span>
+                                             </label>
+                                  </div>
+                                  <div class="m-1">
+                                      <input type="checkbox" class="form-check-input" id="recolecciones"
+                                             (change)="transaccionesRecoleccionesSolo()"
+                                             formControlName="recolecciones" />
+                                             <label for="recolecciones" >
+                                                 <span> Recolecciones </span>
+                                             </label>
+                                  </div>
+                              </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </span>
+    </div>
+    <hr>
+    <div class="d-flex flex-column" style="overflow-y: auto; max-height: 800px;" >
+    <div class="w-100"  >
+    <div class="form-filter w-100">
+        <div class="text-secondary " *ngIf="barprogress">
+            <div> 
+                <strong > Preparando, {{countTransaction}} transacciones para pre-acreditar</strong>
+            </div>
+            <div class="progress mt-2">
+                <div class="progress-bar progress-bar-striped progress-bar-animated"
+                     role="progressbar"
+                     aria-valuemin="0"
+                     aria-valuemax="100"
+                     [style.width]="porcentaje + '%'">
+                </div>
+            </div>
+        </div>
+        <form [formGroup]="exportdateform" class="w-100" (ngSubmit)="onSubmitDate()" >
+            <div class="d-flex align-items-end justify-content-between">
+                <div class="d-flex align-items-end">
+                <div class="d-flex flex-column animate__animated animate__fadeIn p-2" *ngIf="checktiendas">
+                    <label for="codigoClienteidFk" class="form-label">
+                        <span class="text-primary">Escoge el Cliente</span>
+                    </label>
+                    <select class="inpForms form-select w-100"
+                            (change)="obtenerTiendas()"
+                            formControlName="codigoClienteidFk"
+                            #codigoClienteidFk
+                            id="codigoClienteidFk">
+                            <option *ngFor="let cliente of clientelista"
+                                    [value]="cliente.id">
+                                    {{ cliente.nombreCliente | titlecase }} - {{ cliente.ruc }}
+                            </option>
+                    </select>
+                </div>
+                <div class="d-flex flex-column animate__animated animate__fadeIn p-2" *ngIf="choicetiendas">
+                    <label for="codigoClienteidFk" class="form-label">
+                        <span class="text-primary" > Escoge la Tienda </span>
+                    </label>
+                    <select class="inpForms form-select w-100"
+                            formControlName="codigoTiendaidFk"
+                            #codigoTiendaidFk
+                            id="codigoTiendaidFk"
+                            aria-label="">
+                            <option *ngFor="let tiendas of tiendalista"
+                                    [value]="tiendas.id">
+                                    {{tiendas.nombreTienda | titlecase }}
+                            </option>
+                    </select>
+                </div>
+                <div class="d-flex align-items-end "
+                     *ngIf="true">
+                     <div class="d-flex flex-column  p-2">
+                        <label for="Nombre_Cliente"
+                               class="form-label text-secondary">
+                               Fecha inicial:
+                        </label>
+                        <input type="date"
+                               class="form-control"
+                               formControlName="dateini"
+                               #dateini
+                               id="dateini">
+                     </div>
+                    <div class="d-flex flex-column p-2">
+                        <label for="Nombre_Cliente"
+                               class="form-label text-secondary">
+                               Fecha final:
+                        </label>
+                        <input type="date"
+                               class="form-control"
+                               formControlName="datefin"
+                               #datefin
+                               (change)="validateDataExistDate()"
+                               id="datefin">
+                    </div>
+                    </div>
+                    <div class="d-flex align-items-end" *ngIf="_transaction_show">
+                       <div class="d-flex flex-column  p-2">
+                            <label for="Nombre_Cliente"
+                                   class="form-label text-secondary">
+                                   Hora inicial:
+                            </label>
+                            <input type="time"
+                                   class="form-control"
+                                   formControlName="horaini"
+                                   #horaini
+                                   id="horaini">
+                        </div>
+                        <div class="d-flex flex-column  p-2">
+                            <label for="Nombre_Cliente"
+                                   class="form-label text-secondary d-flex align-items-end">
+                                   <div>Hora final:</div>
+                            </label>
+                            <input type="time"
+                                   class="form-control"
+                                   formControlName="horafin"
+                                   #horafin
+                                   id="horafin">
+                        </div>
+                        <div class=" rounded-pill d-flex shadow-sm align-items-center"
+                             style="background-color: rgb(226, 226, 226); height: 37px; margin-bottom: 10px;
+                                    border: solid 1px rgb(195, 195, 195);">
+                                    <label for="acreditada" class="p-1">
+                                        Transacciones por acreditadar
+                                    </label>
+                                    <div class="p-1">
+                                        <input type="checkbox"
+                                               class="form-check-input"
+                                               (change)="barprogress = !barprogress"
+                                               formControlName="acreditada"
+                                               #acreditada
+                                               id="acreditada">
+                                    </div>
+                        </div>
+
+                        <div class="p-2 d-flex align-items-end">
+                            <button type="button"
+                                    class="btn btn-outline-dark"
+                                    (click)="openDataEquiposDialog()"
+                                    style="height: 37px;">
+                                    Obtener transacciones de equipos
+                            </button>
+                        </div>
+                    </div>
+                    <div class=" rounded-pill d-flex shadow-sm align-items-center"
+                         style="background-color: rgb(226, 226, 226); height: 37px; margin-bottom: 10px;
+                         border: solid 1px rgb(195, 195, 195);">
+                         <label for="spriv"
+                                class="p-1">
+                                Previsualizacón de datos
+                         </label>
+                         <div class="p-1">
+                             <input type="checkbox"
+                                    (change)="visibleDataTable()"
+                                    class="form-check-input"
+                                    formControlName="spriv"
+                                    #spriv
+                                    id="spriv">
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="w-100" *ngIf="reportVisible" style="height: 600px;" >
+    <div *ngFor="let equipo of dataExportarExcel" class="bg-secondary mb-2 w-100 table-responsive-lg rounded-2"
+         style="border: solid 3px gray; ">
+         <div class="w-100 bg-warning p-2 text-dark d-flex justify-content-between">
+             <span class="m-0"> 
+                 <strong> {{ equipo.nserie }} <small> / visualizando {{ equipo.longitud }} transaccione(s) </small></strong>
+             </span>
+             <small> <strong> {{ equipo.ipequipo }} </strong> </small>
+         </div>   
+    <table class="table table-bordered bg-light align-middle w-100">
+        <thead class="bg-primary text-light">
+            <tr>
+                <th *ngIf="indices_show"></th>
+                <th class="p-1">
+                    Fecha
+                </th>
+                <th class="p-1">
+                    Hora
+                </th>
+                <th class="p-1">
+                    Cliente
+                </th>
+                <th class="p-1">
+                    Tienda
+                </th>
+                <th class="p-1"
+                    title="Número de transacción">
+                    N. Trans.
+                </th>
+                <th class="p-1">
+                    N. Serie Equipo
+                </th>
+                <th class="p-1">
+                    Usuario
+                </th>
+                <th>
+                    Establecimiento
+                </th>
+                <th title="Código de establecimiento">
+                    Cod. Estab.
+                </th>
+                <th class="p-1"
+                    title="Actividad del usuario creado en máquina">
+                    Actividad
+                </th>
+                <th class="p-1"
+                    title="Número de cuenta bancaria">
+                    Cta. Bancaria
+                </th>
+                <th class="p-1"
+                    title="Nombre del banco">
+                    Nom. Banco
+                </th>
+                <th class="p-1"
+                    title="Tipo de cuenta bancaria">
+                    T. Cuenta
+                </th>
+                <th class="p-1">
+                    $1
+                </th>
+                <th class="p-1">
+                    $2
+                </th>
+                <th class="p-1">
+                    $5
+                </th>
+                <th class="p-1">
+                    $10
+                </th>
+                <th class="p-1">
+                    $20
+                </th>
+                <th class="p-1">
+                    $50
+                </th>
+                <th class="p-1">
+                    $100
+                </th>
+                <th class="p-1">
+                    $0.01
+                </th>
+                <th class="p-1">
+                    $0.05
+                </th>
+                <th class="p-1">
+                    $0.10
+                </th>
+                <th class="p-1">
+                    $0.25
+                </th>
+                <th class="p-1">
+                    $0.50
+                </th>
+                <th class="p-1">
+                    $1.00
+                </th>
+                <th class="p-1">
+                    Total
+                </th>
+                <th class="p-1" title="Tipo de transacción" >
+                    T.T.
+                </th>
+            </tr>
+        </thead>
+            <tbody>
+            <tr *ngFor="let transaccion of equipo.transacciones; let i = index">
+                <td style="background-color: #444444; color: yellow;" *ngIf="indices_show">{{i+1}}</td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.fechaTransaccion | date: 'dd-MM-yyyy' }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.hora }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.nombreCliente }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.nombreTienda }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.machine_Sn }}-{{ transaccion.transaccion_No }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.machine_Sn }}
+                </td>
+                <td [style]="'background: ' + transaccion.color" [title]="transaccion.nombreUsuario">
+                    {{ transaccion.usuarios_idFk }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.establecimiento }} </td>
+                <td [style]="'background: ' + transaccion.color">
+                     {{ transaccion.codigoEstablecimiento }} </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.observacion | titlecase }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.numerocuenta }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.nombanco | titlecase }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.tipoCuenta | titlecase }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.deposito_Bill_1 }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.deposito_Bill_2 }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.deposito_Bill_5 }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.deposito_Bill_10 }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.deposito_Bill_20 }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.deposito_Bill_50 }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.deposito_Bill_100 }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.manual_Deposito_Coin_1 }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.manual_Deposito_Coin_5 }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.manual_Deposito_Coin_10 }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.manual_Deposito_Coin_25 }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.manual_Deposito_Coin_50 }}
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    {{ transaccion.manual_Deposito_Coin_100 }}
+                </td>
+                <td class="totales-table">
+                    <div style="text-align: right;">{{transaccion.total | number : '1.2-2'}}</div>
+                </td>
+                <td [style]="'background: ' + transaccion.color">
+                    <strong> {{ transaccion.tipoTransaccion | slice:0:1 }} </strong>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</div>
+
+<div class="p-2 w-100 d-flex justify-content-between align-items-center" *ngIf="_transaction_show">
+    <div class="d-flex align-items-center">
+        <div class="m-1">
+            <p-menu #menu [model]="items" class="shadow-lg" [popup]="true"></p-menu>
+            <button class="btn btn-dark shadow-sm p-1 btn-sm d-flex justify-content-center" type="button" (click)="menu.toggle($event)">
+                <div [style]="'background-image: url( '+menuicon+' ); width: 7px; height: 15px; background-repeat: no-repeat; background-size: auto 100% !important; border-radius: 0px !important;'"></div>
+            </button>
+        </div>
+        <div class="p-1 m-1 rounded-3 shadow-sm" style="background-color: rgb(226, 226, 226); border: solid 1px rgb(195, 195, 195);">
+            <span class="d-flex flex-wrap justify-content-end">
+                A punto de exportar un total de
+                <span class="text-primary fs-6"> &nbsp; <strong> {{ sumatoriaTransacciones }} </strong></span>
+                &nbsp;<span>transaccione(s), equivalentes a </span>
+                &nbsp;<strong> $ {{ cantidadTransacciones | number : '1.2-2' }} </strong>
+            </span>
+        </div>
+        <div class="d-flex m-1 align-items-center">
+            <div> Equipos visualizando &nbsp; <strong class="text-primary" > ({{ maquinasEscogidasDialog.length }}) </strong>  </div>
+            <ul class=" d-flex justify-content-between flex-wrap">
+                <li *ngFor="let equipos of maquinasEscogidasDialog; let i = index; " style="list-style: none; min-width: 100px; max-width: 220px;" class="p-2 m-1 bg-primary text-light rounded-3 shadow animate__animated animate__bounceIn">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap" style="min-width: 100px; max-width: 200px;">
+                        <div class="mr-2" > <strong> {{ equipos.nserie }} </strong> <strong> ( {{ equipos.longitud }} ) </strong> </div>
+                        <div [style]="'background-image: url( '+delete+' )' " (click)="eliminarEquiposDeReporteria(equipos, i)" class="icono-btn" ></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="d-flex">
+        <button type="button"
+                class="btn btn-danger btn-sm"
+                *ngIf="_cancel_button"
+                (click)="limpiar()">
+                <div [style]="'background-image: url('+cancel+')'"
+                     class="icono">
+                </div>
+        </button>
+        <button  class="d-flex align-items-center btn btn-sm btn-outline-primary" 
+                 [disabled]="dis_exp_excel"
+                 (click)="exportarExcel()">
+                 <img src="../../../../../../assets/excel.png" width="50px" alt="">
+                 <div>Exportar a excel</div>
+        </button>
+    </div>
+</div>
+
+</div>

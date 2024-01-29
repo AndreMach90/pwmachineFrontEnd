@@ -1,0 +1,104 @@
+<div class="spinner-overlay"  *ngIf="_show_spinner" >
+    <div class="spinner-container">
+      <span class="loader"></span>
+    </div>
+</div>
+
+
+<div class="contdiv p-4" style="background-color: whitesmoke;" >
+
+    <div class="d-flex justify-content-between" >
+
+        <h2 class="m-0" >
+            <span>
+                Confirmar usuarios de maquinarias temporales:
+                <br>
+                <small class="text-secondary" style="font-size: 10pt;">
+                    Estos usuarios fueron creados desde la máquina esperando la confirmación del administrador.
+                </small>
+            </span> 
+        </h2>
+        <div class="w-75" >
+            <section class="filtros mt-2 mb-2">
+                <div class="mb-2 d-flex">
+                  <input class=" w-100 shadow-sm form-control rounded-pill" 
+                         fxFlex="auto" type="text"
+                         [(ngModel)]="filteruserTemporal"
+                         (keyup)="filterUsuariosTemporales()"
+                         #input placeholder="Búsqueda de usuarios temporales...">
+                </div>
+            </section>
+        </div>
+    </div>
+    <hr>
+    <div class="table-responsive" >
+        <table class="table table-secondary table-bordered table-striped align-middle" >
+            <thead class="bg-warning text-dark" >
+                <th class="p-1">Nombre del usuario</th>
+                <th class="p-1">Ip máquina solicitante</th>
+                <!-- <th class="p-1">Fecha de creación</th> -->
+                <th class="p-1">Establecimiento      </th>
+                <th class="p-1">Código de establecimiento      </th>
+                <!-- <th class="p-1">Teléfono    </th> -->
+                <th class="p-1">Actividad Usuario</th>
+                <th class="p-1">Cta. Bancaria</th>
+                <th class="p-1"></th>
+                <!-- <th class="p-1"></th> -->
+            </thead>
+            <tbody  >
+                <tr *ngFor="let usuarios of listaUsuariosTemporales; let i = index;">
+                    <td> {{ usuarios.usuario }} </td>
+                    <td> {{ usuarios.ipMachineSolicitud }} </td>
+                    <td> 
+                        <input class="form-control  form-control-sm "
+                                type="text" 
+                                [id]="'nombres-'+i"
+                                >
+                    </td>
+                    <td> 
+                        <input class="form-control  form-control-sm "
+                                type="text" 
+                                [id]="'cedula-'+i"
+                                >
+                    </td>
+                    <!-- <td> 
+                        <input class="form-control  form-control-sm "
+                                type="text" 
+                                [id]="'telefono-'+i" 
+                                >
+                    </td> -->
+                    <td> 
+                        <input class="form-control  form-control-sm "
+                                type="text" 
+                                [id]="'tipo-'+i" 
+                                >
+                    </td>
+                    <td>
+                        <select class="inpForms form-select w-100" aria-label=""
+                                [id]="'cuentasbanc-'+i"
+                                (change)="onChangeActividad($event, i)">
+                                <option *ngFor="let cuentas of listaCuentaTiendasBanc"
+                                        [value]="cuentas.idcuentabancaria">
+                                        {{ cuentas.nombanco | titlecase }} / No. {{ cuentas.numerocuenta }} / Cuenta {{ cuentas.tipoCuenta | titlecase }}
+                                </option>
+                        </select>
+                    </td>                    
+                    <td>
+                        <div *ngIf="_create_show"
+                             [style]="'background-image: url( '+accept+' )' " 
+                             (click)="aceptarUsuario(usuarios, i)"
+                             class="icono-btn"></div>
+                    </td>
+                    <!-- <td>
+                        <div [style]="'background-image: url( '+cancel+' )' "
+                             (click)="eliminarUsuarioTemporal(usuarios.id)"
+                             class="icono-btn"></div>
+                    </td> -->
+                </tr>
+            </tbody>
+        </table>
+        <div class="" >
+
+        </div>
+    </div>
+</div>

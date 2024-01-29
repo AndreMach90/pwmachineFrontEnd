@@ -1,0 +1,27 @@
+ 
+<div class="spinner-overlay"  *ngIf="_show_spinner">
+    <div class="spinner-container">
+      <span class="loader"></span>
+    </div>
+</div>
+<div class="navside" [style]="'width: ' + width_menu + ';'">
+    <div class="p-3 d-flex justify-content-start align-items-center ">
+         <div id="icono-modulo"
+              (click)="controlWidth()"
+              [style]="'background-image: url( ' + modimagen + ' ); width: 20px !important;  height: 20px !important; background-size: 100%;'"
+              class="icono" ></div>
+         <div class="fs-6 " *ngIf="estadow" > &nbsp;&nbsp; Módulos: </div>
+    </div>
+    <div *ngFor="let menuitem of modulosNavSide" class="mods d-flex" (click)="enviarModulos(menuitem)">
+           <div class="imgmods"
+                [style]="'background-image: url('+menuitem.icon+')'"
+                ></div> 
+                &nbsp;&nbsp;
+                <div *ngIf="estadow">{{ menuitem.nombre }}</div>
+    </div>
+    <div class="mods d-flex" (click)="regresar()" >
+        <div class="imgmods" [style]="'background-image: url('+regresarIcon+')'"></div>
+        &nbsp;&nbsp;
+        <div *ngIf="estadow">Regresar</div>
+    </div>
+</div>

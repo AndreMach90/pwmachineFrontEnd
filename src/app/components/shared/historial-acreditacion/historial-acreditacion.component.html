@@ -1,0 +1,303 @@
+<div class="spinner-overlay"  *ngIf="_show_spinner">
+    <div class="spinner-container">
+      <span class="loader"></span>
+    </div>
+</div>
+
+<div class="contdiv p-4" style="background-color: whitesmoke;">
+
+
+    <div class="accordion shadow-sm" id="accordionExample">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              <strong> Transacciones en proceso de acreditación ({{ listaAcreditadas.length }}) </strong>
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              
+                
+            <div class="d-flex flex-wrap justify-content-between m-2"
+            style="max-height: 90vh; overflow-y: auto;">
+           <div *ngFor="let acredit of listaAcreditadas; let i = index;"
+                class=" box p-2 rounded-2 shadow-sm m-2 ">
+               <div class="datax d-flex justify-content-between p-1">
+                   <span> Nombre: </span>
+                   <span>
+                       <strong> {{ acredit.nombreArchivo }} </strong>
+                   </span>
+               </div>
+               <div class="datax d-flex justify-content-between p-1">
+                   <div>
+                       Fecha Inicial: <strong> {{ acredit.fechaIni | date: 'dd-MM-yyyy' }} </strong>
+                   </div>
+                   <div>
+                       Fecha Final: <strong> {{ acredit.fechaFin | date: 'dd-MM-yyyy' }} </strong>
+                   </div>
+               </div>
+               <div class="datax d-flex justify-content-between align-items-center p-1">
+                   <span>Total de transacciones descargadas:</span>
+                   <div class="total" title="Observa los equipos que generaron estas transacciones"
+                        (click)="op.toggle($event); obtenerEquiposAcreditados( acredit );">
+                        <span class="text-primary fs-5"> 
+                            <strong> {{acredit.total}} </strong>
+                        </span>
+                   </div>
+                   <p-overlayPanel #op>
+                       <span class="fs-4" > Equipos vinculados: <strong><span class="text-primary" >
+                           ({{dataExportarExcel.length}})
+                       </span></strong> </span>
+                       <hr>
+                       <div class="table-responsive" >
+                           <table class="table table-warning table-bordered table-hover table-striped align-middle" >
+                               <thead class="bg-black text-light" >
+                                  <th class="p-1">Nombre</th> 
+                                  <th class="p-1" title="Número de transacciones">N. Transacciones</th> 
+                               </thead>
+                               <tbody>
+                                   <tr *ngFor="let equipos of dataExportarExcel; let i = index;">                                    
+                                       <td>
+                                           {{equipos.machineSn}}
+                                       </td>
+                                       <td>
+                                           <div class="d-flex justify-content-end">
+                                               <span> 
+                                                   <strong> {{equipos.total}} </strong>
+                                               </span>
+                                           </div>
+                                       </td>
+                                   </tr>
+                               </tbody>
+                           </table>
+                       </div>
+                   </p-overlayPanel>
+               </div>
+               <div class="d-flex justify-content-between p-1">
+                   <span> Fecha de descarga: </span>
+                   <span> <strong> {{acredit.fechaRegistro | date: 'dd-MM-yyyy'}} </strong></span>
+               </div>
+               <div class="d-flex justify-content-between">
+                   <div class="desbtn p-1" title="Descargar Excel" (click)="obtenerTransacTabla(acredit)">
+                       <div [style]="'background-image: url( '+descargar+' )' " class="iconodes" ></div>
+                   </div>
+                   <div class="d-flex justify-content-end">
+                       <div title="Cancelar operación de acreditación">
+                           <button type="submit" class="d-flex align-items-center btn btn-sm btn-danger shadow-sm"
+                                   (click)="eliminarAcreditaciones( acredit, i )">
+                                   <div [style]="'background-image: url( '+cancel+' )' " class="icono" ></div>
+                           </button>  
+                       </div>
+                       <div title="Generar acreditación">
+                           <button type="submit" class="d-flex align-items-center btn btn-sm btn-primary shadow-sm" 
+                                   (click)="actualizarEquiposAcreditados( acredit, i )">
+                                   <div [style]="'background-image: url( '+crear+' )' " class="icono" ></div>
+                           </button>  
+                       </div>
+                   </div>
+               </div>
+           </div>        
+       </div>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-header d-flex justify-content-between">
+            <button class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseTwo"
+                    aria-expanded="false"
+                    aria-controls="collapseTwo">
+                    <strong>
+                        Transacciones acreditadas ( {{listaAcreditadasOk.length}} )
+                    </strong>
+            </button>
+            <form [formGroup]="exportdateform" class="w-100" (ngSubmit)="onSubmitDate()" class="d-flex justify-content-end">
+            <div class="d-flex align-items-end "
+                     *ngIf="true">
+                     <div class="d-flex flex-column  p-2">
+                        <label for="Nombre_Cliente"
+                               class="form-label text-secondary">
+                               Fecha inicial:
+                        </label>
+                        <input type="date"
+                               class="form-control"
+                               formControlName="dateini"
+                               #dateini
+                               id="dateini">
+                     </div>
+                    <div class="d-flex flex-column p-2">
+                        <label for="Nombre_Cliente"
+                               class="form-label text-secondary">
+                               Fecha final:
+                        </label>
+                        <input type="date"
+                               class="form-control"
+                               formControlName="datefin"
+                               #datefin
+                               (change)="validateDataExistDate()"
+                               id="datefin">
+                    </div>
+                    <div class="p-2" >
+                        <button class="btn btn-primary" type="submit"                     
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseTwo"
+                                aria-expanded="false"
+                                aria-controls="collapseTwo">Buscar</button>
+                    </div>
+            </div>
+            </form>
+          </div>
+          <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <div class="d-flex flex-wrap justify-content-between m-2 table-responsive"
+                     style="max-height: 90vh; overflow-y: auto;">
+                <table class="table table-bordered table-secondary align-middle">
+                    <thead class="bg-warning">
+                        <th class="p-1">Fecha de descarga</th>
+                        <th class="p-1">Nombre de archivo</th>
+                        <th class="p-1">Usuario</th>
+                        <th class="p-1">Fecha Inicial</th>
+                        <th class="p-1">Fecha final</th>
+                        <th class="p-1">N. Transacciones</th>
+                        <th class="p-1"></th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let acredit of listaAcreditadasOk; let i = index;">
+                            <td>{{ acredit.fechaRegistro | date: 'medium' }}</td>
+                            <td>{{ acredit.nombreArchivo }}</td>
+                            <td>{{ acredit.usuarioRegistro }}</td>
+                            <td>{{ acredit.fechaIni | date: 'medium' }}</td>
+                            <td>{{ acredit.fechaFin | date: 'medium' }}</td>
+                            <td>
+                                <div class="total" title="Observa los equipos que generaron estas transacciones"
+                                    (click)="op.toggle($event); obtenerEquiposAcreditados( acredit );">
+                                    <span class="text-primary"> <strong> {{acredit.total}} </strong> </span>
+                                </div>
+                                <p-overlayPanel #op>
+                                    <span class="fs-4" >
+                                         Equipos vinculados:
+                                         <span class="text-primary" >
+                                            <strong>
+                                                ({{dataExportarExcel.length}})
+                                            </strong>
+                                         </span>
+                                     </span>
+                                    <hr>
+                                    <div class="table-responsive" >
+                                        <table class="table table-warning table-bordered table-hover table-striped align-middle">
+                                            <thead class="bg-black text-light">
+                                               <th class="p-1">
+                                                 Nombre
+                                               </th>
+                                               <th class="p-1" title="Número de transacciones">
+                                                 N. Transacciones
+                                               </th>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let equipos of dataExportarExcel; let i = index;">                                    
+                                                    <td>
+                                                        {{equipos.machineSn}}
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex justify-content-end">
+                                                            <span> 
+                                                                <strong> {{equipos.total}} </strong>
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </p-overlayPanel>
+                            </td>
+                            <td>
+                                <div class="desbtn p-1" title="Descargar Excel" (click)="obtenerTransacTabla(acredit)">
+                                    <div [style]="'background-image: url( '+descargar+' )'" class="iconodes"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- 
+                <div *ngFor="let acredit of listaAcreditadasOk; let i = index;"
+                    class=" box p-2 rounded-2 shadow-sm m-2 ">
+                   <div class="datax d-flex justify-content-between p-1">
+                       <span> Nombre: </span>
+                       <span>
+                           <strong> {{ acredit.nombreArchivo }} </strong>
+                       </span>
+                   </div>
+                   <div class="datax d-flex justify-content-between p-1">
+                       <div>
+                           Fecha Inicial: <strong> {{ acredit.fechaIni | date: 'dd-MM-yyyy' }} </strong>
+                       </div>
+                       <div>
+                           Fecha Final: <strong> {{ acredit.fechaFin | date: 'dd-MM-yyyy' }} </strong>
+                       </div>
+                   </div>
+                   <div class="datax d-flex justify-content-between align-items-center p-1">
+                       <span>Total de transacciones descargadas:</span>
+                       <div class="total" title="Observa los equipos que generaron estas transacciones"
+                            (click)="op.toggle($event); obtenerEquiposAcreditados( acredit );">
+                            <span class="text-primary fs-5"> <strong> {{acredit.total}} </strong> </span>
+                       </div>
+                       <p-overlayPanel #op>
+                           <span class="fs-4" >
+                                Equipos vinculados:
+                                <strong>
+                                    <span class="text-primary" >
+                                        ({{dataExportarExcel.length}})
+                                    </span>
+                                </strong>
+                            </span>
+                           <hr>
+                           <div class="table-responsive" >
+                               <table class="table table-warning table-bordered table-hover table-striped align-middle">
+                                   <thead class="bg-black text-light">
+                                      <th class="p-1">
+                                        Nombre
+                                      </th>
+                                      <th class="p-1" title="Número de transacciones">
+                                        N. Transacciones
+                                      </th>
+                                   </thead>
+                                   <tbody>
+                                       <tr *ngFor="let equipos of dataExportarExcel; let i = index;">                                    
+                                           <td>
+                                               {{equipos.machineSn}}
+                                           </td>
+                                           <td>
+                                               <div class="d-flex justify-content-end">
+                                                   <span> 
+                                                       <strong> {{equipos.total}} </strong>
+                                                   </span>
+                                               </div>
+                                           </td>
+                                       </tr>
+                                   </tbody>
+                               </table>
+                           </div>
+                       </p-overlayPanel>
+                   </div>
+                   <div class="d-flex justify-content-between p-1">
+                       <span> Fecha de descarga: </span>
+                       <span> <strong> {{acredit.fechaRegistro | date: 'dd-MM-yyyy'}} </strong></span>
+                   </div>
+                   <div class="d-flex justify-content-end">
+                       <div class="desbtn p-1" title="Descargar Excel" (click)="obtenerTransacTabla(acredit)">
+                           <div [style]="'background-image: url( '+descargar+' )' " class="iconodes" ></div>
+                       </div>
+                   </div>
+                </div>
+                -->
+           </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+</div>
+

@@ -1,0 +1,202 @@
+<div class="spinner-overlay"  *ngIf="_show_spinner" >
+    <div class="spinner-container">
+      <span class="loader"></span>
+    </div>
+</div>
+
+<div class="dashworks p-2 m-2 rounded-3 shadow "
+     [ngStyle]="{'background-color': 'white'}">
+     <div class="register d-flex justify-content-between">
+         <div class="w-25 p-3" *ngIf="viewForm">
+            <div class="">
+                <h1> 
+                    Registro de Cliente 
+                </h1>
+                <hr>
+            </div>
+            <form [formGroup]="clienteForm" class="mb-2" (ngSubmit)="onSubmit()">
+                        <div class="mb-3 w-100">
+                            <label for="Nombre_Cliente"
+                                   class="form-label text-secondary">
+                                   Nombre de la empresa cliente:
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   formControlName="Nombre_Cliente"
+                                   #Nombre_Cliente
+                                   id="Nombre_Cliente"
+                                   placeholder="José Villalba..."
+                                   >
+                        </div>
+                        <div class="mb-3 w-100">
+                            <label for="RUC" class="form-label text-secondary ">
+                                RUC:
+                            </label>
+                            <input type="text"
+                                   class="form-control"
+                                   formControlName="RUC"
+                                   #RUC
+                                   id="RUC"
+                                   (keyup)="validateInputNumber(RUC)"
+                                   placeholder="">
+                        </div>
+                        <div class="mb-3 w-100">
+                            <label for="Direccion" class="form-label text-secondary">
+                                Dirección:
+                            </label>
+                            <input type="text" class="form-control" formControlName="Direccion" #Direccion id="Direccion" placeholder="Av. Carlos Julio....">
+                        </div>
+                        <div class="mb-3 w-100">
+                            <label for="nombre_contacto" class="form-label text-secondary">
+                                Nombre contacto:
+                            </label>
+                            <input type="text" class="form-control" 
+                                   formControlName="nombre_contacto"
+                                   #nombre_contacto id="nombre_contacto"
+                                   placeholder=""
+                                   (keyup)="validateInputText(nombre_contacto)">
+                        </div>
+                        <div class="mb-3 w-100">
+                            <label for="Telefono" class="form-label text-secondary">
+                                Telefono del contacto:
+                            </label>
+                            <input type="text" class="form-control" 
+                                   formControlName="Telefono"
+                                   #Telefono
+                                   id="Telefono"
+                                   (keyup)="validateInputNumber(Telefono)"
+                                   placeholder="">
+                        </div>
+                        <div class="mb-3 w-100">
+                            <label for="email_contacto" class="form-label text-secondary">
+                                Email contacto:
+                            </label>
+                            <input type="text" class="form-control" formControlName="email_contacto" #email_contacto id="email_contacto" placeholder="">
+                        </div>
+                    <div class="d-flex flex-wrap justify-content-between" >
+
+                        <div class="floating-button  ">
+                            <button type="button"
+                                    class="btn btn-danger btn-sm "
+                                    *ngIf="_cancel_button"
+                                    (click)="limpiar()">
+                                    <div [style]="'background-image: url( '+cancel+' )' " class="icono" ></div>
+                            </button>
+                            <button type="submit" class="d-flex align-items-center btn btn-sm btn-primary"
+                                    *ngIf="_create_show">
+                                    <div [style]="'background-image: url( '+crear+' )'"
+                                         class="icono" ></div>
+                                         <div>{{_action_butto}} Cliente</div>
+                            </button>
+                        </div>
+                    </div>
+            </form>
+        </div>
+        <div [class]="_width_table">
+            <div class="p-2 d-flex  justify-content-between align-items-center ">
+                <div class="w-25">
+                    <h1 class="m-0"> 
+                        Clientes Registrados 
+                        <span class="text-secondary" > ({{clientelista.length}}) </span>
+                    </h1>
+                </div>
+                <div class="w-75 ">
+                    <section class="filtros mt-2 mb-2 w-100 d-flex">
+                        <div class="mb-2 d-flex w-100">
+                          <input class=" w-100 shadow-sm form-control rounded-pill"
+                                 fxFlex="auto" type="text"
+                                 [(ngModel)]="filterCli"
+                                 (keyup)="filterCliente()" 
+                                 #input placeholder="Búsqueda de clientes registrados...">
+                        </div>
+                        <div *ngIf="permisonUsers">
+                            <div [style]="'background-image: url( '+add+' )' "
+                                 (click)="viewForm = !viewForm; widthAutom();"
+                                 class="icono-btn" ></div>
+                        </div>
+                    </section>
+                </div>
+                <hr>
+            </div>
+            <table class="table table-hover table-bordered table-primary table-striped align-middle" >
+                <thead class="bg-primary text-light" >
+                    <th class="p-2" *ngIf="permisonUsers" >
+                        
+                    </th>
+                    <th class="p-2" >
+                        RUC
+                    </th>
+                    <th class="p-2">
+                        Nombre CLiente
+                    </th>
+                    <th class="p-2">
+                        Nombre de Contacto
+                    </th>
+                    <th class="p-2">
+                        Email Contacto
+                    </th>
+                    <th class="p-2">
+                        Teléfono Contacto
+                    </th>
+                    <th class="p-2">
+                        Dirección
+                    </th>
+                    <th class="p-2" title="Agregar cuentas contables del cliente">
+                        Cta.Cont.
+                    </th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let usuarios of clientelista; let i = index">
+                        <td *ngIf="permisonUsers">
+                            <div class="d-flex">
+                                <div [style]="'background-image: url( '+edit+' )' " (click)="catchData(usuarios)" class="icono-btn" ></div>
+                                <div [style]="'background-image: url( '+delete+' )' " (click)="eliminarUsuario(usuarios, i)" class="icono-btn" ></div>
+                            </div>
+                        </td>
+                        <td>
+                            {{ usuarios.ruc }}
+                        </td>
+                        <td>
+                            {{ usuarios.nombreCliente }}
+                        </td>
+                        <td>
+                            {{ usuarios.nombrecontacto }}
+                        </td>
+                        <td>
+                            {{ usuarios.emailcontacto }}
+                        </td>
+                        <td>
+                            {{ usuarios.telefcontacto }}
+                        </td>
+                        <td>
+                            {{ usuarios.direccion }}
+                        </td>
+                        <td>    
+                            <div class="d-flex ">
+                                <div (click)="openDialogUsuariosAsignados(usuarios)"
+                                     class="btn btn-warning btn-sm  d-flex justify-content-center align-items-center p-1"
+                                     style="width: 30px; height: 30px;">
+                                     <span [matBadge]="usuarios.cantidadCuntasBancarias"
+                                           matBadgePosition="before" 
+                                           matBadgeColor="warn">
+                                           <strong> o </strong>
+                                     </span>
+                                </div>
+                                <div *ngIf="permisonUsers"
+                                     class="btn btn-primary btn-sm d-flex justify-content-center align-items-center p-1"
+                                     style="width: 30px; height: 30px;"
+                                     (click)="obtenerCuentaBancariaCliente(usuarios.id);
+                                              openDialogCrearCuentaBancaria(usuarios, 'C')">
+                                     <span class="">
+                                        <strong>+</strong>
+                                     </span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+     </div>
+
+</div>

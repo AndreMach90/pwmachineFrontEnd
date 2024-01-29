@@ -1,0 +1,37 @@
+
+<div class="spinner-overlay"  *ngIf="_show_spinner">
+    <div class="spinner-container">
+      <span class="loader"></span>
+    </div>
+</div>
+
+<div style="width: 100%; overflow-x: auto;">
+
+    <!-- <div class="d-flex justify-content-between" *ngIf="valDateDay">
+      <div class="dias d-flex justify-content-between align-items-center col-2">
+        <input type="range" min="1" max="31" step="1" style="width: 100px;"
+               [(ngModel)]="selectedDays" (input)="getDates(selectedDays)">
+               <span>{{ selectedDays }} día(s)</span>
+      </div>
+
+      <div class="dias d-flex justify-content-end col-8">
+        <div class="dias-chips animate__animated animate__bounceIn"
+             [class.active]="selectedDate === date"
+             *ngFor="let date of dates" 
+             (click)="seleccionarFecha(date)">
+             <div class="dias-chip d-flex justify-content-center align-items-center"
+                  matTooltipPosition="above"
+                  [matTooltip]="date.dia + ', ' + date.fechacompleta">
+                  <span class="text-light">{{ date.dia.charAt(0) }}</span>
+             </div>
+        </div>
+      </div>
+
+    </div> -->
+    <!-- <button (click)="filterLastThreeDays()">
+      Filtrar 3 dias
+    </button> -->
+    
+    <canvas id="canvas" height="80px" style="display: inline-block !important;"></canvas>
+
+</div>

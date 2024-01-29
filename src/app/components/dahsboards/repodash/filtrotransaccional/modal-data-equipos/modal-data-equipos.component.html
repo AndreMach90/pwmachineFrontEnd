@@ -1,0 +1,87 @@
+<div class="contdiv p-4" style="background-color: whitesmoke;">    
+    <div class="m-0 d-flex justify-content-between align-items-center">
+        <span>
+          <h2 class="m-0">Data de equipos a importar:</h2>
+        </span>
+    </div>
+  <hr>
+  <div class="body-data">
+  <div class="mb-2 d-flex w-100">
+    <input class=" w-100 shadow-sm form-control rounded-pill"
+           fxFlex="auto" type="text"
+           [(ngModel)]="filterEqui"
+           (keyup)="filterEquipo()"
+           #input placeholder="Búsqueda de equipos...">
+  </div>
+  <table class="table table-secondary table-bordered">
+    <thead class="bg-dark text-light align-middle">
+      <th>
+        <div class="d-flex justify-content-center align-items-center bg-dark">
+          <input type="checkbox"
+                 class="form-check-input"
+                 id="equipos-all"
+                 (change)="seleccionarTodosEquipos($event)">
+        </div>
+      </th>
+      <th>Nombre</th>
+      <th>Establecimiento</th>
+      <th title="Transacciones automáticas">T.A.</th>
+      <th title="Transacciones manuales">T.M.</th>
+      <!-- <th title="Recolecciones">R.</th> -->
+      <th title="Total de transacciones">T.Tran.</th>
+    </thead>
+    <tbody class="align-middle">
+      <tr *ngFor="let equipos of listaEsquipo; let i = index">
+        <td>
+          <input 
+            type="checkbox" 
+            class="form-check-input" 
+            [checked]="equipos.checkTran" 
+            [id]="'equipos-'+i" 
+            [disabled]="equipos.conteo_A === 0 && equipos.conteo_M === 0"
+            (change)="seleccionarEquipo(equipos, $event)">
+        </td>
+        <td [title]="equipos.ipEquipo" style="cursor: pointer;">
+          {{ equipos.machine_Sn }}
+        </td>
+        <td>
+          {{ equipos.nombreTienda }}
+        </td>
+        <td>
+          <div class="d-flex justify-content-end">
+            <strong> {{ equipos.conteo_A }} </strong>
+          </div>
+        </td>
+        <td>
+          <div class="d-flex justify-content-end">
+            <strong> {{ equipos.conteo_M }} </strong>
+          </div>
+        </td>
+        <!-- <td>
+          <div class="d-flex justify-content-end">
+            <strong> {{ equipos.conteo_R }} </strong>
+          </div>
+        </td> -->
+        <td style="background-color: yellowgreen;" >
+          <div class="d-flex justify-content-end">
+            <strong> {{ equipos.totalTransac }} </strong>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+
+  </table>
+
+</div>
+  <div>
+    <button class="btn btn-outline-dark w-100 rounded-0" (click)="closeDialog()">
+        Importar datos transaccionales
+    </button>
+  </div>
+  <hr>
+  <footer>
+    <div class="p-1 rounded-pill" style="background-color: rgba(0, 0, 0, 0.05);">
+        <small> {{equiposSeleccionados.length}} de {{ listaEsquipo.length }} equipos seleccionados </small>
+    </div>
+  </footer>
+</div>

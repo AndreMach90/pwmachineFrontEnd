@@ -1,0 +1,12 @@
+
+<div class="d-flex w-100" style="height: 100vh;">
+    <div style="width: 250px;">
+        <app-navside-exp-data (sendModule)="recibirModulos($event)"></app-navside-exp-data>
+    </div>
+    <div class="w-100">
+        <app-modeldata (moduleChange)="recibirCambios($event)" *ngIf="expDatos"></app-modeldata>
+        <app-historial-acreditacion *ngIf="hAcred"></app-historial-acreditacion>
+    </div>
+</div>
+
+

@@ -1,0 +1,26 @@
+.navside {
+    background-color:  rgb(212, 212, 212);
+    height: 100%;
+    transition: ease all 0.5s;
+}
+
+.mods {
+    transition: ease all 0.5s;
+    cursor: pointer;
+    // background-color: aqua;
+    padding: 15px;
+    border-bottom: solid 2px rgb(231, 231, 231);
+}
+
+.mods:hover {
+    transition: ease all 0.5s;
+    background-color: rgb(17, 107, 180);
+    color: white;
+}
+
+.imgmods {
+    width: 25px;
+    height: 25px;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}

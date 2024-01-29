@@ -1,0 +1,174 @@
+<div class="spinner-overlay"  *ngIf="_show_spinner" >
+    <div class="spinner-container">
+      <span class="loader"></span>
+    </div>
+</div>
+
+<div>
+    <div>
+
+    </div>
+    <div>
+        
+    </div>
+</div>
+
+
+<!-- 
+<div class="dashworks p-2 m-2 rounded-3 shadow "
+     [ngStyle]="{'background-color': 'white'}">
+     <div class="register d-flex justify-content-between">
+         <div class="w-100 p-3" >
+            <div class="w-100">
+                <div class="d-flex justify-content-between" >
+                    <div>
+                        <div>
+                            <h1> 
+                                Monitoreo de Equipos por tiendas
+                            </h1>
+                        </div>
+                        <div class="d-flex justify-content-between " >
+                            <div>
+                                <small> Seleciona una tienda para monitorear sus máquinas. 
+                                    <span class="text-primary" >
+                                        <strong>
+                                            ( {{tiendalista.length}} )
+                                        </strong>
+                                    </span>
+                                </small>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="w-50">
+                        <section class="filtros mt-2 mb-2">
+                            <div class="mb-2 d-flex">
+                              <input class=" w-100 shadow-sm form-control rounded-pill" 
+                                     fxFlex="auto" type="text"
+                                     [(ngModel)]="filterequip"
+                                     (keyup)="filterEquipos()" 
+                                     #input placeholder="Búsqueda de equipos registrados a esta tienda...">
+                            </div>
+                        </section>
+                    </div>
+                </div>
+                <hr>
+                <div class="dash-works-box d-flex justify-content-between  " >
+                    <div class="box-a" >
+                        <div *ngFor="let tienda of tiendalista; let i = index" class="tienda-box"
+                            (click)="obtenerIndicadores( tienda.id ); seleccionarTienda(tienda.codigoTienda);"
+                             [class.selected]="tiendaSeleccionada === tienda.codigoTienda">
+                            <div class="d-flex justify-content-start align-items-center ">  
+                                <div>
+                                    <div [style]="'background-image: url( '+shop+' )' " class="icono-btn-2"
+                                         [matBadge]="tienda.cantidadMaquinaria"  matBadgeColor="accent" ></div>                                    
+                                </div>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <div>
+                                    <span class="fs-5" > {{tienda.nombreTienda}} </span> / <span class="text-secondary"> {{tienda.telefono}} </span> <br>
+                                    <small class="text-primary" >{{tienda.nombreProvincia}}</small>
+                                </div>
+                            </div>
+                            <div class="w-100 d-flex justify-content-end "> 
+                                <button class="btn btn-outline-dark" (click)="  openDialogTransacciones(tienda)" > Transacciones </button>
+                            </div>
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="box-a d-flex justify-content-evenly flex-wrap " id="box-a-a" >
+                        <div class="maquinarias d-flex flex-column m-2 shadow "
+                             *ngFor="let equipos of listaEsquipo"
+                             [ngStyle]="{'border': 'groove 2px ' + equipos.color}">
+                            <div class="bg-secondary p-3 rounded-2 text-light d-flex justify-content-start align-items-center  w-100 ">
+                               <div class="d-flex w-100 justify-content-between align-items-center ">
+                                    <div class="d-flex  align-items-center " >
+                                        <div class="round-box"
+                                            [ngStyle]="{'background-color': equipos.color, 'transition': 'ease all 1s'}" >
+                                            </div>  &nbsp;&nbsp;  <span> IP: <strong> {{ equipos.ipEquipo  }} </strong> </span>
+                                    </div>
+                                    <div class="balance fs-4 bg-dark p-3 rounded-3 d-flex align-items-end flex-column  " style="color: yellowgreen;" (click)="openDialogMaquinasTransacciones(equipos)" >
+                                        <small class="text-light" style="font-size: 7pt;" >
+                                            Balance:
+                                        </small>
+                                        <span>$ {{equipos.totalAsegurado  | number : '1.2-2'}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-center " >
+                                <div class="img-box">
+                                    <div>
+                                        <img [src]="equipos.imagen" alt="" width="100%" height="auto" >
+                                    </div>
+                                    <div [ngStyle]="{'background-color': equipos.color, 'color': equipos.colorTexto, 'transition': 'ease all 1s'}" class="text-response mt-3">
+                                    {{ equipos.mensaje }}  <br>
+                                    <small > Fecha de sincronización : <br></small> 
+                                    <span>{{ equipos.tiempoSincronizacion | date: 'medium' }} </span>
+                                </div>
+                                </div>
+                            <div class="d-flex flex-column">
+                                <span class="data-box text-primary fs-5 m-1 p-1">
+                                    <div class="w-100 d-flex justify-content-between">
+                                        <div class="d-flex flex-column">
+                                             <small class="text-secondary"> Modelo: </small>  
+                                             <span class="text-primary " >{{equipos.nombreModelo}} </span> 
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                            <small class="text-secondary">
+                                               N. Serie:
+                                            </small>
+                                            <span>
+                                                {{ equipos.serieEquipo }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </span>
+                                <span class="data-box text-primary fs-5 m-1 p-1">
+                                    <small class="text-secondary mt-2"> Capacidad de billetes : <br></small> 
+                                    <span> {{ equipos.capacidadBilletes }} / {{ equipos.capacidadMaximaBilletes }} </span>
+                                    <br>
+                                    <div class="progress mt-3">
+                                        <div [class]="colorBarProgressBilletes"
+                                             role="progressbar" 
+                                             [style.width]="porcentaje + '%'"
+                                             [attr.aria-valuenow]="porcentaje"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100">
+                                             {{ porcentaje | number : '1.2-2' }}%
+                                        </div>
+                                    </div>
+                                    <small class="text-secondary mt-2"> Cantidad de sobres y peso : <br></small> <span>
+                                         {{ equipos.cantidadSobres }}
+                                         <small> sobres.</small> = {{equipos.capacidadPesos | number : '1.2-2'}} <small> lbs. </small>
+                                        </span>
+                                    <br>
+                                    <small class="text-secondary mt-2"> 
+                                        Total Equipo :
+                                     <br>
+                                    </small>
+                                    <span> $ {{ equipos.totalAsegurado | number : '1.2-2' }} / $ {{ equipos.totalMaxAsegurado | number : '1.2-2' }}  </span>
+                                    <div class="progress mt-3">
+                                        <div [class]="colorBarProgressBilletesAs"
+                                             role="progressbar" 
+                                             [style.width]="porcentajeAs + '%'"
+                                             [attr.aria-valuenow]="porcentajeAs"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100">
+                                             {{ porcentajeAs | number : '1.2-2' }}%
+                                        </div>
+                                    </div>
+                                </span>
+                                <span class="data-box text-primary fs-5 m-1 p-1">
+                                    <small class="text-secondary"> Última recolección : <br>
+                                    </small> <span>{{ equipos.ultimRecoleccion | date: 'short' }} </span>
+                                </span>
+                            </div>
+                            </div>
+                    
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->

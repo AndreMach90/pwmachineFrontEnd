@@ -1,0 +1,343 @@
+<div class="contdiv p-4" style="background-color: white;">
+    <div class="table-responsive w-100" style="max-height: 600px; overflow: auto; margin-bottom: 0px !important;">
+        <!-- <div class="btnorder btn btn-warning btn-sm"  (click)="alternarOrden()">
+            <div [style]="'background-image: url( '+ordenar+' )'" class="icono" ></div>
+        </div> -->
+        <table class="table table-bordered align-middle"  style="margin-bottom: 0px !important;"  >
+            <thead class="bg-dark text-light" style="font-size: 7pt;" >
+                <th class="p-1" >
+                    Fecha
+                </th>
+                <th class="p-1" >
+                    Hora
+                </th>
+                <th class="p-1">
+                    Cliente
+                </th>
+                <th class="p-1">
+                    Tienda
+                </th>
+                <th class="p-1" title="Número de transacción">
+                    N. Trans.
+                </th>                
+                <th class="p-1" >
+                    N. Serie Equipo
+                </th>           
+                <th class="p-1">
+                    Usuario
+                </th>
+                <th>
+                    Establecimiento
+                </th>
+                <th>
+                    Cod. Establecimiento
+                </th>
+                <th class="p-1" title="Actividad del usuario creado en máquina">
+                    Actividad
+                </th>                
+                <th class="p-1" title="Número de cuenta bancaria">
+                    Cta. Bancaria
+                </th>
+                <th class="p-1" title="Nombre del banco">
+                    Nom. Banco
+                </th>
+                <th class="p-1" title="Tipo de cuenta bancaria">
+                    T. Cuenta
+                </th>
+                <th class="p-1" >
+                    $1
+                </th>
+                <th class="p-1" >
+                    $2
+                </th>
+                <th class="p-1" >
+                    $5
+                </th>
+                <th class="p-1" >
+                    $10
+                </th>
+                <th class="p-1" >
+                    $20
+                </th>
+                <th class="p-1" >
+                    $50
+                </th>
+                <th class="p-1" >
+                    $100
+                </th>
+                <th class="p-1" >
+                    $0.01
+                </th>
+                <th class="p-1" >
+                    $0.05
+                </th>
+                <th class="p-1" >
+                    $0.10
+                </th>
+                <th class="p-1" >
+                    $0.25
+                </th>
+                <th class="p-1" >
+                    $0.50
+                </th>
+                <th class="p-1" >
+                    $1.00
+                </th>
+                <th class="p-1">
+                    Total
+                </th>
+                <th class="p-1" title="Tipo de transacción" >
+                    T.T.
+                </th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let transac of listaTransacciones" [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'" >
+                    <td>
+                        {{ transac.fechaTransaccion | date: 'dd-MM-yyyy' }}
+                    </td>
+                    <td>
+                        {{ transac.hora }}
+                    </td>
+                    <td>
+                        {{ transac.nombreCliente }}
+                    </td>
+                    <td>
+                        {{ transac.nombreTienda }}
+                    </td>
+                    <td>
+                        {{ transac.transaccion_No }}
+                    </td>
+                    <td>
+                        {{ transac.machine_Sn }}
+                    </td>                    
+                    <td [title]="transac.nombreUsuario" >
+                        {{ transac.usuarios_idFk }}
+                    </td>
+                    <td> {{ transac.establecimiento }} </td>
+                    <td>  {{ transac.codigoEstablecimiento }} </td>
+                    <td>
+                        {{ transac.observacion | titlecase }}
+                    </td>
+                    <td>
+                        {{ transac.numerocuenta }}
+                    </td>
+                    <td>
+                        {{ transac.nombanco | titlecase }}
+                    </td>
+                    <td>
+                        {{ transac.tipoCuenta | titlecase }}
+                    </td>
+                    <td>
+                        {{ transac.deposito_Bill_1 }}
+                    </td>
+                    <td>
+                        {{ transac.deposito_Bill_2 }}
+                    </td>
+                    <td>
+                        {{ transac.deposito_Bill_5 }}
+                    </td>
+                    <td>
+                        {{ transac.deposito_Bill_10 }}
+                    </td>
+                    <td>
+                        {{ transac.deposito_Bill_20 }}
+                    </td>
+                    <td>
+                        {{ transac.deposito_Bill_50 }}
+                    </td>
+                    <td>
+                        {{ transac.deposito_Bill_100 }}
+                    </td>
+                    <td>
+                        {{ transac.manual_Deposito_Coin_1 }}
+                    </td>
+                    <td>
+                        {{ transac.manual_Deposito_Coin_5 }}
+                    </td>
+                    <td>
+                        {{ transac.manual_Deposito_Coin_10 }}
+                    </td>
+                    <td>
+                        {{ transac.manual_Deposito_Coin_25 }}
+                    </td>
+                    <td>
+                        {{ transac.manual_Deposito_Coin_50 }}
+                    </td>
+                    <td>
+                        {{ transac.manual_Deposito_Coin_100 }}
+                    </td>
+                    <td style="background-color: rgb(191, 245, 191) !important; "  >
+                        <div style="text-align: right;" >
+                            {{ transac.total | number : '1.2-2' }}
+                        </div>
+                    </td>
+                    <td>
+                        <strong> {{ transac.tipoTransaccion | slice:0:1 }} </strong>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <table class="w-100 table table-primary table-bordered "  >
+        <thead class="bg-info text-dark" >
+        <th class="p-1" >
+            <!-- Fecha y hora -->
+        </th>
+        <th class="p-1">
+            <!-- Cliente -->
+        </th>
+        <th class="p-1">
+            <!-- Tienda -->
+        </th>
+        <th class="p-1">
+            <!-- Cuenta Bancaria -->
+        </th>
+        <th class="p-1" title="Número de transacción">
+            <!-- N. Trans. -->
+        </th>                
+        <th class="p-1" >
+            <!-- N. Serie Equipo -->
+        </th>           
+        <th class="p-1">
+            <!-- Usuario -->
+        </th>
+        <th class="p-1">
+            <!-- Nombre usuario -->
+        </th>                
+        <th class="p-1" >
+            $1
+        </th>
+        <th class="p-1" >
+            $2
+        </th>
+        <th class="p-1" >
+            $5
+        </th>
+        <th class="p-1" >
+            $10
+        </th>
+        <th class="p-1" >
+            $20
+        </th>
+        <th class="p-1" >
+            $50
+        </th>
+        <th class="p-1" >
+            $100
+        </th>
+        <th class="p-1" >
+            $0.01
+        </th>
+        <th class="p-1" >
+            $0.05
+        </th>
+        <th class="p-1" >
+            $0.10
+        </th>
+        <th class="p-1" >
+            $0.25
+        </th>
+        <th class="p-1" >
+            $0.50
+        </th>
+        <th class="p-1" >
+            $1.00
+        </th>
+        <th class="p-1">
+            Total
+        </th>
+        <th class="p-1" title="Tipo de transacción" >
+            <!-- Tipo Trans. -->
+        </th>
+    </thead>
+        <tbody  class="table-bordered">
+            <tr>
+            <td>                    
+            </td>
+            <td>                    
+            </td>
+            <td>                    
+            </td>
+            <td>
+                
+            </td>
+            <td>
+                
+            </td>
+            <td>
+                
+            </td>                    
+            <td>
+                
+            </td>
+            <td>
+                
+            </td>
+            <td style="text-align: right;">
+                {{ deposito_Bill_1 }}
+            </td>
+            <td style="text-align: right;">
+                {{ deposito_Bill_2 }}
+            </td>
+            <td style="text-align: right;">
+                {{ deposito_Bill_5 }}
+            </td>
+            <td style="text-align: right;">
+                {{ deposito_Bill_10 }}
+            </td>
+            <td style="text-align: right;">
+                {{ deposito_Bill_20 }}
+            </td>
+            <td style="text-align: right;">
+                {{ deposito_Bill_50 }}
+            </td>
+            <td style="text-align: right;">
+                {{ deposito_Bill_100 }}
+            </td>
+            <td style="text-align: right;">
+                {{ manual_Deposito_Coin_1 }}
+            </td>
+            <td style="text-align: right;">
+                {{ manual_Deposito_Coin_5 }}
+            </td>
+            <td style="text-align: right;">
+                {{ manual_Deposito_Coin_10 }}
+            </td>
+            <td style="text-align: right;">
+                {{ manual_Deposito_Coin_20 }}                
+            </td>
+            <td style="text-align: right;">
+                {{ manual_Deposito_Coin_50 }}
+            </td>
+            <td style="text-align: right;">
+                {{ manual_Deposito_Coin_100 }}
+            </td>
+            <!-- <td id="tabla-tran-total" [title]="'$ ' + sumatoriaTotalesLastRecol ">
+                $ {{ sumatoriaTotales | number : '1.2-2' }}
+            </td> -->
+            <td id="tabla-tran-total" title="Sumatoria total desde la ultima recolección: $  {{sumatoriaTotalesLastRecol | number : '1.2-2'}} ">
+                $ {{ sumatoriaTotales | number : '1.2-2' }}
+            </td>
+            <td>
+            </td>
+            </tr>
+        </tbody>
+      
+    </table>
+    <table class="table table-secondary w-50" >
+        <tbody>
+            <tr>
+                <td style="text-align: right;" class="col-4">
+                    Piezas acumuladas en la vida del equipo:
+                </td>
+                <td style="text-align: right;" class="col-3">
+                    <strong>
+                        {{ deposito_Bill_1 + deposito_Bill_2 + deposito_Bill_5 + deposito_Bill_10 + deposito_Bill_20 + deposito_Bill_50 + deposito_Bill_100 }}
+                    </strong>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
