@@ -42,6 +42,7 @@ export class ModeldataComponent implements OnInit {
 
   @Output() moduleChange: EventEmitter<any> = new EventEmitter<any>();
 
+  cantidadTransacciones: number = 0;
   totalSubstract: number = 0;
   _cancel_button: boolean = false;
   barprogress: boolean = false;
@@ -189,7 +190,11 @@ export class ModeldataComponent implements OnInit {
     let $025:  number = 0;
     let $050:  number = 0;
     let $0100: number = 0;
-    this.dataExportarExcel.forEach( (equipo: any) => {      
+    this.dataExportarExcel.forEach( (equipo: any) => {    
+
+      console.log('Data a punto de exportar a excel');
+      console.log(equipo);
+
       const transaccionesTransformadas = equipo.transacciones.map( ( elementTra: any ) => {
         return {
           "F.Transacciones":       new Date(elementTra.fechaTransaccion),
@@ -229,13 +234,15 @@ export class ModeldataComponent implements OnInit {
           "fechaRecoleccion":      elementTra.fechaRecoleccion,
         };
       });
-  
+
       // Añade la información transformada al nuevo objeto
       this.listaDataExportExcelNewFormat.push({
         ...equipo,
         transacciones: transaccionesTransformadas
       });      
+
     });
+
     const worksheet = workbook.addWorksheet('TodasTransacciones');
     this.listaDataExportExcelNewFormat.forEach((equipo: any) => {
       // const worksheet = workbook.addWorksheet(`Transacciones_${equipo.nserie}`); 
@@ -259,9 +266,6 @@ export class ModeldataComponent implements OnInit {
             let x = cellValue.toString();
             let y = x.replace(',', '');
             let j = Number(y);
-            // if (columnIndex === 26) {
-            //     j = 777;
-            // }
             row.push(Number(j));
         } else {
             row.push(cellValue);
@@ -347,6 +351,41 @@ export class ModeldataComponent implements OnInit {
                     },
           };
         }
+
+        const saldoRow = worksheet.addRow(
+          [datenow, timenow, clientes,tiendas,'   ***   ',
+           equipos,usuario,establecimiento,codestablecimiento,
+           '    ','    ','    ', '',
+           '', '', '', '', '', '',
+           '','','','','',
+           '', equipo.saldo, 'saldo']);
+
+           for (let col = 1; col <= 27; col++) {
+            saldoRow.getCell( col ).fill = {
+                  type: 'pattern',
+                  pattern: 'solid',
+                  fgColor: { argb: 'EFFFDC' },
+              };
+              saldoRow.getCell(col).border = {
+                top:    {
+                          style: 'thin',
+                          color: { argb: '000000' }
+                        },
+                left:   {
+                          style: 'thin',
+                          color: { argb: '000000' }
+                        },
+                bottom: { 
+                          style: 'thin',
+                          color: { argb: '000000' }
+                        },
+                right:  { 
+                          style: 'thin',
+                          color: { argb: '000000' }
+                        },
+              };
+            }
+
       }
     });
   
@@ -401,23 +440,23 @@ export class ModeldataComponent implements OnInit {
       });
     });
   
-    let dateData = new Date();
-    let tokenDocs: any = this.tokenGen.generateRandomString(5).replace(' ', '_');
-    let nombreArchivo: any = 'Transacciones_' + dateData.getDate() + '-' + (dateData.getMonth() + 1) + '-' + dateData.getFullYear() + 'T' + dateData.getHours() + 'H' + dateData.getMinutes() + 'm' + '_' + tokenDocs + '.xlsx';
-    this.transPush(nombreArchivo);
-    workbook.xlsx.writeBuffer().then((buffer) => {
-      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = nombreArchivo;
-      a.click();
-      window.URL.revokeObjectURL(url);
-      this.exportdateform.controls['acreditada'].enable();
-      setTimeout(() => {
-        this.limpiar();
-      }, 1000);
-    });
+    // let dateData = new Date();
+    // let tokenDocs: any = this.tokenGen.generateRandomString(5).replace(' ', '_');
+    // let nombreArchivo: any = 'Transacciones_' + dateData.getDate() + '-' + (dateData.getMonth() + 1) + '-' + dateData.getFullYear() + 'T' + dateData.getHours() + 'H' + dateData.getMinutes() + 'm' + '_' + tokenDocs + '.xlsx';
+    // this.transPush(nombreArchivo);
+    // workbook.xlsx.writeBuffer().then((buffer) => {
+    //   const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    //   const url = window.URL.createObjectURL(blob);
+    //   const a = document.createElement('a');
+    //   a.href = url;
+    //   a.download = nombreArchivo;
+    //   a.click();
+    //   window.URL.revokeObjectURL(url);
+    //   this.exportdateform.controls['acreditada'].enable();
+    //   setTimeout(() => {
+    //     this.limpiar();
+    //   }, 1000);
+    // });
 
   }
 
@@ -549,29 +588,34 @@ export class ModeldataComponent implements OnInit {
     dialogRef.afterClosed().subscribe( (result:any) => {
       
       if( result ) {
+
         this.exportdateform.controls['acreditada'].disable();
         this._cancel_button = true;
+
         if( this.maquinasEscogidasDialog.length == 0 ) {
-          this.maquinasEscogidasDialog = result; 
+          this.maquinasEscogidasDialog = result;
         }
 
         else {
           result.filter( (equipos: any) => {
-            this.maquinasEscogidasDialog.push(equipos);  
+            this.maquinasEscogidasDialog.push(equipos);
           })
         }
+
 
         this.maquinasEscogidasDialog.filter( ( element:any ) => {
           this.dataExportarExcel.push( element );
           this.dataExportarExcelGhost.push( element );
-          this.eliminarObjetosDuplicados();
+          this.eliminarObjetosDuplicados();          
         });
 
       }
+
       else {
         this._show_spinner = false;
       }
 
+      this.obterSaldoTransac();
       this.obtenerTransacTabla();
       this.visibleDataTable();
 
@@ -592,7 +636,7 @@ export class ModeldataComponent implements OnInit {
       return unique;
     }, []);
     const uniqueObjects2 = this.dataExportarExcelGhost.reduce((unique:any, currentObject:any) => {
-      // Verificar si el objeto ya existe en uniqueObjects por la propiedad nserie
+      // Verificar si el objeto ya existe en uniqueObjects por la propiedad nserie 
       const exists = unique.some((obj:any) => obj.nserie === currentObject.nserie);
 
       // Si no existe, agregarlo a uniqueObjects
@@ -612,10 +656,6 @@ export class ModeldataComponent implements OnInit {
     if( this.exportdateform.controls['datefin'].value != undefined || this.exportdateform.controls['datefin'].value != null || this.exportdateform.controls['datefin'].value != '') {
       this._transaction_show = true;
     }
-  }
-
-  obetenerDetalleDeEquipos() {
-    // this.monitoreo.obtenerDetalleEquipos(  )
   }
   
   obtenerCliente() {
@@ -788,9 +828,9 @@ export class ModeldataComponent implements OnInit {
         break;
     }
 
-    console.warn(this.dataExportarExcel);
-    console.warn('Recolecciones recuperadas');
-    console.warn(this.transaccionesRecolecciones);
+    // console.warn(this.dataExportarExcel);
+    // console.warn('Recolecciones recuperadas');
+    // console.warn(this.transaccionesRecolecciones);
     this.sumatoriaTotalTransacciones();
 
   }
@@ -835,19 +875,15 @@ export class ModeldataComponent implements OnInit {
   }
 
   obtenerTransacTabla() {
-    
-    let x = 0;
-    
+
+    let x = 0;    
     // opcion 2 acreitada
     // opcion 1 general
-
     if ( this.exportdateform.controls['acreditada'].value ) x = 2;
     else x = 1;
     if( this.dataExportarExcel.length > 0 ) {
       this._show_spinner = true;
       this.dataExportarExcel.filter( (element:any) => {
-
-        this.obterSaldoTransac(element.nserie);
 
         let modelRange:any = {
           "tipo":        x,
@@ -855,6 +891,7 @@ export class ModeldataComponent implements OnInit {
           "FechaInicio": this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value,
           "FechaFin":    this.exportdateform.controls['datefin'].value + ' ' + this.exportdateform.controls['horafin'].value
         }
+
         this.transacciones.filtroTransaccionesRango(modelRange).subscribe({
             next: (z) => {
               element.transacciones = z;
@@ -875,16 +912,28 @@ export class ModeldataComponent implements OnInit {
   }
 
   modelDataSaldo: any = [];
-  obterSaldoTransac( machineSn:any ) {
-    this.transacciones.ObtenerEquiposSaldo(machineSn).subscribe({
-      next: (x) => {
-        this.modelDataSaldo = x;
-        console.log(this.modelDataSaldo);
-      }
+  obterSaldoTransac( ) {
+    this.dataExportarExcel.filter((equipo:any) => {
+      this.transacciones.ObtenerEquiposSaldo(equipo.nserie).subscribe({
+        next: (x) => {
+          this.modelDataSaldo = x;
+          this.modelDataSaldo.filter( (m:any) => {
+            if( equipo.nserie == m.machineSn ) equipo.saldo = m.totalRecoleccion;
+          })
+        }, error: (e) => {
+          console.error(e);
+        },
+         complete: () => {
+
+          console.log('Desde el MODAL RECOLECTANDO INFO');
+          console.log(this.dataExportarExcel);
+
+         }
+      })
     })
+    
   }
 
-  cantidadTransacciones: number = 0;
   sumatoriaTotalTransacciones() {
     this.cantidadTransacciones  = 0;
     this.sumatoriaTransacciones = 0;
@@ -893,13 +942,16 @@ export class ModeldataComponent implements OnInit {
       case false:
           console.table(false);
           this.dataExportarExcel.filter((element: any) => {
-            element.transacciones = element.transacciones.filter( (x:any) => x.tipoTransaccion !== 'Recolección'  );
-            element.longitud = element.transacciones.length;
-            element.transacciones.filter((y:any) => {
-              if( y.total == null || y.total == undefined ) y.total = 0;
-              this.cantidadTransacciones += y.total;
-            })
-            this.sumatoriaTransacciones += element.longitud;
+            if( element.transacciones != null ||  element.transacciones != undefined  ) {
+              element.transacciones = element.transacciones.filter( (x:any) => x.tipoTransaccion !== 'Recolección'  );
+              element.longitud = element.transacciones.length;
+              element.transacciones.filter((y:any) => {
+                if( y.total == null || y.total == undefined ) y.total = 0;
+                this.cantidadTransacciones += y.total;
+              })
+              this.sumatoriaTransacciones += element.longitud;
+            }
+            
           });
           this.transac.controls['recolecciones'].disable()
           break;
