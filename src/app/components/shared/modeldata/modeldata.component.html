@@ -25,7 +25,7 @@
                                        <span> Filtrar por cliente </span>
                                    </label>
                         </div>
-                        <div class="m-1" *ngIf="checktiendas">
+                        <!-- <div class="m-1" *ngIf="checktiendas">
                             <input type="checkbox"
                                    class="form-check-input"
                                    id="tiendacheck"
@@ -33,7 +33,7 @@
                                    <label for="tiendacheck">
                                        <span> Filtrar por tiendas </span>
                                    </label>
-                        </div>
+                        </div> -->
                     </div>
                     <div *ngIf="_transaction_show">
                         <form [formGroup]="transac"
@@ -58,14 +58,14 @@
                                                  <span>Transacciones Automáticas</span>
                                              </label>
                                   </div>
-                                  <div class="m-1">
+                                  <!-- <div class="m-1">
                                       <input type="checkbox" class="form-check-input" id="recolecciones"
                                              (change)="transaccionesRecoleccionesSolo()"
                                              formControlName="recolecciones" />
                                              <label for="recolecciones" >
                                                  <span> Recolecciones </span>
                                              </label>
-                                  </div>
+                                  </div> -->
                               </div>
                         </form>
                     </div>
@@ -93,20 +93,24 @@
         <form [formGroup]="exportdateform" class="w-100" (ngSubmit)="onSubmitDate()" >
             <div class="d-flex align-items-end justify-content-between">
                 <div class="d-flex align-items-end">
-                <div class="d-flex flex-column animate__animated animate__fadeIn p-2" *ngIf="checktiendas">
-                    <label for="codigoClienteidFk" class="form-label">
-                        <span class="text-primary">Escoge el Cliente</span>
-                    </label>
-                    <select class="inpForms form-select w-100"
-                            (change)="obtenerTiendas()"
-                            formControlName="codigoClienteidFk"
-                            #codigoClienteidFk
-                            id="codigoClienteidFk">
-                            <option *ngFor="let cliente of clientelista"
-                                    [value]="cliente.id">
-                                    {{ cliente.nombreCliente | titlecase }} - {{ cliente.ruc }}
-                            </option>
-                    </select>
+                <div class="d-flex flex-column animate__animated animate__fadeIn p-2"
+                     *ngIf="checktiendas">
+                     <label for="codigoClienteidFk"
+                            class="form-label">
+                            <span class="text-primary">
+                               Escoge el Cliente
+                            </span>
+                     </label>
+                     <select class="inpForms form-select w-100"
+                             (change)="obtenerTiendas()"
+                             formControlName="codigoClienteidFk"
+                             #codigoClienteidFk
+                             id="codigoClienteidFk">
+                             <option *ngFor="let cliente of clientelista"
+                                     [value]="cliente.id">
+                                     {{ cliente.nombreCliente | titlecase }} - {{ cliente.ruc }}
+                             </option>
+                     </select>
                 </div>
                 <div class="d-flex flex-column animate__animated animate__fadeIn p-2" *ngIf="choicetiendas">
                     <label for="codigoClienteidFk" class="form-label">
@@ -141,12 +145,7 @@
                                class="form-label text-secondary">
                                Fecha final:
                         </label>
-                        <input type="date"
-                               class="form-control"
-                               formControlName="datefin"
-                               #datefin
-                               (change)="validateDataExistDate()"
-                               id="datefin">
+                        <input type="date" class="form-control" formControlName="datefin" #datefin (change)="validateExistDate()" id="datefin">
                     </div>
                     </div>
                     <div class="d-flex align-items-end" *ngIf="_transaction_show">
@@ -170,13 +169,14 @@
                                    class="form-control"
                                    formControlName="horafin"
                                    #horafin
+                                   (change)="validateTime()"
                                    id="horafin">
                         </div>
                         <div class=" rounded-pill d-flex shadow-sm align-items-center"
                              style="background-color: rgb(226, 226, 226); height: 37px; margin-bottom: 10px;
                                     border: solid 1px rgb(195, 195, 195);">
-                                    <label for="acreditada" class="p-1">
-                                        Transacciones por acreditadar
+                                    <label for="acreditada" class="p-1" title="Transacciones por acreditar">
+                                        Trans. por acreditadar
                                     </label>
                                     <div class="p-1">
                                         <input type="checkbox"
@@ -191,9 +191,10 @@
                         <div class="p-2 d-flex align-items-end">
                             <button type="button"
                                     class="btn btn-outline-dark"
+                                    [disabled]="disbutton_obtener"
                                     (click)="openDataEquiposDialog()"
-                                    style="height: 37px;">
-                                    Obtener transacciones de equipos
+                                    style="height: 37px;" title="Obtener transacciones de equipos seleccionados">
+                                    Obtener
                             </button>
                         </div>
                     </div>
@@ -202,7 +203,7 @@
                          border: solid 1px rgb(195, 195, 195);">
                          <label for="spriv"
                                 class="p-1">
-                                Previsualizacón de datos
+                                Sin previsualizacón
                          </label>
                          <div class="p-1">
                              <input type="checkbox"
@@ -432,11 +433,23 @@
             </span>
         </div>
         <div class="d-flex m-1 align-items-center">
-            <div> Equipos visualizando &nbsp; <strong class="text-primary" > ({{ maquinasEscogidasDialog.length }}) </strong>  </div>
-            <ul class=" d-flex justify-content-between flex-wrap">
-                <li *ngFor="let equipos of maquinasEscogidasDialog; let i = index; " style="list-style: none; min-width: 100px; max-width: 220px;" class="p-2 m-1 bg-primary text-light rounded-3 shadow animate__animated animate__bounceIn">
+            <div> Equipos visualizando &nbsp;
+                <span>
+                    <strong class="text-primary"> ({{ maquinasEscogidasDialog.length }}) </strong>
+                </span>
+            </div>
+            <ul class=" d-flex justify-content-start flex-wrap ">
+                <li *ngFor="let equipos of maquinasEscogidasDialog; let i = index; "
+                    style="list-style: none; min-width: 100px; max-width: 220px;"
+                    class="p-2 m-1 bg-primary text-light rounded-3 shadow-sm animate__animated animate__bounceIn animate__delay-1s ">
                     <div class="d-flex align-items-center justify-content-between flex-wrap" style="min-width: 100px; max-width: 200px;">
-                        <div class="mr-2" > <strong> {{ equipos.nserie }} </strong> <strong> ( {{ equipos.longitud }} ) </strong> </div>
+                        <div class="mr-2 d-flex align-items-center" >
+                            <strong> {{ equipos.nserie }} </strong> &nbsp;
+                            <span>
+                                <strong  *ngIf="equipos.longitud > 0" class="animate__animated animate__bounceIn" > ( {{ equipos.longitud }} ) </strong>
+                                <span class="loaderx"  *ngIf="equipos.longitud == 0 || equipos.longitud == undefined || equipos.longitud == null"></span>
+                            </span>
+                        </div>
                         <div [style]="'background-image: url( '+delete+' )' " (click)="eliminarEquiposDeReporteria(equipos, i)" class="icono-btn" ></div>
                     </div>
                 </li>

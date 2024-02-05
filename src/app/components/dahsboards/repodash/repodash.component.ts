@@ -306,8 +306,8 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
 
   private MtransHub(data:any) {
 
-    // console.warn(' REPODASH MANUAL HUB ')
-    // console.warn(data)
+    console.warn(' REPODASH MANUAL HUB ')
+    console.warn(data[0].machineSn);
 
     /** ============================================= */
     /**Actualizar variable de entorno INICIO */
@@ -315,8 +315,11 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     let vent:number = Number(localStorage.getItem('valor_validador'));
     let totalNormal: number = data[2][0].total;
     // console.warn( vent + totalNormal )
-    let sumNormal: number = vent + totalNormal;
-    localStorage.setItem('valor_validador', sumNormal.toFixed(2).toString());
+    let xmachine:any = localStorage.getItem('equipoMonitoreando');
+    if( xmachine === data[0].machineSn ) {
+      let sumNormal: number = vent + totalNormal;
+      localStorage.setItem('valor_validador', sumNormal.toFixed(2).toString());
+    }
     /** FIN */
     /** ============================================= */
 
@@ -445,13 +448,18 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     console.warn('RECOL DATA TRANS HUB');
     console.warn(data);
     const zero = 0;
-    localStorage.setItem('valor_validador', zero.toString());
-    if ( this.nserie == data[0].machineSn ) {
-      this.totalBilletesCantidadT   = 0;
-      this.totalBilletesMontoT      = 0;
-      this.totalBilletesCantidadM   = 0;
-      this.totalBilletesMontoM      = 0;
+
+    let xmachine:any = localStorage.getItem('equipoMonitoreando');
+    if( xmachine === data[0].machineSn ) {
+      localStorage.setItem('valor_validador', zero.toString());
+      if ( this.nserie == data[0].machineSn ) {
+        this.totalBilletesCantidadT   = 0;
+        this.totalBilletesMontoT      = 0;
+        this.totalBilletesCantidadM   = 0;
+        this.totalBilletesMontoM      = 0;
+      }
     }
+
 
     this.EmitRecolTransHub        = data[1];
     this.machSerie                = data[0].machineSn;
@@ -492,14 +500,22 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     console.warn('data');
     console.table(data);
 
+
+
     /** ============================================= */
     /** INICIO */
 
     let vent:number = Number(localStorage.getItem('valor_validador'));
     let totalNormal: number = data[1][0].total;
     console.warn( vent + totalNormal )
-    let sumNormal: number = vent + totalNormal;
-    localStorage.setItem('valor_validador', sumNormal.toFixed(2).toString());
+    let xmachine:any = localStorage.getItem('equipoMonitoreando');
+    if( xmachine === data[0].machineSn ) {
+      let sumNormal: number = vent + totalNormal;
+      localStorage.setItem('valor_validador', sumNormal.toFixed(2).toString());
+    }
+
+    // let sumNormal: number = vent + totalNormal;
+    // localStorage.setItem('valor_validador', sumNormal.toFixed(2).toString());
 
     /** FIN */
     /** ============================================= */
@@ -763,6 +779,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
 
     this._show_spinner = true;
     this.nserie = data.serieEquipo;
+    localStorage.setItem('equipoMonitoreando', this.nserie);
     this.listaDetalleequipoManual = [];
     this.listaDetalleequipoTransa = [];
     this.showCuadre = true;

@@ -33,6 +33,8 @@ export class ModalDataEquiposComponent implements OnInit {
       console.log(this.data.acreditado);
       this.obtenerEquiposTran();
       this.result = this.data.equiposExistentes;
+      console.log('this.result');
+      console.log(this.result);
     }
 
     obtenerEquiposTran() {
@@ -50,35 +52,80 @@ export class ModalDataEquiposComponent implements OnInit {
         {
           next: (equipo) => {
             this.listaEsquipoGhost = equipo;
+            console.log(this.listaEsquipoGhost);
+            console.log(this.data.codigocliente);
           },
           error:    (e) => {
             console.error(e);
           },
           complete: ()  => {
 
-            if( (this.data.codigocliente != null || this.data.codigocliente != undefined ) && this.data.codigoTienda == null) {
+            if( this.data.codigocliente != null || this.data.codigocliente != undefined ) {
               this.listaEsquipoGhost.filter( (element:any) => {
-                if( element.idCliente == this.data.codigocliente ) this.listaEsquipo.push(element);
-              })
-            }
-  
-            else if ( this.data.codigoTienda != null || this.data.codigoTienda != undefined ) {
-              this.listaEsquipoGhost.filter( (element:any) => {
-                if( element.codigoTiendaidFk == this.data.codigoTienda ) this.listaEsquipo.push(element);
+                // if( element.idCliente !== null || element.idCliente !== undefined ) {
+                  if( element.idCliente == this.data.codigocliente ) {
+                    if (this.data.equiposExistentes == null || this.data.equiposExistentes.length == 0 ) {
+                      this.listaEsquipo.push(element);
+                    }
+                    else if ( this.data.equiposExistentes.length > 0 ) {
+                      this.listaEsquipo = []
+                      this.result.filter( (j:any) => {
+                        if( j.nserie !== element.machine_Sn ) {
+                          console.log(j.nserie);
+                          console.log(element);
+                          this.listaEsquipo.push(element);
+                        }
+                      });
+
+
+                      // this.listaEsquipoGhost.filter( (j:any) => {
+                      //   console.log(j)
+                      // })
+
+                      // this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => {
+                      //   return !this.result.some( (j:any) => j.nserie === x.machine_Sn && x.idCliente == 34 );
+                      // });
+                    }
+                  } 
+
+                  // else {
+                  //   console.log('2')
+                  //   if( element.idCliente == this.data.codigocliente ) {
+                  //     this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => {
+                  //       return !this.result.some( (element:any) => element.nserie === x.machine_Sn );
+                  //     });
+                  //   }
+                  // }
+                  // else {
+                  //   alert('53')
+                  //   if (this.data.equiposExistentes == null || this.data.equiposExistentes.length == 0 ) {
+                  //     // alert('63')
+                  //     this.listaEsquipo = this.listaEsquipoGhost;
+                  //   } else {
+                  //     alert('73')
+                  //     this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => {
+                  //       return !this.result.some((element:any) => element.nserie === x.machine_Sn);
+                  //     });
+                  //   }
+                  // }
+                // }
               })
             }
   
             else {
+              // alert('Sin cliente 1')
               if (this.data.equiposExistentes == null || this.data.equiposExistentes.length == 0 ) {
+                // alert('Sin cliente 2')
                 this.listaEsquipo = this.listaEsquipoGhost;
               } else {
+                // alert('Sin cliente 3')
                 this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => {
                   return !this.result.some((element:any) => element.nserie === x.machine_Sn);
                 });
               }
             }
 
-            this.listaEsquipo.filter( (element:any) => {
+            this.listaEsquipo.filter( ( element:any ) => {
               if( element.conteo_A == null ) {
                 element.conteo_A = 0;
               }

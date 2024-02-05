@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ClientesService } from '../../dahsboards/cliente/services/clientes.service';
 import { TiendaService } from '../../dahsboards/tienda/services/tienda.service';
@@ -42,6 +42,7 @@ export class ModeldataComponent implements OnInit {
 
   @Output() moduleChange: EventEmitter<any> = new EventEmitter<any>();
 
+  disbutton_obtener: boolean = false;
   totalSubstract: number = 0;
   _cancel_button: boolean = false;
   barprogress: boolean = false;
@@ -416,7 +417,7 @@ export class ModeldataComponent implements OnInit {
       this.exportdateform.controls['acreditada'].enable();
       setTimeout(() => {
         this.limpiar();
-      }, 1000);
+      }, 3000);
     });
 
   }
@@ -466,9 +467,13 @@ export class ModeldataComponent implements OnInit {
             if( this.porcentaje == 100 ) {
               this._show_spinner = true;
               setTimeout(() => {
+     
+     
+     
+     
                 this._show_spinner = false;
                 this.moduleChange.emit(true);
-              }, 1000);
+              }, 2000);
             }
 
           });
@@ -476,6 +481,71 @@ export class ModeldataComponent implements OnInit {
     }
   }
 
+  @ViewChild('dateini') dateini: ElementRef | undefined;
+  @ViewChild('datefin') datefin: ElementRef | undefined;
+  @ViewChild('horaini') horaini: ElementRef | undefined;
+  @ViewChild('horafin') horafin: ElementRef | undefined;
+  validateExistDate() {
+    const dateiniValue = this.dateini?.nativeElement.value;
+    const datefinValue = this.datefin?.nativeElement.value;
+
+
+    if (dateiniValue && datefinValue) {
+      if (dateiniValue > datefinValue) {
+        Swal.fire({
+          // title: "Es en serio?",
+          text: "La fecha inicial no puede ser mayor a la fecha final.",
+          icon: "question"
+        });
+        this.datefin!.nativeElement.value = dateiniValue;
+      } else if (datefinValue < dateiniValue) {
+        Swal.fire({
+          // title: "Es en serio?",
+          text: "La fecha final no puede ser menor a la fecha inicial.",
+          icon: "question"
+        });
+        this.dateini!.nativeElement.value = datefinValue;
+      }
+
+      this.validateDataExistDate();
+
+    }
+  }
+
+
+  validateTime() {
+
+    // console.log('validando')
+
+    const dateiniValue = this.dateini?.nativeElement.value;
+    const datefinValue = this.datefin?.nativeElement.value;
+    const horainiValue = this.horaini?.nativeElement.value;
+    const horafinValue = this.horafin?.nativeElement.value;
+
+    // console.log(dateiniValue)
+    // console.log(datefinValue)
+    // console.log(horainiValue)
+    // console.log(horafinValue)
+
+    if ( dateiniValue == datefinValue ) {
+
+      if( horainiValue > horafinValue ) {
+        Swal.fire({
+          // title: "Es en serio?",
+          text: "La hora inicial no puede ser mayor a la hora final.",
+          icon: "question"
+        });
+      } else if ( datefinValue < dateiniValue ) {
+        Swal.fire({
+          // title: "Es en serio?",
+          text: "La hora final no puede ser menor a la hora inicial.",
+          icon: "question"
+        });
+      }
+
+    }
+
+  }
 
   eliminarEquiposDeReporteria(equipos:any, i:any) {    
     this.maquinasEscogidasDialog.splice(i, 1);
@@ -550,7 +620,8 @@ export class ModeldataComponent implements OnInit {
       
       if( result ) {
         this.exportdateform.controls['acreditada'].disable();
-        this._cancel_button = true;
+        this._cancel_button    = true;
+        this.disbutton_obtener = true;
         if( this.maquinasEscogidasDialog.length == 0 ) {
           this.maquinasEscogidasDialog = result; 
         }
@@ -661,23 +732,26 @@ export class ModeldataComponent implements OnInit {
 
   }
 
-  obtenerTiendas() { this.tiendalista = [];
+  obtenerTiendas() {    
+    this.tiendalista      = [];
     this.tiendaListaGhost = [];
     this.tiendaservs.obtenerTiendas().subscribe({
       next: (tienda) => {
         this.tiendaListaGhost = tienda;
       }, complete: () => {
-        this.obtenerIDCLiente();
-        this.tiendaListaGhost.filter((element:any) => {
-          if( element.codigoClienteidFk == this.idcliente ) {
-            this.tiendalista.push(element);
-          }
-        })
+          this.obtenerIDCLiente();
+          this.tiendaListaGhost.filter( ( element:any ) => {
+            if( element.codigoClienteidFk == this.idcliente ) {
+              this.tiendalista.push(element);
+            }
+          })
+        }
       }
-    })
+    )
   }
 
-  menuAction() { this.items = [{
+  menuAction() { 
+    this.items = [{
         label: 'Opciones',
         items: [
             {
@@ -689,20 +763,12 @@ export class ModeldataComponent implements OnInit {
             },
             {
                 label: 'Colores por transacciones',
-                // icon: 'pi pi-times',
-                command: () => {
+                  // icon: 'pi pi-times',
+                  command: () => {
                   this.colorguia = !this.colorguia;
                   this.changeColorsTransac();
                 }
-            },
-            {
-              label: 'Colores por acreditación',
-              // icon: 'pi pi-times',
-              command: () => {
-                this.colorguia = !this.colorguia;
-                this.changeColorsAcredit();
-              }
-          }
+            }
         ]}
     ];
   }
@@ -831,7 +897,13 @@ export class ModeldataComponent implements OnInit {
     this.dis_exp_excel = true;
     this.listaDataExportExcelNewFormat = [];
     this.cantidadTransacciones = 0;
-    this.transac.controls['recolecciones'].enable()
+    this.transac.controls['recolecciones'].enable();
+    this.exportdateform.controls['dateini'].enable();
+    this.exportdateform.controls['datefin'].enable();
+    this.exportdateform.controls['horaini'].enable();
+    this.exportdateform.controls['horafin'].enable();
+    this.exportdateform.controls['codigoClienteidFk'].enable();
+    this.disbutton_obtener = false;
   }
 
   obtenerTransacTabla() {
@@ -893,13 +965,15 @@ export class ModeldataComponent implements OnInit {
       case false:
           console.table(false);
           this.dataExportarExcel.filter((element: any) => {
-            element.transacciones = element.transacciones.filter( (x:any) => x.tipoTransaccion !== 'Recolección'  );
-            element.longitud = element.transacciones.length;
-            element.transacciones.filter((y:any) => {
-              if( y.total == null || y.total == undefined ) y.total = 0;
-              this.cantidadTransacciones += y.total;
-            })
-            this.sumatoriaTransacciones += element.longitud;
+            if( element.transacciones != null || element.transacciones != undefined ) {
+              element.transacciones = element.transacciones.filter( (x:any) => x.tipoTransaccion !== 'Recolección'  );
+              element.longitud = element.transacciones.length;
+              element.transacciones.filter((y:any) => {
+                if( y.total == null || y.total == undefined ) y.total = 0;
+                this.cantidadTransacciones += y.total;
+              })
+              this.sumatoriaTransacciones += element.longitud;
+            }
           });
           this.transac.controls['recolecciones'].disable()
           break;
@@ -920,7 +994,15 @@ export class ModeldataComponent implements OnInit {
 
       }
 
-    if( this.sumatoriaTransacciones > 0 ) this.dis_exp_excel = false;
+    if( this.sumatoriaTransacciones > 0 ) {
+      this.dis_exp_excel = false;
+      this.exportdateform.controls['dateini'].disable();
+      this.exportdateform.controls['datefin'].disable();
+      this.exportdateform.controls['horaini'].disable();
+      this.exportdateform.controls['horafin'].disable();
+      this.exportdateform.controls['codigoClienteidFk'].disable();
+      
+    }
 
   }
   
@@ -951,9 +1033,7 @@ export class ModeldataComponent implements OnInit {
 
   }
 
-  changeColorsAcredit() {
 
-  }
 
   respladoDataTran() {
     this._show_spinner = true;
