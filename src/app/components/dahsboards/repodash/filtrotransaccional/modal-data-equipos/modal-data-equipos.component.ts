@@ -52,73 +52,28 @@ export class ModalDataEquiposComponent implements OnInit {
         {
           next: (equipo) => {
             this.listaEsquipoGhost = equipo;
-            //console.log(this.listaEsquipoGhost);
+            console.log(this.listaEsquipoGhost);
             //console.log(this.data.codigocliente);
           },
-          error:    (e) => {
+          error: (e) => {
             console.error(e);
           },
           complete: ()  => {
-
-            if( this.data.codigocliente != null || this.data.codigocliente != undefined ) {
-              this.listaEsquipoGhost.filter( (element:any) => {
-                // if( element.idCliente !== null || element.idCliente !== undefined ) {
-                  if( element.idCliente == this.data.codigocliente ) {
-                    if (this.data.equiposExistentes == null || this.data.equiposExistentes.length == 0 ) {
-                      this.listaEsquipo.push(element);
-                    }
-                    else if ( this.data.equiposExistentes.length > 0 ) {
-                      this.listaEsquipo = []
-                      this.result.filter( (j:any) => {
-                        if( j.nserie !== element.machine_Sn ) {
-                          //console.log(j.nserie);
-                          //console.log(element);
-                          this.listaEsquipo.push(element);
-                        }
-                      });
-
-
-                      // this.listaEsquipoGhost.filter( (j:any) => {
-                      //   //console.log(j)
-                      // })
-
-                      // this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => {
-                      //   return !this.result.some( (j:any) => j.nserie === x.machine_Sn && x.idCliente == 34 );
-                      // });
-                    }
-                  } 
-
-                  // else {
-                  //   //console.log('2')
-                  //   if( element.idCliente == this.data.codigocliente ) {
-                  //     this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => {
-                  //       return !this.result.some( (element:any) => element.nserie === x.machine_Sn );
-                  //     });
-                  //   }
-                  // }
-                  // else {
-                  //   alert('53')
-                  //   if (this.data.equiposExistentes == null || this.data.equiposExistentes.length == 0 ) {
-                  //     // alert('63')
-                  //     this.listaEsquipo = this.listaEsquipoGhost;
-                  //   } else {
-                  //     alert('73')
-                  //     this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => {
-                  //       return !this.result.some((element:any) => element.nserie === x.machine_Sn);
-                  //     });
-                  //   }
-                  // }
-                // }
-              })
-            }
-  
-            else {
-              // alert('Sin cliente 1')
+            /** Reparando esta sección */            
+            if (this.data.codigocliente !== null && this.data.codigocliente !== undefined) {
               if (this.data.equiposExistentes == null || this.data.equiposExistentes.length == 0 ) {
-                // alert('Sin cliente 2')
+                this.listaEsquipo = this.listaEsquipoGhost.filter((equiposCliente: any) => equiposCliente.idCliente === this.data.codigocliente);
+              } else {
+                this.listaEsquipo = this.listaEsquipoGhost.filter( (equiposCliente:any) =>  equiposCliente.idCliente === this.data.codigocliente && equiposCliente.machine_Sn);
+                this.listaEsquipo = this.listaEsquipo.filter( (x:any) => {
+                  return !this.result.some((element:any) => element.nserie === x.machine_Sn);
+                });
+              }
+            }  
+            else {
+              if (this.data.equiposExistentes == null || this.data.equiposExistentes.length == 0 ) {
                 this.listaEsquipo = this.listaEsquipoGhost;
               } else {
-                // alert('Sin cliente 3')
                 this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => {
                   return !this.result.some((element:any) => element.nserie === x.machine_Sn);
                 });
