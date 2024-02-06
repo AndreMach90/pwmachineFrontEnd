@@ -440,23 +440,23 @@ export class ModeldataComponent implements OnInit {
       });
     });
   
-    // let dateData = new Date();
-    // let tokenDocs: any = this.tokenGen.generateRandomString(5).replace(' ', '_');
-    // let nombreArchivo: any = 'Transacciones_' + dateData.getDate() + '-' + (dateData.getMonth() + 1) + '-' + dateData.getFullYear() + 'T' + dateData.getHours() + 'H' + dateData.getMinutes() + 'm' + '_' + tokenDocs + '.xlsx';
-    // this.transPush(nombreArchivo);
-    // workbook.xlsx.writeBuffer().then((buffer) => {
-    //   const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    //   const url = window.URL.createObjectURL(blob);
-    //   const a = document.createElement('a');
-    //   a.href = url;
-    //   a.download = nombreArchivo;
-    //   a.click();
-    //   window.URL.revokeObjectURL(url);
-    //   this.exportdateform.controls['acreditada'].enable();
-    //   setTimeout(() => {
-    //     this.limpiar();
-    //   }, 1000);
-    // });
+    let dateData = new Date();
+    let tokenDocs: any = this.tokenGen.generateRandomString(5).replace(' ', '_');
+    let nombreArchivo: any = 'Transacciones_' + dateData.getDate() + '-' + (dateData.getMonth() + 1) + '-' + dateData.getFullYear() + 'T' + dateData.getHours() + 'H' + dateData.getMinutes() + 'm' + '_' + tokenDocs + '.xlsx';
+    this.transPush(nombreArchivo);
+    workbook.xlsx.writeBuffer().then((buffer) => {
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = nombreArchivo;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      this.exportdateform.controls['acreditada'].enable();
+      setTimeout(() => {
+        this.limpiar();
+      }, 1000);
+    });
 
   }
 
