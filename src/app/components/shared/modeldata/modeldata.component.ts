@@ -190,7 +190,11 @@ export class ModeldataComponent implements OnInit {
     let $025:  number = 0;
     let $050:  number = 0;
     let $0100: number = 0;
-    this.dataExportarExcel.forEach( (equipo: any) => {      
+    this.dataExportarExcel.forEach( (equipo: any) => {    
+
+      console.log('Data a punto de exportar a excel');
+      console.log(equipo);
+
       const transaccionesTransformadas = equipo.transacciones.map( ( elementTra: any ) => {
         return {
           "F.Transacciones":       new Date(elementTra.fechaTransaccion),
@@ -230,13 +234,15 @@ export class ModeldataComponent implements OnInit {
           "fechaRecoleccion":      elementTra.fechaRecoleccion,
         };
       });
-  
+
       // Añade la información transformada al nuevo objeto
       this.listaDataExportExcelNewFormat.push({
         ...equipo,
         transacciones: transaccionesTransformadas
       });      
+
     });
+
     const worksheet = workbook.addWorksheet('TodasTransacciones');
     this.listaDataExportExcelNewFormat.forEach((equipo: any) => {
       // const worksheet = workbook.addWorksheet(`Transacciones_${equipo.nserie}`); 
@@ -260,9 +266,6 @@ export class ModeldataComponent implements OnInit {
             let x = cellValue.toString();
             let y = x.replace(',', '');
             let j = Number(y);
-            // if (columnIndex === 26) {
-            //     j = 777;
-            // }
             row.push(Number(j));
         } else {
             row.push(cellValue);
@@ -348,6 +351,41 @@ export class ModeldataComponent implements OnInit {
                     },
           };
         }
+
+        const saldoRow = worksheet.addRow(
+          [datenow, timenow, clientes,tiendas,'   ***   ',
+           equipos,usuario,establecimiento,codestablecimiento,
+           '    ','    ','    ', '',
+           '', '', '', '', '', '',
+           '','','','','',
+           '', equipo.saldo, 'saldo']);
+
+           for (let col = 1; col <= 27; col++) {
+            saldoRow.getCell( col ).fill = {
+                  type: 'pattern',
+                  pattern: 'solid',
+                  fgColor: { argb: 'EFFFDC' },
+              };
+              saldoRow.getCell(col).border = {
+                top:    {
+                          style: 'thin',
+                          color: { argb: '000000' }
+                        },
+                left:   {
+                          style: 'thin',
+                          color: { argb: '000000' }
+                        },
+                bottom: { 
+                          style: 'thin',
+                          color: { argb: '000000' }
+                        },
+                right:  { 
+                          style: 'thin',
+                          color: { argb: '000000' }
+                        },
+              };
+            }
+
       }
     });
   
@@ -417,10 +455,12 @@ export class ModeldataComponent implements OnInit {
       this.exportdateform.controls['acreditada'].enable();
       setTimeout(() => {
         this.limpiar();
-      }, 3000);
+      }, 1000);
     });
 
   }
+
+
 
   transPush(nombreArchivo: any) {
     if (this.exportdateform.controls['acreditada'].value) {
