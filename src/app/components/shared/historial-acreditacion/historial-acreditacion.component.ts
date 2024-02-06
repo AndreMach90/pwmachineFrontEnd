@@ -65,7 +65,7 @@ export class HistorialAcreditacionComponent implements OnInit {
   obtenerPreAcreditacion() {
     this.hcred.obtenerPreAcreditacion().subscribe((x:any)=>{
       this.listaAcreditadas = x;
-      console.warn(this.listaAcreditadas);
+      //console.warn(this.listaAcreditadas);
     })
   }
 
@@ -84,8 +84,8 @@ export class HistorialAcreditacionComponent implements OnInit {
     this.hcred.obtenerEquiposAcreditados( data.nombreArchivo ).subscribe({
       next: (x) => {
         this.dataExportarExcel = x;
-        console.log('this.dataExportarExcel');
-        console.log( this.dataExportarExcel );
+        //console.log('this.dataExportarExcel');
+        //console.log( this.dataExportarExcel );
       }, complete: () => {
         this.obtenerTransaccionesEquipos(data.nombreArchivo);
       }
@@ -98,7 +98,7 @@ export class HistorialAcreditacionComponent implements OnInit {
   //     next: (y:any) => {
   //       this.transaccionesModel = [];
   //       this.dataExportarExcel.filter( (element:any) => {
-  //         // console.log(element.machineSn);
+  //         // //console.log(element.machineSn);
   //         y.filter( (elementTra:any) => {
   //           let arr = {
   //             "F.Transacciones":       new Date(elementTra.fechaTransaccion),
@@ -146,9 +146,9 @@ export class HistorialAcreditacionComponent implements OnInit {
   //         })
   //       })         
         
-  //       console.log('==========================');
-  //       console.log(this.dataExportarExcel);
-  //       console.log('==========================');
+  //       //console.log('==========================');
+  //       //console.log(this.dataExportarExcel);
+  //       //console.log('==========================');
 
   //     }
   //   })
@@ -215,9 +215,9 @@ export class HistorialAcreditacionComponent implements OnInit {
             return 0;
           });
         });  
-        // console.log('==========================');
-        // console.log(this.dataExportarExcel);
-        // console.log('==========================');
+        // //console.log('==========================');
+        // //console.log(this.dataExportarExcel);
+        // //console.log('==========================');
       }, complete: () => {
         this.exportarExcel(nombreArchivo);
       }, error: (e) => {
@@ -238,14 +238,17 @@ export class HistorialAcreditacionComponent implements OnInit {
       cancelButtonText:   "No a creditar todabía"
     }).then((result) => {
       if (result.isConfirmed) {
+        this._show_spinner = true;
         this.hcred.actualizarEquiposAcreditados(data.nombreArchivo).subscribe({
           next: (x) => {
             Toast.fire({ icon: 'success', title: 'Las transacciones han cambiado de estado a acreditado.', position: 'center' });
           }, error: (e) => {
             Toast.fire({ icon: 'error', title: 'Algo ha ocurrido, y no se ha podido actualizar.' });
+            this._show_spinner = false;
             console.error(e);
           }, complete: () => {
             this.listaAcreditadas.splice(i,1);
+            this._show_spinner = false;
           }
         })
       }
@@ -452,8 +455,8 @@ export class HistorialAcreditacionComponent implements OnInit {
         setTimeout(() => {
           this.dataExportarExcel = [];
           this.dataExportarExcel = [];
-          console.log('this.dataExportarExcel limpiada!')
-          console.log(this.dataExportarExcel)
+          //console.log('this.dataExportarExcel limpiada!')
+          //console.log(this.dataExportarExcel)
         }, 1000);
       });
 
@@ -517,7 +520,7 @@ export class HistorialAcreditacionComponent implements OnInit {
       // Realiza la consulta con la nueva fecha
       this.hcred.obtenerAcreditadasTran(this.modelConsult).subscribe({
         next: (x) => {
-          console.log(x);
+          //console.log(x);
           this.listaAcreditadasOk = x;
         }
       });

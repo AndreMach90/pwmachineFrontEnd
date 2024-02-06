@@ -26,12 +26,12 @@ export class IndexedDbService {
           if (!result) {
             store.add(dato);
           }
-          //////console.warn(8)
+          ////////console.warn(8)
         }
       })
 
       transaction.oncomplete = () => {
-        ////console.log('Datos guardados en IndexedDB.');
+        //////console.log('Datos guardados en IndexedDB.');
       };
 
       transaction.onerror = (event:any) => {

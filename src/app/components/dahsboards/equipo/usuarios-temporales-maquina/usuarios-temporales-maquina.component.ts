@@ -49,7 +49,7 @@ export class UsuariosTemporalesMaquinaComponent implements OnInit {
     private sharedservs: ServicesSharedService, private eqipserv: EquipoService ) { }
     
   ngOnInit(): void {
-    //////console.warn(this.data);
+    ////////console.warn(this.data);
     this.obtenerUsuariosTemporales();
     this.obtenerCuentasTienda()
   }
@@ -74,7 +74,7 @@ export class UsuariosTemporalesMaquinaComponent implements OnInit {
         next: (x) => {
           this.listaUsuariosTemporales = x;
           this.listaUsuariosTemporalesGhost = x;
-          //////console.warn(this.listaUsuariosTemporales);
+          ////////console.warn(this.listaUsuariosTemporales);
         }, error: (e) => {
           console.error(e);
         }
@@ -168,10 +168,10 @@ closeDialog() {
 }
 
 eliminarUsuarioTemporal(id:number) {
-  //////console.warn(id);
+  ////////console.warn(id);
   this.eqipserv.eliminarUsuarioTemporal(id).subscribe({
     next: (x) => {
-      //////console.warn('Actualizado a F');
+      ////////console.warn('Actualizado a F');
     }, error: (e) => {
       console.error(e);
     },    

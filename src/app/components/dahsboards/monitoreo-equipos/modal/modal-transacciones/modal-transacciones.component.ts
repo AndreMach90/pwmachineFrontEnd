@@ -58,10 +58,10 @@ export class ModalTransaccionesComponent implements OnInit {
     this.endDate = new Date();
     // this.home = library.add(icon('shopware'));
 
-    //////console.warn ('MODAL');
-    //////console.warn (this.data);
+    ////////console.warn ('MODAL');
+    ////////console.warn (this.data);
 
-    //////console.warn ( this.excel )
+    ////////console.warn ( this.excel )
 
     this.primary        =  this.env.appTheme.colorPrimary;
     this.secondary      = this.env.appTheme.colorSecondary_C;
@@ -79,7 +79,7 @@ export class ModalTransaccionesComponent implements OnInit {
       next:( tran ) => {
         this.listaTransacciones = tran;
         this.listaTransaccionesGhost = tran;
-        //////console.warn(this.listaTransaccionesGhost);
+        ////////console.warn(this.listaTransaccionesGhost);
       }, error: (e) => {
         console.error(e);
       }, complete: () => {
@@ -231,7 +231,7 @@ export class ModalTransaccionesComponent implements OnInit {
     this.listaTransacciones.filter( (element:any) => {     
 
 
-      //////console.warn(element.manual_Deposito_Coin_10);
+      ////////console.warn(element.manual_Deposito_Coin_10);
       // if(element.manual_Deposito_Coin_10 == null) element.manual_Deposito_Coin_10 = 0;
  
         this.sumatoriaTotales += element.total; 

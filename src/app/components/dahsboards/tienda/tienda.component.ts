@@ -117,12 +117,12 @@ export class TiendaComponent implements OnInit {
     switch( this.calwidth ) {
       case true:
         this._width_table = 'tabledata table-responsive w-75 p-2';
-        //////console.warn(this._width_table);
+        ////////console.warn(this._width_table);
         this.calwidth = false;
         break;
       case false:        
         this._width_table = 'tabledata table-responsive w-100 p-2';
-        //////console.warn(this._width_table);
+        ////////console.warn(this._width_table);
         this.calwidth = true;
         break;
     }
@@ -503,7 +503,7 @@ export class TiendaComponent implements OnInit {
       }
     )
 
-    console.log(this.tipoAccion)
+    //console.log(this.tipoAccion)
 
     const dialogRef = this.dialog.open( ModalTiendaCuentaComponent, {
       height: 'auto',
@@ -558,7 +558,7 @@ export class TiendaComponent implements OnInit {
 
   eliminarCuentaTienda(data:any, id:number) {
 
-    console.log(this.tipoAccion);
+    //console.log(this.tipoAccion);
 
     if( this.tipoAccion == 0 ) {
       this.resultModal.splice( id, 1 );

@@ -78,7 +78,7 @@ export class ModalUsuariosTemporalesComponent implements OnInit {
           this.cuentaslista.filter((cuentas:any)=>{
             this.clienteserv.obtenerCuentaTransacCant(cuentas.id).subscribe({
               next: (x) => {
-                console.warn(x);
+                //console.warn(x);
                 cuentas.nTransac = Number(x);
                 if( cuentas.nTransac > 0 ) cuentas.delete = false;
                 else cuentas.delete = true;
@@ -86,18 +86,18 @@ export class ModalUsuariosTemporalesComponent implements OnInit {
             })
           });
 
-          console.log('this.cuentaslista');
-          console.table(this.cuentaslista);
+          //console.log('this.cuentaslista');
+          //console.table(this.cuentaslista);
 
         }
       }) 
     }
 
     obtenerCuentaTransac(data:any) {
-      console.log(data)
+      //console.log(data)
       this.clienteserv.obtenerCuentaTransacCant(data.id).subscribe({
         next: (x) => {
-          console.warn(x);
+          //console.warn(x);
         }
       })
     }
@@ -110,7 +110,7 @@ export class ModalUsuariosTemporalesComponent implements OnInit {
                       .subscribe({
         next: (cliente) => {
           this.clienteListaGhost = cliente;
-          // //////console.warn(this.clienteListaGhost);
+          // ////////console.warn(this.clienteListaGhost);
           this._show_spinner = false;
         }, error: (e) => {
           this._show_spinner = false;
@@ -118,7 +118,7 @@ export class ModalUsuariosTemporalesComponent implements OnInit {
         }, complete: () => {
           this.clienteListaGhost.filter((element:any)=>{
   
-            //////console.warn(element)
+            ////////console.warn(element)
   
             let arr: any = {
               "id": element.id,
@@ -133,7 +133,7 @@ export class ModalUsuariosTemporalesComponent implements OnInit {
             }
   
             this.clientelista.unshift(arr);
-            // //////console.warn(this.clientelista);
+            // ////////console.warn(this.clientelista);
   
           })
         }

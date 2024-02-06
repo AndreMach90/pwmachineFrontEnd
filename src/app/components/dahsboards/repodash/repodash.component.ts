@@ -306,15 +306,15 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
 
   private MtransHub(data:any) {
 
-    console.warn(' REPODASH MANUAL HUB ')
-    console.warn(data[0].machineSn);
+    //console.warn(' REPODASH MANUAL HUB ')
+    //console.warn(data[0].machineSn);
 
     /** ============================================= */
     /**Actualizar variable de entorno INICIO */
 
     let vent:number = Number(localStorage.getItem('valor_validador'));
     let totalNormal: number = data[2][0].total;
-    // console.warn( vent + totalNormal )
+    // //console.warn( vent + totalNormal )
     let xmachine:any = localStorage.getItem('equipoMonitoreando');
     if( xmachine === data[0].machineSn ) {
       let sumNormal: number = vent + totalNormal;
@@ -445,8 +445,8 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   EmitRecolTransHub: any = [];
   private RecoTransHub(data:any) {
 
-    console.warn('RECOL DATA TRANS HUB');
-    console.warn(data);
+    //console.warn('RECOL DATA TRANS HUB');
+    //console.warn(data);
     const zero = 0;
 
     let xmachine:any = localStorage.getItem('equipoMonitoreando');
@@ -497,8 +497,8 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   
   private AuTransHub(data:any) {
 
-    console.warn('data');
-    console.table(data);
+    //console.warn('data');
+    //console.table(data);
 
 
 
@@ -507,7 +507,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
 
     let vent:number = Number(localStorage.getItem('valor_validador'));
     let totalNormal: number = data[1][0].total;
-    console.warn( vent + totalNormal )
+    //console.warn( vent + totalNormal )
     let xmachine:any = localStorage.getItem('equipoMonitoreando');
     if( xmachine === data[0].machineSn ) {
       let sumNormal: number = vent + totalNormal;
@@ -608,7 +608,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   tipoFiltro:any;
   recibirTipoFiltro(tipo: any) {
     this.tipoFiltro = tipo;
-    console.log('Transmitiendo tipo filtro: ' + this.tipoFiltro);
+    //console.log('Transmitiendo tipo filtro: ' + this.tipoFiltro);
   }
 
   minimizebox() {
@@ -683,7 +683,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
       // item.nombremarca .toLowerCase().includes(this.filterequip.toLowerCase()) ||
       // item.nombremodelo.toLowerCase().includes(this.filterequip.toLowerCase()) ||
       // item.tipoMaquinaria.toLowerCase().includes(this.filterequip.toLowerCase())
-      // console.log(item)
+      // //console.log(item)
     )
   }
 
@@ -723,7 +723,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
             elementEq.indicadorPorcentajeBilletes          = Number(((elementEq.indicadorCapacidadBilletes / elementEq.indicadorCapacidadBilletesMax ) * 100).toFixed(2));
             elementEq.indicadorPorcentajeTotalMaxAsegurado = Number(((elementEq.indicadorTotalAsegurado / elementEq.indicadorTotalMaxAsegurado) * 100).toFixed(2));
             elementEq.indicadorColorBarProgressBilletes    = "bg-success text-light";
-            // ////console.warn(elementEq.indicadorPorcentajeBilletes );
+            // //////console.warn(elementEq.indicadorPorcentajeBilletes );
             if( element.estadoPing == 1 ) {
               elementEq.colorEsstado = '#DAEFE6';
               elementEq.colorTexto = 'text-success';
@@ -746,12 +746,12 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
             }
             else if ( elementEq.indicadorPorcentajeBilletes >= 80 && elementEq.indicadorPorcentajeBilletes <= 90 ) {
               elementEq.indicadorColorBarProgressBilletes = "bg-warning text-dark";
-              ////console.warn(elementEq.indicadorPorcentajeBilletes)
+              //////console.warn(elementEq.indicadorPorcentajeBilletes)
               // this.controlAlerts( 'Capacidad de Piezas del equipo', 'A punto de alcanzar el límite de piezas del equipo, ' + elementEq.serieEquipo, 'orange', 'dark', elementEq.serieEquipo );
             }
             else if ( elementEq.indicadorPorcentajeBilletes > 90 ) {
               elementEq.indicadorColorBarProgressBilletes = "bg-danger text-light";
-              ////console.warn(elementEq.indicadorPorcentajeBilletes)
+              //////console.warn(elementEq.indicadorPorcentajeBilletes)
               // this.controlAlerts( 'Capacidad de Piezas del equipo', 'Haz alcanzado el límite de piezas del equipo, ' + elementEq.serieEquipo, 'orangered', 'whitesmoke', elementEq.serieEquipo );
             }
             if ( elementEq.indicadorPorcentajeTotalMaxAsegurado < 80 ) {
@@ -789,8 +789,8 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
       next:(x) => {
         this.primaryLista = x;
 
-        console.warn('ESTO PASA EN MONITOREAR')
-        console.warn(this.primaryLista)
+        //console.warn('ESTO PASA EN MONITOREAR')
+        //console.warn(this.primaryLista)
 
         if ( this.nserie == this.primaryLista[0].machine_Sn ) 
         { 
@@ -874,9 +874,9 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     setTimeout(() => {    
       let xvalue: any = localStorage.getItem('valor_validador');      
       if( Number(xvalue) !== Number(sumatoriaValidate) ) {
-        console.warn('sumatoriaValidate');
-        console.warn(sumatoriaValidate);
-        console.warn(Number(xvalue));
+        //console.warn('sumatoriaValidate');
+        //console.warn(sumatoriaValidate);
+        //console.warn(Number(xvalue));
         this.colorValidateCuadre = 'red';
       }
       else {

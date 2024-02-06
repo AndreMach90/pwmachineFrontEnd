@@ -146,7 +146,7 @@ export class ModeldataComponent implements OnInit {
   onSubmitDate() {}
 
   submitTransacFilter() {
-    console.log(this.transac.value);
+    //console.log(this.transac.value);
   }
 
   validateSesion() {
@@ -455,7 +455,7 @@ export class ModeldataComponent implements OnInit {
             takeWhile(() => this.countTransaction < totalTransacciones),
             finalize(() => {
               this.countTransaction = totalTransacciones;
-              // console.log('Intervalo detenido');
+              // //console.log('Intervalo detenido');
               // Paso 3: Ejecutar la función guardarTransaccionesAc
               this.guardarTransaccionesAc(this.tran);
             })
@@ -515,17 +515,17 @@ export class ModeldataComponent implements OnInit {
 
   validateTime() {
 
-    // console.log('validando')
+    // //console.log('validando')
 
     const dateiniValue = this.dateini?.nativeElement.value;
     const datefinValue = this.datefin?.nativeElement.value;
     const horainiValue = this.horaini?.nativeElement.value;
     const horafinValue = this.horafin?.nativeElement.value;
 
-    // console.log(dateiniValue)
-    // console.log(datefinValue)
-    // console.log(horainiValue)
-    // console.log(horafinValue)
+    // //console.log(dateiniValue)
+    // //console.log(datefinValue)
+    // //console.log(horainiValue)
+    // //console.log(horafinValue)
 
     if ( dateiniValue == datefinValue ) {
 
@@ -619,17 +619,22 @@ export class ModeldataComponent implements OnInit {
     dialogRef.afterClosed().subscribe( (result:any) => {
       
       if( result ) {
+        
         this.exportdateform.controls['acreditada'].disable();
+        
         this._cancel_button    = true;
         this.disbutton_obtener = true;
+
         if( this.maquinasEscogidasDialog.length == 0 ) {
           this.maquinasEscogidasDialog = result; 
         }
 
         else {
+          
           result.filter( (equipos: any) => {
-            this.maquinasEscogidasDialog.push(equipos);  
+            this.maquinasEscogidasDialog.push(equipos);
           })
+
         }
 
         this.maquinasEscogidasDialog.filter( ( element:any ) => {
@@ -723,7 +728,7 @@ export class ModeldataComponent implements OnInit {
   obtenerIDCLiente() {
 
     if ( this.exportdateform.controls['codigoClienteidFk'].value == undefined || this.exportdateform.controls['codigoClienteidFk'].value == null ) {
-      console.warn('No hay un id');
+      //console.warn('No hay un id');
       this.idcliente = this.clientelista[0].id;
     }
     else {
@@ -854,9 +859,9 @@ export class ModeldataComponent implements OnInit {
         break;
     }
 
-    console.warn(this.dataExportarExcel);
-    console.warn('Recolecciones recuperadas');
-    console.warn(this.transaccionesRecolecciones);
+    //console.warn(this.dataExportarExcel);
+    //console.warn('Recolecciones recuperadas');
+    //console.warn(this.transaccionesRecolecciones);
     this.sumatoriaTotalTransacciones();
 
   }
@@ -866,7 +871,7 @@ export class ModeldataComponent implements OnInit {
     this.conttransaccion = true;
     this.transacciones.GuardarTransaccionesAcreditadas(model).subscribe({
        next: (x) => {
-         console.warn('GUARDADO!');
+         //console.warn('GUARDADO!');
          Toast.fire({ icon: 'success', title: 'Transacciones generadas, en espera de acreditación ', position: 'center' });
        },
        error: (e) => {
@@ -951,7 +956,7 @@ export class ModeldataComponent implements OnInit {
     this.transacciones.ObtenerEquiposSaldo(machineSn).subscribe({
       next: (x) => {
         this.modelDataSaldo = x;
-        console.log(this.modelDataSaldo);
+        //console.log(this.modelDataSaldo);
       }
     })
   }
@@ -960,10 +965,10 @@ export class ModeldataComponent implements OnInit {
   sumatoriaTotalTransacciones() {
     this.cantidadTransacciones  = 0;
     this.sumatoriaTransacciones = 0;
-    // console.log(this.transac.controls['recolecciones'].value)
+    // //console.log(this.transac.controls['recolecciones'].value)
     switch(this.transac.controls['recolecciones'].value) {
       case false:
-          console.table(false);
+          //console.table(false);
           this.dataExportarExcel.filter((element: any) => {
             if( element.transacciones != null || element.transacciones != undefined ) {
               element.transacciones = element.transacciones.filter( (x:any) => x.tipoTransaccion !== 'Recolección'  );
@@ -978,17 +983,17 @@ export class ModeldataComponent implements OnInit {
           this.transac.controls['recolecciones'].disable()
           break;
         case true:
-          console.table(true);
+          //console.table(true);
           this.dataExportarExcel.filter((element: any) => {
           element.transacciones.filter( (x:any) => {              
-              console.log(element.transacciones.length)
+              //console.log(element.transacciones.length)
               if( x.total == null || x.total == undefined ) x.total = 0;
               this.cantidadTransacciones += x.total;
           });
-          console.log(element);
+          //console.log(element);
           this.sumatoriaTransacciones += element.longitud;
           });
-          console.log(this.dataExportarExcel);
+          //console.log(this.dataExportarExcel);
           this.transac.controls['recolecciones'].disable()
           break;         
 
@@ -1010,7 +1015,7 @@ export class ModeldataComponent implements OnInit {
 
     this.dataExportarExcel.filter( (element:any) => {  
       element.transacciones.filter( (elementTra:any) => {
-        console.warn(elementTra);
+        //console.warn(elementTra);
         switch( this.colorguia ) {
           case true:
             if( elementTra.tipoTransaccion == "Automático" ) {
@@ -1103,7 +1108,7 @@ export class ModeldataComponent implements OnInit {
     } else {
       console.error("Ingrese ambas fechas para filtrar.");
     }
-    console.warn(this.dataExportarExcel);
+    //console.warn(this.dataExportarExcel);
   }
 
 
@@ -1158,7 +1163,7 @@ export class ModeldataComponent implements OnInit {
   filtrarPorHoras() {
     const horaInicial:any = this.exportdateform.controls['horaini'].value;
     const horaFinal:any = this.exportdateform.controls['horafin'].value;
-    console.warn(this.exportdateform.controls['ciclo'].value)
+    //console.warn(this.exportdateform.controls['ciclo'].value)
     switch(this.exportdateform.controls['ciclo'].value) {
       case false:
         this.dataExportarExcel = this.filtrarPorRangoDeHoras(this.dataExportarExcel, horaInicial, horaFinal);

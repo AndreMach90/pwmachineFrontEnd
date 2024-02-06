@@ -30,11 +30,11 @@ export class ModalDataEquiposComponent implements OnInit {
 
 
     ngOnInit(): void {
-      console.log(this.data.acreditado);
+      //console.log(this.data.acreditado);
       this.obtenerEquiposTran();
       this.result = this.data.equiposExistentes;
-      console.log('this.result');
-      console.log(this.result);
+      //console.log('this.result');
+      //console.log(this.result);
     }
 
     obtenerEquiposTran() {
@@ -52,8 +52,8 @@ export class ModalDataEquiposComponent implements OnInit {
         {
           next: (equipo) => {
             this.listaEsquipoGhost = equipo;
-            console.log(this.listaEsquipoGhost);
-            console.log(this.data.codigocliente);
+            //console.log(this.listaEsquipoGhost);
+            //console.log(this.data.codigocliente);
           },
           error:    (e) => {
             console.error(e);
@@ -71,15 +71,15 @@ export class ModalDataEquiposComponent implements OnInit {
                       this.listaEsquipo = []
                       this.result.filter( (j:any) => {
                         if( j.nserie !== element.machine_Sn ) {
-                          console.log(j.nserie);
-                          console.log(element);
+                          //console.log(j.nserie);
+                          //console.log(element);
                           this.listaEsquipo.push(element);
                         }
                       });
 
 
                       // this.listaEsquipoGhost.filter( (j:any) => {
-                      //   console.log(j)
+                      //   //console.log(j)
                       // })
 
                       // this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => {
@@ -89,7 +89,7 @@ export class ModalDataEquiposComponent implements OnInit {
                   } 
 
                   // else {
-                  //   console.log('2')
+                  //   //console.log('2')
                   //   if( element.idCliente == this.data.codigocliente ) {
                   //     this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => {
                   //       return !this.result.some( (element:any) => element.nserie === x.machine_Sn );
@@ -140,7 +140,7 @@ export class ModalDataEquiposComponent implements OnInit {
 
             })
 
-            console.log(this.listaEsquipo);
+            //console.log(this.listaEsquipo);
 
           }
         }

@@ -17,9 +17,11 @@
 
     <div class="box">
 
-        <h1 class="text-light m-0" >Login</h1>
+        <h1 class="text-light m-0">
+            Login
+        </h1>
         <br>
-        <small class="text-warning" >
+        <small class="text-warning">
             Ingresa con tu correo y contraseña
         </small>
         <hr>
@@ -27,10 +29,16 @@
               class="mb-2"
               (ngSubmit)="onSubmit()">
               <div class="mb-3">
-                  <label for="email" class="form-label text-light">
-                      Username:
-                  </label>
-                  <input type="email" class="form-control" formControlName="email" #email id="email" placeholder="name@example.com">
+                    <label for="email"
+                           class="form-label text-light">
+                           Username:
+                    </label>
+                    <input type="email"
+                           class="form-control"
+                           formControlName="email"
+                           #email
+                           id="email"
+                           placeholder="name@example.com">
               </div>
               <div class="mb-3">
                   <label for="contrasenia" class="form-label text-light">
@@ -42,12 +50,13 @@
                   <i class="pi pi-lock"></i> Ingresar
               </button>
         </form>
-        <div class="w-100 bg-success
-                    text-light rounded-2 d-flex
-                    justify-content-center mt-2 p-2">
-                    <small>
-                        <strong>{{version_actual}}</strong>
-                    </small>
+        <div style="background-color: burlywood;"
+             class="w-100 
+             text-dark rounded-2 d-flex
+             justify-content-center mt-2 p-2">
+             <small>
+                 <strong>{{version_actual}} - 2024</strong>
+             </small>
         </div>
     </div>
 
