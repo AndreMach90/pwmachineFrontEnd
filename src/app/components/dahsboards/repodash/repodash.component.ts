@@ -445,8 +445,8 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   EmitRecolTransHub: any = [];
   private RecoTransHub(data:any) {
 
-    console.warn('RECOL DATA TRANS HUB');
-    console.warn(data);
+    //console.warn('RECOL DATA TRANS HUB');
+    //console.warn(data);
     const zero = 0;
 
     let xmachine:any = localStorage.getItem('equipoMonitoreando');
@@ -467,14 +467,8 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     this.listaDetalleequipoManual = [];
     this.listaEsquipo.filter( ( element: any ) => {
 
-        if( element.serieEquipo == xmachine  ) {
+        if( element.serieEquipo == this.machSerie  ) {
           
-          console.log('=======================================================');
-          console.log('Equipo al que se le esta haciendo el site collection');
-          console.log(element);
-          console.log(xmachine);
-          console.log('=======================================================');
-
           element.indicadorCapacidadBilletes           = 0;
           element.indicadorTotalAsegurado              = 0;
           element.indicadorPorcentajeBilletes          = 0;
@@ -498,13 +492,93 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
 
     this.primaryLista = [];
     this.listAlertas  = [];
+    // setTimeout(() => {
+      this.nserie = xmachine;
+      // alert('Obteniendo datos nuevamente de: ' + this.nserie);
+      // this.obtenerEquipos(1,'void');
+      this.monitoreo.obtenerDetalleEquipos(this.nserie).subscribe(
+        {
+        next:(x) => {
+          this.primaryLista = x;
+  
+          //console.warn('ESTO PASA EN MONITOREAR')
+          //console.warn(this.primaryLista)
+  
+          if ( this.nserie == this.primaryLista[0].machine_Sn ) 
+          { 
+            this.primaryLista.filter((element:any) => {
+  
+              if(element.tipo == 'Manual') {
+                this.listaDetalleequipoManual.push(element);
+              }
+              else if ( element.tipo == 'Deposito' ) {
+                this.listaDetalleequipoTransa.push(element);
+              }
+            })
+          }
+          this._show_spinner = false;
+        }, error: (e) => {
+           console.error(e);
+           this._show_spinner = false;
+        }, complete: () => {
+          // Inicializar las variables
+          this.totalBilletesCantidadM = 0;
+          this.totalBilletesMontoM    = 0;
+          this.totalMonedasCantidadM  = 0;
+          this.totalMonedasMontoM     = 0;
+  
+          this.totalBilletesCantidadT = 0;
+          this.totalBilletesMontoT    = 0;
+          this.totalMonedasCantidadT  = 0;
+          this.totalMonedasMontoT     = 0;
+  
+          // Recorrer la lista y realizar las sumatorias
+          this.listaDetalleequipoManual.forEach((detalle:any) => {
+              if( detalle.tipo == 'Manual') {
+                this.totalBilletesCantidadM += detalle.depositoCant100 + detalle.depositoCant50 + detalle.depositoCant20 +
+                                               detalle.depositoCant10  + detalle.depositoCant5  + detalle.depositoCant2  + detalle.depositoCant1;
+                this.totalBilletesMontoM    += detalle.depositoMont100 + detalle.depositoMont50 + detalle.depositoMont20 +
+                                               detalle.depositoMont10  + detalle.depositoMont5  + detalle.depositoMont2  + detalle.depositoMont1;
+                this.totalMonedasCantidadM  += detalle.depositoCantCoin100 + detalle.depositoCantCoin50 + detalle.depositoCantCoin25 +
+                                               detalle.depositoCantCoin10  + detalle.depositoCantCoin5  + detalle.depositoCantCoin1;
+                this.totalMonedasMontoM     += detalle.depositoMontCoin100 + detalle.depositoMontCoin50 + detalle.depositoMontCoin25 +
+                                               detalle.depositoMontCoin10  + detalle.depositoMontCoin5  + detalle.depositoMontCoin1;
+              }
+          });
+  
+          this.listaDetalleequipoTransa.forEach((detalle:any) => {
+              if ( detalle.tipo == 'Deposito' ) {
+  
+                this.totalBilletesCantidadT += detalle.depositoCant100 + detalle.depositoCant50 + detalle.depositoCant20 +
+                                               detalle.depositoCant10  + detalle.depositoCant5  + detalle.depositoCant2  + detalle.depositoCant1;  
+                this.totalBilletesMontoT    += detalle.depositoMont100 + detalle.depositoMont50 + detalle.depositoMont20 +
+                                               detalle.depositoMont10  + detalle.depositoMont5  + detalle.depositoMont2  + 
+                                               detalle.depositoMont1;  
+                this.totalMonedasCantidadT  += detalle.depositoCantCoin100 + detalle.depositoCantCoin50 + detalle.depositoCantCoin25 +
+                                               detalle.depositoCantCoin10  + detalle.depositoCantCoin5  + detalle.depositoCantCoin1;  
+                this.totalMonedasMontoT     += detalle.depositoMontCoin100 + detalle.depositoMontCoin50 + detalle.depositoMontCoin25 +
+                                               detalle.depositoMontCoin10  + detalle.depositoMontCoin5  + detalle.depositoMontCoin1;
+  
+              }
+          }
+        )
+  
+        this._show_spinner = false;
+  
+        }
+      })
+
+    // }, 1000)
 
   }
   
   private AuTransHub(data:any) {
 
-    console.warn('data auto transhub');
-    console.table(data);
+    //console.warn('data');
+    //console.table(data);
+
+
+
     /** ============================================= */
     /** INICIO */
 
@@ -656,6 +730,12 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   listaEsquipo:any = [];
   listaEsquipoGhost:any = [];
   obtenerEquipos( tp:number, ctienda:string ) {
+
+    console.log('***********************');
+    console.log(tp);
+    console.log(ctienda);
+    console.log('***********************');
+
     this.equiposerv.obtenerEquipo(tp, ctienda).subscribe(
       {
         next: (equipo) => {
@@ -779,7 +859,8 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   obtenerDetalleEquipos( data:any ) {
     
     // alert("MONITORANDO");
-
+    console.log('<<<<<<<<data>>>>>>>>')
+    console.log(data)
     this._show_spinner = true;
     this.nserie = data.serieEquipo;
     localStorage.setItem('equipoMonitoreando', this.nserie);
@@ -787,7 +868,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     this.listaDetalleequipoTransa = [];
     this.showCuadre = true;
     this.colorValidateCuadre = 'steelblue';
-    this.monitoreo.obtenerDetalleEquipos(data.serieEquipo).subscribe(
+    this.monitoreo.obtenerDetalleEquipos(this.nserie).subscribe(
       {
       next:(x) => {
         this.primaryLista = x;

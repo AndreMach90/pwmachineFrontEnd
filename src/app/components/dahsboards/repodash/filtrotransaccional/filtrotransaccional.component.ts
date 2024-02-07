@@ -120,6 +120,8 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
       complete: () => {
         this.listaTransaccionesEmitGrafica.emit(this.listaTransacciones.reverse());
         this.sumatoriaTotal();
+        if( this.listaTransacciones[0].nombreCliente == undefined || this.listaTransacciones[0].nombreCliente == null ) this.listaTransacciones[0].nombreCliente = '';
+        if( this.listaTransacciones[0].nombreTienda == undefined  || this.listaTransacciones[0].nombreTienda == null )  this.listaTransacciones[0].nombreTienda  = '';
         this.cliente = this.listaTransacciones[0].nombreCliente;
         this.tienda  = this.listaTransacciones[0].nombreTienda;
       }
