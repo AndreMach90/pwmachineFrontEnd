@@ -8,7 +8,6 @@ import { ClientesService } from '../../../cliente/services/clientes.service';
 import { TiendaService } from '../../../tienda/services/tienda.service';
 import { MonitoreoService } from '../../../monitoreo-equipos/services/monitoreo.service';
 import { TransaccionesTiendaService } from '../../../monitoreo-equipos/modal/services/transacciones-tienda.service';
-import { resolveSoa } from 'dns';
 
 @Component({
   selector: 'app-modal-config-excel',
@@ -40,7 +39,7 @@ export class ModalConfigExcelComponent implements OnInit {
                private monitoreo: MonitoreoService,
                private transacciones: TransaccionesTiendaService,
                public dialog: MatDialog,
-               public dialogRef: MatDialogRef<FiltrotransaccionalComponent>,
+              //  public dialogRef: MatDialogRef<FiltrotransaccionalComponent>,
                @Inject(MAT_DIALOG_DATA) public data: any, private env: Environments ) { 
 
                 this.transac = this.formBuilder.group({

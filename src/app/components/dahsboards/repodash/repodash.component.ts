@@ -445,8 +445,8 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   EmitRecolTransHub: any = [];
   private RecoTransHub(data:any) {
 
-    //console.warn('RECOL DATA TRANS HUB');
-    //console.warn(data);
+    console.warn('RECOL DATA TRANS HUB');
+    console.warn(data);
     const zero = 0;
 
     let xmachine:any = localStorage.getItem('equipoMonitoreando');
@@ -467,8 +467,14 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     this.listaDetalleequipoManual = [];
     this.listaEsquipo.filter( ( element: any ) => {
 
-        if( element.serieEquipo == this.machSerie  ) {
+        if( element.serieEquipo == xmachine  ) {
           
+          console.log('=======================================================');
+          console.log('Equipo al que se le esta haciendo el site collection');
+          console.log(element);
+          console.log(xmachine);
+          console.log('=======================================================');
+
           element.indicadorCapacidadBilletes           = 0;
           element.indicadorTotalAsegurado              = 0;
           element.indicadorPorcentajeBilletes          = 0;
@@ -497,11 +503,8 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   
   private AuTransHub(data:any) {
 
-    //console.warn('data');
-    //console.table(data);
-
-
-
+    console.warn('data auto transhub');
+    console.table(data);
     /** ============================================= */
     /** INICIO */
 

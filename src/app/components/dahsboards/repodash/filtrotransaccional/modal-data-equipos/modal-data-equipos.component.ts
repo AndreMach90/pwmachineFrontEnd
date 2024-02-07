@@ -9,18 +9,19 @@ import { ModeldataComponent } from 'src/app/components/shared/modeldata/modeldat
   templateUrl: './modal-data-equipos.component.html',
   styleUrls: ['./modal-data-equipos.component.scss']
 })
-export class ModalDataEquiposComponent implements OnInit {
+export class 
+ModalDataEquiposComponent implements OnInit {
 
   filterEqui:               string = '';
-  listaEsquipo:                any = [];
-  listaEsquipoGhost:           any = [];
-  listaEsquipoGhostTienda:     any = [];
-  equiposSeleccionados:        any = [];
-  choiceEquipos:               boolean = false;
-  result:                      any = [];
-  fecInicio:                   any;
-  fecFin:                      any;
-  modelFilterTranEqipos:       any = [];
+  listaEsquipo:             any = [];
+  listaEsquipoGhost:        any = [];
+  listaEsquipoGhostTienda:  any = [];
+  equiposSeleccionados:     any = [];
+  choiceEquipos:            boolean = false;
+  result:                   any = [];
+  fecInicio:                any;
+  fecFin:                   any;
+  modelFilterTranEqipos:    any = [];
 
   constructor( public dialog: MatDialog,
                private equiposerv: EquipoService,
