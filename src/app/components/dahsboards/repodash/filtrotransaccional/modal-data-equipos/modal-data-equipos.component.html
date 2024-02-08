@@ -28,6 +28,8 @@
       <th title="Transacciones automáticas">T.A.</th>
       <th title="Transacciones manuales">T.M.</th>
       <!-- <th title="Recolecciones">R.</th> -->
+      <th title="Total de transacciones resagadas automáticas">R.T.A.</th>
+      <th title="Total de transacciones resagadas manuales">R.T.M.</th>
       <th title="Total de transacciones">T.Tran.</th>
     </thead>
     <tbody class="align-middle">
@@ -38,7 +40,7 @@
             class="form-check-input" 
             [checked]="equipos.checkTran" 
             [id]="'equipos-'+i" 
-            [disabled]="equipos.conteo_A === 0 && equipos.conteo_M === 0"
+            [disabled]="equipos.conteo_A === 0 && equipos.conteo_M === 0 && equipos.conteo_AR === 0  && equipos.conteo_MR === 0"
             (change)="seleccionarEquipo(equipos, $event)">
         </td>
         <td [title]="equipos.ipEquipo" style="cursor: pointer;">
@@ -55,6 +57,16 @@
         <td>
           <div class="d-flex justify-content-end">
             <strong> {{ equipos.conteo_M }} </strong>
+          </div>
+        </td>
+        <td style="background-color: rgb(243, 189, 51);">
+          <div class="d-flex justify-content-end" >
+            <strong> {{ equipos.conteo_AR }} </strong>
+          </div>
+        </td>
+        <td style="background-color: rgb(243, 189, 51);">
+          <div class="d-flex justify-content-end" >
+            <strong> {{ equipos.conteo_MR }} </strong>
           </div>
         </td>
         <!-- <td>

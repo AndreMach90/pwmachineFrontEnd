@@ -92,7 +92,7 @@ ModalDataEquiposComponent implements OnInit {
                 element.conteo_R = 0;
               }
 
-              element.totalTransac = element.conteo_A + element.conteo_M;
+              element.totalTransac = element.conteo_A + element.conteo_M + element.conteo_AR + element.conteo_MR;
 
             })
 

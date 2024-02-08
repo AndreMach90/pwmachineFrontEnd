@@ -17,6 +17,7 @@ import { HistoriaAcreditacionService } from '../historial-acreditacion/services/
 import { EncryptService } from '../services/encrypt.service';
 import { SharedService } from '../services/shared.service';
 
+
 const Toast = Swal.mixin({
   
   toast: true,
@@ -729,10 +730,6 @@ export class ModeldataComponent implements OnInit {
       this._transaction_show = true;
     }
   }
-
-  obetenerDetalleDeEquipos() {
-    // this.monitoreo.obtenerDetalleEquipos(  )
-  }
   
   obtenerCliente() {
     this.clientelista = [];
@@ -818,7 +815,8 @@ export class ModeldataComponent implements OnInit {
     ];
   }
 
-  transaccionesManuealesSolo() { let a:boolean = this.transac.controls['manualTransactions'].value;  
+  transaccionesManuealesSolo() { 
+    let a:boolean = this.transac.controls['manualTransactions'].value;  
     switch(a) {
       case true:
         this.dataExportarExcel.forEach((element:any)=>{
