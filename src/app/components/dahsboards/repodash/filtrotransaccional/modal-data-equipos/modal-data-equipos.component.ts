@@ -82,13 +82,24 @@ ModalDataEquiposComponent implements OnInit {
             }
 
             this.listaEsquipo.filter( ( element:any ) => {
-              if( element.conteo_A == null ) {
+              
+              if( element.conteo_A == null || element.conteo_A == undefined ) {
                 element.conteo_A = 0;
               }
-              else if ( element.conteo_M == null ) {
+              
+              else if ( element.conteo_M == null  || element.conteo_M == undefined ) {
                 element.conteo_M = 0;
               }
-              else if ( element.conteo_R == null ) {
+              
+              else if ( element.conteo_R == null  || element.conteo_R == undefined ) {
+                element.conteo_R = 0;
+              }
+              
+              else if ( element.conteo_AR == null || element.conteo_AR == undefined ) {
+                element.conteo_AR = 0;
+              }
+
+              else if ( element.conteo_MR == null || element.conteo_MR == undefined ) {
                 element.conteo_R = 0;
               }
 

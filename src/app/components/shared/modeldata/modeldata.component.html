@@ -446,8 +446,9 @@
                         <div class="mr-2 d-flex align-items-center" >
                             <strong> {{ equipos.nserie }} </strong> &nbsp;
                             <span>
-                                <strong  *ngIf="equipos.longitud > 0" class="animate__animated animate__bounceIn" > 
-                                    ( {{ equipos.longitud }} ) 
+                                <strong *ngIf="equipos.longitud > 0"
+                                        class="animate__animated animate__bounceIn">
+                                        ( {{ equipos.longitud }} )
                                 </strong>
                                 <span class="loaderx"  
                                       *ngIf="equipos.longitud == 0 || 

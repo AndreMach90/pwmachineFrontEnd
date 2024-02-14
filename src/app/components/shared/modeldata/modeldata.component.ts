@@ -556,17 +556,10 @@ export class ModeldataComponent implements OnInit {
 
   validateTime() {
 
-    // //console.log('validando')
-
     const dateiniValue = this.dateini?.nativeElement.value;
     const datefinValue = this.datefin?.nativeElement.value;
     const horainiValue = this.horaini?.nativeElement.value;
     const horafinValue = this.horafin?.nativeElement.value;
-
-    // //console.log(dateiniValue)
-    // //console.log(datefinValue)
-    // //console.log(horainiValue)
-    // //console.log(horafinValue)
 
     if ( dateiniValue == datefinValue ) {
 
@@ -949,45 +942,137 @@ export class ModeldataComponent implements OnInit {
     this.disbutton_obtener = false;
   }
 
+  dini: any;
+  dfin: any;
   obtenerTransacTabla() {
-    
     let x = 0;
-    
-    // opcion 2 acreitada
-    // opcion 1 general
-
-    if ( this.exportdateform.controls['acreditada'].value ) x = 2;
+    if (this.exportdateform.controls['acreditada'].value) x = 2;
     else x = 1;
-    if( this.dataExportarExcel.length > 0 ) {
+    
+    if (this.dataExportarExcel.length > 0) {
       this._show_spinner = true;
-      this.dataExportarExcel.filter( (element:any) => {
-
-        this.obterSaldoTransac(element.nserie);
-
-        let modelRange:any = {
-          "tipo":        x,
-          "Machine_Sn":  element.nserie,
-          "FechaInicio": this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value,
-          "FechaFin":    this.exportdateform.controls['datefin'].value + ' ' + this.exportdateform.controls['horafin'].value
-        }
-        this.transacciones.filtroTransaccionesRango(modelRange).subscribe({
+      let dini = this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value;
+      let dfin = this.exportdateform.controls['datefin'].value + ' ' + this.exportdateform.controls['horafin'].value;
+  
+      Promise.all(this.dataExportarExcel.map((element: any) => {
+        return new Promise<void>((resolve, reject) => {
+          this.obterSaldoTransac(element.nserie);
+  
+          let modelRange:any = {
+            "tipo":        x,
+            "Machine_Sn":  element.nserie,
+            "FechaInicio": dini,
+            "FechaFin":    dfin
+          };
+  
+          this.transacciones.filtroTransaccionesRango(modelRange).subscribe({
             next: (z) => {
               element.transacciones = z;
               element.longitud = element.transacciones.length;
-              this._show_spinner = false;
-            }, error: (e) => {
-              this._show_spinner = false;
-              console.error(e);
-            }, complete: () => {
-              this.sumatoriaTotalTransacciones();
+              resolve();
+            },
+            error: (e) => {
+              reject(e);
             }
-        })
-
+          });
+        });
+      })).then(() => {
+        // Llamamos a detectaTransaccionesResagadas con las fechas obtenidas fuera del ciclo e
+        this.detectaTransaccionesResagadas(dini, dfin, 1);
+      }).catch((error) => {
+        console.error(error);
+      }).finally(() => {
+        this._show_spinner = false;
+        if( this.cantidadResagadas > 0 ) {
+          Swal.fire({
+            title: "Tienes "+ this.cantidadResagadas + " transacciones resagadas, ¿deseas agregar a la data para su preacreditación, para ser exportada a excel?",
+            showDenyButton: true,
+            // showCancelButton: true,
+            confirmButtonText: "Sí, guardar",
+            denyButtonText: `No`
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+              Swal.fire("Estas transacciones han sido agregadas", "", "success");
+            } else if (result.isDenied) {
+              this.detectaTransaccionesResagadas(dini, dfin, 2);
+              Swal.fire("Se han quitado las transacciones resagadas", "", "info");
+            }
+          });
+        } 
       });
-
     }
-
   }
+
+  cantidadResagadas: number = 0;  
+  detectaTransaccionesResagadas(dateIni: any, dateFin: any, type: number) {
+    let arrtran: any = [];  
+    this.cantidadResagadas = 1;
+    switch (type) {
+      case 1:
+        this.dataExportarExcel.forEach((x: any) => {
+          if (x.transacciones != undefined && x.transacciones != null) {
+            // this.cantidadResagadas += x.transacciones.length; 
+            
+            x.transacciones.filter((tran: any) => {
+              if (tran.fechaTransaccion < dateIni) {
+                x.resagadas = 1;
+                // console.log(this.cantidadResagadas)
+                return true;
+              } else {
+                x.resagadas = 0;
+                return false;
+              }
+            });
+          }
+        });
+        this.sumatoriaTotalTransacciones();
+        console.log(this.dataExportarExcel);
+        this.dataExportarExcel.filter( (j:any) => {  
+          if (j.fechaTransaccion < dateIni) {
+            // console.log(j.transacciones.length)
+          }
+        })
+        break;
+  
+      case 2:
+        let fechaINI: any = dateIni.toString().split(' ')[0];
+        let fechaFIN: any = dateFin.toString().split(' ')[0];
+        let indexH: any = null;
+  
+        // Creamos una función que devuelve una promesa
+        const filterAndRemove = () => {
+          return new Promise<void>((resolve, reject) => {
+            this.dataExportarExcel.forEach((x: any, index: number) => {
+              if (x.transacciones != undefined && x.transacciones != null) {
+                x.transacciones = x.transacciones.filter((tran: any) => {
+                  return tran.fechaTransaccion.toString().split('T')[0] === fechaINI || tran.fechaTransaccion.toString().split('T')[0] === fechaFIN;                
+                });
+                // Actualizar el campo longitud después de filtrar las transacciones
+                x.longitud = x.transacciones.length;
+                if (x.longitud === 0) {
+                  indexH = index;
+                  this.maquinasEscogidasDialog.splice(index, 1);
+                }
+                x.resagadas = 0;
+              }
+            });
+              resolve();
+          });
+        };
+        filterAndRemove().then(() => {
+          if (indexH !== null) {
+            this.dataExportarExcel.splice(indexH, 1);
+          }
+          this.sumatoriaTotalTransacciones();  
+        }).catch((error) => {
+          console.error('Ocurrió un error:', error);
+        });
+  
+        break;
+    }
+  }
+  
 
   modelDataSaldo: any = [];
   obterSaldoTransac( machineSn:any ) {

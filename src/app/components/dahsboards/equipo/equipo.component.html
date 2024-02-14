@@ -322,7 +322,8 @@
                                             <section class="filtros mt-2 mb-2">
                                                 <div class="mb-2 d-flex">
                                                   <input class=" w-100 shadow-sm form-control rounded-pill" 
-                                                         fxFlex="auto" type="text"
+                                                         fxFlex="auto"
+                                                         type="text"
                                                          [(ngModel)]="filterusermaq"
                                                          (keyup)="filterUsuariosMaquinaria()" 
                                                          #input placeholder="Búsqueda de usuarios maquinarias...">
@@ -335,13 +336,16 @@
                                             <label for="nombres">
                                                 Establecimiento
                                             </label>
-                                            <input type="text" [(ngModel)]="_nombres" class="form-control form-control-sm">
+                                            <input type="text"
+                                                   [(ngModel)]="_nombres"
+                                                   class="form-control form-control-sm">
                                         </div>
                                         <div class="col">
                                             <label for="_cedula">
                                                 Cod. Establecimiento
                                             </label>
-                                            <input type="text" [(ngModel)]="_cedula" 
+                                            <input type="text"
+                                                   [(ngModel)]="_cedula"
                                                    id="cedula"
                                                    #cedula
                                                    (keyup)="validateInputNumber('cedula')"
