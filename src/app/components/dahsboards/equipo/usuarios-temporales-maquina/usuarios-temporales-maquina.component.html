@@ -21,11 +21,16 @@
         <div class="w-75" >
             <section class="filtros mt-2 mb-2">
                 <div class="mb-2 d-flex">
-                  <input class=" w-100 shadow-sm form-control rounded-pill" 
-                         fxFlex="auto" type="text"
-                         [(ngModel)]="filteruserTemporal"
-                         (keyup)="filterUsuariosTemporales()"
-                         #input placeholder="Búsqueda de usuarios temporales...">
+                    <form [formGroup]="filterUsuariosTemporalesForm" class="w-100">
+                        <input class=" w-100 shadow-sm form-control rounded-pill" 
+                               fxFlex="auto" type="text"
+                               formControlName="filteruserTemporal"
+                               #filteruserTemporal
+                               id="filteruserTemporal"
+                               (keyup)="filterUsuariosTemporales()"
+                               #input placeholder="Búsqueda de usuarios temporales..."
+                               >
+                    </form>
                 </div>
             </section>
         </div>

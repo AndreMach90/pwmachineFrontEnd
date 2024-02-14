@@ -9,6 +9,7 @@ import { UsuariosService } from '../../usuarios/services/usuarios.service';
 import Swal from 'sweetalert2'
 import { ControlinputsService } from 'src/app/components/shared/services/controlinputs.service';
 import { TiendaService } from '../../tienda/services/tienda.service';
+import { FormControl, FormGroup } from '@angular/forms';
 const Toast = Swal.mixin({
   toast: true,
   position: 'top-end',
@@ -28,17 +29,17 @@ const Toast = Swal.mixin({
 })
 export class UsuariosTemporalesMaquinaComponent implements OnInit {
 
-  ipMachine:any;
-  modelUsers:any = [];
-  delete:any = this.env.apiUrlIcon()+'delete.png';
-  accept:any = this.env.apiUrlIcon()+'accept.png';
-  edit:any = this.env.apiUrlIcon()+'edit.png';
-  crear:any = this.env.apiUrlIcon()+'accept.png';
-  cancel:any = this.env.apiUrlIcon()+'cancel.png';
-  search:any = this.env.apiUrlIcon()+'search.png';
-  _show_spinner: boolean = false;
-  _create_show: boolean = true;
-  listaUsuariosTemporales: any = [];
+  ipMachine:                    any;
+  modelUsers:                   any = [];
+  delete:                       any = this.env.apiUrlIcon()+'delete.png';
+  accept:                       any = this.env.apiUrlIcon()+'accept.png';
+  edit:                         any = this.env.apiUrlIcon()+'edit.png';
+  crear:                        any = this.env.apiUrlIcon()+'accept.png';
+  cancel:                       any = this.env.apiUrlIcon()+'cancel.png';
+  search:                       any = this.env.apiUrlIcon()+'search.png';
+  _show_spinner:                boolean = false;
+  _create_show:                 boolean = true;
+  listaUsuariosTemporales:      any = [];
   listaUsuariosTemporalesGhost: any = [];
 
   constructor( public dialogRef: MatDialogRef<EquipoComponent>,
@@ -47,6 +48,11 @@ export class UsuariosTemporalesMaquinaComponent implements OnInit {
     private controlInputsService: ControlinputsService,
     private tiendaservs: TiendaService,
     private sharedservs: ServicesSharedService, private eqipserv: EquipoService ) { }
+
+
+    public filterUsuariosTemporalesForm = new FormGroup({
+      filterequip:              new FormControl('')
+    })
     
   ngOnInit(): void {
     ////////console.warn(this.data);
@@ -74,7 +80,6 @@ export class UsuariosTemporalesMaquinaComponent implements OnInit {
         next: (x) => {
           this.listaUsuariosTemporales = x;
           this.listaUsuariosTemporalesGhost = x;
-          ////////console.warn(this.listaUsuariosTemporales);
         }, error: (e) => {
           console.error(e);
         }
@@ -181,11 +186,10 @@ eliminarUsuarioTemporal(id:number) {
   })
 }
 
-filteruserTemporal:any;
 filterUsuariosTemporales() {
+  let filter: any = this.filterUsuariosTemporalesForm.controls['filterequip'].value;
   this.listaUsuariosTemporales = this.listaUsuariosTemporalesGhost.filter((item:any) =>  
-  item.usuario.toLowerCase().includes(this.filteruserTemporal.toLowerCase())      ||
-  item.ipMachineSolicitud.toLowerCase().includes(this.filteruserTemporal.toLowerCase())      
+    item.usuario.toLowerCase().includes(  filter.toLowerCase()) || item.ipMachineSolicitud.toLowerCase().includes(filter.toLowerCase()  )
   )
 }
 

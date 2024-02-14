@@ -33,6 +33,16 @@ const Toast = Swal.mixin({
 })
 
 export class EquipoComponent implements OnInit {
+
+  modelDatosPersonales:any = [];
+  idusermaquina:any;
+  nombreUserMaquina:any;
+  idDatosPersonales:any;
+  actividad:any;
+  observacion:any;
+  cuentasIdFk:any;
+  ipMachine:any;
+
   _cancel_button_us: boolean = true;
   _cedula:   any;
   _nombres:  any;
@@ -58,7 +68,7 @@ export class EquipoComponent implements OnInit {
   _width_table: string = 'tabledata table-responsive w-100 p-2';
 
   tiendaListaGhost:any = [];
-  filterequip:     any = [];
+  // filterequip:     any = [];
 
   listaUsuariosMaquina:      any = [];
   listaUsuariosMaquinaGhost: any = [];
@@ -124,6 +134,19 @@ export class EquipoComponent implements OnInit {
     codigoClienteidFk:    new FormControl('')
   })
 
+  public filterForm = new FormGroup({
+    filterequip:              new FormControl('')
+  })
+
+  public filterUserEquiposForm = new FormGroup({
+    filterusermaq:              new FormControl('')
+  })
+
+  public filterEquiposForm = new FormGroup({
+    _nombres:              new FormControl(''),
+    _cedula:              new FormControl(''),
+  })
+
   permisonUsers:boolean = true;
   ngOnInit(): void {
     this.obtenerCliente();
@@ -154,14 +177,6 @@ export class EquipoComponent implements OnInit {
 
   }
 
-  modelDatosPersonales:any = [];
-  idusermaquina:any;
-  nombreUserMaquina:any;
-  idDatosPersonales:any;
-  actividad:any;
-  observacion:any;
-  cuentasIdFk:any;
-  ipMachine:any;
   catchDataUserMaq(data:any) {
     this.calwidth = true;
     // this.widthAutom();
@@ -199,11 +214,7 @@ export class EquipoComponent implements OnInit {
       telefono:    '',
       active:      'A'
     }
-    ////console.warn( '*********************************' );
-    ////console.warn( 'modelUsers MAQUINARIA EDITAR' );
-    ////console.warn( this.modelUsers );
-    ////console.warn( this.modelDatosPersonales );
-    ////console.warn( '*********************************' );
+    
     this.userservs.actualizarUsuario(this.idusermaquina, this.modelUsers).subscribe({
       next: (x) => {
         Toast.fire({ icon: 'success', title: 'Usuario de máquina se ha actualizado con éxito' });
@@ -298,13 +309,14 @@ export class EquipoComponent implements OnInit {
     })
   }
 
-  filterusermaq:any;
+
   filterUsuariosMaquinaria() {
+    let filter: any = this.filterUserEquiposForm.controls['filterusermaq'].value;
     this.listaUsuariosMaquina = this.listaUsuariosMaquinaGhost.filter((item:any) => 
-      item.nombres.toLowerCase().includes(this.filterusermaq.toLowerCase())      ||
-      item.nombreTienda.toLowerCase().includes(this.filterusermaq.toLowerCase()) ||
-      item.cedula.toLowerCase().includes(this.filterusermaq.toLowerCase())       ||
-      item.telefono.toLowerCase().includes(this.filterusermaq.toLowerCase()) 
+      item.nombres     .toLowerCase().includes(filter.toLowerCase()) ||
+      item.nombreTienda.toLowerCase().includes(filter.toLowerCase()) ||
+      item.cedula      .toLowerCase().includes(filter.toLowerCase()) ||
+      item.telefono    .toLowerCase().includes(filter.toLowerCase()) 
     )
   }
 
@@ -703,13 +715,13 @@ export class EquipoComponent implements OnInit {
   }
 
   filterEquipos() {
-    this.listaEsquipo = this.listaEsquipoGhost.filter((item:any) => 
-    // //console.log(item)
-    item.serieEquipo.toLowerCase().includes(this.filterequip.toLowerCase())    ||
-    item.nombreTienda.toLowerCase().includes(this.filterequip.toLowerCase())   ||
-    item.nombremarca.toLowerCase().includes(this.filterequip.toLowerCase())    ||
-    item.nombremodelo.toLowerCase().includes(this.filterequip.toLowerCase())   ||
-    item.tipoMaquinaria.toLowerCase().includes(this.filterequip.toLowerCase())
+    let filter: any = this.filterForm.controls['filterequip'].value;
+    this.listaEsquipo = this.listaEsquipoGhost.filter( (item:any) =>
+      item.serieEquipo.toLowerCase().includes(filter.toLowerCase())    ||
+      item.nombreTienda.toLowerCase().includes(filter.toLowerCase())   ||
+      item.nombremarca.toLowerCase().includes(filter.toLowerCase())    ||
+      item.nombremodelo.toLowerCase().includes(filter.toLowerCase())   ||
+      item.tipoMaquinaria.toLowerCase().includes(filter.toLowerCase())
     )
   }
 

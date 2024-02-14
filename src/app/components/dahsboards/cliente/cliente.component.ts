@@ -71,6 +71,10 @@ export class ClienteComponent implements OnInit {
     Active:           new FormControl(''), 
   })
 
+  public filterForm = new FormGroup({
+    filterCli:   new FormControl('')
+  })
+
   primary:any;
   secondary:any;
   secondary_a:any;
@@ -168,11 +172,14 @@ export class ClienteComponent implements OnInit {
     })
   }
 
-  filterCli:string = '';
+
   filterCliente () {
+
+    let filter: any = this.filterForm.controls['filterCli'].value;
+
     this.clientelista = this.clienteListaGhost.filter((item:any) => 
-      item.ruc.toLowerCase().includes(this.filterCli.toLowerCase()) ||
-      item.nombreCliente.toLowerCase().includes(this.filterCli.toLowerCase())
+      item.ruc.toLowerCase().includes(filter.toLowerCase()) ||
+      item.nombreCliente.toLowerCase().includes(filter.toLowerCase())
     );
   }
 
