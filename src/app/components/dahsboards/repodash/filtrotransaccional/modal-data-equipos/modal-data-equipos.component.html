@@ -7,11 +7,16 @@
   <hr>
   <div class="body-data">
   <div class="mb-2 d-flex w-100">
-    <input class=" w-100 shadow-sm form-control rounded-pill"
-           fxFlex="auto" type="text"
-           [(ngModel)]="filterEqui"
-           (keyup)="filterEquipo()"
-           #input placeholder="Búsqueda de equipos...">
+    <form [formGroup]="equipoCliForm" >
+      <input class=" w-100 shadow-sm form-control rounded-pill"
+             fxFlex="auto" type="text"
+             formControlName="filterEqui"
+             #filterEqui
+             id="filterEqui"
+             (keyup)="filterEquipo()"
+             #input placeholder="Búsqueda de equipos...">
+             <!-- [(ngModel)]="filterEqui" -->
+    </form>
   </div>
   <table class="table table-secondary table-bordered">
     <thead class="bg-dark text-light align-middle">

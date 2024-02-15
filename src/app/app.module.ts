@@ -8,7 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentsAppsModuModule } from './components/components-apps-modu/components-apps-modu.module';
-import { ModalTransaccionesComponent } from './components/dahsboards/monitoreo-equipos/modal/modal-transacciones/modal-transacciones.component';
+// import { ModalTransaccionesComponent } from './components/dahsboards/monitoreo-equipos/modal/modal-transacciones/modal-transacciones.component';
 import { ModalDetalleMaquinaTranComponent } from './components/dahsboards/monitoreo-equipos/modal-detalle-maquina-tran/modal-detalle-maquina-tran.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 
@@ -152,10 +152,12 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { NavsideExpDataComponent } from './components/shared/navside-exp-data/navside-exp-data.component';
 import { DashboardDataExportComponent } from './components/shared/dashboard-data-export/dashboard-data-export.component';
 import { HistorialAcreditacionComponent } from './components/shared/historial-acreditacion/historial-acreditacion.component';
+import { ModalTransaccionesComponent } from './components/dahsboards/monitoreo-equipos/modal/modal-transacciones/modal-transacciones.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    // ModalTransaccionesComponent,
     ModalTransaccionesComponent,
     ModalDetalleMaquinaTranComponent,
     MaquinariaMonitoreoComponent,

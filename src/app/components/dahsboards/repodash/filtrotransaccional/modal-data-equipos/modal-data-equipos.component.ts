@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { EquipoService } from '../../../equipo/services/equipo.service';
 import { Environments } from 'src/app/components/environments/environments';
 import { ModeldataComponent } from 'src/app/components/shared/modeldata/modeldata.component';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-modal-data-equipos',
@@ -28,6 +29,11 @@ ModalDataEquiposComponent implements OnInit {
                @Inject(MAT_DIALOG_DATA) public data: any,
                private env: Environments,
                public dialogRef: MatDialogRef<ModeldataComponent>) {}
+
+               public equipoCliForm = new FormGroup({
+                filterEqui:   new FormControl('')
+              })
+            
 
 
     ngOnInit(): void {
