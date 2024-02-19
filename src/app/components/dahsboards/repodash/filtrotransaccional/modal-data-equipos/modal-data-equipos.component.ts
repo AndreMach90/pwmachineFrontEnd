@@ -88,13 +88,24 @@ ModalDataEquiposComponent implements OnInit {
             }
 
             this.listaEsquipo.filter( ( element:any ) => {
-              if( element.conteo_A == null ) {
+              
+              if( element.conteo_A == null || element.conteo_A == undefined ) {
                 element.conteo_A = 0;
               }
-              else if ( element.conteo_M == null ) {
+              
+              else if ( element.conteo_M == null  || element.conteo_M == undefined ) {
                 element.conteo_M = 0;
               }
-              else if ( element.conteo_R == null ) {
+              
+              else if ( element.conteo_R == null  || element.conteo_R == undefined ) {
+                element.conteo_R = 0;
+              }
+              
+              else if ( element.conteo_AR == null || element.conteo_AR == undefined ) {
+                element.conteo_AR = 0;
+              }
+
+              else if ( element.conteo_MR == null || element.conteo_MR == undefined ) {
                 element.conteo_R = 0;
               }
 
@@ -142,29 +153,23 @@ ModalDataEquiposComponent implements OnInit {
     
 
   seleccionarEquipo(equipo: any, event: any) {
-    // switch( this.data.acreditado ) {
-    //   case 1:
-        if (event.target && event.target.checked !== undefined) {
-          const seleccionado = event.target.checked;
-          if (seleccionado) {
-            const existe = this.equiposSeleccionados.some(
-              (e: any) => e.nserie === equipo.machine_Sn
-            );  
-            if (!existe) {
-              this.equiposSeleccionados.push({
-                nserie: equipo.machine_Sn,
-                ipequipo: equipo.ipEquipo
-              });
-            }
-          } else {
-            this.equiposSeleccionados = this.equiposSeleccionados.filter(
-              (e: any) => e.nserie !== equipo.machine_Sn
-            );  
-          }
-        // }
-      //   break;
-      // case 2:
-      //   break;
+    if (event.target && event.target.checked !== undefined) {
+      const seleccionado = event.target.checked;
+      if (seleccionado) {
+        const existe = this.equiposSeleccionados.some(
+          (e: any) => e.nserie === equipo.machine_Sn
+        );  
+        if (!existe) {
+          this.equiposSeleccionados.push({
+            nserie: equipo.machine_Sn,
+            ipequipo: equipo.ipEquipo
+          });
+        }
+      } else {
+        this.equiposSeleccionados = this.equiposSeleccionados.filter(
+          (e: any) => e.nserie !== equipo.machine_Sn
+        );  
+      }
     }
   }  
 
