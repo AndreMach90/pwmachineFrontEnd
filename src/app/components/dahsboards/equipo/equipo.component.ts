@@ -45,7 +45,7 @@ export class EquipoComponent implements OnInit {
 
   _cancel_button_us: boolean = true;
   _cedula:   any;
-  _nombres:  any;
+  _nombresx:  any;
   _telefono: any;
 
   edit_temporal_user:boolean = false;
@@ -181,7 +181,7 @@ export class EquipoComponent implements OnInit {
     this.calwidth = true;
     // this.widthAutom();
     ////////console.warn(data);
-    this._nombres  = data.nombres;
+    this._nombresx  = data.nombres;
     this._cedula   = data.cedula;
     this._telefono = data.telefono;
     this.idusermaquina= data.id;
@@ -208,7 +208,7 @@ export class EquipoComponent implements OnInit {
     this.modelDatosPersonales = {
       id:          this.idDatosPersonales,
       usuarioidFk: this.nombreUserMaquina,
-      nombres:     this._nombres,
+      nombres:     this._nombresx,
       cedula:      this._cedula,
       apellidos:   '-',
       telefono:    '',
@@ -229,7 +229,7 @@ export class EquipoComponent implements OnInit {
   }
 
   limpiarMqU() {
-    this._nombres  ='';
+    this._nombresx  ='';
     this._cedula   = '';
     this._telefono = '';
     this.idusermaquina= '';
