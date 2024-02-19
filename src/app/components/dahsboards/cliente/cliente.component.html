@@ -25,12 +25,12 @@
                                    formControlName="Nombre_Cliente"
                                    #Nombre_Cliente
                                    id="Nombre_Cliente"
-                                   placeholder="José Villalba..."
-                                   >
+                                   placeholder="José Villalba...">
                         </div>
                         <div class="mb-3 w-100">
-                            <label for="RUC" class="form-label text-secondary ">
-                                RUC:
+                            <label for="RUC"
+                                   class="form-label text-secondary">
+                                   RUC:
                             </label>
                             <input type="text"
                                    class="form-control"
@@ -111,7 +111,7 @@
                                 #filterCli
                                 id="filterCli"
                                 (keyup)="filterCliente()" 
-                                #input placeholder="Búsqueda de clientes registrados...">
+                                placeholder="Búsqueda de clientes registrados...">
                             </form>
                         </div>
                         <div *ngIf="permisonUsers">

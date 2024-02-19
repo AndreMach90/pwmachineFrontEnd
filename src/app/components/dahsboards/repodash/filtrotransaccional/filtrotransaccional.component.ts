@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ModalConfigExcelComponent } from './modal-config-excel/modal-config-excel.component';
 import { Router } from '@angular/router';
 import { MonitoreoService } from '../../monitoreo-equipos/services/monitoreo.service';
+import { FormControl, FormGroup } from '@angular/forms';
 
 
 @Component({
@@ -38,8 +39,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
   dis_execel_export: boolean = true;
   @Input() listenNserie!: any;
   
-  startDate: Date = new Date()
-  endDate: Date = new Date();
+
   nombreTienda: string = '';
 
   /**----------------------------------------------------- */
@@ -85,6 +85,15 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
   secondary_b:    any;
   dias_estimados: string = '';
   sumatoriaNoRecollect: number = 0;
+
+  public filterTransaccForm = new FormGroup({
+    filterTransacc:   new FormControl('')
+  })
+
+  public filterDateForm = new FormGroup({
+    startDate: new FormControl(),
+    endDate:   new FormControl()
+  })
 
   constructor( private env: Environments, 
                private monitoreoServs: MonitoreoService,
@@ -137,7 +146,6 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
     this.transacciones.obtenerTransaccionesTienda(id, 2).subscribe({
         next: (transactab:any) => {
           this.listaTrsansaccionesTablaGhost = transactab;
-          // //console.warn(this.listaTrsansaccionesTablaGhost);
         },
         error: (e) => {
           console.error(e);
@@ -186,6 +194,8 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
   /** Filtro de transacciones tanto para la gráfica como para la tabla de transacciones */
   filterTransaccos() {
 
+    let filterTransacc: any = 
+
     this.listaTransacciones = this.listaTransaccionesGhost.filter( (item:any) => 
       item.machine_Sn             .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
       item.nombreCliente          .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
@@ -219,8 +229,12 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
   }
 
   validarRangoDeFechas() {
-    const fechaInicio = new Date(this.startDate);
-    const fechaFin = new Date(this.endDate);
+
+    let startDate: any = this.filterDateForm.controls['startDate'].value;
+    let endDate: any = this.filterDateForm.controls['endDate'].value;
+
+    const fechaInicio = new Date(startDate);
+    const fechaFin = new Date(endDate);
     if (fechaFin < fechaInicio) {
       this.dias_estimados = 'La fecha final no puede ser menor a la fecha inicial';
       this.disButton = true;
@@ -250,12 +264,12 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
 
   filterByDateRange() {
 
-    const fechaFin = new Date(this.endDate);
+    const fechaFin = new Date(this.filterDateForm.controls['endDate'].value);
     fechaFin.setDate(fechaFin.getDate() + 1);
     let modelRange:any = {
       "tipo":        "1",
       "Machine_Sn":  this.listenNserie,
-      "FechaInicio": this.startDate,
+      "FechaInicio": this.filterDateForm.controls['startDate'].value,
       "FechaFin":    fechaFin
     }
 

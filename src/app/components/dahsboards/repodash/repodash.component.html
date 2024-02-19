@@ -48,11 +48,17 @@
                         <section class="filtros p-2  d-flex">                            
                             <!-- <img src="" alt=""> -->
                             <div class="mb-2  d-flex w-75">
-                              <input class=" w-100 shadow-sm form-control rounded-pill" 
-                                     fxFlex="auto" type="text"
-                                     [(ngModel)]="filterequip"
-                                     (keyup)="filterEquipos()" 
-                                     #input placeholder="Búsqueda de equipos...">
+                                <form [formGroup]="filterequipForm"
+                                      class="w-100">
+                                    <input class=" w-100 shadow-sm form-control rounded-pill" 
+                                           fxFlex="auto" type="text"        
+                                           formControlName="filterequip"
+                                           #filterequip
+                                           id="filterequip"                                   
+                                           (keyup)="filterEquipos()" 
+                                           placeholder="Búsqueda de equipos...">
+                                           <!-- [(ngModel)]="filterequip" -->
+                                </form>
                             </div>
                             <div>
                                 <button type="submit"                                         

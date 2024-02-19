@@ -162,11 +162,15 @@
                 <div class="w-75" >
                     <section class="filtros mt-2 mb-2 w-100 d-flex">
                         <div class="mb-2 d-flex w-100">
-                          <input class=" w-100 shadow-sm form-control rounded-pill" 
-                                 fxFlex="auto" type="text"
-                                 [(ngModel)]="filtertien"
-                                 (keyup)="filterTienda()" 
-                                 #input placeholder="Búsqueda de tiendas registradas...">
+                            <form [formGroup]="filtertienForm" class="w-100">
+                                <input class=" w-100 shadow-sm form-control rounded-pill" 
+                                       fxFlex="auto" type="text"                                 
+                                       formControlName="filtertien"
+                                       #filtertien
+                                       id="filtertien"
+                                       (keyup)="filterTienda()" 
+                                       placeholder="Búsqueda de tiendas registradas...">
+                            </form>
                         </div>
                         <div *ngIf="permisonUsers">
                             <div [style]="'background-image: url( '+add+' )' "

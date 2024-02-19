@@ -173,10 +173,9 @@ closeDialog() {
 }
 
 eliminarUsuarioTemporal(id:number) {
-  ////////console.warn(id);
   this.eqipserv.eliminarUsuarioTemporal(id).subscribe({
     next: (x) => {
-      ////////console.warn('Actualizado a F');
+      //console.warn('Actualizado a F');
     }, error: (e) => {
       console.error(e);
     },    

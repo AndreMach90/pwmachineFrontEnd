@@ -9,6 +9,7 @@ import { MonitoreoService } from '../monitoreo-equipos/services/monitoreo.servic
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { IndexedDbService } from '../../shared/services/indexeddb/indexed-db.service';
 import Swal from 'sweetalert2'
+import { FormControl, FormGroup } from '@angular/forms';
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
@@ -119,6 +120,11 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   private manualTransactionHub: HubConnection;
   private automaticTransactionHub: HubConnection;
   private recollectTransactionHub: HubConnection;
+
+  public filterequipForm = new FormGroup({
+    filterequip:   new FormControl('')
+  })
+  
   
   constructor( private env: Environments,
                private indexedDbService: IndexedDbService,
@@ -758,10 +764,10 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     )
   }
 
-  filterequip:any;
   filterEquipos() {
+    let filterequip: any = this.filterequipForm.controls['filterequip'].value;
     this.listaEsquipo = this.listaEsquipoGhost.filter((item:any) =>
-    item.serieEquipo .toLowerCase().includes(this.filterequip.toLowerCase()) 
+    item.serieEquipo .toLowerCase().includes(filterequip.toLowerCase()) 
       // item.nombreTienda.toLowerCase().includes(this.filterequip.toLowerCase()) ||
       // item.nombremarca .toLowerCase().includes(this.filterequip.toLowerCase()) ||
       // item.nombremodelo.toLowerCase().includes(this.filterequip.toLowerCase()) ||

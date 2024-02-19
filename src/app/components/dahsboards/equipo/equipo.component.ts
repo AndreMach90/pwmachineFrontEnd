@@ -313,6 +313,8 @@ export class EquipoComponent implements OnInit {
   filterUsuariosMaquinaria() {
     let filter: any = this.filterUserEquiposForm.controls['filterusermaq'].value;
     this.listaUsuariosMaquina = this.listaUsuariosMaquinaGhost.filter((item:any) => 
+    // console.log( item )
+      item.usuario     .toLowerCase().includes(filter.toLowerCase()) ||
       item.nombres     .toLowerCase().includes(filter.toLowerCase()) ||
       item.nombreTienda.toLowerCase().includes(filter.toLowerCase()) ||
       item.cedula      .toLowerCase().includes(filter.toLowerCase()) ||
