@@ -656,6 +656,9 @@ export class ModeldataComponent implements OnInit {
         
         this.exportdateform.controls['acreditada'].disable();
         
+        console.log('result')
+        console.log(result)
+
         this._cancel_button    = true;
         this.disbutton_obtener = true;
 
@@ -1006,24 +1009,31 @@ export class ModeldataComponent implements OnInit {
 
   cantidadResagadas: number = 0;  
   detectaTransaccionesResagadas(dateIni: any, dateFin: any, type: number) {
-    let arrtran: any = [];  
+    let arrtran: any = [];
     this.cantidadResagadas = 1;
     switch (type) {
       case 1:
         this.dataExportarExcel.forEach((x: any) => {
+
+          console.warn('Inspeccionando')
+          console.warn(x)
+
           if (x.transacciones != undefined && x.transacciones != null) {
             // this.cantidadResagadas += x.transacciones.length; 
             
-            x.transacciones.filter((tran: any) => {
-              if (tran.fechaTransaccion < dateIni) {
-                x.resagadas = 1;
-                // console.log(this.cantidadResagadas)
-                return true;
-              } else {
-                x.resagadas = 0;
-                return false;
-              }
-            });
+            this.cantidadResagadas = x.transaccionesResagadas;
+
+            // x.transacciones.filter((tran: any) => {
+            //   if ( x. ) {
+            //     x.resagadas = 1;
+            //     console.log(tran)
+            //     console.log(this.cantidadResagadas)
+            //     return true;
+            //   } else {
+            //     // x.resagadas = 0;
+            //     return false;
+            //   }
+            // });
           }
         });
         this.sumatoriaTotalTransacciones();

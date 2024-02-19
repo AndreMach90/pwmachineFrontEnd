@@ -109,6 +109,7 @@ ModalDataEquiposComponent implements OnInit {
                 element.conteo_R = 0;
               }
 
+              element.transaccionesResagados = element.conteo_AR + element.conteo_MR;
               element.totalTransac = element.conteo_A + element.conteo_M + element.conteo_AR + element.conteo_MR;
 
             })
@@ -128,10 +129,10 @@ ModalDataEquiposComponent implements OnInit {
         if (seleccionado) {
           this.choiceEquipos = true;    
           this.equiposSeleccionados = this.listaEsquipo.map((equipo: any) => {
-            if (equipo.conteo_M > 0 || equipo.conteo_A > 0) {
+            if ( equipo.conteo_M > 0 || equipo.conteo_A > 0 || equipo.conteo_AR > 0 || equipo.conteo_MR > 0 ) {
               equipo.checkTran = true;
-              return { nserie: equipo.machine_Sn, ipequipo: equipo.ipEquipo };
-            } else if (equipo.conteo_M == 0 && equipo.conteo_A == 0) {
+              return { nserie: equipo.machine_Sn, ipequipo: equipo.ipEquipo, transaccionesResagadas: equipo.transaccionesResagados };
+            } else if ( equipo.conteo_M == 0 && equipo.conteo_A == 0 && equipo.conteo_AR == 0 && equipo.conteo_MR == 0 ) {
               equipo.checkTran = false;
               return null;
             } else {
@@ -153,6 +154,7 @@ ModalDataEquiposComponent implements OnInit {
     
 
   seleccionarEquipo(equipo: any, event: any) {
+
     if (event.target && event.target.checked !== undefined) {
       const seleccionado = event.target.checked;
       if (seleccionado) {
@@ -162,7 +164,8 @@ ModalDataEquiposComponent implements OnInit {
         if (!existe) {
           this.equiposSeleccionados.push({
             nserie: equipo.machine_Sn,
-            ipequipo: equipo.ipEquipo
+            ipequipo: equipo.ipEquipo,
+            transaccionesResagadas: equipo.transaccionesResagados
           });
         }
       } else {
@@ -179,6 +182,10 @@ ModalDataEquiposComponent implements OnInit {
   }
 
   closeDialog() {
+
+    console.log('this.equiposSeleccionados al cerrar el mdoal!')
+    console.log(this.equiposSeleccionados)
+
     this.dialogRef.close(this.equiposSeleccionados);
   }
 

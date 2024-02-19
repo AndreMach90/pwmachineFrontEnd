@@ -368,9 +368,9 @@ export class EquipoComponent implements OnInit {
 
   editarEquipos() {
     if ( this.equiposForm.controls['codigoTiendaidFk'].value == undefined || this.equiposForm.controls['codigoTiendaidFk'].value == null || this.equiposForm.controls['codigoTiendaidFk'].value == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo tienda vacío' });
-    else if ( this.equiposForm.controls['tipomaq'].value == undefined || this.equiposForm.controls['tipomaq'].value == null || this.equiposForm.controls['tipomaq'].value == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de tipo de máquina vacío' });
-    else if ( this.equiposForm.controls['nomMarc'].value == undefined || this.equiposForm.controls['nomMarc'].value == null || this.equiposForm.controls['nomMarc'].value == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de marca vacío' });
-    else if ( this.equiposForm.controls['nomMod'].value == undefined || this.equiposForm.controls['nomMod'].value == null || this.equiposForm.controls['nomMod'].value == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de modelo vacío' });
+    else if ( this.equiposForm.controls['tipomaq'].value     == undefined || this.equiposForm.controls['tipomaq'].value == null || this.equiposForm.controls['tipomaq'].value == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de tipo de máquina vacío' });
+    else if ( this.equiposForm.controls['nomMarc'].value     == undefined || this.equiposForm.controls['nomMarc'].value == null || this.equiposForm.controls['nomMarc'].value == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de marca vacío' });
+    else if ( this.equiposForm.controls['nomMod'].value      == undefined || this.equiposForm.controls['nomMod'].value == null || this.equiposForm.controls['nomMod'].value == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de modelo vacío' });
     else if ( this.equiposForm.controls['serieEquipo'].value == undefined || this.equiposForm.controls['serieEquipo'].value == null || this.equiposForm.controls['serieEquipo'].value == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de número de serie vacío' });
     else {
       
