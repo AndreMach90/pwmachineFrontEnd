@@ -12,16 +12,16 @@ import { ModeldataComponent } from 'src/app/components/shared/modeldata/modeldat
 export class 
 ModalDataEquiposComponent implements OnInit {
 
-  filterEqui:               string = '';
-  listaEsquipo:             any = [];
-  listaEsquipoGhost:        any = [];
-  listaEsquipoGhostTienda:  any = [];
-  equiposSeleccionados:     any = [];
+  filterEqui:               string  = '';
+  listaEsquipo:             any     = [];
+  listaEsquipoGhost:        any     = [];
+  listaEsquipoGhostTienda:  any     = [];
+  equiposSeleccionados:     any     = [];
   choiceEquipos:            boolean = false;
-  result:                   any = [];
+  result:                   any     = [];
   fecInicio:                any;
   fecFin:                   any;
-  modelFilterTranEqipos:    any = [];
+  modelFilterTranEqipos:    any     = [];
 
   constructor( public dialog: MatDialog,
                private equiposerv: EquipoService,
