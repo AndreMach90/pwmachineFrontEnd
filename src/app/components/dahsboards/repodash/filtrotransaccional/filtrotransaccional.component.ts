@@ -129,6 +129,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
       complete: () => {
         this.listaTransaccionesEmitGrafica.emit(this.listaTransacciones.reverse());
         this.sumatoriaTotal();
+        
         if( this.listaTransacciones[0].nombreCliente == undefined || this.listaTransacciones[0].nombreCliente == null ) this.listaTransacciones[0].nombreCliente = '';
         if( this.listaTransacciones[0].nombreTienda == undefined  || this.listaTransacciones[0].nombreTienda == null )  this.listaTransacciones[0].nombreTienda  = '';
         this.cliente = this.listaTransacciones[0].nombreCliente;
@@ -194,7 +195,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
   /** Filtro de transacciones tanto para la gráfica como para la tabla de transacciones */
   filterTransaccos() {
 
-    let filterTransacc: any = 
+    // let filterTransacc: any = 
 
     this.listaTransacciones = this.listaTransaccionesGhost.filter( (item:any) => 
       item.machine_Sn             .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||

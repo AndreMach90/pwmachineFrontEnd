@@ -670,16 +670,14 @@ export class ModeldataComponent implements OnInit {
           this.maquinasEscogidasDialog = result; 
         }
 
-        else {
-          
+        else {          
           result.filter( (equipos: any) => {
             this.maquinasEscogidasDialog.push(equipos);
           })
-
         }
 
         this.maquinasEscogidasDialog.filter( ( element:any ) => {
-          this.dataExportarExcel.push( element );
+          this.dataExportarExcel     .push( element );
           this.dataExportarExcelGhost.push( element );
           this.eliminarObjetosDuplicados();
         });
@@ -688,6 +686,8 @@ export class ModeldataComponent implements OnInit {
       else {
         this._show_spinner = false;
       }
+
+      console.log( this.dataExportarExcel );
 
       this.obtenerTransacTabla();
       this.visibleDataTable();
@@ -958,36 +958,38 @@ export class ModeldataComponent implements OnInit {
 
     if ( this.exportdateform.controls['acreditada'].value ) x = 2;
     else x = 1;
-    if( this.dataExportarExcel.length > 0 ) {
-      this._show_spinner = true;
-      this.dataExportarExcel.filter( (element:any) => {
+      if( this.dataExportarExcel.length > 0 ) {
 
-        this.obterSaldoTransac(element.nserie);
+          this._show_spinner = true;
+          this.dataExportarExcel.filter( (element:any) => {
+          this.obterSaldoTransac(element.nserie);
+          let modelRange:any = {
+            "tipo":        x,
+            "Machine_Sn":  element.nserie,
+            "FechaInicio": this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value,
+            "FechaFin":    this.exportdateform.controls['datefin'].value + ' ' + this.exportdateform.controls['horafin'].value
+          }
+          this.transacciones.filtroTransaccionesRango(modelRange).subscribe({
+              next: (z) => {
+                element.transacciones = z;
+                element.longitud = element.transacciones.length;
+                this._show_spinner = false;
+              }, error: (e) => {
+                this._show_spinner = false;
+                console.error(e);
+              }, complete: () => {
+                this.sumatoriaTotalTransacciones();
+              }
+          })        
+        });
 
-        let modelRange:any = {
-          "tipo":        x,
-          "Machine_Sn":  element.nserie,
-          "FechaInicio": this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value,
-          "FechaFin":    this.exportdateform.controls['datefin'].value + ' ' + this.exportdateform.controls['horafin'].value
-        }
-        this.transacciones.filtroTransaccionesRango(modelRange).subscribe({
-            next: (z) => {
-              element.transacciones = z;
-              element.longitud = element.transacciones.length;
-              this._show_spinner = false;
-            }, error: (e) => {
-              this._show_spinner = false;
-              console.error(e);
-            }, complete: () => {
-              this.sumatoriaTotalTransacciones();
-            }
-        })
-
-      });
-
-    }
-
+        console.log('==============================');
+        console.log(this.dataExportarExcel);
+        console.log('==============================');
+      
+      }
   }
+
 
   modelDataSaldo: any = [];
   obterSaldoTransac( machineSn:any ) {
@@ -1033,7 +1035,7 @@ export class ModeldataComponent implements OnInit {
           });
           //console.log(this.dataExportarExcel);
           this.transac.controls['recolecciones'].disable()
-          break;         
+          break;
 
       }
 
