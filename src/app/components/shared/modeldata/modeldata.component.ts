@@ -178,6 +178,7 @@ export class ModeldataComponent implements OnInit {
     let codestablecimiento:string = '';
     let equipos: string = '';
     let usuario: string = '';
+    let actividad: string = '';
     let $1:    number = 0;
     let $2:    number = 0;
     let $5:    number = 0;
@@ -191,6 +192,12 @@ export class ModeldataComponent implements OnInit {
     let $025:  number = 0;
     let $050:  number = 0;
     let $0100: number = 0;
+
+    console.log('===============================================')
+    console.log('this.dataExportarExcel esto vamos a exprtar!')
+    console.log(this.dataExportarExcel)
+    console.log('===============================================')
+
     this.dataExportarExcel.forEach( (equipo: any) => {    
 
       console.log('Data a punto de exportar a excel');
@@ -207,6 +214,7 @@ export class ModeldataComponent implements OnInit {
           "N. Serie":              elementTra.machine_Sn,
           "Usuario":               elementTra.usuarios_idFk,
           "Establecimiento":       elementTra.establecimiento,
+          "Actividad":             elementTra.observacion,
           "Cod. Establecimiento":  elementTra.codigoEstablecimiento,
           "Nombre del Banco":      elementTra.nombanco,
           "Tipo de cuenta":        elementTra.tipoCuenta,
@@ -248,7 +256,7 @@ export class ModeldataComponent implements OnInit {
     this.listaDataExportExcelNewFormat.forEach((equipo: any) => {
       // const worksheet = workbook.addWorksheet(`Transacciones_${equipo.nserie}`); 
       const headers = this.getHeaderRow();
-      const numericColumns = [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
+      const numericColumns = [ 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26];
 
       // Agrega encabezados de columna solo si es la primera iteración
       if (this.listaDataExportExcelNewFormat.indexOf(equipo) === 0) {
@@ -302,6 +310,7 @@ export class ModeldataComponent implements OnInit {
             equipos             = x["N. Serie"];
             usuario             = x["Usuario"];
             establecimiento     = x["Establecimiento"];
+            actividad           = x["Actividad"];
             codestablecimiento  = x["Cod. Establecimiento"];
             $1                 += x["$1.00"];
             $2                 += x["$2.00"];
@@ -321,7 +330,7 @@ export class ModeldataComponent implements OnInit {
 
         const totalRow = worksheet.addRow(
           [datenow, timenow, clientes,tiendas,'   ***   ',
-           equipos,usuario,establecimiento,codestablecimiento,
+           equipos,usuario, establecimiento,actividad,codestablecimiento,
            '    ','    ','    ',$1*1,
            $2*2,$5*5,$10*10,$20*20,$50*50,$100*100,
            $001.toFixed(2),$005.toFixed(2),$010.toFixed(2),$025.toFixed(2),$050.toFixed(2),
@@ -355,7 +364,7 @@ export class ModeldataComponent implements OnInit {
 
         const saldoRow = worksheet.addRow(
           [datenow, timenow, clientes,tiendas,'   ***   ',
-           equipos,usuario,establecimiento,codestablecimiento,
+           equipos,usuario,establecimiento,actividad,codestablecimiento,
            '    ','    ','    ', '',
            '', '', '', '', '', '',
            '','','','','',
@@ -414,7 +423,7 @@ export class ModeldataComponent implements OnInit {
       const headerRow = worksheet.getRow(2);
       headerRow.eachCell((cell) => {
         cell.fill = {
-          type: 'pattern',
+          type:    'pattern',
           pattern: 'solid',
           fgColor: { argb: '2929AB' },
         };
@@ -969,7 +978,10 @@ export class ModeldataComponent implements OnInit {
           };
   
           this.transacciones.filtroTransaccionesRango(modelRange).subscribe({
-            next: (z) => {
+            next: (z) => {            
+
+
+
               element.transacciones = z;
               element.longitud = element.transacciones.length;
               resolve();
@@ -1005,6 +1017,10 @@ export class ModeldataComponent implements OnInit {
         } 
       });
     }
+
+    console.log('this.dataExportarExcel en este paso ya se añadio las transacciones')
+    console.log(this.dataExportarExcel)
+
   }
 
   cantidadResagadas: number = 0;  
@@ -1014,35 +1030,16 @@ export class ModeldataComponent implements OnInit {
     switch (type) {
       case 1:
         this.dataExportarExcel.forEach((x: any) => {
-
-          console.warn('Inspeccionando')
-          console.warn(x)
-
           if (x.transacciones != undefined && x.transacciones != null) {
-            // this.cantidadResagadas += x.transacciones.length; 
-            
             this.cantidadResagadas = x.transaccionesResagadas;
-
-            // x.transacciones.filter((tran: any) => {
-            //   if ( x. ) {
-            //     x.resagadas = 1;
-            //     console.log(tran)
-            //     console.log(this.cantidadResagadas)
-            //     return true;
-            //   } else {
-            //     // x.resagadas = 0;
-            //     return false;
-            //   }
-            // });
           }
         });
         this.sumatoriaTotalTransacciones();
-        console.log(this.dataExportarExcel);
-        this.dataExportarExcel.filter( (j:any) => {  
-          if (j.fechaTransaccion < dateIni) {
-            // console.log(j.transacciones.length)
-          }
-        })
+        // this.dataExportarExcel.filter( (j:any) => {  
+        //   if ( j.fechaTransaccion < dateIni ) {
+        //     // console.log(j.transacciones.length)
+        //   }
+        // })
         break;
   
       case 2:
