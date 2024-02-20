@@ -43,6 +43,13 @@ export class ModeldataComponent implements OnInit {
 
   @Output() moduleChange: EventEmitter<any> = new EventEmitter<any>();
 
+  @ViewChild('dateini') dateini: ElementRef | undefined;
+  @ViewChild('datefin') datefin: ElementRef | undefined;
+  @ViewChild('horaini') horaini: ElementRef | undefined;
+  @ViewChild('horafin') horafin: ElementRef | undefined;
+
+  dini: any;
+  dfin: any;
   disbutton_obtener: boolean = false;
   totalSubstract: number = 0;
   _cancel_button: boolean = false;
@@ -505,8 +512,6 @@ export class ModeldataComponent implements OnInit {
             takeWhile(() => this.countTransaction < totalTransacciones),
             finalize(() => {
               this.countTransaction = totalTransacciones;
-              // //console.log('Intervalo detenido');
-              // Paso 3: Ejecutar la función guardarTransaccionesAc
               this.guardarTransaccionesAc(this.tran);
             })
           )
@@ -531,14 +536,9 @@ export class ModeldataComponent implements OnInit {
     }
   }
 
-  @ViewChild('dateini') dateini: ElementRef | undefined;
-  @ViewChild('datefin') datefin: ElementRef | undefined;
-  @ViewChild('horaini') horaini: ElementRef | undefined;
-  @ViewChild('horafin') horafin: ElementRef | undefined;
   validateExistDate() {
     const dateiniValue = this.dateini?.nativeElement.value;
     const datefinValue = this.datefin?.nativeElement.value;
-
 
     if (dateiniValue && datefinValue) {
       if (dateiniValue > datefinValue) {
@@ -902,9 +902,6 @@ export class ModeldataComponent implements OnInit {
         break;
     }
 
-    //console.warn(this.dataExportarExcel);
-    //console.warn('Recolecciones recuperadas');
-    //console.warn(this.transaccionesRecolecciones);
     this.sumatoriaTotalTransacciones();
 
   }
@@ -954,8 +951,7 @@ export class ModeldataComponent implements OnInit {
     this.disbutton_obtener = false;
   }
 
-  dini: any;
-  dfin: any;
+
   obtenerTransacTabla() {
     let x = 0;
     if (this.exportdateform.controls['acreditada'].value) x = 2;
@@ -978,10 +974,7 @@ export class ModeldataComponent implements OnInit {
           };
   
           this.transacciones.filtroTransaccionesRango(modelRange).subscribe({
-            next: (z) => {            
-
-
-
+            next: (z) => {
               element.transacciones = z;
               element.longitud = element.transacciones.length;
               resolve();
@@ -1018,28 +1011,19 @@ export class ModeldataComponent implements OnInit {
       });
     }
 
-    console.log('this.dataExportarExcel en este paso ya se añadio las transacciones')
-    console.log(this.dataExportarExcel)
-
   }
 
   cantidadResagadas: number = 0;  
   detectaTransaccionesResagadas(dateIni: any, dateFin: any, type: number) {
-    let arrtran: any = [];
-    this.cantidadResagadas = 1;
+    this.cantidadResagadas = 0;
     switch (type) {
       case 1:
         this.dataExportarExcel.forEach((x: any) => {
           if (x.transacciones != undefined && x.transacciones != null) {
-            this.cantidadResagadas = x.transaccionesResagadas;
+            this.cantidadResagadas += x.transaccionesResagadas;
           }
         });
         this.sumatoriaTotalTransacciones();
-        // this.dataExportarExcel.filter( (j:any) => {  
-        //   if ( j.fechaTransaccion < dateIni ) {
-        //     // console.log(j.transacciones.length)
-        //   }
-        // })
         break;
   
       case 2:
