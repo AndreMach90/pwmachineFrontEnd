@@ -48,6 +48,8 @@ export class ModeldataComponent implements OnInit {
   @ViewChild('horaini') horaini: ElementRef | undefined;
   @ViewChild('horafin') horafin: ElementRef | undefined;
 
+  cantidadResagadas: number = 0;
+
   dini: any;
   dfin: any;
   disbutton_obtener: boolean = false;
@@ -160,17 +162,14 @@ export class ModeldataComponent implements OnInit {
   validateSesion() {
     let xtoken:any = sessionStorage.getItem('token');
     if (xtoken == null || xtoken == undefined || xtoken == '') {
-      this.router.navigate(['login'])
-      // //alert'NO hay token de usuario');
+      this.router.navigate(['login']);
     }
   }
 
   closeSession() {
     sessionStorage.removeItem('token');
     let xtoken:any = sessionStorage.getItem('token');
-    if( xtoken == undefined || xtoken == null || xtoken == '' ) {
-      this.router.navigate(['login']);
-    }
+    if( xtoken == undefined || xtoken == null || xtoken == '' ) this.router.navigate(['login']);
   }
 
   exportarExcel(): void {
@@ -200,17 +199,10 @@ export class ModeldataComponent implements OnInit {
     let $050:  number = 0;
     let $0100: number = 0;
 
-    console.log('===============================================')
-    console.log('this.dataExportarExcel esto vamos a exprtar!')
-    console.log(this.dataExportarExcel)
-    console.log('===============================================')
-
-    this.dataExportarExcel.forEach( (equipo: any) => {    
-
-      console.log('Data a punto de exportar a excel');
-      console.log(equipo);
+    this.dataExportarExcel.forEach( (equipo: any) => {
 
       const transaccionesTransformadas = equipo.transacciones.map( ( elementTra: any ) => {
+
         return {
           "F.Transacciones":       new Date(elementTra.fechaTransaccion),
           "fecha":                 elementTra.fecha,
@@ -255,7 +247,7 @@ export class ModeldataComponent implements OnInit {
       this.listaDataExportExcelNewFormat.push({
         ...equipo,
         transacciones: transaccionesTransformadas
-      });      
+      });
 
     });
 
@@ -263,35 +255,62 @@ export class ModeldataComponent implements OnInit {
     this.listaDataExportExcelNewFormat.forEach((equipo: any) => {
       // const worksheet = workbook.addWorksheet(`Transacciones_${equipo.nserie}`); 
       const headers = this.getHeaderRow();
-      const numericColumns = [ 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26];
+      const numericColumns = [ 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 ];
 
-      // Agrega encabezados de columna solo si es la primera iteración
-      if (this.listaDataExportExcelNewFormat.indexOf(equipo) === 0) {
-        worksheet.addRow(['Transacciones - '  + new Date().toLocaleDateString()]);
-        worksheet.addRow(headers);
-      }
-  
-      // Agrega datos
+    // Agrega encabezados de columna solo si es la primera iteración
+    if (this.listaDataExportExcelNewFormat.indexOf(equipo) === 0) {
+      worksheet.addRow( ['Transacciones - '  + new Date().toLocaleDateString()] );
+      worksheet.addRow(headers);
+    }
+
+    // Agrega datos
     equipo.transacciones.forEach((transaccion: any, i: number) => {
+    
     const row: any = [];
     const filteredHeaders = this.getHeaderRow();
-
-    filteredHeaders.forEach((header: any, columnIndex: number) => {
-        const cellValue = transaccion[header] || ''; 
-        if (numericColumns.includes(columnIndex)) {
-            let x = cellValue.toString();
-            let y = x.replace(',', '');
-            let j = Number(y);
-            row.push(Number(j));
-        } else {
-            row.push(cellValue);
-        }
+    
+    
+    
+    filteredHeaders.forEach( ( header: any, columnIndex: number ) => {
+      const cellValue = transaccion[header] || '';
+      if (numericColumns.includes(columnIndex)) {
+          let x = cellValue.toString();
+          let y = x.replace(',', '');
+          let j = Number(y);
+          row.push(Number(j));
+      } else {
+          row.push(cellValue);
+      }
     });
 
-    worksheet.addRow(row);
+    // Establecer color de fondo para la fila
+    // worksheet.addRow(row).eachCell((cell: any) => {
+    //   cell.fill = {
+    //       type: 'pattern',
+    //       pattern: 'solid',
+    //       fgColor: { argb: backgroundColor },
+    //   };
+    // });
+
+    let fechaInicialEscogida: any = new Date( this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value ).toISOString();
+    const transaccionFecha = new Date(transaccion['F.Transacciones']).toISOString();
+    const backgroundColor = transaccionFecha < fechaInicialEscogida ? '#FDF9E1' : '';
+    
+    const addedRow = worksheet.addRow(row);
+
+    // Aplicar el color de fondo solo si es necesario, después de añadir la fila
+    if (backgroundColor) {
+        addedRow.eachCell((cell) => {
+            cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: backgroundColor.replace('#', '') }, // Asegúrate de quitar el '#' para el formato ARGB
+            };
+        });
+    }
 
     let datenow = new Date();
-    let timenow = new Date().getHours().toString()+':'+new Date().getMinutes().toString()+':'+new Date().getSeconds().toString();
+    let timenow = new Date().getHours().toString() +':'+ new Date().getMinutes().toString() +':'+ new Date().getSeconds().toString();
 
     if (i === equipo.transacciones.length - 1) {
         
@@ -428,22 +447,28 @@ export class ModeldataComponent implements OnInit {
       };
   
       const headerRow = worksheet.getRow(2);
-      headerRow.eachCell((cell) => {
+
+      headerRow.eachCell( (cell) => {
+        
         cell.fill = {
           type:    'pattern',
           pattern: 'solid',
           fgColor: { argb: '2929AB' },
         };
+        
         cell.font = { bold: true, color: { argb: 'FFFFFF' } };
         cell.border = {
+
           top:    { style: 'thin',  color: { argb: '000000' } },
           bottom: { style: 'thick', color: { argb: '8989E9' } },
           left:   { style: 'thin',  color: { argb: '000000' } },
-          right:  { style: 'thin',  color: { argb: '000000' } },
+          right:  { style: 'thin',  color: { argb: '000000' } }
+
         };
+
       });
   
-      worksheet.columns.forEach( (column: any) => {
+      worksheet.columns.forEach( ( column: any ) => {
 
         if      (column.number === 1)  column.width = 15;
         else if (column.number === 3)  column.width = 25;
@@ -460,24 +485,29 @@ export class ModeldataComponent implements OnInit {
     let dateData = new Date();
     let tokenDocs: any = this.tokenGen.generateRandomString(5).replace(' ', '_');
     let nombreArchivo: any = 'Transacciones_' + dateData.getDate() + '-' + (dateData.getMonth() + 1) + '-' + dateData.getFullYear() + 'T' + dateData.getHours() + 'H' + dateData.getMinutes() + 'm' + '_' + tokenDocs + '.xlsx';
+    
     this.transPush(nombreArchivo);
+    
     workbook.xlsx.writeBuffer().then((buffer) => {
+    
       const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
+    
       a.href = url;
       a.download = nombreArchivo;
       a.click();
       window.URL.revokeObjectURL(url);
+    
       this.exportdateform.controls['acreditada'].enable();
+    
       setTimeout(() => {
         this.limpiar();
       }, 1000);
+    
     });
 
   }
-
-
 
   transPush(nombreArchivo: any) {
     if (this.exportdateform.controls['acreditada'].value) {
@@ -488,13 +518,13 @@ export class ModeldataComponent implements OnInit {
         element.transacciones.filter((transaccion: any) => {
         
           const arr = {
-            noTransaction: transaccion.transaccion_No,
-            machineSn: transaccion.machine_Sn,
+            noTransaction:    transaccion.transaccion_No,
+            machineSn:        transaccion.machine_Sn,
             fechaTransaction: transaccion.fechaTransaccion,
-            fechaIni: this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value,
-            fechaFin: this.exportdateform.controls['datefin'].value + ' ' + this.exportdateform.controls['horafin'].value,
-            nombreArchivo: nombreArchivo,
-            usuarioRegistro: xtoken,
+            fechaIni:         this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value,
+            fechaFin:         this.exportdateform.controls['datefin'].value + ' ' + this.exportdateform.controls['horafin'].value,
+            nombreArchivo:    nombreArchivo,
+            usuarioRegistro:  xtoken,
           }
         
           this.tran.push(arr);
@@ -521,11 +551,7 @@ export class ModeldataComponent implements OnInit {
 
             if( this.porcentaje == 100 ) {
               this._show_spinner = true;
-              setTimeout(() => {
-     
-     
-     
-     
+              setTimeout( () => {   
                 this._show_spinner = false;
                 this.moduleChange.emit(true);
               }, 2000);
@@ -1013,7 +1039,6 @@ export class ModeldataComponent implements OnInit {
 
   }
 
-  cantidadResagadas: number = 0;  
   detectaTransaccionesResagadas(dateIni: any, dateFin: any, type: number) {
     this.cantidadResagadas = 0;
     switch (type) {
@@ -1036,8 +1061,8 @@ export class ModeldataComponent implements OnInit {
           return new Promise<void>((resolve, reject) => {
             this.dataExportarExcel.forEach((x: any, index: number) => {
               if (x.transacciones != undefined && x.transacciones != null) {
-                x.transacciones = x.transacciones.filter((tran: any) => {
-                  return tran.fechaTransaccion.toString().split('T')[0] === fechaINI || tran.fechaTransaccion.toString().split('T')[0] === fechaFIN;                
+                x.transacciones = x.transacciones.filter( ( tran: any ) => {
+                  return tran.fechaTransaccion.toString().split('T')[0] === fechaINI || tran.fechaTransaccion.toString().split('T')[0] === fechaFIN;
                 });
                 // Actualizar el campo longitud después de filtrar las transacciones
                 x.longitud = x.transacciones.length;

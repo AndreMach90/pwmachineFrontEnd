@@ -183,8 +183,8 @@ ModalDataEquiposComponent implements OnInit {
 
   closeDialog() {
 
-    console.log('this.equiposSeleccionados al cerrar el mdoal!')
-    console.log(this.equiposSeleccionados)
+    // console.log('this.equiposSeleccionados al cerrar el mdoal!')
+    // console.log(this.equiposSeleccionados)
 
     this.dialogRef.close(this.equiposSeleccionados);
   }
