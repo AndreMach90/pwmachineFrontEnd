@@ -257,6 +257,10 @@ export class ModeldataComponent implements OnInit {
       const headers = this.getHeaderRow();
       const numericColumns = [ 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 ];
 
+      console.log( '<<<<<<<<<<<<<<<<<<<<equipo.saldo>>>>>>>>>>>>>>>>>>>>')
+      console.log( equipo)
+      console.log( '<<<<<<<<<<<<<<<<<<<<equipo.saldo>>>>>>>>>>>>>>>>>>>>')
+
     // Agrega encabezados de columna solo si es la primera iteración
     if (this.listaDataExportExcelNewFormat.indexOf(equipo) === 0) {
       worksheet.addRow( ['Transacciones - '  + new Date().toLocaleDateString()] );
@@ -282,15 +286,6 @@ export class ModeldataComponent implements OnInit {
           row.push(cellValue);
       }
     });
-
-    // Establecer color de fondo para la fila
-    // worksheet.addRow(row).eachCell((cell: any) => {
-    //   cell.fill = {
-    //       type: 'pattern',
-    //       pattern: 'solid',
-    //       fgColor: { argb: backgroundColor },
-    //   };
-    // });
 
     let fechaInicialEscogida: any = new Date( this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value ).toISOString();
     const transaccionFecha = new Date(transaccion['F.Transacciones']).toISOString();
@@ -992,6 +987,8 @@ export class ModeldataComponent implements OnInit {
         return new Promise<void>((resolve, reject) => {
           this.obterSaldoTransac(element.nserie);
   
+
+
           let modelRange:any = {
             "tipo":        x,
             "Machine_Sn":  element.nserie,
@@ -1009,6 +1006,18 @@ export class ModeldataComponent implements OnInit {
               reject(e);
             }
           });
+
+
+          setTimeout(() => {
+            console.log(999)
+            this.modelDataSaldo.filter( (saldo: any) => {
+              if( element.nserie ==  saldo.machineSn ) {
+                console.log(saldo.totalRecoleccion);
+                element.saldo = saldo.totalRecoleccion;
+              }
+            })
+          }, 1500);
+          console.log(9999)
         });
       })).then(() => {
         // Llamamos a detectaTransaccionesResagadas con las fechas obtenidas fuera del ciclo e
@@ -1060,6 +1069,7 @@ export class ModeldataComponent implements OnInit {
         const filterAndRemove = () => {
           return new Promise<void>((resolve, reject) => {
             this.dataExportarExcel.forEach((x: any, index: number) => {
+
               if (x.transacciones != undefined && x.transacciones != null) {
                 x.transacciones = x.transacciones.filter( ( tran: any ) => {
                   return tran.fechaTransaccion.toString().split('T')[0] === fechaINI || tran.fechaTransaccion.toString().split('T')[0] === fechaFIN;
@@ -1095,7 +1105,10 @@ export class ModeldataComponent implements OnInit {
     this.transacciones.ObtenerEquiposSaldo(machineSn).subscribe({
       next: (x) => {
         this.modelDataSaldo = x;
-        //console.log(this.modelDataSaldo);
+        console.log('////////////////////////////////////////');
+        console.log(' Este es el saldo obtenido!');
+        console.log(this.modelDataSaldo);
+        console.log('////////////////////////////////////////');
       }
     })
   }
