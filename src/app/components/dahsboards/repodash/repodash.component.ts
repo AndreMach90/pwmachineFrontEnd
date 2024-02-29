@@ -961,12 +961,19 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
                                 
 
 
+                        console.log(10)
     setTimeout(() => {    
-      let xvalue: any = localStorage.getItem('valor_validador');      
-      if( Number(xvalue) !== Number(sumatoriaValidate) ) {
-        //console.warn('sumatoriaValidate');
-        //console.warn(sumatoriaValidate);
-        //console.warn(Number(xvalue));
+
+      console.log(11)
+
+      let xvalue: any = localStorage.getItem('valor_validador');     
+      
+      console.log('Estos son los valores que deben coincidir')
+      console.log( 'Variable local enviada desde el server: ' + xvalue)
+      console.log('Sumatoria de valores: ' + sumatoriaValidate)
+
+
+      if( Number(xvalue) !== Number(sumatoriaValidate.toFixed(2)) ) {
         this.colorValidateCuadre = 'red';
       }
       else {

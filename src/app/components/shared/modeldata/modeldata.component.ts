@@ -16,6 +16,7 @@ import Swal from 'sweetalert2'
 import { HistoriaAcreditacionService } from '../historial-acreditacion/services/historia-acreditacion.service';
 import { EncryptService } from '../services/encrypt.service';
 import { SharedService } from '../services/shared.service';
+import { machine } from 'os';
 
 
 const Toast = Swal.mixin({
@@ -71,33 +72,33 @@ export class ModeldataComponent implements OnInit {
   clientelista:any = [];
   mostrarCiclo: boolean = false;
   listaDataExportExcelNewFormat: any = [];
-  _transaction_show:       boolean = false;
-  checked:                 boolean = false;
-  delete:                  any  = this.env.apiUrlIcon() + 'delete.png';
-  edit:                    any  = this.env.apiUrlIcon() + 'edit.png';
-  crear:                   any  = this.env.apiUrlIcon() + 'accept.png';
-  cancel:                  any  = this.env.apiUrlIcon() + 'cancel.png';
-  search:                  any  = this.env.apiUrlIcon() + 'search.png';
-  calendar:                any  = this.env.apiUrlIcon() + 'calendar.png';
-  excel:                   any  = this.env.apiUrlIcon() + 'excel.png';
-  configblack:             any  = this.env.apiUrlIcon() + 'configblack.png';
-  menuicon:                any  = this.env.apiUrlIcon() + 'menu.png';
-  transaccionesRecolecciones: any[] = [];
-  dataTablefilter:        any     = [];
-  sumatoriaTransacciones: number  = 0;
-  indices_show:           boolean = false;
-  checktiendas:           boolean = false;
-  choicetiendas:          boolean = false;
-  _show_spinner:          boolean = false;
-  transac:                FormGroup;
-  dataExportarExcel:      any     = [];
-  dataExportarExcelGhost: any     = [];
-  idcliente:              number  = 0;
-  tiendalista:            any     = [];
-  tiendaListaGhost:       any     = [];
-  reportVisible: boolean = true;
-  dis_exp_excel: boolean = true;
-  conttransaccion: boolean = false;
+  _transaction_show:             boolean = false;
+  checked:                       boolean = false;
+  delete:                        any     = this.env.apiUrlIcon() + 'delete.png';
+  edit:                          any     = this.env.apiUrlIcon() + 'edit.png';
+  crear:                         any     = this.env.apiUrlIcon() + 'accept.png';
+  cancel:                        any     = this.env.apiUrlIcon() + 'cancel.png';
+  search:                        any     = this.env.apiUrlIcon() + 'search.png';
+  calendar:                      any     = this.env.apiUrlIcon() + 'calendar.png';
+  excel:                         any     = this.env.apiUrlIcon() + 'excel.png';
+  configblack:                   any     = this.env.apiUrlIcon() + 'configblack.png';
+  menuicon:                      any     = this.env.apiUrlIcon() + 'menu.png';
+  transaccionesRecolecciones:    any     = [];
+  dataTablefilter:               any     = [];
+  sumatoriaTransacciones:        number  = 0;
+  indices_show:                  boolean = false;
+  checktiendas:                  boolean = false;
+  choicetiendas:                 boolean = false;
+  _show_spinner:                 boolean = false;
+  transac:                       FormGroup;
+  dataExportarExcel:             any     = [];
+  dataExportarExcelGhost:        any     = [];
+  idcliente:                     number  = 0;
+  tiendalista:                   any     = [];
+  tiendaListaGhost:              any     = [];
+  reportVisible:                 boolean = true;
+  dis_exp_excel:                 boolean = true;
+  conttransaccion:               boolean = false;
 
   public exportdateform = new FormGroup({
     dateini:              new FormControl(''),
@@ -113,15 +114,15 @@ export class ModeldataComponent implements OnInit {
   })
 
   constructor( private formBuilder: FormBuilder,
-    private reouter: Router,
-    private tokenGen: SharedService,
+    private reouter:       Router,
+    private tokenGen:      SharedService,
     private acreditacion:  HistoriaAcreditacionService,
     private clienteserv:   ClientesService,
     private tiendaservs:   TiendaService,
     private monitoreo:     MonitoreoService,
-    public router:         Router,
+    public  router:        Router,
     private transacciones: TransaccionesTiendaService,
-    public dialog:         MatDialog,
+    public  dialog:        MatDialog,
     private ncrypt:        EncryptService,
     private env:           Environments ) {
 
@@ -203,8 +204,12 @@ export class ModeldataComponent implements OnInit {
 
       const transaccionesTransformadas = equipo.transacciones.map( ( elementTra: any ) => {
 
+        let dateTran = elementTra.fechaTransaccion.toString().split('T');
+
+        console.log( dateTran[0] );
+
         return {
-          "F.Transacciones":       new Date(elementTra.fechaTransaccion),
+          "F.Transacciones":       dateTran[0],
           "fecha":                 elementTra.fecha,
           "Hora":                  elementTra.hora,
           "Nombre Cliente":        elementTra.nombreCliente,
@@ -257,9 +262,9 @@ export class ModeldataComponent implements OnInit {
       const headers = this.getHeaderRow();
       const numericColumns = [ 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 ];
 
-      console.log( '<<<<<<<<<<<<<<<<<<<<equipo.saldo>>>>>>>>>>>>>>>>>>>>')
-      console.log( equipo)
-      console.log( '<<<<<<<<<<<<<<<<<<<<equipo.saldo>>>>>>>>>>>>>>>>>>>>')
+      // console.log( '<<<<<<<<<<<<<<<<<<<<equipo.saldo>>>>>>>>>>>>>>>>>>>>')
+      // console.log( equipo)
+      // console.log( '<<<<<<<<<<<<<<<<<<<<equipo.saldo>>>>>>>>>>>>>>>>>>>>')
 
     // Agrega encabezados de columna solo si es la primera iteración
     if (this.listaDataExportExcelNewFormat.indexOf(equipo) === 0) {
@@ -901,20 +906,20 @@ export class ModeldataComponent implements OnInit {
     switch(a) {
       case true:
         this.dataExportarExcel.forEach((element:any) => {          
-          element.transacciones.push(...this.transaccionesRecolecciones.filter((transaccionRecol) => transaccionRecol.idElemento == element.id && transaccionRecol.machine_Sn == element.nserie));
-          element.transacciones.sort((a:any, b:any) => {
+          element.transacciones
+                 .push(...this.transaccionesRecolecciones.filter((transaccionRecol:any) => transaccionRecol.idElemento == element.id && transaccionRecol.machine_Sn == element.nserie));
+          element.transacciones
+                 .sort((a:any, b:any) => {
             let dateA = new Date(a.fechaTransaccion + 'T' + a.hora);
             let dateB = new Date(b.fechaTransaccion + 'T' + b.hora);
             return dateB.getTime() - dateA.getTime();
           });
-
           element.longitud = element.transacciones.length;
-
         });
         this.transaccionesRecolecciones = [];
         break;
       case false:
-        this.dataExportarExcel.forEach((element:any) => {
+        this.dataExportarExcel.forEach( ( element:any ) => {
           let transaccionesRecoleccionElemento = element.transacciones.filter((elementTra:any) => elementTra.tipoTransaccion == 'Recolección');
           this.transaccionesRecolecciones.push(...transaccionesRecoleccionElemento);
           element.transacciones = element.transacciones.filter((elementTra:any) => elementTra.tipoTransaccion != 'Recolección');
@@ -931,39 +936,42 @@ export class ModeldataComponent implements OnInit {
     this._show_spinner = true;
     this.conttransaccion = true;
     this.transacciones.GuardarTransaccionesAcreditadas(model).subscribe({
-       next: (x) => {
-         //console.warn('GUARDADO!');
-         Toast.fire({ icon: 'success', title: 'Transacciones generadas, en espera de acreditación ', position: 'center' });
-       },
-       error: (e) => {
-         console.error(e);
-         this._show_spinner    = false;
-         Toast.fire({ icon: 'error', title: 'Algo ha pasado, no hemos podido generar la acreditación ' });
-       },
-       complete: () => {
-         this._show_spinner    = false;
-         this.conttransaccion  = false;
-         this.limpiar();
-       },
+      next: (x) => {
+        //console.warn('GUARDADO!');
+        Toast.fire({ icon: 'success', title: 'Transacciones generadas, en espera de acreditación ', position: 'center' });
+      },
+      error: (e) => {
+        console.error(e);
+        this._show_spinner    = false;
+        Toast.fire({ 
+           icon: 'error',
+           title: 'Algo ha pasado, no hemos podido generar la acreditación'
+        });
+      },
+      complete: () => {
+        this._show_spinner    = false;
+        this.conttransaccion  = false;
+        this.limpiar();
+      },
     });
   }
 
   limpiar() {
-    this.countTransaction = 0;
-    this.validExportExcel = true;
-    this.conttransaccion  = false;
-    this.porcentaje       = 0;
+    this.countTransaction        = 0;
+    this.validExportExcel        = true;
+    this.conttransaccion         = false;
+    this.porcentaje              = 0;
     this.maquinasEscogidasDialog = [];
-    this.dataExportarExcel = [];
+    this.dataExportarExcel       = [];
     this.maquinasEscogidasDialog = [];
-    this.dataExportarExcelGhost = [];
-    this.sumatoriaTransacciones = 0;
+    this.dataExportarExcelGhost  = [];
+    this.sumatoriaTransacciones  = 0;
     this.exportdateform.controls['acreditada'].enable();
-    this._cancel_button = false;
-    this.dis_exp_excel = true;
+    this._cancel_button          = false;
+    this.dis_exp_excel           = true;
     this.listaDataExportExcelNewFormat = [];
-    this.cantidadTransacciones = 0;
-    this.transac.controls['recolecciones'].enable();
+    this.cantidadTransacciones   = 0;
+    this.transac       .controls['recolecciones'].enable();
     this.exportdateform.controls['dateini'].enable();
     this.exportdateform.controls['datefin'].enable();
     this.exportdateform.controls['horaini'].enable();
@@ -979,15 +987,14 @@ export class ModeldataComponent implements OnInit {
     else x = 1;
     
     if (this.dataExportarExcel.length > 0) {
+      
       this._show_spinner = true;
       let dini = this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value;
       let dfin = this.exportdateform.controls['datefin'].value + ' ' + this.exportdateform.controls['horafin'].value;
   
       Promise.all(this.dataExportarExcel.map((element: any) => {
         return new Promise<void>((resolve, reject) => {
-          this.obterSaldoTransac(element.nserie);
-  
-
+          
 
           let modelRange:any = {
             "tipo":        x,
@@ -995,29 +1002,28 @@ export class ModeldataComponent implements OnInit {
             "FechaInicio": dini,
             "FechaFin":    dfin
           };
-  
+
+          console.warn('===================================================================')
+          console.warn('<<<<<<<Este es el modelo que se envia para construir el excel>>>>>>>')
+          console.warn(modelRange)
+          console.warn('===================================================================')
+          
           this.transacciones.filtroTransaccionesRango(modelRange).subscribe({
+            
             next: (z) => {
               element.transacciones = z;
               element.longitud = element.transacciones.length;
+              this.obterSaldoTransac(element.nserie);
+              
               resolve();
             },
+            
             error: (e) => {
               reject(e);
             }
+
           });
-
-
-          setTimeout(() => {
-            console.log(999)
-            this.modelDataSaldo.filter( (saldo: any) => {
-              if( element.nserie ==  saldo.machineSn ) {
-                console.log(saldo.totalRecoleccion);
-                element.saldo = saldo.totalRecoleccion;
-              }
-            })
-          }, 1500);
-          console.log(9999)
+          
         });
       })).then(() => {
         // Llamamos a detectaTransaccionesResagadas con las fechas obtenidas fuera del ciclo e
@@ -1053,24 +1059,20 @@ export class ModeldataComponent implements OnInit {
     switch (type) {
       case 1:
         this.dataExportarExcel.forEach((x: any) => {
-          if (x.transacciones != undefined && x.transacciones != null) {
-            this.cantidadResagadas += x.transaccionesResagadas;
-          }
+          if (x.transacciones != undefined && x.transacciones != null) this.cantidadResagadas += x.transaccionesResagadas;
         });
         this.sumatoriaTotalTransacciones();
-        break;
-  
+        break;  
       case 2:
         let fechaINI: any = dateIni.toString().split(' ')[0];
         let fechaFIN: any = dateFin.toString().split(' ')[0];
-        let indexH: any = null;
-  
+        let indexH:   any = null;
         // Creamos una función que devuelve una promesa
         const filterAndRemove = () => {
           return new Promise<void>((resolve, reject) => {
             this.dataExportarExcel.forEach((x: any, index: number) => {
 
-              if (x.transacciones != undefined && x.transacciones != null) {
+              if ( x.transacciones != undefined && x.transacciones != null ) {
                 x.transacciones = x.transacciones.filter( ( tran: any ) => {
                   return tran.fechaTransaccion.toString().split('T')[0] === fechaINI || tran.fechaTransaccion.toString().split('T')[0] === fechaFIN;
                 });
@@ -1093,8 +1095,7 @@ export class ModeldataComponent implements OnInit {
           this.sumatoriaTotalTransacciones();  
         }).catch((error) => {
           console.error('Ocurrió un error:', error);
-        });
-  
+        });  
         break;
     }
   }
@@ -1102,13 +1103,20 @@ export class ModeldataComponent implements OnInit {
 
   modelDataSaldo: any = [];
   obterSaldoTransac( machineSn:any ) {
+    console.log('machineSn enviado!!')
+    console.log(machineSn)
     this.transacciones.ObtenerEquiposSaldo(machineSn).subscribe({
       next: (x) => {
         this.modelDataSaldo = x;
-        console.log('////////////////////////////////////////');
-        console.log(' Este es el saldo obtenido!');
-        console.log(this.modelDataSaldo);
-        console.log('////////////////////////////////////////');
+      }, error: (e) => console.error(e),
+      complete: () => {
+        this.dataExportarExcel.filter( ( j:any ) => {
+          this.modelDataSaldo.filter( (saldo: any) => {
+            if( j.nserie ==  saldo.machineSn ) {
+              j.saldo = saldo.totalRecoleccion;
+            }
+          })
+        })
       }
     })
   }
