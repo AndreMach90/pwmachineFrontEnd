@@ -199,14 +199,16 @@ export class HistorialAcreditacionComponent implements OnInit {
     this.transacciones.ObtenerEquiposSaldo(machineSn).subscribe({
       next: (x) => {
         this.modelDataSaldo = x;
-        console.log('===============================');
-        console.log(this.modelDataSaldo);
-        console.log('===============================');
+        // console.log('===============================');
+        // console.log(this.modelDataSaldo);
+        // console.log('===============================');
       }
     })
   }
 
   exportarExcel( nombreArchivo:any ): void {
+
+    // alert('Exportando a Excel')
 
     const workbook = new ExcelJS.Workbook();
     let res:number = 0;
@@ -521,12 +523,16 @@ export class HistorialAcreditacionComponent implements OnInit {
         FechaIni: this.exportdateform.controls['dateini'].value,
         FechaFin: fechaFin.toISOString() // Convierte la fecha a formato ISO (opcional)
       };
+
+      console.log('this.modelConsult');
+      console.log(this.modelConsult);
   
       // Realiza la consulta con la nueva fecha
       this.hcred.obtenerAcreditadasTran(this.modelConsult).subscribe({
         next: (x) => {
           //console.log(x);
           this.listaAcreditadasOk = x;
+          console.log(this.listaAcreditadasOk);
         }
       });
     } else {

@@ -74,6 +74,7 @@ export class LoginComponent implements OnInit {
       "Usuario":  this.loginForm.controls['email'].value,
       "Password": this.loginForm.controls['contrasenia'].value
     }
+    
     this._show_spinner = true;
     this.log.login(this.loginModel).subscribe({
       next: (x) => {

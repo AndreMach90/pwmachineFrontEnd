@@ -181,6 +181,7 @@ export class ClienteComponent implements OnInit {
       item.ruc.toLowerCase().includes(filter.toLowerCase()) ||
       item.nombreCliente.toLowerCase().includes(filter.toLowerCase())
     );
+    
   }
 
 

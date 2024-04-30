@@ -44,15 +44,19 @@
                   <label for="contrasenia" class="form-label text-light">
                       Contraseña:
                   </label>
-                  <input type="password" class="form-control" formControlName="contrasenia" #contrasenia id="contrasenia"  placeholder="******">
+                  <input type="password" class="form-control"
+                         formControlName="contrasenia"
+                         #contrasenia
+                         id="contrasenia"
+                         placeholder="******">
               </div>
               <button type="submit" class="btn btn-outline-warning w-100 d-flex align-items-center justify-content-center">
                   <i class="pi pi-lock"></i> Ingresar
               </button>
         </form>
-        <div style="background-color: burlywood;"
+        <div style="background-color: rgb(255, 125, 78);"
              class="w-100 
-             text-dark rounded-2 d-flex
+             text-light rounded-2 d-flex
              justify-content-center mt-2 p-2">
              <small>
                  <strong>{{version_actual}} - 2024</strong>

@@ -35,14 +35,16 @@
     <div class="w-75 d-flex align-items-center">
         <section class="filtros w-100 mt-1">
             <div class="mb-2 d-flex w-100">
-                <form [formGroup]="filterTransaccForm" class="w-100">
-                <input class=" w-100 shadow-sm form-control rounded-pill" 
-                       fxFlex="auto" type="text"
-                       formControlName="filterTransacc"
-                       #filterTransacc
-                       id="filterTransacc"
-                       (keyup)="filterTransaccos()" 
-                       placeholder="Búsqueda de transacciones registradas a esta tienda...">
+                <form [formGroup]="filterTransaccForm"
+                      class="w-100">
+                      <input class=" w-100 shadow-sm form-control rounded-pill"
+                             fxFlex="auto"
+                             type="text"
+                             formControlName="filterTransacc"
+                             #filterTransacc
+                             id="filterTransacc"
+                             (keyup)="filterTransaccos()"
+                             placeholder="Búsqueda de transacciones registradas a esta tienda...">
                 </form>
             </div>
         </section>

@@ -1,0 +1,29 @@
+[debug] [2024-03-07T05:31:18.290Z] ----------------------------------------------------------------------
+[debug] [2024-03-07T05:31:18.291Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\USUARIO\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2024-03-07T05:31:18.291Z] CLI Version:   13.3.1
+[debug] [2024-03-07T05:31:18.292Z] Platform:      win32
+[debug] [2024-03-07T05:31:18.292Z] Node Version:  v18.16.0
+[debug] [2024-03-07T05:31:18.294Z] Time:          Thu Mar 07 2024 00:31:18 GMT-0500 (Ecuador Time)
+[debug] [2024-03-07T05:31:18.294Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-03-07T05:31:18.297Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2024-03-07T05:31:18.365Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-03-07T05:31:18.365Z] > authorizing via signed-in user (andrenimacion@gmail.com)
+[debug] [2024-03-07T05:31:18.365Z] [iam] checking project autoservicioset for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2024-03-07T05:31:18.366Z] > refreshing access token with scopes: []
+[debug] [2024-03-07T05:31:18.366Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2024-03-07T05:31:18.367Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-03-07T05:31:18.854Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2024-03-07T05:31:18.855Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2024-03-07T05:31:18.874Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2024-03-07T05:31:18.875Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2024-03-07T05:31:18.881Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/autoservicioset:testIamPermissions [none]
+[debug] [2024-03-07T05:31:18.881Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/autoservicioset:testIamPermissions x-goog-quota-user=projects/autoservicioset
+[debug] [2024-03-07T05:31:18.881Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/autoservicioset:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2024-03-07T05:31:19.769Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/autoservicioset:testIamPermissions 200
+[debug] [2024-03-07T05:31:19.770Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/autoservicioset:testIamPermissions {}
+[debug] [2024-03-07T05:31:19.770Z] [iam] error while checking permissions, command may fail: FirebaseError: Authorization failed. This account is missing the following required permissions on project autoservicioset:
+
+  firebase.projects.get
+  firebasehosting.sites.update
+[debug] [2024-03-07T05:31:19.772Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/autoservicioset [none]

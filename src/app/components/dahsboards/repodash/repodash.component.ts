@@ -175,7 +175,8 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
   inicializadorHubs() {
-    this.connectionSendPingEquipo.start().then( ()=> {   
+    this.connectionSendPingEquipo.start().then( ()=> {
+      console.warn( 'PINGHUB CONECTADO!' )
     }).catch( e => {
       Swal.fire({
         title: "Error #MT-001",

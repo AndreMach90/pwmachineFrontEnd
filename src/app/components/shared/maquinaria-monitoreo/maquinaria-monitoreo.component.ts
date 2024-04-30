@@ -122,15 +122,10 @@ export class MaquinariaMonitoreoComponent implements OnInit {
 
     this.EmitManualTransHub = data[2];
     this.EmitManualPiezasCantidadTransactionHub = data[3];
-    this.mensajeTran = '. Transacción manual.'
-    // // ////console.warn('TRANSACCIONES MANUALES')
-    // // ////console.warn('***********************')
+    this.mensajeTran = '. Transacción manual.';
     this.trannserie = this.EmitManualTransHub[0].machine_Sn;
-    // // ////console.warn(this.trannserie);
-    // // ////console.warn('***********************')
 
     this.calculoPrimaryLista( this.EmitManualPiezasCantidadTransactionHub, 'T' );
-
 
     this.billete1        = data[0].manualDepositoBill1;
     this.billete2        = data[0].manualDepositoBill2;
@@ -140,12 +135,12 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     this.billete50       = data[0].manualDepositoBill50;
     this.billete100      = data[0].manualDepositoBill100;
 
-    this.montoBillete1   = 1 * data[0].totalDepositoBill1;
-    this.montoBillete2   = 2 * data[0].totalDepositoBill2;
-    this.montoBillete5   = 5 * data[0].totalDepositoBill5;
-    this.montoBillete10  = 10 * data[0].totalDepositoBill10;
-    this.montoBillete20  = 20 * data[0].totalDepositoBill20;
-    this.montoBillete50  = 50 * data[0].totalDepositoBill50;
+    this.montoBillete1   = 1   * data[0].totalDepositoBill1;
+    this.montoBillete2   = 2   * data[0].totalDepositoBill2;
+    this.montoBillete5   = 5   * data[0].totalDepositoBill5;
+    this.montoBillete10  = 10  * data[0].totalDepositoBill10;
+    this.montoBillete20  = 20  * data[0].totalDepositoBill20;
+    this.montoBillete50  = 50  * data[0].totalDepositoBill50;
     this.montoBillete100 = 100 * data[0].totalDepositoBill100;
 
     this.manualDepositoCoin1   = data[0].manualDepositoCoin1;
@@ -271,7 +266,6 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     let xtoken:any = sessionStorage.getItem('token');
     if (xtoken == null || xtoken == undefined || xtoken == '') {
       this.router.navigate(['login'])
-      // //alert'NO hay token de usuario');
     }
   }
 

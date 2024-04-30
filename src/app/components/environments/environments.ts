@@ -11,14 +11,15 @@ export class Environments {
     constructor( private encrypt: EncryptService ) { }
         
     // apingRok: any = 'http://181.188.224.4:5208';
-    apingRok: any = 'http://192.168.100.12:9095';
+    // apingRok: any = 'http://192.168.100.12:9095';
+    apingRok:    any = 'http://192.168.55.173:9095';
     // apingRok: any = 'https://sfiback.azurewebsites.net';
 
 
-    version: string = 'v.1.0.1.4';
+    version: string = 'v.1.0.1.7';
     es:      number = 5;
     hash:    number = 10;
-    encode: number = 99
+    encode:  number = 99
 
     apiurl(): string {
         const  env:string = this.apingRok+'/api/';
@@ -60,8 +61,6 @@ export class Environments {
 
 }
 
-
-
 export interface  appTheme {
     colorPrimary:     string,
     colorSecondary:   string,
@@ -69,9 +68,3 @@ export interface  appTheme {
     colorSecondary_B: string,
     colorSecondary_C: string
 }
-
-
-
-
-
-

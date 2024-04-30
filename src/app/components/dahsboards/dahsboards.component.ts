@@ -54,9 +54,6 @@ export class DahsboardsComponent implements OnInit {
       
       this.usuario = xuser;
       let xtoken:any = sessionStorage.getItem('token');
-      ////console.warn('xtoken');
-      ////console.warn(xtoken);
-
       const xtokenDecript: any = this.ncrypt.decryptWithAsciiSeed(xtoken, this.env.es, this.env.hash);
       if (xtokenDecript != null || xtokenDecript != undefined) {
         

@@ -1,3 +1,4 @@
+
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ClientesService } from '../../dahsboards/cliente/services/clientes.service';
@@ -174,7 +175,7 @@ export class ModeldataComponent implements OnInit {
   }
 
   exportarExcel(): void {
-    
+
     this.transaccionesRecoleccionesSolo();
 
     const workbook = new ExcelJS.Workbook();
@@ -204,12 +205,14 @@ export class ModeldataComponent implements OnInit {
 
       const transaccionesTransformadas = equipo.transacciones.map( ( elementTra: any ) => {
 
+        /** En el 2028 remplazar esta variable por #"elementTra.fechaTransaccion */
         let dateTran = elementTra.fechaTransaccion.toString().split('T');
-
-        console.log( dateTran[0] );
+        // console.log('JOSEMAMAHUEVOJOSEMAMAHUEVOJOSEMAMAHUEVOJOSEMAMAHUEVOJOSEMAMAHUEVO');
+        // console.log(dateTran);
+        // console.log('JOSEMAMAHUEVOJOSEMAMAHUEVOJOSEMAMAHUEVOJOSEMAMAHUEVOJOSEMAMAHUEVO');
 
         return {
-          "F.Transacciones":       dateTran[0],
+          "F.Transacciones":       elementTra.fechaTransaccion,
           "fecha":                 elementTra.fecha,
           "Hora":                  elementTra.hora,
           "Nombre Cliente":        elementTra.nombreCliente,
@@ -258,15 +261,8 @@ export class ModeldataComponent implements OnInit {
 
     const worksheet = workbook.addWorksheet('TodasTransacciones');
     this.listaDataExportExcelNewFormat.forEach((equipo: any) => {
-      // const worksheet = workbook.addWorksheet(`Transacciones_${equipo.nserie}`); 
       const headers = this.getHeaderRow();
       const numericColumns = [ 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 ];
-
-      // console.log( '<<<<<<<<<<<<<<<<<<<<equipo.saldo>>>>>>>>>>>>>>>>>>>>')
-      // console.log( equipo)
-      // console.log( '<<<<<<<<<<<<<<<<<<<<equipo.saldo>>>>>>>>>>>>>>>>>>>>')
-
-    // Agrega encabezados de columna solo si es la primera iteración
     if (this.listaDataExportExcelNewFormat.indexOf(equipo) === 0) {
       worksheet.addRow( ['Transacciones - '  + new Date().toLocaleDateString()] );
       worksheet.addRow(headers);
@@ -276,9 +272,7 @@ export class ModeldataComponent implements OnInit {
     equipo.transacciones.forEach((transaccion: any, i: number) => {
     
     const row: any = [];
-    const filteredHeaders = this.getHeaderRow();
-    
-    
+    const filteredHeaders = this.getHeaderRow();   
     
     filteredHeaders.forEach( ( header: any, columnIndex: number ) => {
       const cellValue = transaccion[header] || '';
@@ -294,6 +288,14 @@ export class ModeldataComponent implements OnInit {
 
     let fechaInicialEscogida: any = new Date( this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value ).toISOString();
     const transaccionFecha = new Date(transaccion['F.Transacciones']).toISOString();
+
+    // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+    // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+    // console.log(fechaInicialEscogida)
+    // console.log(transaccionFecha)
+    // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+    // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+
     const backgroundColor = transaccionFecha < fechaInicialEscogida ? '#FDF9E1' : '';
     
     const addedRow = worksheet.addRow(row);
@@ -314,7 +316,7 @@ export class ModeldataComponent implements OnInit {
 
     if (i === equipo.transacciones.length - 1) {
         
-        res   = 0;
+        res   = 0.00;
         $1    = 0;
         $2    = 0;
         $5    = 0;
@@ -354,13 +356,14 @@ export class ModeldataComponent implements OnInit {
           }
         );
 
+        /** Agrega el total */
         const totalRow = worksheet.addRow(
           [datenow, timenow, clientes,tiendas,'   ***   ',
            equipos,usuario, establecimiento,actividad,codestablecimiento,
            '    ','    ','    ',$1*1,
            $2*2,$5*5,$10*10,$20*20,$50*50,$100*100,
            $001.toFixed(2),$005.toFixed(2),$010.toFixed(2),$025.toFixed(2),$050.toFixed(2),
-           $0100*1, res, 'Total']);
+           $0100*1, res.toFixed(2), 'Total']);
 
         for (let col = 1; col <= 27; col++) {
           totalRow.getCell( col ).fill = {
@@ -388,6 +391,7 @@ export class ModeldataComponent implements OnInit {
           };
         }
 
+        /** Agrega el Saldo */
         const saldoRow = worksheet.addRow(
           [datenow, timenow, clientes,tiendas,'   ***   ',
            equipos,usuario,establecimiento,actividad,codestablecimiento,
@@ -426,11 +430,11 @@ export class ModeldataComponent implements OnInit {
     });
   
     worksheet.columns.forEach((column: any) => {
-        if (numericColumns.includes(column.number - 1)) {
+        if ( numericColumns.includes(column.number - 1) ) {
           column.eachCell((cell: any) => {
             cell.numFmt = '#,##0';
         });
-        if (column.number === 26) {
+        if ( column.number === 27 ) {
           column.width = 20;
           column.eachCell((cell: any) => {
             cell.numFmt = '#,##0.00';
@@ -477,7 +481,7 @@ export class ModeldataComponent implements OnInit {
         else if (column.number === 7)  column.width = 13;
         else if (column.number === 8)  column.width = 26;
         else if (column.number === 10) column.width = 22;
-        else if (column.number === 27) column.width = 22;
+        else if (column.number === 28) column.width = 22;
 
       });
     });
@@ -681,7 +685,7 @@ export class ModeldataComponent implements OnInit {
 
     const dialogRef = this.dialog.open( ModalDataEquiposComponent, {
       height: 'auto',
-      width:  '400px',
+      width:  '450px',
       data:   arr,
     });
 

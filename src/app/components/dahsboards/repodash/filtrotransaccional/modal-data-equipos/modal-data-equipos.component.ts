@@ -13,7 +13,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 export class 
 ModalDataEquiposComponent implements OnInit {
 
-  filterEqui:               string  = '';
+
   listaEsquipo:             any     = [];
   listaEsquipoGhost:        any     = [];
   listaEsquipoGhostTienda:  any     = [];
@@ -37,6 +37,27 @@ ModalDataEquiposComponent implements OnInit {
   ngOnInit(): void {
     this.obtenerEquiposTran();
     this.result = this.data.equiposExistentes;
+  }
+
+  totalResagadasAutomaticas: number = 0;
+  totalResagadasManuales:    number = 0;
+  totalManuales:    number = 0;
+  totalAutomaticas: number = 0;
+  SumatotalTransac: number = 0;
+  SumatotalTransacResag: number = 0;
+  sumatoriaResagadasTransac( objeto:any ) {
+    this.totalResagadasAutomaticas = 0;
+    this.totalResagadasManuales    = 0;
+    this.totalManuales = 0;
+    this.totalAutomaticas = 0;
+    objeto.filter( ( x:any ) => { 
+      this.totalResagadasAutomaticas += x.conteo_AR;
+      this.totalResagadasManuales    += x.conteo_MR;
+      this.totalManuales             += x.conteo_M;
+      this.totalAutomaticas          += x.conteo_A;
+    })
+    this.SumatotalTransac = this.totalManuales + this.totalAutomaticas;
+    this.SumatotalTransacResag = this.totalResagadasAutomaticas + this.totalResagadasManuales;
   }
 
   obtenerEquiposTran() {
@@ -96,12 +117,13 @@ ModalDataEquiposComponent implements OnInit {
               element.conteo_AR = 0;
             }
             else if ( element.conteo_MR == null || element.conteo_MR == undefined ) {
-              element.conteo_R = 0;
+              element.conteo_MR = 0;
             }
             element.transaccionesResagados = element.conteo_AR + element.conteo_MR;
             element.totalTransac = element.conteo_A + element.conteo_M + element.conteo_AR + element.conteo_MR;
           })
-          //console.log(this.listaEsquipo);
+
+          this.sumatoriaResagadasTransac(this.listaEsquipo);
         }
       }
     )
@@ -159,8 +181,14 @@ ModalDataEquiposComponent implements OnInit {
   }  
 
   filterEquipo () {
+
+    let filterEqui: any = this.equipoCliForm.controls['filterEqui'].value;
     this.listaEsquipoGhost.filter( (equip: any) => { if (  equip.nombreTienda == null ) equip.nombreTienda = '' } );
-    this.listaEsquipo = this.listaEsquipoGhost.filter( (item:any) => item.machine_Sn.toLowerCase().includes(this.filterEqui.toLowerCase()) || item.nombreTienda.toLowerCase().includes(this.filterEqui.toLowerCase()) );
+    this.listaEsquipo = this.listaEsquipoGhost.filter( (item:any) => 
+      item.machine_Sn.toLowerCase().includes(filterEqui.toLowerCase()) ||
+      item.nombreTienda.toLowerCase().includes(filterEqui.toLowerCase()
+      ) );
+    this.sumatoriaResagadasTransac(this.listaEsquipo);
   }
 
   closeDialog() {
