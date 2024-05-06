@@ -216,7 +216,7 @@
                                         <div *ngFor="let loc of localidadesGuardadasCliente; let i = index;" class="d-flex justify-content-start align-items-center" style="border-bottom: dashed 1px gray;">
                                            <div class="m-1"> 
                                                 <div [style]="'background-image: url( '+delete+' )'"
-                                                     (click)="eliminarCliente( i, loc.id )"
+                                                     (click)="eliminarCliente( i, loc.id, loc.idCliente )"
                                                      class="icono-btn" >
                                                 </div>
                                            </div>

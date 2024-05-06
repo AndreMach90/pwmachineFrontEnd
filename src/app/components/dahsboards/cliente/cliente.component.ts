@@ -142,7 +142,7 @@ export class ClienteComponent implements OnInit {
     })
   }
 
-  eliminarCliente( index:number, id:number ) {
+  eliminarCliente( index:number, id:number, idcliente: number ) {
     this._show_spinner = true;
     this.loc.eliminarLocalidadCliente(id).subscribe({
       next: (x) => {
@@ -154,9 +154,13 @@ export class ClienteComponent implements OnInit {
         this._show_spinner = false;
         this.localidadesGuardadasCliente.splice(index, 1);
         this.clientelista.filter( (x:any) => {
-          console.log(x.id)
-          console.log(id)
-          if ( x.id == id ) x.cantidadLocalidades -1
+          console.log( x.id )
+          console.log( idcliente )
+          if ( x.id == idcliente ) {
+            console.warn( 'cliente encontrado: '  )
+            console.warn( x )
+            x.cantidadLocalidades -1
+          }
         })
       }
     })
