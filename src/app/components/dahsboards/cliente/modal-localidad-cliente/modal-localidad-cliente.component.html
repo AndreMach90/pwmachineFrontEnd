@@ -1,0 +1,55 @@
+
+<div class="spinner-overlay"  *ngIf="_show_spinner" >
+    <div class="spinner-container">
+      <span class="loader"></span>
+    </div>
+</div>
+
+<div class="contdiv p-4" style="background-color: whitesmoke;" >
+    
+    <h2 class="m-0 d-flex justify-content-between align-items-center" >
+        <div>
+            <span>Añadir localidad al cliente: </span>
+        </div>
+        <div class="w-25">
+            <section class="filtros mt-2 mb-2 w-100 d-flex">
+                <div class="mb-2 d-flex w-100">
+                    <form [formGroup]="filterForm" class="w-100">
+                        <input class=" w-100 shadow-sm form-control rounded-pill"
+                               fxFlex="auto"
+                               type="text"
+                               formControlName="filterCli"
+                               #filterCli
+                               id="filterCli"
+                               (keyup)="filterCliente()"
+                               placeholder="Búsqueda de localidades...">
+                    </form>
+                </div>
+            </section>
+        </div>
+        <div>
+            <span class="text-primary" > <strong> {{data.nombreCliente | uppercase}} </strong> </span>
+        </div>
+    </h2>
+    <hr>
+    <div class="d-flex justify-content-between flex-wrap" style="height: 350px; overflow-y: auto;">
+        <div class="capsule-localidad m-1 d-flex align-items-center" style="height: 30px;" *ngFor="let loc of listaLocalidades">
+            <div class="m-1">
+                <input type="checkbox" (change)="toggleLocalidad(loc.codigo)" [id]="loc.codigo" >
+            </div>
+            <div class="m-1">
+                <label [for]="loc.codigo"> <strong> {{ loc.nombre | uppercase }} </strong> </label>
+            </div>            
+        </div>
+    </div>
+    <div>
+        <button (click)="guardarLocalidad()" class="btn btn-primary ">
+            Asignar localidades
+        </button>
+    </div>
+
+
+</div>
+
+
+

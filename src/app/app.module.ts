@@ -153,6 +153,8 @@ import { NavsideExpDataComponent } from './components/shared/navside-exp-data/na
 import { DashboardDataExportComponent } from './components/shared/dashboard-data-export/dashboard-data-export.component';
 import { HistorialAcreditacionComponent } from './components/shared/historial-acreditacion/historial-acreditacion.component';
 import { ModalTransaccionesComponent } from './components/dahsboards/monitoreo-equipos/modal/modal-transacciones/modal-transacciones.component';
+import { ModalLocalidadClienteComponent } from './components/dahsboards/cliente/modal-localidad-cliente/modal-localidad-cliente.component';
+import { ObtenerLocalidadClienteComponent } from './components/dahsboards/cliente/modal-localidad-cliente/obtener-localidad-cliente/obtener-localidad-cliente.component';
 
 @NgModule({
   declarations: [
@@ -160,7 +162,7 @@ import { ModalTransaccionesComponent } from './components/dahsboards/monitoreo-e
     // ModalTransaccionesComponent,
     ModalTransaccionesComponent,
     ModalDetalleMaquinaTranComponent,
-    MaquinariaMonitoreoComponent,
+    MaquinariaMonitoreoComponent
   ],
   imports: [
     //primeng
