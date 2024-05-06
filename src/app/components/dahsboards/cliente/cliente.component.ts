@@ -132,6 +132,7 @@ export class ClienteComponent implements OnInit {
       next: (x) => {
         this.localidadesGuardadasCliente = x;
         console.warn(this.localidadesGuardadasCliente)
+        this._show_spinner = false;
       }, complete: () => {
         this._show_spinner = false;
       }, error: (e) => {
@@ -155,9 +156,7 @@ export class ClienteComponent implements OnInit {
         this.clientelista.filter( (x:any) => {
           console.log(x.id)
           console.log(id)
-          if ( x.id == id ) {
-            x.cantidadLocalidades -1
-          }
+          if ( x.id == id ) x.cantidadLocalidades -1
         })
       }
     })
