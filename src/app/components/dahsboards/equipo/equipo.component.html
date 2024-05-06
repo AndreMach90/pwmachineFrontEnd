@@ -214,11 +214,16 @@
                 <div class="w-75" >
                     <section class="filtros mt-2 mb-2 w-100 d-flex">
                         <div class="mb-2 d-flex w-100">
-                          <input class=" w-100 shadow-sm form-control rounded-pill" 
-                                 fxFlex="auto" type="text"
-                                 [(ngModel)]="filterequip"
-                                 (keyup)="filterEquipos()" 
-                                 #input placeholder="Búsqueda de equipos registrados...">
+                            <form [formGroup]="filterForm" class="w-100">
+                                <input class=" w-100 shadow-sm form-control rounded-pill" 
+                                       fxFlex="auto" type="text"
+                                       formControlName="filterequip"
+                                       #filterequip
+                                       id="filterequip"
+                                       (keyup)="filterEquipos()" 
+                                       #input placeholder="Búsqueda de equipos registrados...">
+                                       <!-- [(ngModel)]="filterequip" -->
+                            </form>
                         </div>
                         <div *ngIf="permisonUsers">
                             <div [style]="'background-image: url( '+add+' )' "
@@ -321,41 +326,59 @@
                                         <div class="w-75" >
                                             <section class="filtros mt-2 mb-2">
                                                 <div class="mb-2 d-flex">
-                                                  <input class=" w-100 shadow-sm form-control rounded-pill" 
-                                                         fxFlex="auto" type="text"
-                                                         [(ngModel)]="filterusermaq"
-                                                         (keyup)="filterUsuariosMaquinaria()" 
-                                                         #input placeholder="Búsqueda de usuarios maquinarias...">
+
+                                                    <form [formGroup]="filterUserEquiposForm" class="w-100">
+                                                        <input class=" w-100 shadow-sm form-control rounded-pill" 
+                                                               fxFlex="auto" type="text"
+                                                               formControlName="filterusermaq"
+                                                               #filterusermaq
+                                                               id="filterusermaq"
+                                                               #input 
+                                                               (keyup)="filterUsuariosMaquinaria()"
+                                                               placeholder="Búsqueda de usuarios maquinarias..."
+                                                               >
+                                                    </form>
+
                                                 </div>
                                             </section>
                                         </div>                                        
                                     </div>
                                     <section class="sect-edit d-flex align-items-end" *ngIf="edit_temporal_user" >
-                                        <div class="col" >
-                                            <label for="nombres">
-                                                Establecimiento
-                                            </label>
-                                            <input type="text" [(ngModel)]="_nombres" class="form-control form-control-sm">
-                                        </div>
-                                        <div class="col">
-                                            <label for="_cedula">
-                                                Cod. Establecimiento
-                                            </label>
-                                            <input type="text" [(ngModel)]="_cedula" 
-                                                   id="cedula"
-                                                   #cedula
-                                                   (keyup)="validateInputNumber('cedula')"
-                                                   class="form-control form-control-sm">
-                                        </div>
-                                        <!-- <div class="col">
-                                            <label for="_telefono">
-                                                Teléfono
-                                            </label>
-                                            <input type="text" [(ngModel)]="_telefono"
-                                                   id="_telefono"
-                                                   (keyup)="validateInputNumber('_telefono')" 
-                                                   class="form-control form-control-sm">
-                                        </div> -->
+
+                                        <form [formGroup]="filterEquiposForm" class="w-100">
+                                            <div class="col" >
+                                                <label for="_nombres">
+                                                    Establecimiento
+                                                </label>
+                                                <input type="text"
+                                                       formControlName="_nombres"
+                                                       #_nombres
+                                                       id="_nombres"                                                        
+                                                       class="form-control form-control-sm"
+                                                       >
+                                            </div>
+                                            <div class="col">
+                                                <label for="_cedula">
+                                                    Cod. Establecimiento
+                                                </label>
+                                                <input type="text"
+                                                       formControlName="_cedula"
+                                                       #_cedula
+                                                       id="_cedula"  
+                                                       (keyup)="validateInputNumber('cedula')"
+                                                       class="form-control form-control-sm">
+                                            </div>
+                                            <!-- <div class="col">
+                                                <label for="_telefono">
+                                                    Teléfono
+                                                </label>
+                                                <input type="text" [(ngModel)]="_telefono"
+                                                       id="_telefono"
+                                                       (keyup)="validateInputNumber('_telefono')" 
+                                                       class="form-control form-control-sm">
+                                            </div> -->
+=======
+                                        
                                             <div class="col d-flex">
                                                 <button type="button"
                                                         class="btn btn-danger btn-sm "
@@ -370,7 +393,7 @@
                                                         <div >{{_action_butto_us}} Usuario</div>
                                                 </button>    
                                             </div>
-
+                                        </form>        
                                     </section>
                                     <div style="max-height: 300px; overflow-y: auto;" >
                                     <table class="table table-hover table-bordered table-warning table-striped align-middle" >

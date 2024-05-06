@@ -8,7 +8,6 @@ import { ClientesService } from '../../../cliente/services/clientes.service';
 import { TiendaService } from '../../../tienda/services/tienda.service';
 import { MonitoreoService } from '../../../monitoreo-equipos/services/monitoreo.service';
 import { TransaccionesTiendaService } from '../../../monitoreo-equipos/modal/services/transacciones-tienda.service';
-import { resolveSoa } from 'dns';
 
 @Component({
   selector: 'app-modal-config-excel',
@@ -40,7 +39,7 @@ export class ModalConfigExcelComponent implements OnInit {
                private monitoreo: MonitoreoService,
                private transacciones: TransaccionesTiendaService,
                public dialog: MatDialog,
-               public dialogRef: MatDialogRef<FiltrotransaccionalComponent>,
+              //  public dialogRef: MatDialogRef<FiltrotransaccionalComponent>,
                @Inject(MAT_DIALOG_DATA) public data: any, private env: Environments ) { 
 
                 this.transac = this.formBuilder.group({
@@ -54,7 +53,7 @@ export class ModalConfigExcelComponent implements OnInit {
   dataTablefilter: any = [];
   ngOnInit(): void {
     // this.dataTablefilter = this.data;
-    // console.table(this.dataTablefilter);
+    // //console.table(this.dataTablefilter);
     this.obtenerCliente();
   }
 
@@ -62,7 +61,7 @@ export class ModalConfigExcelComponent implements OnInit {
   onSubmitDate() {}
 
   submitTransacFilter() {
-    console.log(this.transac.value);
+    //console.log(this.transac.value);
   }
 
   dataExportarExcel: any = [];
@@ -96,7 +95,7 @@ export class ModalConfigExcelComponent implements OnInit {
         result.filter( (element:any) => {
           this.dataExportarExcel.push(element);
           this.dataExportarExcelGhost.push(element);
-          console.log(this.dataExportarExcel)
+          //console.log(this.dataExportarExcel)
         });
       }
       this.obtenerTransacTabla();
@@ -145,7 +144,7 @@ export class ModalConfigExcelComponent implements OnInit {
   obtenerIDCLiente() {
 
     if ( this.exportdateform.controls['codigoClienteidFk'].value == undefined || this.exportdateform.controls['codigoClienteidFk'].value == null ) {
-      console.warn('No hay un id');
+      //console.warn('No hay un id');
       this.idcliente = this.clientelista[0].id;
     }
     else {
@@ -240,7 +239,7 @@ export class ModalConfigExcelComponent implements OnInit {
       console.error("Ingrese ambas fechas para filtrar.");
     }
 
-    console.warn(this.dataExportarExcel);
+    //console.warn(this.dataExportarExcel);
 
   }
 

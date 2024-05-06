@@ -75,16 +75,16 @@ export class ModalClienteComponent implements OnInit {
     this.secondary = this.env.appTheme.colorSecondary_C;
     this.secondary_a = this.env.appTheme.colorSecondary_A;
     this.secondary_b = this.env.appTheme.colorSecondary_B;
-    //////console.warn('this.data modal cliente');
-    //////console.warn(this.data);
+    ////////console.warn('this.data modal cliente');
+    ////////console.warn(this.data);
 
     switch(this.data.action) {
       case 'C':
-        //////console.warn('Modal para crear');
+        ////////console.warn('Modal para crear');
         this._action_butto = 'Crear';
         break;
       case 'E':
-        //////console.warn('Modal para editar');
+        ////////console.warn('Modal para editar');
         this.obtenerCuentaBancariaCliente();
         this._action_butto = 'Editar';
         this.ctaBancariaForm.controls['nombanco']
@@ -158,15 +158,15 @@ export class ModalClienteComponent implements OnInit {
   corriente:boolean = false;
   cuentaslista: any = [];
     obtenerCuentaBancariaCliente() {
-      //////console.warn(this.data.idCliente);
+      ////////console.warn(this.data.idCliente);
       
       this._show_spinner = true;
       this.cuentaslista = [];
       this.clienteserv.obtenerCuentaCliente(this.data.idCliente).subscribe({
           next: ( cuentas ) => {  
             this.cuentaslista = cuentas;
-            ////console.log('this.cuentaslista desde el mdoal cliente');
-            //console.table(this.cuentaslista);
+            //////console.log('this.cuentaslista desde el mdoal cliente');
+            ////console.table(this.cuentaslista);
             this._show_spinner = false;          
           }, error:(e) => {
             console.error(e);
@@ -174,8 +174,8 @@ export class ModalClienteComponent implements OnInit {
           }, complete: () => {
             this.cuentaslista.filter((element: any)=> {
               if ( element.id == this.data.id ) {
-                //////console.warn('CUENTA ENCONTRADA');
-                //////console.warn(element);
+                ////////console.warn('CUENTA ENCONTRADA');
+                ////////console.warn(element);
                 this.ctaBancariaForm.controls['observacion'].setValue(element.observacion);
                 if( element.tipoCuenta == 'ahorro' ) {
                   this.ahorro = true;
@@ -246,7 +246,7 @@ export class ModalClienteComponent implements OnInit {
 
   seleccionarCuenta(tipo: string) {
     this.cuentaSeleccionada = tipo;
-    ////console.log(`Cuenta seleccionada: ${tipo}`);
+    //////console.log(`Cuenta seleccionada: ${tipo}`);
   }
 
 }

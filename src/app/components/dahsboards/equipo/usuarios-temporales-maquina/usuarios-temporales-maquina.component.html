@@ -18,14 +18,19 @@
                 </small>
             </span> 
         </h2>
-        <div class="w-75" >
+        <div class="w-75">
             <section class="filtros mt-2 mb-2">
                 <div class="mb-2 d-flex">
-                  <input class=" w-100 shadow-sm form-control rounded-pill" 
-                         fxFlex="auto" type="text"
-                         [(ngModel)]="filteruserTemporal"
-                         (keyup)="filterUsuariosTemporales()"
-                         #input placeholder="Búsqueda de usuarios temporales...">
+                    <form [formGroup]="filterUsuariosTemporalesForm"
+                          class="w-100">
+                        <input class=" w-100 shadow-sm form-control rounded-pill"
+                               fxFlex="auto" type="text"
+                               formControlName="filterequip"
+                               #filterequip
+                               id="filterequip"
+                               (keyup)="filterUsuariosTemporales()"
+                               placeholder="Búsqueda de usuarios temporales...">
+                    </form>
                 </div>
             </section>
         </div>
@@ -43,7 +48,6 @@
                 <th class="p-1">Actividad Usuario</th>
                 <th class="p-1">Cta. Bancaria</th>
                 <th class="p-1"></th>
-                <!-- <th class="p-1"></th> -->
             </thead>
             <tbody  >
                 <tr *ngFor="let usuarios of listaUsuariosTemporales; let i = index;">

@@ -9,6 +9,7 @@ import { MonitoreoService } from '../monitoreo-equipos/services/monitoreo.servic
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { IndexedDbService } from '../../shared/services/indexeddb/indexed-db.service';
 import Swal from 'sweetalert2'
+import { FormControl, FormGroup } from '@angular/forms';
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
@@ -119,6 +120,11 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   private manualTransactionHub: HubConnection;
   private automaticTransactionHub: HubConnection;
   private recollectTransactionHub: HubConnection;
+
+  public filterequipForm = new FormGroup({
+    filterequip:   new FormControl('')
+  })
+  
   
   constructor( private env: Environments,
                private indexedDbService: IndexedDbService,
@@ -169,7 +175,8 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
   inicializadorHubs() {
-    this.connectionSendPingEquipo.start().then( ()=> {   
+    this.connectionSendPingEquipo.start().then( ()=> {
+      console.warn( 'PINGHUB CONECTADO!' )
     }).catch( e => {
       Swal.fire({
         title: "Error #MT-001",
@@ -306,17 +313,20 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
 
   private MtransHub(data:any) {
 
-    // console.warn(' REPODASH MANUAL HUB ')
-    // console.warn(data)
+    //console.warn(' REPODASH MANUAL HUB ')
+    //console.warn(data[0].machineSn);
 
     /** ============================================= */
     /**Actualizar variable de entorno INICIO */
 
     let vent:number = Number(localStorage.getItem('valor_validador'));
     let totalNormal: number = data[2][0].total;
-    // console.warn( vent + totalNormal )
-    let sumNormal: number = vent + totalNormal;
-    localStorage.setItem('valor_validador', sumNormal.toFixed(2).toString());
+    // //console.warn( vent + totalNormal )
+    let xmachine:any = localStorage.getItem('equipoMonitoreando');
+    if( xmachine === data[0].machineSn ) {
+      let sumNormal: number = vent + totalNormal;
+      localStorage.setItem('valor_validador', sumNormal.toFixed(2).toString());
+    }
     /** FIN */
     /** ============================================= */
 
@@ -442,16 +452,21 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   EmitRecolTransHub: any = [];
   private RecoTransHub(data:any) {
 
-    console.warn('RECOL DATA TRANS HUB');
-    console.warn(data);
+    //console.warn('RECOL DATA TRANS HUB');
+    //console.warn(data);
     const zero = 0;
-    localStorage.setItem('valor_validador', zero.toString());
-    if ( this.nserie == data[0].machineSn ) {
-      this.totalBilletesCantidadT   = 0;
-      this.totalBilletesMontoT      = 0;
-      this.totalBilletesCantidadM   = 0;
-      this.totalBilletesMontoM      = 0;
+
+    let xmachine:any = localStorage.getItem('equipoMonitoreando');
+    if( xmachine === data[0].machineSn ) {
+      localStorage.setItem('valor_validador', zero.toString());
+      if ( this.nserie == data[0].machineSn ) {
+        this.totalBilletesCantidadT   = 0;
+        this.totalBilletesMontoT      = 0;
+        this.totalBilletesCantidadM   = 0;
+        this.totalBilletesMontoM      = 0;
+      }
     }
+
 
     this.EmitRecolTransHub        = data[1];
     this.machSerie                = data[0].machineSn;
@@ -484,22 +499,107 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
 
     this.primaryLista = [];
     this.listAlertas  = [];
+    // setTimeout(() => {
+      this.nserie = xmachine;
+      // alert('Obteniendo datos nuevamente de: ' + this.nserie);
+      // this.obtenerEquipos(1,'void');
+      this.monitoreo.obtenerDetalleEquipos(this.nserie).subscribe(
+        {
+        next:(x) => {
+          this.primaryLista = x;
+  
+          //console.warn('ESTO PASA EN MONITOREAR')
+          //console.warn(this.primaryLista)
+  
+          if ( this.nserie == this.primaryLista[0].machine_Sn ) 
+          { 
+            this.primaryLista.filter((element:any) => {
+  
+              if(element.tipo == 'Manual') {
+                this.listaDetalleequipoManual.push(element);
+              }
+              else if ( element.tipo == 'Deposito' ) {
+                this.listaDetalleequipoTransa.push(element);
+              }
+            })
+          }
+          this._show_spinner = false;
+        }, error: (e) => {
+           console.error(e);
+           this._show_spinner = false;
+        }, complete: () => {
+          // Inicializar las variables
+          this.totalBilletesCantidadM = 0;
+          this.totalBilletesMontoM    = 0;
+          this.totalMonedasCantidadM  = 0;
+          this.totalMonedasMontoM     = 0;
+  
+          this.totalBilletesCantidadT = 0;
+          this.totalBilletesMontoT    = 0;
+          this.totalMonedasCantidadT  = 0;
+          this.totalMonedasMontoT     = 0;
+  
+          // Recorrer la lista y realizar las sumatorias
+          this.listaDetalleequipoManual.forEach((detalle:any) => {
+              if( detalle.tipo == 'Manual') {
+                this.totalBilletesCantidadM += detalle.depositoCant100 + detalle.depositoCant50 + detalle.depositoCant20 +
+                                               detalle.depositoCant10  + detalle.depositoCant5  + detalle.depositoCant2  + detalle.depositoCant1;
+                this.totalBilletesMontoM    += detalle.depositoMont100 + detalle.depositoMont50 + detalle.depositoMont20 +
+                                               detalle.depositoMont10  + detalle.depositoMont5  + detalle.depositoMont2  + detalle.depositoMont1;
+                this.totalMonedasCantidadM  += detalle.depositoCantCoin100 + detalle.depositoCantCoin50 + detalle.depositoCantCoin25 +
+                                               detalle.depositoCantCoin10  + detalle.depositoCantCoin5  + detalle.depositoCantCoin1;
+                this.totalMonedasMontoM     += detalle.depositoMontCoin100 + detalle.depositoMontCoin50 + detalle.depositoMontCoin25 +
+                                               detalle.depositoMontCoin10  + detalle.depositoMontCoin5  + detalle.depositoMontCoin1;
+              }
+          });
+  
+          this.listaDetalleequipoTransa.forEach((detalle:any) => {
+              if ( detalle.tipo == 'Deposito' ) {
+  
+                this.totalBilletesCantidadT += detalle.depositoCant100 + detalle.depositoCant50 + detalle.depositoCant20 +
+                                               detalle.depositoCant10  + detalle.depositoCant5  + detalle.depositoCant2  + detalle.depositoCant1;  
+                this.totalBilletesMontoT    += detalle.depositoMont100 + detalle.depositoMont50 + detalle.depositoMont20 +
+                                               detalle.depositoMont10  + detalle.depositoMont5  + detalle.depositoMont2  + 
+                                               detalle.depositoMont1;  
+                this.totalMonedasCantidadT  += detalle.depositoCantCoin100 + detalle.depositoCantCoin50 + detalle.depositoCantCoin25 +
+                                               detalle.depositoCantCoin10  + detalle.depositoCantCoin5  + detalle.depositoCantCoin1;  
+                this.totalMonedasMontoT     += detalle.depositoMontCoin100 + detalle.depositoMontCoin50 + detalle.depositoMontCoin25 +
+                                               detalle.depositoMontCoin10  + detalle.depositoMontCoin5  + detalle.depositoMontCoin1;
+  
+              }
+          }
+        )
+  
+        this._show_spinner = false;
+  
+        }
+      })
+
+    // }, 1000)
 
   }
   
   private AuTransHub(data:any) {
 
-    console.warn('data');
-    console.table(data);
+    //console.warn('data');
+    //console.table(data);
+
+
 
     /** ============================================= */
     /** INICIO */
 
     let vent:number = Number(localStorage.getItem('valor_validador'));
     let totalNormal: number = data[1][0].total;
-    console.warn( vent + totalNormal )
-    let sumNormal: number = vent + totalNormal;
-    localStorage.setItem('valor_validador', sumNormal.toFixed(2).toString());
+    //console.warn( vent + totalNormal )
+    let xmachine:any = localStorage.getItem('equipoMonitoreando');
+    if( xmachine === data[0].machineSn ) {
+      let sumNormal: number = vent + totalNormal;
+      localStorage.setItem('valor_validador', sumNormal.toFixed(2).toString());
+    }
+
+    // let sumNormal: number = vent + totalNormal;
+    // localStorage.setItem('valor_validador', sumNormal.toFixed(2).toString());
 
     /** FIN */
     /** ============================================= */
@@ -592,7 +692,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   tipoFiltro:any;
   recibirTipoFiltro(tipo: any) {
     this.tipoFiltro = tipo;
-    console.log('Transmitiendo tipo filtro: ' + this.tipoFiltro);
+    //console.log('Transmitiendo tipo filtro: ' + this.tipoFiltro);
   }
 
   minimizebox() {
@@ -637,6 +737,12 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   listaEsquipo:any = [];
   listaEsquipoGhost:any = [];
   obtenerEquipos( tp:number, ctienda:string ) {
+
+    console.log('***********************');
+    console.log(tp);
+    console.log(ctienda);
+    console.log('***********************');
+
     this.equiposerv.obtenerEquipo(tp, ctienda).subscribe(
       {
         next: (equipo) => {
@@ -659,15 +765,15 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     )
   }
 
-  filterequip:any;
   filterEquipos() {
+    let filterequip: any = this.filterequipForm.controls['filterequip'].value;
     this.listaEsquipo = this.listaEsquipoGhost.filter((item:any) =>
-    item.serieEquipo .toLowerCase().includes(this.filterequip.toLowerCase()) 
+    item.serieEquipo .toLowerCase().includes(filterequip.toLowerCase()) 
       // item.nombreTienda.toLowerCase().includes(this.filterequip.toLowerCase()) ||
       // item.nombremarca .toLowerCase().includes(this.filterequip.toLowerCase()) ||
       // item.nombremodelo.toLowerCase().includes(this.filterequip.toLowerCase()) ||
       // item.tipoMaquinaria.toLowerCase().includes(this.filterequip.toLowerCase())
-      // console.log(item)
+      // //console.log(item)
     )
   }
 
@@ -707,7 +813,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
             elementEq.indicadorPorcentajeBilletes          = Number(((elementEq.indicadorCapacidadBilletes / elementEq.indicadorCapacidadBilletesMax ) * 100).toFixed(2));
             elementEq.indicadorPorcentajeTotalMaxAsegurado = Number(((elementEq.indicadorTotalAsegurado / elementEq.indicadorTotalMaxAsegurado) * 100).toFixed(2));
             elementEq.indicadorColorBarProgressBilletes    = "bg-success text-light";
-            // ////console.warn(elementEq.indicadorPorcentajeBilletes );
+            // //////console.warn(elementEq.indicadorPorcentajeBilletes );
             if( element.estadoPing == 1 ) {
               elementEq.colorEsstado = '#DAEFE6';
               elementEq.colorTexto = 'text-success';
@@ -730,12 +836,12 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
             }
             else if ( elementEq.indicadorPorcentajeBilletes >= 80 && elementEq.indicadorPorcentajeBilletes <= 90 ) {
               elementEq.indicadorColorBarProgressBilletes = "bg-warning text-dark";
-              ////console.warn(elementEq.indicadorPorcentajeBilletes)
+              //////console.warn(elementEq.indicadorPorcentajeBilletes)
               // this.controlAlerts( 'Capacidad de Piezas del equipo', 'A punto de alcanzar el límite de piezas del equipo, ' + elementEq.serieEquipo, 'orange', 'dark', elementEq.serieEquipo );
             }
             else if ( elementEq.indicadorPorcentajeBilletes > 90 ) {
               elementEq.indicadorColorBarProgressBilletes = "bg-danger text-light";
-              ////console.warn(elementEq.indicadorPorcentajeBilletes)
+              //////console.warn(elementEq.indicadorPorcentajeBilletes)
               // this.controlAlerts( 'Capacidad de Piezas del equipo', 'Haz alcanzado el límite de piezas del equipo, ' + elementEq.serieEquipo, 'orangered', 'whitesmoke', elementEq.serieEquipo );
             }
             if ( elementEq.indicadorPorcentajeTotalMaxAsegurado < 80 ) {
@@ -760,20 +866,22 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   obtenerDetalleEquipos( data:any ) {
     
     // alert("MONITORANDO");
-
+    console.log('<<<<<<<<data>>>>>>>>')
+    console.log(data)
     this._show_spinner = true;
     this.nserie = data.serieEquipo;
+    localStorage.setItem('equipoMonitoreando', this.nserie);
     this.listaDetalleequipoManual = [];
     this.listaDetalleequipoTransa = [];
     this.showCuadre = true;
     this.colorValidateCuadre = 'steelblue';
-    this.monitoreo.obtenerDetalleEquipos(data.serieEquipo).subscribe(
+    this.monitoreo.obtenerDetalleEquipos(this.nserie).subscribe(
       {
       next:(x) => {
         this.primaryLista = x;
 
-        console.warn('ESTO PASA EN MONITOREAR')
-        console.warn(this.primaryLista)
+        //console.warn('ESTO PASA EN MONITOREAR')
+        //console.warn(this.primaryLista)
 
         if ( this.nserie == this.primaryLista[0].machine_Sn ) 
         { 
@@ -854,12 +962,19 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
                                 
 
 
+                        console.log(10)
     setTimeout(() => {    
-      let xvalue: any = localStorage.getItem('valor_validador');      
-      if( Number(xvalue) !== Number(sumatoriaValidate) ) {
-        console.warn('sumatoriaValidate');
-        console.warn(sumatoriaValidate);
-        console.warn(Number(xvalue));
+
+      console.log(11)
+
+      let xvalue: any = localStorage.getItem('valor_validador');     
+      
+      console.log('Estos son los valores que deben coincidir')
+      console.log( 'Variable local enviada desde el server: ' + xvalue)
+      console.log('Sumatoria de valores: ' + sumatoriaValidate)
+
+
+      if( Number(xvalue) !== Number(sumatoriaValidate.toFixed(2)) ) {
         this.colorValidateCuadre = 'red';
       }
       else {

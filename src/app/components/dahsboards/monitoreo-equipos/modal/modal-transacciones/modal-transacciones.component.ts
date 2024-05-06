@@ -8,6 +8,7 @@ import * as XLSX from 'xlsx';
 import * as ExcelJS from 'exceljs';
 import { argv } from 'process';
 import { setInterval } from 'timers/promises';
+import { FormControl, FormGroup } from '@angular/forms';
 
 
 
@@ -18,9 +19,21 @@ import { setInterval } from 'timers/promises';
 })
 export class ModalTransaccionesComponent implements OnInit {
 
+  sumatoriaTotales: number = 0;
+  manual_Deposito_Coin_100: number = 0;
+  manual_Deposito_Coin_50: number = 0;
+  manual_Deposito_Coin_20: number = 0;
+  manual_Deposito_Coin_10: number = 0;
+  manual_Deposito_Coin_5: number = 0;
+  manual_Deposito_Coin_1: number = 0;
+  deposito_Bill_100: number = 0;
+  deposito_Bill_50: number = 0;
+  deposito_Bill_20: number = 0;
+  deposito_Bill_10: number = 0;
+  deposito_Bill_5: number = 0;
+  deposito_Bill_2: number = 0;
+  deposito_Bill_1: number = 0;
 
-  startDate: Date = new Date()
-  endDate: Date = new Date();
 
   delete: any = this.env.apiUrlIcon()+'delete.png';
   edit:   any = this.env.apiUrlIcon()+'edit.png';
@@ -48,28 +61,27 @@ export class ModalTransaccionesComponent implements OnInit {
 
   home:any;
 
+  public filterTransacForm = new FormGroup({
+    filterTransacc:   new FormControl('')
+  })
+
+  public filterTransacDateForm = new FormGroup({
+    startDate:   new FormControl(''),
+    endDate:   new FormControl(''),
+  })
+
   constructor(public dialogRef: MatDialogRef<MonitoreoEquiposComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, private env: Environments,
     private transacciones: TransaccionesTiendaService, private sharedservs: ServicesSharedService) {}
 
     nombreTienda: string = '';
   ngOnInit(): void {
-    this.startDate = new Date();
-    this.endDate = new Date();
-    // this.home = library.add(icon('shopware'));
-
-    //////console.warn ('MODAL');
-    //////console.warn (this.data);
-
-    //////console.warn ( this.excel )
-
-    this.primary        =  this.env.appTheme.colorPrimary;
+    this.primary        = this.env.appTheme.colorPrimary;
     this.secondary      = this.env.appTheme.colorSecondary_C;
     this.secondary_a    = this.env.appTheme.colorSecondary_A;
     this.secondary_b    = this.env.appTheme.colorSecondary_B;
     this.nombreTienda   = this.data.nombreTienda;
-    this.obtenerTransac(this.data.id)
-
+    this.obtenerTransac(this.data.id);
   }
 
   listaTransacciones: any = [];
@@ -79,25 +91,25 @@ export class ModalTransaccionesComponent implements OnInit {
       next:( tran ) => {
         this.listaTransacciones = tran;
         this.listaTransaccionesGhost = tran;
-        //////console.warn(this.listaTransaccionesGhost);
       }, error: (e) => {
         console.error(e);
       }, complete: () => {
         this.sumatoriaTotal();
       }
     })
-
   }
 
-  filterTransacc:any;
   filterTransaccos() {
+
+    let xfilterTransacc: any = this.filterTransacForm.controls['filterTransacc'].value;
+
     this.listaTransacciones = this.listaTransaccionesGhost.filter((item:any) => 
-      item.machine_Sn.toLowerCase().includes(this.filterTransacc.toLowerCase())   ||
-      item.nombreCliente.toLowerCase().includes(this.filterTransacc.toLowerCase())    ||
-      item.tipoTransaccion.toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.usuarios_idFk.toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.machine_Sn.toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.transaccion_No.toString().toLowerCase().includes(this.filterTransacc.toLowerCase())      
+      item.machine_Sn     .toLowerCase().includes(xfilterTransacc.toLowerCase()) ||
+      item.nombreCliente  .toLowerCase().includes(xfilterTransacc.toLowerCase()) ||
+      item.tipoTransaccion.toLowerCase().includes(xfilterTransacc.toLowerCase()) ||
+      item.usuarios_idFk  .toLowerCase().includes(xfilterTransacc.toLowerCase()) ||
+      item.machine_Sn     .toLowerCase().includes(xfilterTransacc.toLowerCase()) ||
+      item.transaccion_No .toString().toLowerCase().includes(xfilterTransacc.toLowerCase())
     )
 
     this.sumatoriaTotal();
@@ -105,22 +117,26 @@ export class ModalTransaccionesComponent implements OnInit {
   }
 
   filterByDateRange() {
-    if (this.startDate && this.endDate) {
-      if (this.startDate.toDateString() === this.endDate.toDateString()) {
-        // Estás buscando una fecha específica
+
+    let startDate: any = this.filterTransacDateForm.controls['startDate'].value;
+    let endDate: any = this.filterTransacDateForm.controls['endDate'].value;
+
+    if (startDate && endDate) {
+      if (startDate.toDateString() === endDate.toDateString()) {
+        // Estás buscando una fecha específicac
         this.listaTransacciones = this.listaTransacciones.filter((item: any) => {
           const transacDate = new Date(item.fechaTransaccion);
           return (
-            transacDate.getDate() === this.startDate.getDate() &&
-            transacDate.getMonth() === this.startDate.getMonth() &&
-            transacDate.getFullYear() === this.startDate.getFullYear()
+            transacDate.getDate() === startDate.getDate() &&
+            transacDate.getMonth() === startDate.getMonth() &&
+            transacDate.getFullYear() === startDate.getFullYear()
           );
         });
       } else {
         // Estás buscando un rango de fechas
         this.listaTransacciones = this.listaTransacciones.filter((item: any) => {
           const transacDate = new Date(item.fechaTransaccion);
-          return transacDate >= this.startDate && transacDate <= this.endDate;
+          return transacDate >= startDate && transacDate <= endDate;
         });
       }
     } else {
@@ -196,44 +212,24 @@ export class ModalTransaccionesComponent implements OnInit {
     });
   }
   
-
-
-  sumatoriaTotales: number = 0;
-  manual_Deposito_Coin_100: number = 0;
-  manual_Deposito_Coin_50: number = 0;
-  manual_Deposito_Coin_20: number = 0;
-  manual_Deposito_Coin_10: number = 0;
-  manual_Deposito_Coin_5: number = 0;
-  manual_Deposito_Coin_1: number = 0;
-  deposito_Bill_100: number = 0;
-  deposito_Bill_50: number = 0;
-  deposito_Bill_20: number = 0;
-  deposito_Bill_10: number = 0;
-  deposito_Bill_5: number = 0;
-  deposito_Bill_2: number = 0;
-  deposito_Bill_1: number = 0;
-  sumatoriaTotal() {   
-    this.sumatoriaTotales = 0;
+  sumatoriaTotal() {
+    
+    this.sumatoriaTotales         = 0;
     this.manual_Deposito_Coin_100 = 0;
-    this.manual_Deposito_Coin_50 = 0;
-    this.manual_Deposito_Coin_20 = 0;
-    this.manual_Deposito_Coin_10 = 0;
-    this.manual_Deposito_Coin_5 = 0;
-    this.manual_Deposito_Coin_1 = 0;
-    this.deposito_Bill_100 = 0;
-    this.deposito_Bill_50 = 0;
-    this.deposito_Bill_20 = 0;
-    this.deposito_Bill_10 = 0;
-    this.deposito_Bill_5 = 0;
-    this.deposito_Bill_2 = 0;
-    this.deposito_Bill_1 = 0;
+    this.manual_Deposito_Coin_50  = 0;
+    this.manual_Deposito_Coin_20  = 0;
+    this.manual_Deposito_Coin_10  = 0;
+    this.manual_Deposito_Coin_5   = 0;
+    this.manual_Deposito_Coin_1   = 0;
+    this.deposito_Bill_100        = 0;
+    this.deposito_Bill_50         = 0;
+    this.deposito_Bill_20         = 0;
+    this.deposito_Bill_10         = 0;
+    this.deposito_Bill_5          = 0;
+    this.deposito_Bill_2          = 0;
+    this.deposito_Bill_1          = 0;
 
-    this.listaTransacciones.filter( (element:any) => {     
-
-
-      //////console.warn(element.manual_Deposito_Coin_10);
-      // if(element.manual_Deposito_Coin_10 == null) element.manual_Deposito_Coin_10 = 0;
- 
+    this.listaTransacciones.filter( (element:any) => { 
         this.sumatoriaTotales += element.total; 
         this.manual_Deposito_Coin_100 += element.manual_Deposito_Coin_100; 
         this.manual_Deposito_Coin_50 += element.manual_Deposito_Coin_50; 

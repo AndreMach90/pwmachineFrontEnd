@@ -27,10 +27,10 @@ const Toast = Swal.mixin({
 
 export class HistorialAcreditacionComponent implements OnInit {
 
-  listaAcreditadas:any = [];
-  _show_spinner: boolean = false;
-  fechaIni:any;
-  fechaFin:any;
+  listaAcreditadas:        any = [];
+  _show_spinner:           boolean = false;
+  fechaIni:                any;
+  fechaFin:                any;
   delete:                  any  = this.env.apiUrlIcon() + 'delete.png';
   edit:                    any  = this.env.apiUrlIcon() + 'edit.png';
   crear:                   any  = this.env.apiUrlIcon() + 'accept.png';
@@ -42,30 +42,29 @@ export class HistorialAcreditacionComponent implements OnInit {
   menuicon:                any  = this.env.apiUrlIcon() + 'menu.png';
   descargar:               any  = this.env.apiUrlIcon() + 'descargar.png';
 
-  dataExportarExcel: any     = [];
-  _transaction_show: boolean = false;
-  modelConsult: any      = [];
-  listaAcreditadasOk:any = [];
+  dataExportarExcel:       any     = [];
+  _transaction_show:       boolean = false;
+  modelConsult:            any     = [];
+  listaAcreditadasOk:      any     = [];
 
-  public exportdateform = new FormGroup(
-    {
-      dateini:              new FormControl(''),
-      datefin:              new FormControl('')
-    }
-  )
+  transaccionesModel:      any      = [];
 
-  constructor( private hcred: HistoriaAcreditacionService,
-    private tokenGen: SharedService,
-    private env: Environments, private transacciones: TransaccionesTiendaService ) {}
+  public exportdateform = new FormGroup({
+    dateini:              new FormControl(),
+    datefin:              new FormControl()
+  })
+
+  constructor( private hcred:         HistoriaAcreditacionService,
+               private env:           Environments,
+               private transacciones: TransaccionesTiendaService ) {}
 
   ngOnInit(): void {
     this.obtenerPreAcreditacion();
   }
 
   obtenerPreAcreditacion() {
-    this.hcred.obtenerPreAcreditacion().subscribe((x:any)=>{
+    this.hcred.obtenerPreAcreditacion().subscribe( (x:any) => {
       this.listaAcreditadas = x;
-      console.warn(this.listaAcreditadas);
     })
   }
 
@@ -79,80 +78,17 @@ export class HistorialAcreditacionComponent implements OnInit {
     })
   }
 
-  transaccionesModel:any = []
   obtenerTransacTabla(data:any) {
     this.hcred.obtenerEquiposAcreditados( data.nombreArchivo ).subscribe({
       next: (x) => {
         this.dataExportarExcel = x;
-        console.log('this.dataExportarExcel');
-        console.log( this.dataExportarExcel );
+        //console.log('this.dataExportarExcel');
+        //console.log( this.dataExportarExcel );
       }, complete: () => {
         this.obtenerTransaccionesEquipos(data.nombreArchivo);
       }
     })
   }
-
-  // obtenerTransaccionesEquipos(nombreArchivo:any) {
-    
-  //   this.transacciones.obtenerTransaccionesTienda(nombreArchivo, 1).subscribe({
-  //     next: (y:any) => {
-  //       this.transaccionesModel = [];
-  //       this.dataExportarExcel.filter( (element:any) => {
-  //         // console.log(element.machineSn);
-  //         y.filter( (elementTra:any) => {
-  //           let arr = {
-  //             "F.Transacciones":       new Date(elementTra.fechaTransaccion),
-  //             "fecha":                 elementTra.fecha,
-  //             "Hora":                  elementTra.hora,
-  //             "Nombre Cliente":        elementTra.nombreCliente,
-  //             "Nombre Tienda":         elementTra.nombreTienda,
-  //             "N. Transacción":        elementTra.machine_Sn + '-' + elementTra.transaccion_No,
-  //             "N. Serie":              elementTra.machine_Sn,
-  //             "Usuario":               elementTra.usuarios_idFk,
-  //             "Establecimiento":       elementTra.establecimiento,
-  //             "Cod. Establecimiento":  elementTra.codigoEstablecimiento,
-  //             "Nombre del Banco":      elementTra.nombanco,
-  //             "Tipo de cuenta":        elementTra.tipoCuenta,
-  //             "N. Cuenta":             elementTra.numerocuenta,
-  //             "$1.00":                 elementTra.deposito_Bill_1,
-  //             "$2.00":                 elementTra.deposito_Bill_2,
-  //             "$5.00":                 elementTra.deposito_Bill_5,
-  //             "$10.00":                elementTra.deposito_Bill_10,
-  //             "$20.00":                elementTra.deposito_Bill_20,
-  //             "$50.00":                elementTra.deposito_Bill_50,
-  //             "$100.00":               elementTra.deposito_Bill_100,
-  //             "$0.01":                 elementTra.manual_Deposito_Coin_1,
-  //             "T$0.01":                elementTra.manual_Deposito_Coin_1 * 0.01,
-  //             "$0.05":                 elementTra.manual_Deposito_Coin_5,
-  //             "T$0.05":                elementTra.manual_Deposito_Coin_5 * 0.05,
-  //             "$0.10":                 elementTra.manual_Deposito_Coin_10,
-  //             "T$0.10":                elementTra.manual_Deposito_Coin_10 * 0.10,
-  //             "$0.25":                 elementTra.manual_Deposito_Coin_25,
-  //             "T$0.25":                elementTra.manual_Deposito_Coin_25 * 0.25,
-  //             "$0.50":                 elementTra.manual_Deposito_Coin_50,
-  //             "T$0.50":                elementTra.manual_Deposito_Coin_50 * 0.50,
-  //             "$0.100":                elementTra.manual_Deposito_Coin_100,
-  //             "Total":                 elementTra.total,
-  //             "totalRecoleccion":      elementTra.totalRecoleccion,
-  //             "Tipo de transacción":   elementTra.tipoTransaccion,
-  //             "fechaRecoleccion":      elementTra.fechaRecoleccion,
-  //           }
-
-  //           if ( element.machineSn == elementTra.machine_Sn ) {
-  //             // this.transaccionesModel.push(arr);
-  //             element.transacciones.push(arr);
-  //           }  
-
-  //         })
-  //       })         
-        
-  //       console.log('==========================');
-  //       console.log(this.dataExportarExcel);
-  //       console.log('==========================');
-
-  //     }
-  //   })
-  // }
 
   obtenerTransaccionesEquipos(nombreArchivo: any) {
     this.transacciones.obtenerTransaccionesTienda(nombreArchivo, 1).subscribe({
@@ -172,6 +108,7 @@ export class HistorialAcreditacionComponent implements OnInit {
               "N. Serie":              elementTra.machine_Sn,
               "Usuario":               elementTra.usuarios_idFk,
               "Establecimiento":       elementTra.establecimiento,
+              "Actividad":             elementTra.observacion,
               "Cod. Establecimiento":  elementTra.codigoEstablecimiento,
               "Nombre del Banco":      elementTra.nombanco,
               "Tipo de cuenta":        elementTra.tipoCuenta,
@@ -215,9 +152,9 @@ export class HistorialAcreditacionComponent implements OnInit {
             return 0;
           });
         });  
-        // console.log('==========================');
-        // console.log(this.dataExportarExcel);
-        // console.log('==========================');
+        // //console.log('==========================');
+        // //console.log(this.dataExportarExcel);
+        // //console.log('==========================');
       }, complete: () => {
         this.exportarExcel(nombreArchivo);
       }, error: (e) => {
@@ -238,27 +175,47 @@ export class HistorialAcreditacionComponent implements OnInit {
       cancelButtonText:   "No a creditar todabía"
     }).then((result) => {
       if (result.isConfirmed) {
+        this._show_spinner = true;
         this.hcred.actualizarEquiposAcreditados(data.nombreArchivo).subscribe({
           next: (x) => {
             Toast.fire({ icon: 'success', title: 'Las transacciones han cambiado de estado a acreditado.', position: 'center' });
           }, error: (e) => {
             Toast.fire({ icon: 'error', title: 'Algo ha ocurrido, y no se ha podido actualizar.' });
+            this._show_spinner = false;
             console.error(e);
           }, complete: () => {
             this.listaAcreditadas.splice(i,1);
+            this._show_spinner = false;
           }
         })
       }
     });
   }
 
+  modelDataSaldo: any = [];
+  obterSaldoTransac( machineSn:any ) {
+    console.log( '<<<<<obteniendo saldos>>>>> : '  + machineSn )
+    
+    this.transacciones.ObtenerEquiposSaldo(machineSn).subscribe({
+      next: (x) => {
+        this.modelDataSaldo = x;
+        // console.log('===============================');
+        // console.log(this.modelDataSaldo);
+        // console.log('===============================');
+      }
+    })
+  }
+
   exportarExcel( nombreArchivo:any ): void {
+
+    // alert('Exportando a Excel')
 
     const workbook = new ExcelJS.Workbook();
     let res:number = 0;
     let clientes:string = '';
     let tiendas: string = '';
     let establecimiento:string = '';
+    let actividad:string = '';
     let codestablecimiento:string = '';
     let equipos: string = '';
     let usuario: string = '';
@@ -278,10 +235,13 @@ export class HistorialAcreditacionComponent implements OnInit {
 
     const worksheet = workbook.addWorksheet('TodasTransacciones');
     this.dataExportarExcel.forEach( (equipo: any) => {
+
+      // this.obterSaldoTransac(equipo.nserie);
+
       // const nserie = equipo.nserie || 'NoNserie'; // Si equipo.nserie es undefined, usa 'NoNserie'
       // const worksheet = workbook.addWorksheet(`Transacciones_${nserie}`); 
       const headers = this.getHeaderRow();
-      const numericColumns = [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
+      const numericColumns = [ 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 ];
 
     // Agrega encabezados de columna solo si es la primera iteración
     if ( this.dataExportarExcel.indexOf(equipo) === 0 ) {
@@ -291,24 +251,36 @@ export class HistorialAcreditacionComponent implements OnInit {
   
     // Agrega datos
     equipo.transacciones.forEach((transaccion: any, i: number) => {
+
     const row: any = [];
     const filteredHeaders = this.getHeaderRow();
 
-    filteredHeaders.forEach((header: any, columnIndex: number) => {
-        
-        const cellValue = transaccion[header] || '';        
-        if (numericColumns.includes(columnIndex)) {
-            let x = cellValue.toString();
-            let y = x.replace(',', '');
-            let j = Number(y);
-            row.push(Number(j));
-        }
-
-        else { row.push(cellValue); }
-
+    filteredHeaders.forEach( ( header: any, columnIndex: number ) => {
+      const cellValue = transaccion[header] || '';
+      if (numericColumns.includes(columnIndex)) {
+          let x = cellValue.toString();
+          let y = x.replace(',', '');
+          let j = Number(y);
+          row.push(Number(j));
+      } else {
+          row.push(cellValue);
+      }
     });
 
-    worksheet.addRow(row);
+    let fechaInicialEscogida: any = new Date( this.exportdateform.controls['dateini'].value );
+    const transaccionFecha = new Date(transaccion['F.Transacciones']).toISOString();
+    const backgroundColor = transaccionFecha < fechaInicialEscogida ? '#FDF9E1' : '';
+
+    const addedRow = worksheet.addRow(row);
+    if (backgroundColor) {
+      addedRow.eachCell((cell) => {
+          cell.fill = {
+              type: 'pattern',
+              pattern: 'solid',
+              fgColor: { argb: backgroundColor.replace('#', '') }
+          };
+      });
+    }
 
     let datenow =  new Date();
     let timenow =  new Date().getHours().toString()   + ':'
@@ -337,6 +309,7 @@ export class HistorialAcreditacionComponent implements OnInit {
           equipos             = x["N. Serie"];
           usuario             = x["Usuario"];
           establecimiento     = x["Establecimiento"];
+          actividad           = x["Actividad"];
           codestablecimiento  = x["Cod. Establecimiento"];
           $1                 += x["$1.00"];
           $2                 += x["$2.00"];
@@ -357,7 +330,7 @@ export class HistorialAcreditacionComponent implements OnInit {
         /** Aquí cree la fila de saldos */
         const totalRow = worksheet.addRow(
           [datenow, timenow, clientes,tiendas,'   ***   ',
-           equipos,usuario,establecimiento,codestablecimiento,
+           equipos,usuario,establecimiento, actividad,codestablecimiento,
            '    ','    ','    ',$1*1,
            $2*2,$5*5,$10*10,$20*20,$50*50,$100*100,
            $001.toFixed(2),$005.toFixed(2),
@@ -389,7 +362,44 @@ export class HistorialAcreditacionComponent implements OnInit {
                     },
           };
         }
+
+        const saldoRow = worksheet.addRow(
+          [datenow, timenow, clientes,tiendas,'   ***   ',
+           equipos,usuario,establecimiento,actividad,codestablecimiento,
+           '    ','    ','    ', '',
+           '', '', '', '', '', '',
+           '','','','','',
+           '', equipo.saldo, 'saldo']);
+
+           for (let col = 1; col <= 27; col++) {
+            saldoRow.getCell( col ).fill = {
+                  type: 'pattern',
+                  pattern: 'solid',
+                  fgColor: { argb: 'EFFFDC' },
+              };
+              saldoRow.getCell(col).border = {
+                top:    {
+                          style: 'thin',
+                          color: { argb: '000000' }
+                        },
+                left:   {
+                          style: 'thin',
+                          color: { argb: '000000' }
+                        },
+                bottom: {
+                          style: 'thin',
+                          color: { argb: '000000' }
+                        },
+                right:  { 
+                          style: 'thin',
+                          color: { argb: '000000' }
+                        },
+              };
+            }
+
       }
+
+
     });
   
     worksheet.columns.forEach((column: any) => {
@@ -452,8 +462,8 @@ export class HistorialAcreditacionComponent implements OnInit {
         setTimeout(() => {
           this.dataExportarExcel = [];
           this.dataExportarExcel = [];
-          console.log('this.dataExportarExcel limpiada!')
-          console.log(this.dataExportarExcel)
+          //console.log('this.dataExportarExcel limpiada!')
+          //console.log(this.dataExportarExcel)
         }, 1000);
       });
 
@@ -513,12 +523,16 @@ export class HistorialAcreditacionComponent implements OnInit {
         FechaIni: this.exportdateform.controls['dateini'].value,
         FechaFin: fechaFin.toISOString() // Convierte la fecha a formato ISO (opcional)
       };
+
+      console.log('this.modelConsult');
+      console.log(this.modelConsult);
   
       // Realiza la consulta con la nueva fecha
       this.hcred.obtenerAcreditadasTran(this.modelConsult).subscribe({
         next: (x) => {
-          console.log(x);
+          //console.log(x);
           this.listaAcreditadasOk = x;
+          console.log(this.listaAcreditadasOk);
         }
       });
     } else {

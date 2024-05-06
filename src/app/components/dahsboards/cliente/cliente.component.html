@@ -25,12 +25,12 @@
                                    formControlName="Nombre_Cliente"
                                    #Nombre_Cliente
                                    id="Nombre_Cliente"
-                                   placeholder="José Villalba..."
-                                   >
+                                   placeholder="José Villalba...">
                         </div>
                         <div class="mb-3 w-100">
-                            <label for="RUC" class="form-label text-secondary ">
-                                RUC:
+                            <label for="RUC"
+                                   class="form-label text-secondary">
+                                   RUC:
                             </label>
                             <input type="text"
                                    class="form-control"
@@ -103,11 +103,16 @@
                 <div class="w-75 ">
                     <section class="filtros mt-2 mb-2 w-100 d-flex">
                         <div class="mb-2 d-flex w-100">
-                          <input class=" w-100 shadow-sm form-control rounded-pill"
-                                 fxFlex="auto" type="text"
-                                 [(ngModel)]="filterCli"
-                                 (keyup)="filterCliente()" 
-                                 #input placeholder="Búsqueda de clientes registrados...">
+                            <form [formGroup]="filterForm" class="w-100">
+                                <input class=" w-100 shadow-sm form-control rounded-pill"
+                                fxFlex="auto"
+                                type="text"            
+                                formControlName="filterCli"
+                                #filterCli
+                                id="filterCli"
+                                (keyup)="filterCliente()" 
+                                placeholder="Búsqueda de clientes registrados...">
+                            </form>
                         </div>
                         <div *ngIf="permisonUsers">
                             <div [style]="'background-image: url( '+add+' )' "
@@ -120,23 +125,21 @@
             </div>
             <table class="table table-hover table-bordered table-primary table-striped align-middle" >
                 <thead class="bg-primary text-light" >
-                    <th class="p-2" *ngIf="permisonUsers" >
-                        
-                    </th>
+                    <th class="p-2" *ngIf="permisonUsers"></th>
                     <th class="p-2" >
                         RUC
                     </th>
                     <th class="p-2">
-                        Nombre CLiente
+                        CLiente
                     </th>
                     <th class="p-2">
-                        Nombre de Contacto
+                        Contacto
                     </th>
                     <th class="p-2">
-                        Email Contacto
+                        Email
                     </th>
                     <th class="p-2">
-                        Teléfono Contacto
+                        Teléfono
                     </th>
                     <th class="p-2">
                         Dirección
@@ -144,13 +147,20 @@
                     <th class="p-2" title="Agregar cuentas contables del cliente">
                         Cta.Cont.
                     </th>
+                    <th class="p-2" title="Agregar cuentas contables del cliente">
+                        Localidades
+                    </th>
                 </thead>
                 <tbody>
                     <tr *ngFor="let usuarios of clientelista; let i = index">
                         <td *ngIf="permisonUsers">
                             <div class="d-flex">
-                                <div [style]="'background-image: url( '+edit+' )' " (click)="catchData(usuarios)" class="icono-btn" ></div>
-                                <div [style]="'background-image: url( '+delete+' )' " (click)="eliminarUsuario(usuarios, i)" class="icono-btn" ></div>
+                                <div [style]="'background-image: url( '+edit+' )' " 
+                                     (click)="catchData(usuarios)" class="icono-btn" >
+                                </div>
+                                <div [style]="'background-image: url( '+delete+' )' "
+                                     (click)="eliminarUsuario(usuarios, i)" class="icono-btn" >
+                                </div>
                             </div>
                         </td>
                         <td>
@@ -190,6 +200,33 @@
                                      <span class="">
                                         <strong>+</strong>
                                      </span>
+                                </div>
+                            </div>
+                        </td>
+                        <td *ngIf="permisonUsers">
+                            <div class="d-flex">                                
+                                <span [style]="'background-image: url( '+localidad2+' )'"
+                                      class="icono-btn"
+                                      [matBadge]="usuarios.cantidadLocalidades"
+                                      matBadgePosition="before"
+                                      matBadgeColor="warn"
+                                      (click)="op.toggle($event); obtenerLocalidad( usuarios.codigoCliente );"
+                                      style="background-color: rgb(80, 37, 149) !important; background-size: 65% 65%; background-repeat: no-repeat !important; border: solid 2px rgb(225, 202, 254); background-position: 5px 4px;">
+                                      <p-overlayPanel #op>
+                                        <div *ngFor="let loc of localidadesGuardadasCliente; let i = index;" class="d-flex justify-content-start align-items-center" style="border-bottom: dashed 1px gray;">
+                                           <div class="m-1"> 
+                                                <div [style]="'background-image: url( '+delete+' )'"
+                                                     (click)="eliminarCliente( i, loc.id )"
+                                                     class="icono-btn" >
+                                                </div>
+                                           </div>
+                                           <div class="m-1"> {{loc.nombre}} </div>
+                                        </div>
+                                      </p-overlayPanel>
+                                </span>
+                                <div  [style]="'background-image: url( '+localidad1+' )' " 
+                                      class="icono-btn" (click)="openDialogAsignarLocalidad(usuarios)"
+                                      style="background-color: rgb(80, 37, 149) !important; background-size: 65% 65%; background-repeat: no-repeat !important; border: solid 2px rgb(225, 202, 254); background-position: 5px 4px;" >
                                 </div>
                             </div>
                         </td>

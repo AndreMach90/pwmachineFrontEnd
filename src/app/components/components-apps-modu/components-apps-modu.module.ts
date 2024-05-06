@@ -170,6 +170,8 @@ import { NavsideExpDataComponent } from '../shared/navside-exp-data/navside-exp-
 import { DashboardDataExportComponent } from '../shared/dashboard-data-export/dashboard-data-export.component';
 import { ModeldataComponent } from '../shared/modeldata/modeldata.component';
 import { HistorialAcreditacionComponent } from '../shared/historial-acreditacion/historial-acreditacion.component';
+import { ModalLocalidadClienteComponent } from '../dahsboards/cliente/modal-localidad-cliente/modal-localidad-cliente.component';
+import { ObtenerLocalidadClienteComponent } from '../dahsboards/cliente/modal-localidad-cliente/obtener-localidad-cliente/obtener-localidad-cliente.component';
 
 @NgModule({
   declarations: [
@@ -198,6 +200,8 @@ import { HistorialAcreditacionComponent } from '../shared/historial-acreditacion
     DashboardDataExportComponent,
     ModeldataComponent,
     HistorialAcreditacionComponent,
+    ModalLocalidadClienteComponent,
+    ObtenerLocalidadClienteComponent
   ],
   imports: [
     NgxTimepickerModule,

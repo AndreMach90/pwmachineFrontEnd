@@ -28,8 +28,8 @@ export class ServicesSharedService {
   validateRol():any {
     const x:any = sessionStorage.getItem('PR');
     const rol:any = this.ncrypt.decryptWithAsciiSeed(x, this.env.es, this.env.hash);
-    //////console.warn('ROL SESSION STORAGE')
-    //////console.warn(rol)
+    ////////console.warn('ROL SESSION STORAGE')
+    ////////console.warn(rol)
     switch(rol){
       case 'R001':
         return 1;

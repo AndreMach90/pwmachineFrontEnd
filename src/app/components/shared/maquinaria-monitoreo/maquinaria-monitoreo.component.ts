@@ -53,7 +53,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
                 .withUrl(this.urlHub+'manualTransaction')
                 .build();
               this.manualTransactionHub.on("SendTransaccionManual", message => {
-                ////// // //console.warn(message);
+                ////// // ////console.warn(message);
                 this.MtransHub(message);
               });
 
@@ -122,15 +122,10 @@ export class MaquinariaMonitoreoComponent implements OnInit {
 
     this.EmitManualTransHub = data[2];
     this.EmitManualPiezasCantidadTransactionHub = data[3];
-    this.mensajeTran = '. Transacción manual.'
-    // // //console.warn('TRANSACCIONES MANUALES')
-    // // //console.warn('***********************')
+    this.mensajeTran = '. Transacción manual.';
     this.trannserie = this.EmitManualTransHub[0].machine_Sn;
-    // // //console.warn(this.trannserie);
-    // // //console.warn('***********************')
 
     this.calculoPrimaryLista( this.EmitManualPiezasCantidadTransactionHub, 'T' );
-
 
     this.billete1        = data[0].manualDepositoBill1;
     this.billete2        = data[0].manualDepositoBill2;
@@ -140,12 +135,12 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     this.billete50       = data[0].manualDepositoBill50;
     this.billete100      = data[0].manualDepositoBill100;
 
-    this.montoBillete1   = 1 * data[0].totalDepositoBill1;
-    this.montoBillete2   = 2 * data[0].totalDepositoBill2;
-    this.montoBillete5   = 5 * data[0].totalDepositoBill5;
-    this.montoBillete10  = 10 * data[0].totalDepositoBill10;
-    this.montoBillete20  = 20 * data[0].totalDepositoBill20;
-    this.montoBillete50  = 50 * data[0].totalDepositoBill50;
+    this.montoBillete1   = 1   * data[0].totalDepositoBill1;
+    this.montoBillete2   = 2   * data[0].totalDepositoBill2;
+    this.montoBillete5   = 5   * data[0].totalDepositoBill5;
+    this.montoBillete10  = 10  * data[0].totalDepositoBill10;
+    this.montoBillete20  = 20  * data[0].totalDepositoBill20;
+    this.montoBillete50  = 50  * data[0].totalDepositoBill50;
     this.montoBillete100 = 100 * data[0].totalDepositoBill100;
 
     this.manualDepositoCoin1   = data[0].manualDepositoCoin1;
@@ -239,7 +234,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       this.listalertas.push(arr);
     }
 
-    // // //console.warn(this.listalertas);
+    // // ////console.warn(this.listalertas);
     const uniqueData = new Map();
     for (const item of this.listalertas) {
       // Crear una cadena que representa el objeto para verificar duplicados
@@ -271,7 +266,6 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     let xtoken:any = sessionStorage.getItem('token');
     if (xtoken == null || xtoken == undefined || xtoken == '') {
       this.router.navigate(['login'])
-      // //alert'NO hay token de usuario');
     }
   }
 
@@ -365,11 +359,11 @@ export class MaquinariaMonitoreoComponent implements OnInit {
 
     this.EmitAutoTransHub = data[1];
 
-    // // //console.warn('TRANSACCIONES AUTOMATICAS')
-    // // //console.warn('***********************')
+    // // ////console.warn('TRANSACCIONES AUTOMATICAS')
+    // // ////console.warn('***********************')
     this.trannserie = this.EmitAutoTransHub[0].machine_Sn;
-    // // //console.warn(this.trannserie);
-    // // //console.warn('***********************')
+    // // ////console.warn(this.trannserie);
+    // // ////console.warn('***********************')
 
     this.mensajeTran = '. Transacción automático.';
 
@@ -520,11 +514,11 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   public countmin: number = 5000;
   private PingHub(data:any) {
 
-    //console.warn('♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦');
-    //console.warn('Iniciando Ping HUB');
-    //console.warn('PING HUB');
-    //console.warn(data);
-    //console.warn('♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦');
+    ////console.warn('♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦');
+    ////console.warn('Iniciando Ping HUB');
+    ////console.warn('PING HUB');
+    ////console.warn(data);
+    ////console.warn('♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦');
     data.filter( (element:any) => {
       this.listaEsquipo.filter( (equi:any) => {
 
@@ -673,7 +667,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
             elementEq.indicadorPorcentajeBilletes          = Number(((elementEq.indicadorCapacidadBilletes / elementEq.indicadorCapacidadBilletesMax ) * 100).toFixed(2));
             elementEq.indicadorPorcentajeTotalMaxAsegurado = Number(((elementEq.indicadorTotalAsegurado / elementEq.indicadorTotalMaxAsegurado) * 100).toFixed(2));
             elementEq.indicadorColorBarProgressBilletes    = "bg-success text-light";
-            // //// // //console.warn(elementEq.indicadorPorcentajeBilletes );
+            // //// // ////console.warn(elementEq.indicadorPorcentajeBilletes );
             if( element.estadoPing == 1 ) {
               elementEq.colorEsstado = '#DAEFE6';
               elementEq.colorTexto = 'text-success';
@@ -696,13 +690,13 @@ export class MaquinariaMonitoreoComponent implements OnInit {
             }
             else if ( elementEq.indicadorPorcentajeBilletes >= 80 && elementEq.indicadorPorcentajeBilletes <= 90 ) {
               elementEq.indicadorColorBarProgressBilletes = "bg-warning text-dark";
-              //// // //console.warn(elementEq.indicadorPorcentajeBilletes)
+              //// // ////console.warn(elementEq.indicadorPorcentajeBilletes)
               // this.playAudio();
               // this.controlalerts( 'Capacidad de Piezas del equipo', 'A punto de alcanzar el límite de piezas del equipo, ' + elementEq.serieEquipo, 'orange', 'dark', elementEq.serieEquipo );
             }
             else if ( elementEq.indicadorPorcentajeBilletes > 90 ) {
               elementEq.indicadorColorBarProgressBilletes = "bg-danger text-light";
-              // //// // //console.warn(elementEq.indicadorPorcentajeBilletes)
+              // //// // ////console.warn(elementEq.indicadorPorcentajeBilletes)
               // this.playAudio();
               // this.controlalerts( 'Capacidad de Piezas del equipo', 'Haz alcanzado el límite de piezas del equipo, ' + elementEq.serieEquipo, 'orangered', 'whitesmoke', elementEq.serieEquipo );
             }
@@ -731,7 +725,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   filterequip:any;
   filterEquipos(): void {
 
-    //console.warn(this.filterequip);
+    ////console.warn(this.filterequip);
 
     this.listaEsquipo = this.listaEsquipoGhost.filter((item:any) => 
     item.serieEquipo.toString().toLowerCase().includes(this.filterequip.toLowerCase()) ||   

@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ModalConfigExcelComponent } from './modal-config-excel/modal-config-excel.component';
 import { Router } from '@angular/router';
 import { MonitoreoService } from '../../monitoreo-equipos/services/monitoreo.service';
+import { FormControl, FormGroup } from '@angular/forms';
 
 
 @Component({
@@ -38,8 +39,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
   dis_execel_export: boolean = true;
   @Input() listenNserie!: any;
   
-  startDate: Date = new Date()
-  endDate: Date = new Date();
+
   nombreTienda: string = '';
 
   /**----------------------------------------------------- */
@@ -86,6 +86,15 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
   dias_estimados: string = '';
   sumatoriaNoRecollect: number = 0;
 
+  public filterTransaccForm = new FormGroup({
+    filterTransacc:   new FormControl('')
+  })
+
+  public filterDateForm = new FormGroup({
+    startDate: new FormControl(),
+    endDate:   new FormControl()
+  })
+
   constructor( private env: Environments, 
                private monitoreoServs: MonitoreoService,
                public dialog: MatDialog,
@@ -101,7 +110,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
     if(changes) {
       this.obtenerTransac(this.listenNserie);
       this.obtenerTransacTabla(this.listenNserie);
-      // console.log('cambiando desde el filtro transaccional')
+      // //console.log('cambiando desde el filtro transaccional')
       this.dis_execel_export = false;
     }
   }
@@ -120,6 +129,9 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
       complete: () => {
         this.listaTransaccionesEmitGrafica.emit(this.listaTransacciones.reverse());
         this.sumatoriaTotal();
+        
+        if( this.listaTransacciones[0].nombreCliente == undefined || this.listaTransacciones[0].nombreCliente == null ) this.listaTransacciones[0].nombreCliente = '';
+        if( this.listaTransacciones[0].nombreTienda == undefined  || this.listaTransacciones[0].nombreTienda == null )  this.listaTransacciones[0].nombreTienda  = '';
         this.cliente = this.listaTransacciones[0].nombreCliente;
         this.tienda  = this.listaTransacciones[0].nombreTienda;
       }
@@ -135,7 +147,6 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
     this.transacciones.obtenerTransaccionesTienda(id, 2).subscribe({
         next: (transactab:any) => {
           this.listaTrsansaccionesTablaGhost = transactab;
-          // console.warn(this.listaTrsansaccionesTablaGhost);
         },
         error: (e) => {
           console.error(e);
@@ -184,6 +195,8 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
   /** Filtro de transacciones tanto para la gráfica como para la tabla de transacciones */
   filterTransaccos() {
 
+    // let filterTransacc: any = 
+
     this.listaTransacciones = this.listaTransaccionesGhost.filter( (item:any) => 
       item.machine_Sn             .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
       item.nombreCliente          .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
@@ -217,8 +230,12 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
   }
 
   validarRangoDeFechas() {
-    const fechaInicio = new Date(this.startDate);
-    const fechaFin = new Date(this.endDate);
+
+    let startDate: any = this.filterDateForm.controls['startDate'].value;
+    let endDate: any = this.filterDateForm.controls['endDate'].value;
+
+    const fechaInicio = new Date(startDate);
+    const fechaFin = new Date(endDate);
     if (fechaFin < fechaInicio) {
       this.dias_estimados = 'La fecha final no puede ser menor a la fecha inicial';
       this.disButton = true;
@@ -248,19 +265,19 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
 
   filterByDateRange() {
 
-    const fechaFin = new Date(this.endDate);
+    const fechaFin = new Date(this.filterDateForm.controls['endDate'].value);
     fechaFin.setDate(fechaFin.getDate() + 1);
     let modelRange:any = {
       "tipo":        "1",
       "Machine_Sn":  this.listenNserie,
-      "FechaInicio": this.startDate,
+      "FechaInicio": this.filterDateForm.controls['startDate'].value,
       "FechaFin":    fechaFin
     }
 
     this.transacciones.filtroTransaccionesRango(modelRange).subscribe({
       next: (x) => {
         // //alert'correcto');
-        console.table(x);
+        //console.table(x);
         this.listaTransacciones = x;
         this.listaTrsansaccionesTabla = x;
         this.listaTransaccionesGhost = x;
@@ -271,7 +288,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
         //alert'incorrecto');
         console.error(e);
       }, complete: () => {
-        console.log(this.listaTrsansaccionesTabla);
+        //console.log(this.listaTrsansaccionesTabla);
       }
     })
 
@@ -376,7 +393,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
         if (column.number === 27) {
           column.width = 20;
           column.eachCell((cell: any) => {
-            console.log('Econtrado indice 27');
+            //console.log('Econtrado indice 27');
             cell.numFmt = '#,##0.00';
           });
         }

@@ -14,7 +14,7 @@ export class CuentasBancariasService {
       'Authorization': `Bearer ${this.env.TokenJWT()}`,
       'Content-Type': 'application/json'
     });
-    //////console.warn(this.env.apiurl() + 'Cuenta/GuardarCuenta')
+    ////////console.warn(this.env.apiurl() + 'Cuenta/GuardarCuenta')
     return this.http.post(this.env.apiurl() + 'Cuenta/GuardarCuenta', model, { headers });
   }
 

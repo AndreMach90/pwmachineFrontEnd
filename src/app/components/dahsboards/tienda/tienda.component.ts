@@ -38,7 +38,7 @@ export class TiendaComponent implements OnInit {
   search:any                            = this.env.apiUrlIcon()+'search.png';
   add: any                              = this.env.apiUrlIcon()+'add.png';
   viewForm: boolean                     = false;
-  filtertien:string                     = '';
+  
   public provinciaLista:        any     = [];
   _edit_btn:                    boolean = false;
   _delete_show:                 boolean = true;
@@ -91,6 +91,10 @@ export class TiendaComponent implements OnInit {
     codProv:               new FormControl('')
   })
 
+  public filtertienForm = new FormGroup({
+    filtertien:     new FormControl()
+  })
+
   ngOnInit(): void {
 
     let x:any = this.sharedservs.validateRol();
@@ -117,15 +121,16 @@ export class TiendaComponent implements OnInit {
     switch( this.calwidth ) {
       case true:
         this._width_table = 'tabledata table-responsive w-75 p-2';
-        //////console.warn(this._width_table);
+        ////////console.warn(this._width_table);
         this.calwidth = false;
         break;
       case false:        
         this._width_table = 'tabledata table-responsive w-100 p-2';
-        //////console.warn(this._width_table);
+        ////////console.warn(this._width_table);
         this.calwidth = true;
         break;
     }
+    
     this.tiendaForm.controls['codigoClienteidFk'].enable();
     this.tiendaForm.controls['codigoClienteidFk'].setValue('');
     this.tiendaForm.controls['cuentaBanco'].setValue('');
@@ -145,14 +150,15 @@ export class TiendaComponent implements OnInit {
     this.editcatch        = false;
     this._create_show     =  true;
     this.dis_account_shop = false;
+
   }
 
-  constructor( private env: Environments,
+  constructor( private env:                  Environments,
                private controlInputsService: ControlinputsService,
-               private tiendaservs: TiendaService,
-               public dialog: MatDialog,
-               private clienteserv: ClientesService,
-               private sharedservs: ServicesSharedService) {}
+               private tiendaservs:          TiendaService,
+               public dialog:                MatDialog,
+               private clienteserv:          ClientesService,
+               private sharedservs:          ServicesSharedService) {}
 
 
     validateInputText(data:any) {
@@ -446,11 +452,15 @@ export class TiendaComponent implements OnInit {
   }
 
   filterTienda () {
+
+    let filtertien: any = this.filtertienForm.controls['filtertien'].value;
+    console.log(filtertien)
     this.tiendalista = this.tiendaListaGhost.filter((item:any) => 
-    item.nombreTienda.toLowerCase().includes(this.filtertien.toLowerCase()) ||
-    item.nombreProvincia.toLowerCase().includes(this.filtertien.toLowerCase()) ||
-    item.nombreAdmin.toLowerCase().includes(this.filtertien.toLowerCase()) ||
-    item.nombreCliente.toLowerCase().includes(this.filtertien.toLowerCase()) 
+    //console.log(item)
+    item.nombreTienda.toLowerCase().includes(filtertien.toLowerCase()) ||
+    item.nombreProvincia.toLowerCase().includes(filtertien.toLowerCase()) ||
+    item.nombreAdmin.toLowerCase().includes(filtertien.toLowerCase()) ||
+    item.nombreCliente.toLowerCase().includes(filtertien.toLowerCase()) 
   );
   }
 
@@ -503,7 +513,7 @@ export class TiendaComponent implements OnInit {
       }
     )
 
-    console.log(this.tipoAccion)
+    //console.log(this.tipoAccion)
 
     const dialogRef = this.dialog.open( ModalTiendaCuentaComponent, {
       height: 'auto',
@@ -558,7 +568,7 @@ export class TiendaComponent implements OnInit {
 
   eliminarCuentaTienda(data:any, id:number) {
 
-    console.log(this.tipoAccion);
+    //console.log(this.tipoAccion);
 
     if( this.tipoAccion == 0 ) {
       this.resultModal.splice( id, 1 );

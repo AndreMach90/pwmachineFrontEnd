@@ -12,6 +12,8 @@ import { ModalDetalleMaquinaTranComponent } from '../monitoreo-equipos/modal-det
 import { ModalUsuariosTemporalesComponent } from './modal-usuarios-temporales/modal-usuarios-temporales.component';
 
 import Swal from 'sweetalert2'
+import { ModalLocalidadClienteComponent } from './modal-localidad-cliente/modal-localidad-cliente.component';
+import { ModalClienteService } from './modal-localidad-cliente/services/modal-cliente.service';
 const Toast = Swal.mixin({
   toast: true,
   position: 'top-end',
@@ -39,6 +41,9 @@ export class ClienteComponent implements OnInit {
   _show_add_tecnic: boolean = true;
 
   delete: any = this.env.apiUrlIcon()+'delete.png';
+  localidad: any = this.env.apiUrlIcon()+'localidad.png';
+  localidad1: any = this.env.apiUrlIcon()+'localidad1.png';
+  localidad2: any = this.env.apiUrlIcon()+'localidad2.png';
   edit:   any = this.env.apiUrlIcon()+'edit.png';
   crear:  any = this.env.apiUrlIcon()+'accept.png';
   cancel: any = this.env.apiUrlIcon()+'cancel.png';
@@ -71,6 +76,12 @@ export class ClienteComponent implements OnInit {
     Active:           new FormControl(''), 
   })
 
+  public filterForm = new FormGroup({
+    filterCli:   new FormControl('')
+  })
+
+  calwidth: boolean = true;
+
   primary:any;
   secondary:any;
   secondary_a:any;
@@ -100,6 +111,7 @@ export class ClienteComponent implements OnInit {
 
   constructor( private env: Environments,
                public dialog: MatDialog,
+               private loc: ModalClienteService,
                private clienteserv: ClientesService,
                private controlInputsService: ControlinputsService,
                private sharedservs: ServicesSharedService, 
@@ -113,7 +125,44 @@ export class ClienteComponent implements OnInit {
                 this.controlInputsService.validateAndCleanNumberInput(data);
               }
   
-  calwidth: boolean = true;
+  localidadesGuardadasCliente: any = [];
+  obtenerLocalidad( codcli:any ) {
+    this._show_spinner = true;
+    this.loc.obtenerLocalidadesCliente( codcli ).subscribe({
+      next: (x) => {
+        this.localidadesGuardadasCliente = x;
+        console.warn(this.localidadesGuardadasCliente)
+      }, complete: () => {
+        this._show_spinner = false;
+      }, error: (e) => {
+        console.error(e);
+        this._show_spinner = false;
+      }
+    })
+  }
+
+  eliminarCliente( index:number, id:number ) {
+    this._show_spinner = true;
+    this.loc.eliminarLocalidadCliente(id).subscribe({
+      next: (x) => {
+        Toast.fire({ icon: 'success', title: 'Asignación de localidad eliminada' });
+      }, error: (e) => {
+        this._show_spinner = false;
+        Toast.fire({ icon: 'error', title: 'No hemos podido eliminar la localidad' });
+      }, complete: () => {
+        this._show_spinner = false;
+        this.localidadesGuardadasCliente.splice(index, 1);
+        this.clientelista.filter( (x:any) => {
+          console.log(x.id)
+          console.log(id)
+          if ( x.id == id ) {
+            x.cantidadLocalidades -1
+          }
+        })
+      }
+    })
+  }
+  
   widthAutom() {
     switch( this.calwidth ) {
       case true:
@@ -138,7 +187,11 @@ export class ClienteComponent implements OnInit {
                     .subscribe({
       next: (cliente) => {
         this.clienteListaGhost = cliente;
-        // //////console.warn(this.clienteListaGhost);
+        console.warn('-*-*-*-*-*-*--*-*-*-*-*-*-*-*-');
+        console.warn('-*-*-*-*-*-*--*-*-*-*-*-*-*-*-');
+        console.warn(this.clienteListaGhost);
+        console.warn('-*-*-*-*-*-*--*-*-*-*-*-*-*-*-');
+        console.warn('-*-*-*-*-*-*--*-*-*-*-*-*-*-*-');
         this._show_spinner = false;
       }, error: (e) => {
         this._show_spinner = false;
@@ -146,7 +199,7 @@ export class ClienteComponent implements OnInit {
       }, complete: () => {
         this.clienteListaGhost.filter((element:any)=>{
 
-          //////console.warn(element)
+          ////////console.warn(element)
 
           let arr: any = {
             "id": element.id,
@@ -157,23 +210,28 @@ export class ClienteComponent implements OnInit {
             "telefcontacto": element.telefcontacto,
             "emailcontacto": element.emailcontacto,
             "nombrecontacto": element.nombrecontacto,
-            "cantidadCuntasBancarias": element.cantidadCuntasBancarias
+            "cantidadCuntasBancarias": element.cantidadCuntasBancarias,
+            "cantidadLocalidades": element.cantidadLocalidades
           }
 
           this.clientelista.unshift(arr);
-          // //////console.warn(this.clientelista);
+          // ////////console.warn(this.clientelista);
 
         })
       }
     })
   }
 
-  filterCli:string = '';
+
   filterCliente () {
+
+    let filter: any = this.filterForm.controls['filterCli'].value;
+
     this.clientelista = this.clienteListaGhost.filter((item:any) => 
-      item.ruc.toLowerCase().includes(this.filterCli.toLowerCase()) ||
-      item.nombreCliente.toLowerCase().includes(this.filterCli.toLowerCase())
+      item.ruc.toLowerCase().includes(filter.toLowerCase()) ||
+      item.nombreCliente.toLowerCase().includes(filter.toLowerCase())
     );
+    
   }
 
 
@@ -268,10 +326,10 @@ export class ClienteComponent implements OnInit {
   }
 
   obtenerCuentaTransac(data:any) {
-    console.log(data)
+    //console.log(data)
     this.clienteserv.obtenerCuentaTransacCant(data.id).subscribe({
       next: (x) => {
-        console.warn(x);
+        //console.warn(x);
       }
     })
   }
@@ -282,7 +340,7 @@ export class ClienteComponent implements OnInit {
     this.clienteserv.obtenerCuentaCliente(id).subscribe({
       next: ( cuentas ) => {
         this.cuentaslista = cuentas;
-        console.log(this.cuentaslista);
+        //console.log(this.cuentaslista);
         this._show_spinner = false;
       }, error:(e) => {
         console.error(e);
@@ -384,15 +442,15 @@ export class ClienteComponent implements OnInit {
     switch( action ) {
       case 'C':
         modelData = {
-          "id": data.id,
-          "codigoCliente": data.codigoCliente,
-          "nombreCliente": data.nombreCliente,
-          "ruc": data.ruc,
-          "direccion": data.direccion,
-          "telefcontacto": data.telefcontacto,
-          "emailcontacto": data.emailcontacto,
+          "id":             data.id,
+          "codigoCliente":  data.codigoCliente,
+          "nombreCliente":  data.nombreCliente,
+          "ruc":            data.ruc,
+          "direccion":      data.direccion,
+          "telefcontacto":  data.telefcontacto,
+          "emailcontacto":  data.emailcontacto,
           "nombrecontacto": data.nombrecontacto,
-          "action": action
+          "action":         action
         }
         break;
       case 'E':
@@ -424,13 +482,28 @@ export class ClienteComponent implements OnInit {
 
 
     dialogRef.afterClosed().subscribe( result => {      
-      //////console.warn(result);
+      ////////console.warn(result);
       this.obtenerCliente();
     });
 
   }
 
+  openDialogAsignarLocalidad(data:any): void {
 
+    console.log(data);
+
+    const dialogRef = this.dialog.open( ModalLocalidadClienteComponent, {
+      height: 'auto',
+      width:  '80%',
+      data: data, 
+    });
+
+    dialogRef.afterClosed().subscribe( result => {
+      ////////console.warn(result);
+      // this.obtenerCliente();
+    });
+
+  }
   
   openDialogUsuariosAsignados(data:any): void {
 
@@ -443,7 +516,7 @@ export class ClienteComponent implements OnInit {
 
 
     dialogRef.afterClosed().subscribe( result => {      
-      //////console.warn(result);
+      ////////console.warn(result);
       this.obtenerCliente();
     });
 
