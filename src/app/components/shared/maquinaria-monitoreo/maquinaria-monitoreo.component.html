@@ -1,11 +1,11 @@
 <div style="position: fixed; top: 20px; left: 10px;">
     <button type="submit"
-            style="border: none; background-color: transparent;"
-            class="d-flex align-items-center"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasExample"
-            aria-controls="offcanvasExample">
-            <div [matBadge]="nuevoObjectalerts.length"   matBadgeColor="warn" [style]="'background-image: url( ../../../../assets/alert.png )'" class="icono"></div>
+        style="border: none; background-color: transparent;"
+        class="d-flex align-items-center"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#offcanvasExample"
+        aria-controls="offcanvasExample">
+        <div [matBadge]="nuevoObjectalerts.length" matBadgeColor="warn" [style]="'background-image: url( ../../../../assets/alert.png )'" class="icono"></div>
    </button>
 </div>
 
@@ -17,7 +17,6 @@
     <hr>
     <div class="offcanvas-body">    
       <div>
-        
       </div>
       <div class="alerts-error">
         <audio #audioPlayer>
@@ -39,7 +38,6 @@
     </div>      
     </div>
 </div>
-  
 
 <div class="equipo-monitor w-100 p-4">
     <div class=" filter-monitoreo w-50 d-flex align-items-center ">
@@ -48,60 +46,55 @@
         </div> -->
         <section class="filtros w-100 animate__animated animate__backInLeft" *ngIf="true" >
             <div class="mb-2 d-flex w-100">
-              <input class=" w-100 shadow-sm form-control rounded-pill"
-                     fxFlex="auto" type="text"
-                     [(ngModel)]="filterequip"
-                     (keyup)="filterEquipos()" 
-                     style="font-weight: bold; font-size: 18pt;"
-                     #input
-                     placeholder="Búsqueda de equipos...">
+                <input class=" w-100 shadow-sm form-control rounded-pill"
+                    fxFlex="auto" type="text"
+                    [(ngModel)]="filterequip"
+                    (keyup)="filterEquipos()" 
+                    style="font-weight: bold; font-size: 18pt;"
+                    #input
+                    placeholder="Búsqueda de equipos...">
             </div>
         </section>
     </div>
-        
 
     <div class="d-flex flex-wrap justify-content-lg-around  align-items-center">
-     <div class="equipos shadow-sm m-1 rounded-2" *ngFor="let equipos of listaEsquipo" 
-          [style]="'background-color: ' +equipos.colorEsstado+ '; transition: ease-in all 1s; width: 250px '" >
-          <div class="p-1" >
-              <span class="p-2 d-flex justify-content-between align-items-end " >
-                  <small>Equipo</small> &nbsp;&nbsp; 
-                  <div style="text-align: right; background-color: rgba(0, 0, 0, 0.1);" class=" p-2 rounded-2 " >
-                    <div [class]="equipos.colorTexto"> <strong> {{ equipos.nombreTienda }} / {{ equipos.provincia }} </strong> </div>
-                    <strong [class]="equipos.colorTexto" > {{ equipos.serieEquipo }} </strong>
-                  </div>
-                 
-              </span>                            
-              <span class="p-2 d-flex justify-content-between">
-                  <small>IP:</small> &nbsp;&nbsp;
-                  <strong [class]="equipos.colorTexto">
-                    {{ equipos.ipEquipo }}
-                  </strong>
-              </span>
-          </div>
-          <div class="p-2">
-            <div class="m-1 d-flex justify-content-between">
-                <span> % Cantidad de Piezas </span>
-                <div>
-                    <strong>
-                        {{equipos.indicadorPorcentajeBilletes}} %
+        <div class="equipos shadow-sm m-1 rounded-2" *ngFor="let equipos of listaEsquipo" 
+            [style]="'background-color: ' +equipos.colorEsstado+ '; transition: ease-in all 1s; width: 250px '" >
+            <div class="p-1" >
+                <span class="p-2 d-flex justify-content-between align-items-end">
+                    <div style="text-align: center; background-color: rgba(0, 0, 0, 0.1); width: 100%;" class=" p-2 rounded-2 " >
+                        <div [class]="equipos.colorTexto"> <strong> {{ equipos.nombreTienda }} / {{ equipos.provincia }} </strong> </div>
+                        <strong [class]="equipos.colorTexto" > {{ equipos.serieEquipo }} </strong>
+                    </div>
+                </span>                            
+                <span class="p-2 d-flex justify-content-between">
+                    <small>IP:</small> &nbsp;&nbsp;
+                    <strong [class]="equipos.colorTexto">
+                        {{ equipos.ipEquipo }}
                     </strong>
-                    <!-- <strong>
-                        {{ equipos.indicadorCapacidadBilletes }} / {{ equipos.indicadorCapacidadBilletesMax }}
-                    </strong> -->
-                </div>
+                </span>
+            </div>
+            <div class="p-2">
+                <div class="m-1 d-flex justify-content-between">
+                    <span> % Cantidad de Piezas </span>
+                    <div>
+                        <strong> {{equipos.indicadorPorcentajeBilletes}} % </strong>
+                        <!-- <strong>
+                            {{ equipos.indicadorCapacidadBilletes }} / {{ equipos.indicadorCapacidadBilletesMax }}
+                        </strong> -->
+                    </div>
              </div>
             <div class="progress shadow-sm m-1"
                 data-bs-toggle="tooltip" data-bs-placement="top"
                 [title]=" equipos.indicadorPorcentajeBilletes + '%' ">
                 <div [class]="equipos.indicadorColorBarProgressBilletes"
-                     role="progressbar" 
-                     [style.width]="equipos.indicadorPorcentajeBilletes + '%'"
-                     style="transition: ease-in-out 1s all;"
-                     [attr.aria-valuenow]="equipos.indicadorPorcentajeBilletes"
-                     aria-valuemin="0"
-                     aria-valuemax="100">
-                     <!-- {{equipos.indicadorPorcentajeBilletes}} % -->
+                    role="progressbar" 
+                    [style.width]="equipos.indicadorPorcentajeBilletes + '%'"
+                    style="transition: ease-in-out 1s all;"
+                    [attr.aria-valuenow]="equipos.indicadorPorcentajeBilletes"
+                    aria-valuemin="0"
+                    aria-valuemax="100">
+                    <!-- {{equipos.indicadorPorcentajeBilletes}} % -->
                 </div>                                
             </div>
             <div class="m-1 d-flex justify-content-between">
@@ -112,17 +105,16 @@
                 </div>
             </div>
             <div class="progress shadow-sm m-1"
-                 data-bs-toggle="tooltip" data-bs-placement="top" 
-                 [title]="equipos.indicadorPorcentajeTotalMaxAsegurado + '%' ">
+                data-bs-toggle="tooltip" data-bs-placement="top" 
+                [title]="equipos.indicadorPorcentajeTotalMaxAsegurado + '%' ">
                 <div [class]="equipos.indicadorColorBarProgressAsegurado"
-                     role="progressbar" 
-                     [style.width]="equipos.indicadorPorcentajeTotalMaxAsegurado + '%'"
-                     style="transition: ease-in-out 1s all;"
-                     [attr.aria-valuenow]="equipos.indicadorPorcentajeTotalMaxAsegurado"
-                     aria-valuemin="0"
-                     aria-valuemax="100"
-                     >
-                     <!-- {{equipos.indicadorPorcentajeTotalMaxAsegurado}} % -->
+                    role="progressbar" 
+                    [style.width]="equipos.indicadorPorcentajeTotalMaxAsegurado + '%'"
+                    style="transition: ease-in-out 1s all;"
+                    [attr.aria-valuenow]="equipos.indicadorPorcentajeTotalMaxAsegurado"
+                    aria-valuemin="0"
+                    aria-valuemax="100">
+                    <!-- {{equipos.indicadorPorcentajeTotalMaxAsegurado}} % -->
                 </div>
             </div>
             <div class="d-flex justify-content-between" >
@@ -135,13 +127,12 @@
                     <span>{{ equipos.ultimaRecoleccion | date: 'short' }} </span>
                 </div>
             </div>
-          </div>
-          <!-- <div class="w-100">
-              <button [class]="equipos.colorBtn"
-                      (click)="obtenerDetalleEquipos(equipos)">
-                      Monitorear
-              </button>
-          </div> -->
-     </div>
+            <!-- <div class="w-100">
+                <button [class]="equipos.colorBtn"
+                        (click)="obtenerDetalleEquipos(equipos)">
+                        Monitorear
+                </button>
+            </div> -->
+        </div>
     </div>
- </div>
+</div>

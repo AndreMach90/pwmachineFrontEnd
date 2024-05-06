@@ -8,11 +8,13 @@ import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { EncryptService } from '../services/encrypt.service';
 import { Router } from '@angular/router';
 import jwt_decode from "jwt-decode";
+
 @Component({
   selector: 'app-maquinaria-monitoreo',
   templateUrl: './maquinaria-monitoreo.component.html',
   styleUrls: ['./maquinaria-monitoreo.component.scss']
 })
+
 export class MaquinariaMonitoreoComponent implements OnInit {
   view_filter: boolean = false;
   nameidentifier:any;
@@ -24,10 +26,9 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   iss:any;
   aud:any;
   usuario:any;
-
   search: any = this.env.apiUrlIcon()+'search.png';
   listalertas: any = [];
-  _show_spinner:      boolean = false;
+  _show_spinner: boolean = false;
   private urlHub: any = this.env.apiUrlHub();
   private connectionSendPingEquipo: HubConnection;
   private manualTransactionHub: HubConnection;
@@ -41,45 +42,28 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     private monitoreo: MonitoreoService,
     public  dialog: MatDialog,
     private equiposerv: EquipoService ) {
-
-      this.connectionSendPingEquipo = new HubConnectionBuilder()
+    this.connectionSendPingEquipo = new HubConnectionBuilder()
                   .withUrl(this.urlHub+'PingHubEquipos')
                   .build();
-                this.connectionSendPingEquipo.on("SendPingEquipo", message => {
-                  this.PingHub(message);
-                });
-
-                this.manualTransactionHub = new HubConnectionBuilder()
-                .withUrl(this.urlHub+'manualTransaction')
-                .build();
-              this.manualTransactionHub.on("SendTransaccionManual", message => {
-                ////// // ////console.warn(message);
-                this.MtransHub(message);
-              });
-
+    this.connectionSendPingEquipo.on("SendPingEquipo", message => { this.PingHub(message); });
+    this.manualTransactionHub = new HubConnectionBuilder()
+                  .withUrl(this.urlHub+'manualTransaction')
+                  .build();
+    this.manualTransactionHub.on("SendTransaccionManual", message => { this.MtransHub(message); });
     this.automaticTransactionHub = new HubConnectionBuilder()
-                .withUrl(this.urlHub+'autoTransaccion')
-                .build();
-              this.automaticTransactionHub.on("SendTransaccionAuto", message => {
-                this.AuTransHub(message);
-              });
-
+                  .withUrl(this.urlHub+'autoTransaccion')
+                  .build();
+    this.automaticTransactionHub.on("SendTransaccionAuto", message => { this.AuTransHub(message); });
     this.recollectTransactionHub = new HubConnectionBuilder()
-                .withUrl(this.urlHub+'recoleccionTransaccion')
-                .build();
-              this.recollectTransactionHub.on("SendTransaccionRecoleccion", message => {
-                this.RecoTransHub(message);
-              });
+                  .withUrl(this.urlHub+'recoleccionTransaccion')
+                  .build();
+    this.recollectTransactionHub.on("SendTransaccionRecoleccion", message => { this.RecoTransHub(message); });
+  }
 
-    }
-
-
-    @ViewChild('audioPlayer') audioPlayer!: ElementRef;
-    playAudio() {
-      // //alert'audio')
-      this.audioPlayer.nativeElement.play();
-    }
-
+  @ViewChild('audioPlayer') audioPlayer!: ElementRef;
+  playAudio() {
+    this.audioPlayer.nativeElement.play();
+  }
 
   /** Cantidad de la transaccion en monedas INICO */
   manualDepositoCoin1:   number = 0;
@@ -112,14 +96,13 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   montoBillete100:         number = 0;
   montoSumatoriasTotalHub: number = 0;
   /** Monto de dinero en la maquina FIN*/
-  numeroTransa: any;
-  machSerie:    any;
-  EmitManualTransHub: any = [];
+  numeroTransa:            any;
+  machSerie:               any;
+  EmitManualTransHub:      any = [];
   EmitManualPiezasCantidadTransactionHub: any = [];
-  mensajeTran: string = '';
+  mensajeTran:             string = '';
 
   private MtransHub(data:any) {
-
     this.EmitManualTransHub = data[2];
     this.EmitManualPiezasCantidadTransactionHub = data[3];
     this.mensajeTran = '. Transacción manual.';
@@ -155,20 +138,18 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     this.montoSumatoriasTotalHub      = this.montoBillete1 + this.montoBillete2 + this.montoBillete5 + this.montoBillete10 + this.montoBillete20 + this.montoBillete50 + this.montoBillete100;
     this.sumatoriasTotalCoinHub       = this.manualDepositoCoin1 + this.manualDepositoCoin5 + this.manualDepositoCoin10 + this.manualDepositoCoin25 + this.manualDepositoCoin50 + this.manualDepositoCoin100;
     this.sumatoriasTotalMontoCoinHub  = (0.01 * this.manualDepositoCoin1) + (0.05 * this.manualDepositoCoin5) + (0.10 * this.manualDepositoCoin10) + (0.25 * this.manualDepositoCoin25) + (0.50 * this.manualDepositoCoin50) + (1 * this.manualDepositoCoin100);
-    this.numeroTransa = data[0].transaccionNo;
-    this.machSerie    = data[0].machineSn;
+    this.numeroTransa                 = data[0].transaccionNo;
+    this.machSerie                    = data[0].machineSn;
 
-    let tipo:any = 'hola';
-    let msj:any = '';
+    let tipo    : any = 'hola';
+    let msj     : any = '';
     let colorbg : any = '';
     let colorfg : any = '';
 
     this.listaEsquipo.filter( (element: any) => {
-
       if( element.serieEquipo == this.machSerie  ) {
         element.indicadorTotalAsegurado              = element.indicadorTotalAsegurado + (this.sumatoriasTotalManualHub + this.sumatoriasTotalMontoCoinHub);
         element.indicadorPorcentajeTotalMaxAsegurado = Number(((element.indicadorTotalAsegurado / element.indicadorTotalMaxAsegurado) * 100).toFixed(2));
-
         if( element.indicadorPorcentajeBilletes > 0 && element.indicadorPorcentajeBilletes < 80  ) {
           element.indicadorColorBarProgressBilletes = "bg-success text-light";
         }
@@ -209,31 +190,24 @@ export class MaquinariaMonitoreoComponent implements OnInit {
         }
       }
     })
-
     this.controlalerts( tipo, msj, colorbg, colorfg, this.machSerie );
-
   }
-
 
   nuevoObjectalerts: any[] = [];
   controlalerts(tipo: string, msj: string, colorbg: string, colorfg: string, nserie: string) {
-
     let xmsj = msj;
     if (xmsj == '') {
       xmsj = 'void';
     }
-
     let arr: any = {
       msj:     msj,
       colorbg: colorbg,
       colorfg: colorfg,
       nserie:  nserie
     }
-
     if( xmsj != 'void' ) {
       this.listalertas.push(arr);
     }
-
     // // ////console.warn(this.listalertas);
     const uniqueData = new Map();
     for (const item of this.listalertas) {
@@ -249,7 +223,6 @@ export class MaquinariaMonitoreoComponent implements OnInit {
         uniqueData.set(key, item);
       }
     }
-
     this.nuevoObjectalerts = Array.from(uniqueData.values());
     this.nuevoObjectalerts.filter((elementalerta:any) => {
       if( elementalerta.nserie == this.trannserie ) {
@@ -258,9 +231,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
         }
       }
     })
-
   }
-
 
   validateSesion() {
     let xtoken:any = sessionStorage.getItem('token');
@@ -270,7 +241,6 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   }
 
   readTextAloud(text: string) {
-
     let synth = window.speechSynthesis;
     let voices = synth.getVoices();
     let spanishVoice = voices.find(voice => voice.lang.startsWith('es-'));
@@ -282,14 +252,11 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     } else {
       console.error('No se encontró una voz en español disponible.');
     }
-
   }
 
   eliminaralerta( i:number ) {
     this.listalertas.splice(i, 1);
   }
-
-
 
   listaDetalleequipoManual: any = [];
   listaDetalleequipoTransa: any = [];
@@ -306,67 +273,44 @@ export class MaquinariaMonitoreoComponent implements OnInit {
 
   EmitRecolTransHub: any = [];
   private RecoTransHub(data:any) {
-
     this.EmitRecolTransHub        = data[1];
     this.machSerie                = data[0].machineSn;
 
     this.listaDetalleequipoTransa = [];
     this.listaDetalleequipoManual = [];
 
-
-
     this.listaEsquipo.filter( ( element: any ) => {
-
         if( element.serieEquipo == this.machSerie  ) {
-
           element.ultimaRecoleccion                    = data[1][0].fechaTransaccion,
-
           element.indicadorCapacidadBilletes           = 0;
           element.indicadorTotalAsegurado              = 0;
           element.indicadorPorcentajeBilletes          = 0;
           element.indicadorPorcentajeTotalMaxAsegurado = 0;
-
           if ('speechSynthesis' in window) {
             this.readTextAloud('Se ha realizado un set collection, del equipo ' + this.machSerie );
           } else {
             console.error('La API de Web Speech no está disponible en este navegador.');
           }
-
           this.totalBilletesCantidadT   = 0;
           this.totalBilletesMontoT      = 0;
           this.totalBilletesCantidadM   = 0;
           this.totalBilletesMontoM      = 0;
-
         }
-
       }
-
     )
-
     this.primaryLista = [];
     this.listalertas  = [];
-
   }
+
   primaryLista:any =[];
   EmitAutoTransHub: any = [];
-
   trannserie: string = ''
-
   EmitAutomaticPiezasCantidadTransactionHub:any;
-
-
   private AuTransHub(data:any) {
-
     this.EmitAutoTransHub = data[1];
-
-    // // ////console.warn('TRANSACCIONES AUTOMATICAS')
-    // // ////console.warn('***********************')
     this.trannserie = this.EmitAutoTransHub[0].machine_Sn;
-    // // ////console.warn(this.trannserie);
-    // // ////console.warn('***********************')
 
     this.mensajeTran = '. Transacción automático.';
-
     this.billete1        = data[0].depositoBill1;
     this.billete2        = data[0].depositoBill2;
     this.billete5        = data[0].depositoBill5;
@@ -421,7 +365,6 @@ export class MaquinariaMonitoreoComponent implements OnInit {
           this.playAudio();
           // this.readTextAloud(this.nuevoObjectalerts[this.nuevoObjectalerts.length-1].msj);
         }
-
         if ( element.indicadorPorcentajeTotalMaxAsegurado > 0 && element.indicadorPorcentajeTotalMaxAsegurado < 80 ) {
           element.indicadorColorBarProgressAsegurado = "bg-success text-light";
         }
@@ -447,14 +390,10 @@ export class MaquinariaMonitoreoComponent implements OnInit {
         }
       }
     })
-
     this.controlalerts( tipo, msj, colorbg, colorfg, this.machSerie );
-
   }
 
-
   calculoPrimaryLista( objectArray:any, type:string ) {
-
     this.primaryLista = objectArray;
     switch(type) {
     case 'T':
@@ -505,7 +444,6 @@ export class MaquinariaMonitoreoComponent implements OnInit {
                                        detalle.depositoMontCoin10  + detalle.depositoMontCoin5  + detalle.depositoMontCoin1;
       }
     });
-
     break;
     case 'R':
       break;
@@ -513,17 +451,9 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   }
   public countmin: number = 5000;
   private PingHub(data:any) {
-
-    ////console.warn('♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦');
-    ////console.warn('Iniciando Ping HUB');
-    ////console.warn('PING HUB');
-    ////console.warn(data);
-    ////console.warn('♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦');
     data.filter( (element:any) => {
       this.listaEsquipo.filter( (equi:any) => {
-
         if( element.ip == equi.ipEquipo ) {
-
           if( element.estadoPing == 1 ) {
             equi.colorEsstado = '#DAEFE6';
             equi.colorTexto   = 'text-success';
@@ -531,86 +461,70 @@ export class MaquinariaMonitoreoComponent implements OnInit {
             equi.estadoPing   = element.estadoPing;
             equi.tiempoSincronizacion = element.tiempoSincronizacion;
           }
-
           else if ( element.estadoPing == 2 ) {
             equi.colorEsstado = '#FCB605';
             equi.colorTexto   = 'text-dark';
             equi.colorBtn     = 'btn btn-warning w-100';
             equi.estadoPing   = element.estadoPing;
           }
-
           else if ( element.estadoPing == 0 ) {
             equi.colorEsstado = '#FFDAD2';
             equi.colorTexto   = 'text-danger';
             equi.colorBtn     = 'btn btn-danger w-100';
             equi.estadoPing = element.estadoPing;
           }
-
         }
-
       })
-
     })
-
   }
 
   ngOnInit(): void {
-
     this.validateSesion();
     let xuser: any = sessionStorage.getItem('usuario');
     this.usuario = xuser;
-      let xtoken:any = sessionStorage.getItem('token');
-      const xtokenDecript: any = this.ncrypt.decryptWithAsciiSeed(xtoken, this.env.es, this.env.hash);
-      if (xtokenDecript != null || xtokenDecript != undefined) {
-        var decoded:any = jwt_decode(xtokenDecript);
-        this.sub                   = decoded["sub"];
-        this.nameidentifier        = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
-        this.name                  = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
-        this.role                  = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
-        this.authorizationdecision = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/authorizationdecision"];
-        this.exp                   = decoded["exp"];
-        this.iss                   = decoded["iss"];
-        this.aud                   = decoded["aud"];
-
-        const rolEncrypt: any = this.ncrypt.encryptWithAsciiSeed(this.role, this.env.es, this.env.hash);
-        sessionStorage.setItem('PR', rolEncrypt);
-
-        if(this.role == 'R003') {
-          this.router.navigate(['moneq']);
-        }
-
-      } else if (xtokenDecript == null || xtokenDecript == undefined) {
-        this.router.navigate(['login'])
+    let xtoken:any = sessionStorage.getItem('token');
+    const xtokenDecript: any = this.ncrypt.decryptWithAsciiSeed(xtoken, this.env.es, this.env.hash);
+    if (xtokenDecript != null || xtokenDecript != undefined) {
+      var decoded:any = jwt_decode(xtokenDecript);
+      this.sub                   = decoded["sub"];
+      this.nameidentifier        = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+      this.name                  = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+      this.role                  = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+      this.authorizationdecision = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/authorizationdecision"];
+      this.exp                   = decoded["exp"];
+      this.iss                   = decoded["iss"];
+      this.aud                   = decoded["aud"];
+      const rolEncrypt: any = this.ncrypt.encryptWithAsciiSeed(this.role, this.env.es, this.env.hash);
+      sessionStorage.setItem('PR', rolEncrypt);
+      if(this.role == 'R003') {
+        this.router.navigate(['moneq']);
       }
-
+    } else if (xtokenDecript == null || xtokenDecript == undefined) {
+      this.router.navigate(['login'])
+    }
 
     this.obtenerEquipos(1,'void');
-       this.connectionSendPingEquipo.start().then( ()=> {
-       }).catch( e => {
-         console.error('ALGO HA PASADO CON PING');
-         console.error(e);
-       })
-
-       this.manualTransactionHub.start().then( ()=> {
-       }).catch( e => {
-         console.error('ALGO HA PASADO CON MT');
-         console.error(e);
-       })
-
-       this.automaticTransactionHub.start().then( ()=> {
-      }).catch( e => {
-        console.error('ALGO HA PASADO CON AT');
-        console.error(e);
-      })
-
-      this.recollectTransactionHub.start().then( ()=> {
-      }).catch( e => {
-        console.error('ALGO HA PASADO CON RT');
-        console.error(e);
-      })
-
+    this.connectionSendPingEquipo.start().then( ()=> {
+    }).catch( e => {
+      console.error('ALGO HA PASADO CON PING');
+      console.error(e);
+    })
+    this.manualTransactionHub.start().then( ()=> {
+    }).catch( e => {
+      console.error('ALGO HA PASADO CON MT');
+      console.error(e);
+    })
+    this.automaticTransactionHub.start().then( ()=> {
+    }).catch( e => {
+      console.error('ALGO HA PASADO CON AT');
+      console.error(e);
+    })
+    this.recollectTransactionHub.start().then( ()=> {
+    }).catch( e => {
+      console.error('ALGO HA PASADO CON RT');
+      console.error(e);
+    })
   }
-
 
   listaEsquipo:any = [];
   listaEsquipoGhost:any = [];
@@ -624,20 +538,18 @@ export class MaquinariaMonitoreoComponent implements OnInit {
         error:    (e) => { },
         complete: ()  => {
           this.listaEsquipoGhost.filter( (element:any) => {
-              this.obtenerIndicadores(element.serieEquipo);
+            this.obtenerIndicadores(element.serieEquipo);
           })
         }
       }
     )
   }
 
-
   count: number = 0;
   colorBarProgressBilletesAs: string = "bg-primary text-light";
   listaEsquipoIndicadores: any = [];
   listaEsquipoGhostIndicadores: any = [];
   obtenerIndicadores(nserie:string) {
-
     this._show_spinner                = true;
     this.listaEsquipoIndicadores      = [];
     this.listaEsquipoGhostIndicadores = [];
@@ -651,14 +563,11 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       this._show_spinner = false;
     }, complete: () => {
       this.listaEsquipoIndicadores.filter((element:any) => {
-
         if( element.totalAsegurado == null || element.totalAsegurado == undefined )                   element.totalAsegurado          = 0;
         if( element.capacidadPesos == null || element.capacidadPesos == undefined )                   element.capacidadPesos          = 0;
         if( element.capacidadBilletes == null || element.capacidadBilletes == undefined )             element.capacidadBilletes       = 0;
         if( element.capacidadMaximaBilletes == null || element.capacidadMaximaBilletes == undefined ) element.capacidadMaximaBilletes = 0;
-
         this.listaEsquipo.filter( (elementEq:any) => {
-
           if( element.ipEquipo == elementEq.ipEquipo ) {
             elementEq.indicadorCapacidadBilletes           = element.capacidadBilletes;
             elementEq.indicadorCapacidadBilletesMax        = element.capacidadMaximaBilletes;
@@ -667,7 +576,6 @@ export class MaquinariaMonitoreoComponent implements OnInit {
             elementEq.indicadorPorcentajeBilletes          = Number(((elementEq.indicadorCapacidadBilletes / elementEq.indicadorCapacidadBilletesMax ) * 100).toFixed(2));
             elementEq.indicadorPorcentajeTotalMaxAsegurado = Number(((elementEq.indicadorTotalAsegurado / elementEq.indicadorTotalMaxAsegurado) * 100).toFixed(2));
             elementEq.indicadorColorBarProgressBilletes    = "bg-success text-light";
-            // //// // ////console.warn(elementEq.indicadorPorcentajeBilletes );
             if( element.estadoPing == 1 ) {
               elementEq.colorEsstado = '#DAEFE6';
               elementEq.colorTexto = 'text-success';
@@ -678,13 +586,11 @@ export class MaquinariaMonitoreoComponent implements OnInit {
               elementEq.colorTexto = 'text-dark';
               elementEq.colorBtn = 'btn btn-warning w-100';
             }
-
             else if ( element.estadoPing == 0 ) {
               elementEq.colorEsstado = '#FFDAD2';
               elementEq.colorTexto = 'text-danger';
               elementEq.colorBtn = 'btn btn-danger w-100';
             }
-
             if( elementEq.indicadorPorcentajeBilletes >= 0 && elementEq.indicadorPorcentajeBilletes < 80  ) {
               elementEq.indicadorColorBarProgressBilletes = "bg-success text-light";
             }
@@ -701,7 +607,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
               // this.controlalerts( 'Capacidad de Piezas del equipo', 'Haz alcanzado el límite de piezas del equipo, ' + elementEq.serieEquipo, 'orangered', 'whitesmoke', elementEq.serieEquipo );
             }
             if ( elementEq.indicadorPorcentajeTotalMaxAsegurado < 80 ) {
-                    elementEq.indicadorColorBarProgressAsegurado = "bg-success text-light";
+              elementEq.indicadorColorBarProgressAsegurado = "bg-success text-light";
             }
             else if ( elementEq.indicadorPorcentajeTotalMaxAsegurado >= 80 && elementEq.indicadorPorcentajeTotalMaxAsegurado < 90 ) {
               elementEq.indicadorColorBarProgressAsegurado = "bg-warning text-dark";
@@ -713,37 +619,26 @@ export class MaquinariaMonitoreoComponent implements OnInit {
               // this.playAudio();
               // this.controlalerts( 'Capacidad de Monto Asegurado', 'Haz alcanzado el límite del monto asegurado del equipo, ' + elementEq.serieEquipo, 'orangered', 'whitesmoke', elementEq.serieEquipo );
             }
-
           }
         })
       })
-    }
-    })
+    }})
   }
-
 
   filterequip:any;
   filterEquipos(): void {
-
-    ////console.warn(this.filterequip);
-
     this.listaEsquipo = this.listaEsquipoGhost.filter((item:any) => 
     item.serieEquipo.toString().toLowerCase().includes(this.filterequip.toLowerCase()) ||   
     item.provincia.toString().toLowerCase().includes(this.filterequip.toLowerCase())   ||
-    item.nombreTienda.toLowerCase().includes(this.filterequip.toLowerCase()) 
-
+    item.nombreTienda.toLowerCase().includes(this.filterequip.toLowerCase())
     )
   }
 
-
   /**
-   * 
-   * 
       item.nombreTienda.toLowerCase().includes(this.filterequip.toLowerCase()) ||
       item.nombremarca .toLowerCase().includes(this.filterequip.toLowerCase()) ||
       item.nombremodelo.toLowerCase().includes(this.filterequip.toLowerCase()) ||
       item.serieEquipo .toLowerCase().includes(this.filterequip.toLowerCase()) ||
       item.tipoMaquinaria.toLowerCase().includes(this.filterequip.toLowerCase())
    */
-
 }
