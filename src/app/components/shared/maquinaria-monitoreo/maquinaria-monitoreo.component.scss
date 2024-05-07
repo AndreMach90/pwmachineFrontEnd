@@ -1,33 +1,37 @@
 .equipo-monitor {
-    background: rgb(17,38,74);
-background: linear-gradient(311deg, rgba(17,38,74,0.9221813725490196) 0%, rgba(28,70,120,0.9527777777777777) 100%);
-    height: 95vh;
-    overflow-y: auto;
+  background: rgb(17, 38, 74);
+  background: linear-gradient(
+    311deg,
+    rgba(17, 38, 74, 0.9221813725490196) 0%,
+    rgba(28, 70, 120, 0.9527777777777777) 100%
+  );
+  height: 95vh;
+  overflow-y: auto;
 }
 
 .consola {
-    margin: 10px;
-    background-color: whitesmoke;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 10px 10px 10px rgba(5, 12, 24, 0.459);
+  margin: 10px;
+  background-color: whitesmoke;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 10px 10px 10px rgba(5, 12, 24, 0.459);
 }
 
 .time {
-    background-color: rgba(0, 0, 0, 0.126);
+  background-color: rgba(0, 0, 0, 0.126);
 }
 
 .filter-monitoreo {
-    position: absolute;
-    bottom: 10px;
-    padding: 10px;
-    border-radius: 10px;
-    background-color: rgba(0, 0, 0, 0.2);
-    transition: ease all 1.5s;
-    opacity: 0.3;
+  position: absolute;
+  bottom: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  transition: ease all 1.5s;
+  opacity: 0.3;
 }
 
 .filter-monitoreo:hover {
-    transition: ease all 0.5s;
-    opacity: 0.9;
+  transition: ease all 0.5s;
+  opacity: 0.9;
 }

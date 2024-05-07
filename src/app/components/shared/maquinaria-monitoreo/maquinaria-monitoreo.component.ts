@@ -49,7 +49,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     this.manualTransactionHub = new HubConnectionBuilder()
                   .withUrl(this.urlHub+'manualTransaction')
                   .build();
-    this.manualTransactionHub.on("SendTransaccionManual", message => { this.MtransHub(message); });
+    this.manualTransactionHub.on("SendTransaccionManual", message => { this.MtransHub(message); this.updateTrans(message)});
     this.automaticTransactionHub = new HubConnectionBuilder()
                   .withUrl(this.urlHub+'autoTransaccion')
                   .build();
@@ -57,7 +57,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     this.recollectTransactionHub = new HubConnectionBuilder()
                   .withUrl(this.urlHub+'recoleccionTransaccion')
                   .build();
-    this.recollectTransactionHub.on("SendTransaccionRecoleccion", message => { this.RecoTransHub(message); });
+    this.recollectTransactionHub.on("SendTransaccionRecoleccion", message => { this.RecoTransHub(message); console.log(message)});
   }
 
   @ViewChild('audioPlayer') audioPlayer!: ElementRef;
@@ -534,6 +534,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
         next: (equipo) => {
           this.listaEsquipo = equipo;
           this.listaEsquipoGhost = equipo;
+          console.log(this.listaEsquipo);
         },
         error:    (e) => { },
         complete: ()  => {
@@ -641,4 +642,16 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       item.serieEquipo .toLowerCase().includes(this.filterequip.toLowerCase()) ||
       item.tipoMaquinaria.toLowerCase().includes(this.filterequip.toLowerCase())
    */
+
+  updateTrans(data: any){
+    const equipoFind = this.listaEsquipo.find((item:any) =>
+      item.serieEquipo === data[0].machineSn
+    );
+    console.log(data[2][0].tipoTransaccion);
+    if(equipoFind){
+      equipoFind.ultimaNoTrans = data[0].transaccionNo
+      // equipoFind.tipoTrans = data[2][0].tipoTransaccion
+      equipoFind.fechaUltimaTrans = data[0].fechaTransaccion
+    }
+  }
 }

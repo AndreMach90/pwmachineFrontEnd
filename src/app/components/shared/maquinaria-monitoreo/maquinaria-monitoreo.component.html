@@ -117,14 +117,23 @@
                     <!-- {{equipos.indicadorPorcentajeTotalMaxAsegurado}} % -->
                 </div>
             </div>
-            <div class="d-flex justify-content-between" >
-                <div class="time p-1 text-dark rounded-2 m-1">
-                    <small>Tiempo Sincronización:</small> <br>
+            <div class="d-block" >
+                <div class="time text-dark rounded-2 w-100 p-2 mt-2">
+                    <small>Tiempo Sincronización: </small>
                     <span>{{ equipos.tiempoSincronizacion | date: 'short' }} </span>
                 </div>
-                <div class="time p-1 text-dark rounded-2 m-1">
-                    <small>Última Recolección:</small> <br>
+                <div class="time text-dark rounded-2 w-100 p-2 mt-2">
+                    <small>Última Recolección: </small>
                     <span>{{ equipos.ultimaRecoleccion | date: 'short' }} </span>
+                </div>
+                <div class="time text-dark rounded-2 w-100 p-2 mt-2">
+                    <small>No. Trans: </small>
+                    <span>{{ equipos.ultimaNoTrans }} </span>
+                    <span>{{ equipos.tipoTrans }}</span>
+                </div>
+                <div class="time text-dark rounded-2 w-100 p-2 mt-2">
+                    <small>Última Trans: </small>
+                    <span>{{ equipos.fechaUltimaTrans | date: 'short' }} </span>
                 </div>
             </div>
             <!-- <div class="w-100">
