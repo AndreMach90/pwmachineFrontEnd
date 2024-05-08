@@ -49,15 +49,21 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     this.manualTransactionHub = new HubConnectionBuilder()
                   .withUrl(this.urlHub+'manualTransaction')
                   .build();
-    this.manualTransactionHub.on("SendTransaccionManual", message => { this.MtransHub(message); this.updateTrans(message)});
+    this.manualTransactionHub.on("SendTransaccionManual", message => { 
+                  this.MtransHub(message);
+                  this.updateTransManual(message)});
     this.automaticTransactionHub = new HubConnectionBuilder()
                   .withUrl(this.urlHub+'autoTransaccion')
                   .build();
-    this.automaticTransactionHub.on("SendTransaccionAuto", message => { this.AuTransHub(message); });
+    this.automaticTransactionHub.on("SendTransaccionAuto", message => { 
+                  this.AuTransHub(message); 
+                  this.updateTransAutRec(message)});
     this.recollectTransactionHub = new HubConnectionBuilder()
                   .withUrl(this.urlHub+'recoleccionTransaccion')
                   .build();
-    this.recollectTransactionHub.on("SendTransaccionRecoleccion", message => { this.RecoTransHub(message); console.log(message)});
+    this.recollectTransactionHub.on("SendTransaccionRecoleccion", message => { 
+                  this.RecoTransHub(message);
+                  this.updateTransAutRec(message)});
   }
 
   @ViewChild('audioPlayer') audioPlayer!: ElementRef;
@@ -643,15 +649,29 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       item.tipoMaquinaria.toLowerCase().includes(this.filterequip.toLowerCase())
    */
 
-  updateTrans(data: any){
+  updateTransManual(data: any){
     const equipoFind = this.listaEsquipo.find((item:any) =>
       item.serieEquipo === data[0].machineSn
     );
-    console.log(data[2][0].tipoTransaccion);
     if(equipoFind){
       equipoFind.ultimaNoTrans = data[0].transaccionNo
-      // equipoFind.tipoTrans = data[2][0].tipoTransaccion
+      equipoFind.tipoTrans = "M"
       equipoFind.fechaUltimaTrans = data[0].fechaTransaccion
+    }
+  }
+  updateTransAutRec(data: any){
+    const equipoFind = this.listaEsquipo.find((item:any) =>
+      item.serieEquipo === data[0].machineSn
+    );
+    if(equipoFind){
+      equipoFind.ultimaNoTrans = data[0].transaccionNo
+      equipoFind.fechaUltimaTrans = data[0].fechaTransaccion
+      if(data[1][0].tipoTransaccion == "Automático"){
+        equipoFind.tipoTrans = "A"
+      }
+      if(data[1][0].tipoTransaccion == "Recolección"){
+        equipoFind.tipoTrans = "R"
+      }
     }
   }
 }
