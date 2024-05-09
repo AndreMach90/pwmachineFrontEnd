@@ -268,39 +268,39 @@
                     </th>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let equipos of listaEsquipo; let i = index" >
-                        <td *ngIf="permisonUsers">
+                    <tr *ngFor="let equipos of listaEsquipo; let i = index">
+                        <td *ngIf="permisonUsers" [ngClass]="{ 'bg-body-secondary': equipos.active !== 'A' }">
                             <div class="d-flex">
                             <div [style]="'background-image: url( '+edit+' )' " (click)="catchData(equipos)" class="icono-btn" ></div>
                             <div [style]="'background-image: url( '+delete+' )' " (click)="eliminarEquipos(equipos, i)" class="icono-btn" ></div>
                             </div>
                         </td>
-                        <td>
+                        <td [ngClass]="{ 'bg-body-secondary': equipos.active !== 'A' }">
                             {{ equipos.ipEquipo }}
                         </td>
-                        <td>
+                        <td [ngClass]="{ 'bg-body-secondary': equipos.active !== 'A' }">
                             {{ equipos.serieEquipo }}
                         </td>
-                        <td>
+                        <td [ngClass]="{ 'bg-body-secondary': equipos.active !== 'A' }">
                             {{ equipos.nombreTienda }} 
                             <!-- <br> <small>{{equipos.provincia}}</small> -->
                         </td>
-                        <td>
+                        <td [ngClass]="{ 'bg-body-secondary': equipos.active !== 'A' }">
                             {{ equipos.capacidadIni }}
                         </td>
-                        <td>
+                        <td [ngClass]="{ 'bg-body-secondary': equipos.active !== 'A' }">
                             {{ equipos.capacidadAsegurada }}
                         </td>
-                        <td>
+                        <td [ngClass]="{ 'bg-body-secondary': equipos.active !== 'A' }">
                            {{ equipos.tipoMaquinaria }}
                         </td>
-                        <td>
+                        <td [ngClass]="{ 'bg-body-secondary': equipos.active !== 'A' }">
                             {{ equipos.nombremarca }}
                         </td>
-                        <td>
+                        <td [ngClass]="{ 'bg-body-secondary': equipos.active !== 'A' }">
                             {{ equipos.nombremodelo }}
                         </td>
-                        <td *ngIf="permisonUsers" >
+                        <td *ngIf="permisonUsers" [ngClass]="{ 'bg-body-secondary': equipos.active !== 'A' }">
                             <div class="btn btn-warning btn-sm m-1"
                                  [matBadge]="equipos.capacidadUsuariosTemporales"
                                  matBadgePosition="before"

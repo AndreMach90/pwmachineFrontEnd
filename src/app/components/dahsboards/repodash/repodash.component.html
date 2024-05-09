@@ -75,23 +75,23 @@
                     </div>
                      <div class="equipos m-1 rounded-2" *ngFor="let equipos of listaEsquipo" 
                           [style]="'background-color: ' +equipos.colorEsstado+ '; transition: ease-in all 1s; '" >
-                          <div class="p-1" >
+                          <div class="p-1" [ngClass]="{ 'bg-body-secondary': equipos.active !== 'A' }">
                               <span class="p-2 d-flex justify-content-between align-items-end " >
                                   <small>Equipo</small> &nbsp;&nbsp; 
                                   <div style="text-align: right;" >
-                                    <div [class]="equipos.colorTexto"> {{ equipos.nombreTienda }} / {{ equipos.provincia }} </div>
-                                    <strong [class]="equipos.colorTexto" > {{ equipos.serieEquipo }} </strong>
+                                    <div [class]="equipos.colorTexto" [ngClass]="{ 'text-dark': equipos.active !== 'A' }"> {{ equipos.nombreTienda }} / {{ equipos.provincia }} </div>
+                                    <strong [class]="equipos.colorTexto" [ngClass]="{ 'text-dark': equipos.active !== 'A' }"> {{ equipos.serieEquipo }} </strong>
                                   </div>
                                  
                               </span>                            
                               <span class="p-2 d-flex justify-content-between">
                                   <small>IP:</small> &nbsp;&nbsp;
-                                  <strong [class]="equipos.colorTexto">
+                                  <strong [class]="equipos.colorTexto" [ngClass]="{ 'text-dark': equipos.active !== 'A' }">
                                     {{ equipos.ipEquipo }}
                                   </strong>
                               </span>
                           </div>
-                          <div class="p-2">
+                          <div class="p-2" [ngClass]="{ 'bg-body-secondary': equipos.active !== 'A' }">
                             <div class="m-1 d-flex justify-content-between">
                                 <span> % Cantidad de Piezas </span>
                                 <div>
@@ -135,7 +135,8 @@
                             </div>
                           </div>
                           <div class="w-100">
-                              <button [class]="equipos.colorBtn"
+                              <button [class]="equipos.colorBtn" 
+                                      [ngClass]="{ 'bg-secondary': equipos.active !== 'A', 'border-dark-subtle': equipos.active !== 'A' }"
                                       (click)="obtenerDetalleEquipos(equipos)">
                                       Monitorear
                               </button>

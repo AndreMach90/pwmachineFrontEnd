@@ -36,7 +36,6 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   private recollectTransactionHub: HubConnection;
   
   constructor( private env: Environments,
-    private indexedDbService: IndexedDbService,
     private ncrypt: EncryptService,
     private router: Router,
     private monitoreo: MonitoreoService,
@@ -539,8 +538,10 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       {
         next: (equipo) => {
           this.listaEsquipo = equipo;
-          this.listaEsquipoGhost = equipo;
-          console.log(this.listaEsquipo);
+          this.listaEsquipo = this.listaEsquipo.filter((element: any) => {
+            return element.active === "A";
+          });
+          this.listaEsquipoGhost = this.listaEsquipo;
         },
         error:    (e) => { },
         complete: ()  => {
@@ -647,7 +648,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       item.nombremodelo.toLowerCase().includes(this.filterequip.toLowerCase()) ||
       item.serieEquipo .toLowerCase().includes(this.filterequip.toLowerCase()) ||
       item.tipoMaquinaria.toLowerCase().includes(this.filterequip.toLowerCase())
-   */
+  */
 
   updateTransManual(data: any){
     const equipoFind = this.listaEsquipo.find((item:any) =>
