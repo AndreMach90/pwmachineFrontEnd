@@ -74,7 +74,7 @@
                         </section>
                     </div>
                      <div class="equipos m-1 rounded-2" *ngFor="let equipos of listaEsquipo" 
-                          [style]="'background-color: ' +equipos.colorEsstado+ '; transition: ease-in all 1s; '" >
+                          [style]="'background-color: ' +equipos.colorEsstado+ '; transition: ease-in all 1s;'" >
                           <div class="p-1" [ngClass]="{ 'bg-body-secondary': equipos.active !== 'A' }">
                               <span class="p-2 d-flex justify-content-between align-items-end " >
                                   <small>Equipo</small> &nbsp;&nbsp; 
