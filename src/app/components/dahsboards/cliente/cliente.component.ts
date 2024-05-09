@@ -65,6 +65,7 @@ export class ClienteComponent implements OnInit {
   _cancel_button: boolean = false;
 
   clientelista:any = [];
+  localidadesGuardadasCliente: any = [];
 
   public clienteForm = new FormGroup({
     Nombre_Cliente:   new FormControl(''), 
@@ -124,8 +125,7 @@ export class ClienteComponent implements OnInit {
               validateInputNumber(data: any) {
                 this.controlInputsService.validateAndCleanNumberInput(data);
               }
-  
-  localidadesGuardadasCliente: any = [];
+
   obtenerLocalidad( codcli:any ) {
     this._show_spinner = true;
     this.loc.obtenerLocalidadesCliente( codcli ).subscribe({
@@ -141,7 +141,7 @@ export class ClienteComponent implements OnInit {
     })
   }
 
-  eliminarCliente( index:number, id:number ) {
+  eliminarCliente( index:number, id:number, idcliente: number ) {
     this._show_spinner = true;
     this.loc.eliminarLocalidadCliente(id).subscribe({
       next: (x) => {
@@ -152,12 +152,8 @@ export class ClienteComponent implements OnInit {
       }, complete: () => {
         this._show_spinner = false;
         this.localidadesGuardadasCliente.splice(index, 1);
-        this.clientelista.filter( (x:any) => {
-          console.log(x.id)
-          console.log(id)
-          if ( x.id == id ) {
-            x.cantidadLocalidades -1
-          }
+        this.clientelista.filter( (x:any) => { 
+          if ( x.id == idcliente ) x.cantidadLocalidades = x.cantidadLocalidades -1          
         })
       }
     })
@@ -480,9 +476,7 @@ export class ClienteComponent implements OnInit {
       data: modelData, 
     });
 
-
-    dialogRef.afterClosed().subscribe( result => {      
-      ////////console.warn(result);
+    dialogRef.afterClosed().subscribe( result => {
       this.obtenerCliente();
     });
 
@@ -490,7 +484,7 @@ export class ClienteComponent implements OnInit {
 
   openDialogAsignarLocalidad(data:any): void {
 
-    console.log(data);
+    this.obtenerLocalidad(data.codigoCliente)
 
     const dialogRef = this.dialog.open( ModalLocalidadClienteComponent, {
       height: 'auto',
@@ -499,8 +493,7 @@ export class ClienteComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe( result => {
-      ////////console.warn(result);
-      // this.obtenerCliente();
+      this.obtenerCliente()
     });
 
   }

@@ -10,6 +10,8 @@ import Swal from 'sweetalert2'
 import { ModalTiendaCuentaComponent } from './modal-tienda-cuenta/modal-tienda-cuenta.component';
 import { elementAt } from 'rxjs';
 import { ControlinputsService } from '../../shared/services/controlinputs.service';
+import { ModalClienteService } from '../cliente/modal-localidad-cliente/services/modal-cliente.service';
+
 const Toast = Swal.mixin({
   toast: true,
   position: 'top-end',
@@ -111,9 +113,10 @@ export class TiendaComponent implements OnInit {
       this.secondary   = this.env.appTheme.colorSecondary_C;
       this.secondary_a = this.env.appTheme.colorSecondary_A;
       this.secondary_b = this.env.appTheme.colorSecondary_B;  
-      this.getDataMaster('PRV00');  
+      // this.getDataMaster('PRV00');  
       this.obtenerCliente();
       this.obtenerTiendas(1);
+      // this.obtenerLocalidad();
       
   }
     
@@ -158,6 +161,7 @@ export class TiendaComponent implements OnInit {
                private tiendaservs:          TiendaService,
                public dialog:                MatDialog,
                private clienteserv:          ClientesService,
+               private loc:                  ModalClienteService,
                private sharedservs:          ServicesSharedService) {}
 
 
@@ -259,13 +263,12 @@ export class TiendaComponent implements OnInit {
         nombreAdmin:        this.tiendaForm.controls['nombreAdmin'].value?.toString().replace(/[^a-zA-Z ]/g, ''),
         telfAdmin:          this.tiendaForm.controls['telfAdmin'].value?.replace(/[^0-9.]*/g, ''),
         emailAdmin:         this.tiendaForm.controls['emailAdmin'].value,
-        codProv:            this.tiendaForm.controls['codProv'].value,
+        codProv:            this.tiendaForm.controls['codProv'].value?.toString().trim(),
         idCentroProceso:    null,
         Active: 'A'
       }
 
       this.tiendaservs.editarTiendas(this.modelTienda).subscribe({
-
         next:(x) => {
           Toast.fire({ icon: 'success', title: 'Tienda editar con éxito' });
           this._show_spinner = false;
@@ -276,7 +279,6 @@ export class TiendaComponent implements OnInit {
           this.obtenerTiendas(1);
           this.limpiar();
         }
-
       })
     }
   }
@@ -285,7 +287,7 @@ export class TiendaComponent implements OnInit {
     let date = new Date();
     this.token = 'TI-'+this.tiendaForm.controls['nombreTienda'].value?.slice(0,5).replace(' ', '_') +'-' + this.sharedservs.generateRandomString(10) + '-' + date.getFullYear() + '-' + date.getDay();
     return this.token;
-  } 
+  }
 
   guardarTienda() {
     if( this.tiendaForm.controls['nombreTienda'].value == undefined || this.tiendaForm.controls['nombreTienda'].value == null || this.tiendaForm.controls['nombreTienda'].value == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de nombre tienda vacío' });
@@ -304,7 +306,7 @@ export class TiendaComponent implements OnInit {
         nombreAdmin:        this.tiendaForm.controls['nombreAdmin'].value?.toString().replace(/[^a-zA-Z ]/g, ''),
         telfAdmin:          this.tiendaForm.controls['telfAdmin'].value?.replace(/[^0-9.]*/g, ''),
         emailAdmin:         this.tiendaForm.controls['emailAdmin'].value,
-        codProv:            this.tiendaForm.controls['codProv'].value,
+        codProv:            this.tiendaForm.controls['codProv'].value?.toString().trim(),
         idCentroProceso:    null,
         Active: 'A'
       }
@@ -336,6 +338,8 @@ export class TiendaComponent implements OnInit {
       next: (tienda) => {
         this.tiendaListaGhost = tienda;
         this.tiendalista = tienda;
+        console.log('ESTA ES MI TIENDA')
+        console.log(this.tiendalista)
       }, complete: () => {
         switch(type) {
           case 1:
@@ -385,6 +389,9 @@ export class TiendaComponent implements OnInit {
 
   catchData(data:any) {
 
+    // console.warn('data a editar!!!!!!!!!!')
+    // console.warn(data)
+
     this.calwidth = true;
     this.widthAutom();
     this.dis_account_shop = true;
@@ -393,7 +400,7 @@ export class TiendaComponent implements OnInit {
     this.tipoAccion = 1;
     this.idtienda = data.id;
     this.codecTienda = data.codigoTienda;
-    this.tiendaForm.controls['codigoClienteidFk'].setValue(data.codigoClienteidFk);
+    this.tiendaForm.controls['codigoClienteidFk'].setValue(data.codigoCliente);
     this.obtenerCuentaBancariaCliente();
     this.obtenerCuentasTienda(this.codecTienda);
     this.editcatch = true;
@@ -422,17 +429,19 @@ export class TiendaComponent implements OnInit {
   obtenerCliente() {
     this.clientelista = [];
     this._show_spinner = true;
-    this.clienteserv.obtenerCliente()
-                    .subscribe({
+    this.clienteserv.obtenerCliente().subscribe({
       next: (cliente) => {
         this.clienteListaGhost = cliente;
+        console.log('==================================')
+        console.log('Este es el cliente escogido')
+        console.log(this.clienteListaGhost)
+        console.log('==================================')
         this._show_spinner = false;
       }, error: (e) => {
         this._show_spinner = false;
         console.error(e);
       }, complete: () => {
-        this.clienteListaGhost.filter((element:any)=>{
-
+        this.clienteListaGhost.filter( (element:any) => {
           let arr: any = {
             "id": element.id,
             "codigoCliente": element.codigoCliente,
@@ -443,44 +452,44 @@ export class TiendaComponent implements OnInit {
             "emailcontacto": element.emailcontacto,
             "nombrecontacto": element.nombrecontacto
           }
-
           this.clientelista.unshift(arr);
-
-        })
+      })
       }
     })
   }
 
   filterTienda () {
-
     let filtertien: any = this.filtertienForm.controls['filtertien'].value;
-    console.log(filtertien)
-    this.tiendalista = this.tiendaListaGhost.filter((item:any) => 
-    //console.log(item)
-    item.nombreTienda.toLowerCase().includes(filtertien.toLowerCase()) ||
-    item.nombreProvincia.toLowerCase().includes(filtertien.toLowerCase()) ||
-    item.nombreAdmin.toLowerCase().includes(filtertien.toLowerCase()) ||
-    item.nombreCliente.toLowerCase().includes(filtertien.toLowerCase()) 
-  );
+    this.tiendalista = this.tiendaListaGhost.filter( (item:any) => 
+      item.nombreTienda   .toLowerCase().includes(filtertien.toLowerCase()) ||
+      item.nombreProvincia.toLowerCase().includes(filtertien.toLowerCase()) ||
+      item.nombreAdmin    .toLowerCase().includes(filtertien.toLowerCase()) ||
+      item.nombreCliente  .toLowerCase().includes(filtertien.toLowerCase()) 
+    );
   }
 
+  codcli: any;
   obtenerCuentaBancariaCliente() {
+
     this._show_spinner = true;
     this.cuentaslista = [];
-
     let id: any = this.tiendaForm.controls['codigoClienteidFk'].value;
-
+    this.codcli = id;
+    this.obtenerLocalidad(id)
+    console.warn('-*-*-*-*-*-*-*-')
+    console.warn(id)
+    console.warn('-*-*-*-*-*-*-*-')
     this.clienteserv.obtenerCuentaCliente(id).subscribe({
       next: ( cuentas ) => {
-
-        this.cuentaslista = cuentas;
+        this.cuentaslista  = cuentas;
+        console.log(this.cuentaslista)
         this._show_spinner = false;
-
       }, error:(e) => {
         console.error(e);
         this._show_spinner = false;
       }
     })
+
   }
 
   eliminarCuentaBancaria(index: number) {
@@ -499,8 +508,28 @@ export class TiendaComponent implements OnInit {
     }) 
   }
 
-  openDialogCuentas(): void {
+  localidadesGuardadasCliente: any = [];
+  obtenerLocalidad(id:any) {
+    console.log( "idcli:" )
+    console.log( id )
+    this._show_spinner = true;
+    this.loc.obtenerLocalidadesCliente( id ).subscribe({
+      next: (x) => {
+        this.localidadesGuardadasCliente = x;
+        console.warn('=================================')
+        console.warn('Estas son las localidades')
+        console.warn(this.localidadesGuardadasCliente)
+        console.warn('=================================')
+      }, complete: () => {
+        this._show_spinner = false;
+      }, error: (e) => {
+        console.error(e);
+        this._show_spinner = false;
+      }
+    })
+  }
 
+  openDialogCuentas(): void {
     this.generarCodectienda();
     let nombreCliente: string = '';
     let idCLiente:     number = 0;
@@ -510,17 +539,14 @@ export class TiendaComponent implements OnInit {
           nombreCliente = element.nombreCliente;
           idCLiente     = element.id;
         }
-      }
-    )
-
-    //console.log(this.tipoAccion)
+    })
 
     const dialogRef = this.dialog.open( ModalTiendaCuentaComponent, {
       height: 'auto',
       width:  '50%',
       data: {
         nombreCliente: nombreCliente,
-        idCLiente: idCLiente,
+        idCLiente: this.codcli,
         res: this.resultModal,
         type: this.tipoAccion,
         codigoTiendaEdicion: this.codecTienda

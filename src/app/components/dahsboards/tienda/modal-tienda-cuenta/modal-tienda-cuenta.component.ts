@@ -39,6 +39,8 @@ export class ModalTiendaCuentaComponent implements OnInit {
   obtenerCuentaBancariaCliente() {
     this.cuentaslista = [];
     let id: any = this.data.idCLiente;
+    console.log('ESTA ES LA DATA MODAL CLIENTE')
+    console.log(this.data)
     ////////console.warn(id);
     this.clienteserv.obtenerCuentaCliente(id).subscribe({
       next: ( cuentas:any ) => {

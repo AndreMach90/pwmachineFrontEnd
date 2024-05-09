@@ -59,4 +59,6 @@ export class EquipoService {
     return this.http.get( this.env.apiurl() + 'Equipo/EquipoNuevo' );
   }
 
+  
+
 }

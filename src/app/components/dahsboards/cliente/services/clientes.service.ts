@@ -31,6 +31,7 @@ export class ClientesService {
   }
 
   obtenerCuentaCliente(id:number) {    
+    console.log(this.env.apiurl()+'Cliente/ObtenerCuentaCliente/'+id)
     return this.http.get( this.env.apiurl()+'Cliente/ObtenerCuentaCliente/'+id);
   }
 
