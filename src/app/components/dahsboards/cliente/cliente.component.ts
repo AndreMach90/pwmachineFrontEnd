@@ -132,6 +132,7 @@ export class ClienteComponent implements OnInit {
       next: (x) => {
         this.localidadesGuardadasCliente = x;
         console.warn(this.localidadesGuardadasCliente)
+        this._show_spinner = false;
       }, complete: () => {
         this._show_spinner = false;
       }, error: (e) => {
@@ -152,11 +153,12 @@ export class ClienteComponent implements OnInit {
       }, complete: () => {
         this._show_spinner = false;
         this.localidadesGuardadasCliente.splice(index, 1);
+
         this.clientelista.filter( (x:any) => { 
           if ( x.id == idcliente ) x.cantidadLocalidades = x.cantidadLocalidades -1          
         })
-      }
-    })
+        }
+      })
   }
   
   widthAutom() {
