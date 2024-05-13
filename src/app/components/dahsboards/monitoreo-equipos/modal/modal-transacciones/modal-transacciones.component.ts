@@ -4,7 +4,6 @@ import { MonitoreoEquiposComponent } from '../../monitoreo-equipos.component';
 import { Environments } from 'src/app/components/environments/environments';
 import { TransaccionesTiendaService } from '../services/transacciones-tienda.service';
 import { ServicesSharedService } from 'src/app/components/shared/services-shared/services-shared.service';
-import * as XLSX from 'xlsx';
 import * as ExcelJS from 'exceljs';
 import { argv } from 'process';
 import { setInterval } from 'timers/promises';

@@ -31,8 +31,8 @@
                             id="codigoClienteidFk"
                             aria-label="">
                             <option *ngFor="let cliente of clientelista"
-                                    [value]="cliente.id" >
-                                    {{cliente.nombreCliente | titlecase }} - {{ cliente.ruc }}                                
+                                    [value]="cliente.codigoCliente">
+                                    {{cliente.nombreCliente | titlecase }} - {{ cliente.ruc }}
                             </option>
                     </select>
                 </div>
@@ -53,7 +53,7 @@
                          <p class="m-0" > &nbsp;&nbsp; {{ cuenta.nombanco }} - {{ cuenta.numerocuenta }}</p>
                     </div>
                 </div>
-                <div *ngIf="tiendasForm" class="animate__animated animate__backInLeft p-2 bg-light rounded-2 "  >
+                <div *ngIf="tiendasForm" class="animate_animated animate_backInLeft p-2 bg-light rounded-2 "  >
                         <div class="mb-3 w-100">
                             <label for="nombreTienda"
                                    class="form-label text-secondary">
@@ -120,20 +120,19 @@
                         </div>
                         <div class="mb-3 col-3 w-100 ">
                             <label for="codProv" class="form-label ">
-                                Provincia: <span class="text-danger">*</span>
+                                Localidad: <span class="text-danger">*</span>
                             </label>
                             <select class="inpForms form-select   w-100"
                                     formControlName="codProv" #codProv id="codProv"
                                     aria-label="">
-                                    <option *ngFor="let tipo of provinciaLista" 
+                                    <option *ngFor="let tipo of localidadesGuardadasCliente" 
                                             [value]="tipo.codigo" >
-                                            {{tipo.nombre | titlecase }}                                
+                                            {{tipo.nombre}}                                
                                     </option>
                             </select>
                         </div>
-                    <div class="d-flex flex-wrap justify-content-between" >
-
-                        <div class="floating-button  ">
+                    <div class="d-flex flex-wrap justify-content-between">
+                        <div class="floating-button">
                             <button type="button"
                                     class="btn btn-danger btn-sm "
                                     *ngIf="_cancel_button"
@@ -144,8 +143,7 @@
                                     *ngIf="_create_show" >
                                     <div [style]="'background-image: url( '+crear+' )' " class="icono" ></div>
                                     <div>{{_action_butto}} Tienda</div>
-                            </button>
-                            
+                            </button>                            
                         </div>
                     </div>
                 </div>
@@ -202,7 +200,7 @@
                         Email Administrador
                     </th>
                     <th class="p-2">
-                        Provincia
+                        Localidad
                     </th>
                     <th class="p-2">
                         Dirección
@@ -218,9 +216,9 @@
                     <tr *ngFor="let tienda of tiendalista; let i = index">
                         <td *ngIf="permisonUsers">
                             <div class="d-flex">
-                            <div [style]="'background-image: url( '+edit+' )' " (click)="validateCatchData(tienda)" class="icono-btn" ></div>
-                            <div [style]="'background-image: url( '+delete+' )' " (click)="eliminarTiendas(tienda, i)" class="icono-btn" ></div>
-                        </div>
+                                <div [style]="'background-image: url( '+edit+' )' " (click)="validateCatchData(tienda)" class="icono-btn" ></div>
+                                <div [style]="'background-image: url( '+delete+' )' " (click)="eliminarTiendas(tienda, i)" class="icono-btn" ></div>
+                            </div>
                         </td>
                         <td>
                             {{ tienda.nombreTienda }}
@@ -235,7 +233,6 @@
                             <span>
                                 {{ tienda.nombreAdmin }}
                             </span>
-                            <br>
                             <small class="text-secondary" >
                                 telf: 0{{ tienda.telfAdmin }}
                             </small>
@@ -244,52 +241,56 @@
                             {{ tienda.emailAdmin }}
                         </td>
                         <td>
-                            {{ tienda.nombreProvincia }}
+                            {{ tienda.nombreLocalidad }}
                         </td>
                         <td>
                             {{ tienda.direccion }}
                         </td>
                         <td>
-                            <button  [matBadge]="tienda.cantidadCuentasAsign" 
-                                matBadgePosition="before"
-                                matBadgeColor="warn"
-                                class="btn btn-warning btn-sm "
-                                [disabled]="dis_account_shop"
-                                (click)="op.toggle($event); obtenerCuentasTienda(tienda.codigoTienda);">
-                                <div [style]="'background-image: url( '+search+' )' " class="icono" ></div>
-                                <div>
-                                    <p-overlayPanel #op>
-                                        <span class="fs-4" > Cuentas bancarias asignadas: <strong><span class="text-primary" >
-                                            ({{listaCuentaTiendasBanc.length}})
-                                        </span></strong> </span>
-                                        <hr>
-                                        <div class="table-responsive" >
-                                            <table class="table table-warning table-bordered table-hover table-striped align-middle" >
-                                                <thead class="bg-black text-light" >
-                                                   <th class="p-1" *ngIf="permisonUsers"></th>
-                                                   <th class="p-1">Banco</th> 
-                                                   <th class="p-1" title="Número de Cuenta" >N. Cta.</th> 
-                                                </thead>
-                                                <tbody>
-                                                    <tr *ngFor="let cuenta of listaCuentaTiendasBanc; let i = index;">
-                                                        <td *ngIf="permisonUsers" >
-                                                            <div class="d-flex" >
-                                                                <div [style]="'background-image: url( '+delete+' )' "
-                                                                     (click)="eliminarCuentaTienda(cuenta, i)" class="icono-btn">
-                                                                     </div>
-                                                            </div>  
-                                                        </td>
-                                                        <td>
-                                                            {{cuenta.nombanco}}
-                                                        </td>
-                                                        <td>
-                                                            {{cuenta.numerocuenta}}
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </p-overlayPanel>
+                            <button [matBadge]="tienda.cantidadCuentasAsign"
+                                    matBadgePosition="before"
+                                    matBadgeColor="warn"
+                                    class="btn btn-warning btn-sm"
+                                    [disabled]="dis_account_shop"
+                                    (click)="op.toggle($event); obtenerCuentasTienda(tienda.codigoTienda);">
+                                    <div [style]="'background-image: url( '+search+' )' " class="icono" ></div>
+                                    <div>
+                                        <p-overlayPanel #op>
+                                            <span class="fs-4" > Cuentas bancarias asignadas:
+                                                <strong>
+                                                    <span class="text-primary" >
+                                                        ({{listaCuentaTiendasBanc.length}})
+                                                    </span>
+                                                </strong>
+                                            </span>
+                                            <hr>
+                                            <div class="table-responsive" >
+                                                <table class="table table-warning table-bordered table-hover table-striped align-middle" >
+                                                    <thead class="bg-black text-light" >
+                                                       <th class="p-1" *ngIf="permisonUsers"></th>
+                                                       <th class="p-1">Banco</th> 
+                                                       <th class="p-1" title="Número de Cuenta" >N. Cta.</th> 
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let cuenta of listaCuentaTiendasBanc; let i = index;">
+                                                            <td *ngIf="permisonUsers" >
+                                                                <div class="d-flex" >
+                                                                    <div [style]="'background-image: url( '+delete+' )' "
+                                                                         (click)="eliminarCuentaTienda(cuenta, i)" class="icono-btn">
+                                                                         </div>
+                                                                </div>  
+                                                            </td>
+                                                            <td>
+                                                                {{cuenta.nombanco}}
+                                                            </td>
+                                                            <td>
+                                                                {{cuenta.numerocuenta}}
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </p-overlayPanel>
                                 </div>
                             </button>
                         </td>

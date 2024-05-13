@@ -20,6 +20,14 @@ import { SharedService } from '../services/shared.service';
 import { machine } from 'os';
 
 
+///////////////////////////////////////////////////////////////
+// import * as XLSX from 'xlsx';
+// import * as XLSX from 'xlsx-js-style';
+// import * as FileSaver from 'file-saver';
+import { saveAs } from 'file-saver';
+///////////////////////////////////////////////////////////////
+
+
 const Toast = Swal.mixin({
   
   toast: true,
@@ -1202,8 +1210,6 @@ export class ModeldataComponent implements OnInit {
 
   }
 
-
-
   respladoDataTran() {
     this._show_spinner = true;
     this.dataExportarExcelGhost.filter( (element:any) => {
@@ -1215,8 +1221,6 @@ export class ModeldataComponent implements OnInit {
             elementtr.fechaTransaccion = xdate[0];
             elementtr.hora = xdate[1].slice(0,8);
           })
-
-          
           this._show_spinner = false;
         }, error: (e) => {
           console.error(e);
@@ -1338,4 +1342,53 @@ export class ModeldataComponent implements OnInit {
     }
   }
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  async createExcel(){
+    try{
+      if(this.exportdateform.controls['dateini'].value !== null
+        && this.exportdateform.controls['datefin'].value !== null
+        && this.exportdateform.controls['horafin'].value !== null
+      ){
+        const fecha = new Date();
+        const dateini = this.exportdateform.controls['dateini'].value.split("-");
+        const datefin = this.exportdateform.controls['datefin'].value.split("-");
+
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('ACREDITACIONES');// Agregar una nueva hoja al libro
+        //Unir celdas
+        worksheet.mergeCells('A1:G1');
+        // Establecer algunos estilos
+        worksheet.getCell('A1').value = 'DETALLE DE ACREDITACIONES FORTICASH';
+        worksheet.getCell('A1').font = { name: 'Bookman Old Style', bold: true, size: 12 };
+        worksheet.getCell('A1').alignment = { vertical: 'middle', horizontal: 'center' };
+        worksheet.getCell('A1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'D9D9D9' } };
+        
+        worksheet.getCell('A3').value = 'Desde';
+        worksheet.getCell('A3').font = { name: 'Bookman Old Style', bold: true, size: 10 };
+        worksheet.getCell('A3').alignment = { vertical: 'middle', horizontal: 'right' };
+        worksheet.mergeCells('B3:C3');
+        worksheet.getCell('B3').value = dateini[0];
+        worksheet.getCell('B3').alignment = { vertical: 'middle', horizontal: 'center' };
+
+        worksheet.getCell('A4').value = 'Hasta';
+        worksheet.getCell('A4').font = { name: 'Bookman Old Style', bold: true, size: 10 };
+        worksheet.getCell('A4').alignment = { vertical: 'middle', horizontal: 'right' };
+        worksheet.mergeCells('B4:C4');
+        worksheet.getCell('B4').value = datefin[0];
+        worksheet.getCell('B4').alignment = { vertical: 'middle', horizontal: 'center' };
+
+        worksheet.getCell('A5').value = 'Corte';
+        worksheet.getCell('A5').font = { name: 'Bookman Old Style', bold: true, size: 10 };
+        worksheet.getCell('A5').alignment = { vertical: 'middle', horizontal: 'right' };
+        worksheet.mergeCells('B5:C5');
+        worksheet.getCell('B5').value = this.exportdateform.controls['horafin'].value;
+        worksheet.getCell('B5').alignment = { vertical: 'middle', horizontal: 'center' };
+        // Guardar el libro en un archivo
+        const buf = await workbook.xlsx.writeBuffer();
+        saveAs(new Blob([buf]), `${fecha.getDate()}${fecha.getMonth()+1}${fecha.getFullYear()}_${fecha.getHours()}${fecha.getMinutes()}${fecha.getSeconds()}.xlsx`)
+      }
+    }catch(e){
+      console.log("No se puede crear el archivo Excel: "+e);
+    }
+  }
 }
