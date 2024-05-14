@@ -1,10 +1,8 @@
- 
 <div class="spinner-overlay"  *ngIf="_show_spinner">
     <div class="spinner-container">
-      <span class="loader"></span>
+        <span class="loader"></span>
     </div>
 </div>
-
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
       <h2 class="offcanvas-title" id="offcanvasExampleLabel">Registro de alertas</h2>
@@ -12,52 +10,49 @@
     </div>
     <hr>
     <div class="offcanvas-body">
-      <div>
-        
-      </div>
-      <div class="alerts-error">
-        <audio #audioPlayer>
-            <source src="../../../../assets/mp3/errormachine.mp3" type="audio/mpeg">        
-         </audio>
-         <div class="d-flex flex-column" >
-        <div class="chips-alert m-2 rounded-2 shadow-sm p-2 animate__animated animate__bounceIn"        
-             *ngFor="let alertas of nuevoObjectAlerts; let i = index"
-             [style]="'background-color:'+alertas.colorbg +'; color:'+alertas.colorfg+'; border: groove 1px ' + alertas.colorfg"
-             (click)="eliminarAlerta( i )">
-             <div  > 
-                <span><strong>{{alertas.tipo}}</strong></span>
-                <br>
-                <strong>@</strong> <span> {{alertas.msj}} </span>
-             </div>
-             <div>  </div>
-        </div>
+        <div></div>
+        <div class="alerts-error">
+            <audio #audioPlayer>
+                <source src="../../../../assets/mp3/errormachine.mp3" type="audio/mpeg">        
+            </audio>
+            <div class="d-flex flex-column">
+                <div class="chips-alert m-2 rounded-2 shadow-sm p-2 animate__animated animate__bounceIn"        
+                    *ngFor="let alertas of nuevoObjectAlerts; let i = index"
+                    [style]="'background-color:'+alertas.colorbg +'; color:'+alertas.colorfg+'; border: groove 1px ' + alertas.colorfg"
+                    (click)="eliminarAlerta( i )">
+                    <div> 
+                        <span><strong>{{alertas.tipo}}</strong></span>
+                        <br>
+                        <strong>@</strong> <span> {{alertas.msj}} </span>
+                    </div>
+                    <div></div>
+                </div>
+            </div>
+        </div>      
     </div>
-    </div>      
-    </div>
-  </div>
+</div>
   
-<div class=" p-2 m-2 rounded-3 d-flex"
-     [ngStyle]="{'background-color': 'white'}">
-        <div class="subbox" id="a" [style]="'height: '+ height + ';'">
-            
-            <div class="d-flex w-100 p-2">
-                <div class="minimize-b" (click)="min_box_A = !min_box_A; minimizebox();"></div>
-                 <div class="equipo-monitor w-50" *ngIf="min_box_A"
-                     [style]="'height: '+ height_box + '; overflow: auto;'">
+<div class="p-2 m-2 rounded-3 d-flex"
+    [ngStyle]="{'background-color': 'white'}">
+    <div class="subbox" id="a" [style]="'height: '+ height + ';'">
+        <div class="d-flex w-100 p-2">
+            <div class="minimize-b" (click)="min_box_A = !min_box_A; minimizebox();"></div>
+                <div class="equipo-monitor w-50" *ngIf="min_box_A"
+                    [style]="'height: '+ height_box + '; overflow: auto;'">
                     <div class="w-100">
-                        <section class="filtros p-2  d-flex">                            
+                        <section class="filtros p-2 d-flex">                            
                             <!-- <img src="" alt=""> -->
-                            <div class="mb-2  d-flex w-75">
-                                <form [formGroup]="filterequipForm"
-                                      class="w-100">
-                                    <input class=" w-100 shadow-sm form-control rounded-pill" 
+                            <div class="input-group mb-2 d-flex w-75">
+                                <form [formGroup]="filterequipForm" class="w-100 d-flex">
+                                    <input class="shadow-sm form-control" 
                                            fxFlex="auto" type="text"        
                                            formControlName="filterequip"
                                            #filterequip
                                            id="filterequip"                                   
                                            (keyup)="filterEquipos()" 
-                                           placeholder="Búsqueda de equipos...">
-                                           <!-- [(ngModel)]="filterequip" -->
+                                           placeholder="Equipo">
+                                    <span class="input-group-text"><mat-icon>search</mat-icon></span>
+                                    <!-- [(ngModel)]="filterequip" -->
                                 </form>
                             </div>
                             <div>
@@ -67,31 +62,31 @@
                                         data-bs-target="#offcanvasExample"
                                         aria-controls="offcanvasExample"
                                         >
-                                        <div [matBadge]="nuevoObjectAlerts.length"   matBadgeColor="warn"
-                                         [style]="'background-image: url( ../../../../assets/alert.png )'" class="icono"></div>
+                                    <div [matBadge]="nuevoObjectAlerts.length" matBadgeColor="warn"
+                                        [style]="'background-image: url( ../../../../assets/alert.png )'" class="icono">
+                                    </div>
                                </button>
-                           </div>
+                            </div>
                         </section>
                     </div>
-                     <div class="equipos m-1 rounded-2" *ngFor="let equipos of listaEsquipo" 
-                          [style]="'background-color: ' +equipos.colorEsstado+ '; transition: ease-in all 1s;'" >
-                          <div class="p-1" [ngClass]="{ 'bg-body-secondary': equipos.active !== 'A' }">
-                              <span class="p-2 d-flex justify-content-between align-items-end " >
-                                  <small>Equipo</small> &nbsp;&nbsp; 
-                                  <div style="text-align: right;" >
+                    <div class="equipos m-1 rounded-2" *ngFor="let equipos of listaEsquipo" 
+                        [style]="'background-color: ' +equipos.colorEsstado+ '; transition: ease-in all 1s;'" >
+                        <div class="p-1" [ngClass]="{ 'bg-body-secondary': equipos.active !== 'A' }">
+                            <span class="p-2 d-flex justify-content-between align-items-end">
+                                <small>Equipo</small> &nbsp;&nbsp; 
+                                <div style="text-align: right;" >
                                     <div [class]="equipos.colorTexto" [ngClass]="{ 'text-dark': equipos.active !== 'A' }"> {{ equipos.nombreTienda }} / {{ equipos.provincia }} </div>
                                     <strong [class]="equipos.colorTexto" [ngClass]="{ 'text-dark': equipos.active !== 'A' }"> {{ equipos.serieEquipo }} </strong>
-                                  </div>
-                                 
-                              </span>                            
-                              <span class="p-2 d-flex justify-content-between">
-                                  <small>IP:</small> &nbsp;&nbsp;
-                                  <strong [class]="equipos.colorTexto" [ngClass]="{ 'text-dark': equipos.active !== 'A' }">
+                                </div>
+                            </span>                            
+                            <span class="p-2 d-flex justify-content-between">
+                                <small>IP:</small> &nbsp;&nbsp;
+                                <strong [class]="equipos.colorTexto" [ngClass]="{ 'text-dark': equipos.active !== 'A' }">
                                     {{ equipos.ipEquipo }}
-                                  </strong>
-                              </span>
-                          </div>
-                          <div class="p-2" [ngClass]="{ 'bg-body-secondary': equipos.active !== 'A' }">
+                                </strong>
+                            </span>
+                        </div>
+                        <div class="p-2" [ngClass]="{ 'bg-body-secondary': equipos.active !== 'A' }">
                             <div class="m-1 d-flex justify-content-between">
                                 <span> % Cantidad de Piezas </span>
                                 <div>
@@ -99,7 +94,7 @@
                                         {{ equipos.indicadorCapacidadBilletes }} / {{ equipos.indicadorCapacidadBilletesMax }}
                                     </strong>
                                 </div>
-                             </div>
+                            </div>
                             <div class="progress shadow-sm m-1"
                                 data-bs-toggle="tooltip" data-bs-placement="top"
                                 [title]=" equipos.indicadorPorcentajeBilletes + '%' ">
@@ -133,204 +128,156 @@
                                      {{equipos.indicadorPorcentajeTotalMaxAsegurado | number : '1.2-2' }} %
                                 </div>
                             </div>
-                          </div>
-                          <div class="w-100">
-                              <button [class]="equipos.colorBtn" 
-                                      [ngClass]="{ 'bg-secondary': equipos.active !== 'A', 'border-dark-subtle': equipos.active !== 'A' }"
-                                      (click)="obtenerDetalleEquipos(equipos)">
-                                      Monitorear
-                              </button>
-                          </div>
-                     </div>
-                 </div>
+                        </div>
+                        <div class="w-100">
+                            <button [class]="equipos.colorBtn" 
+                                    [ngClass]="{ 'bg-secondary': equipos.active !== 'A', 'border-dark-subtle': equipos.active !== 'A' }"
+                                    (click)="obtenerDetalleEquipos(equipos)">
+                                    Monitorear
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 <div class="d-flex flex-column p-2"
                      [style]="'height: '+ height_box + '; overflow: auto; width: ' +width_box+';'">
-                     <div class="accordion accordion-flush" id="accordionFlushExample">
+                    <div class="accordion accordion-flush" id="accordionFlushExample">
                         <div class="accordion-item">
-                          <h2 class="accordion-header" id="flush-headingOne">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                            <h2 class="accordion-header" id="flush-headingOne">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
                                     Transacciones Automáticas
-                            </button>
-                          </h2>
-                          <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body">
-                                <div class="d-flex align-items-center w-100 justify-content-center " style="background-color: aliceblue;" >
-                                    <div [style]="'background-image: url( '+bill+' )' "
-                                         style="background-repeat: none !important; width: 35px; background-size: 100%, 100%; height: 20px;"
-                                         class="m-1" ></div>
-                                         <div> Billetes </div>
-                                </div>
-                                <div class="d-flex justify-content-between p-2"> 
-                                    <span title="Denominación de dinero" >
-                                        <strong> Denomin. </strong>
-                                    </span>
-                                    <span>
-                                        <strong> Cantidad </strong>
-                                    </span>
-                                    <span>
-                                        <strong> Monto </strong>
-                                    </span>
-                                </div>
-                                <div class="stats-maq" *ngFor="let automatico of listaDetalleequipoTransa" >
-                                    <div class="d-flex justify-content-between"> 
-                                        <div class="data-m-l"> $100 </div>
-                                        <div class="data-m-r"> {{automatico.depositoCant100}} </div>
-                                        <div class="data-m-r"> $ {{automatico.depositoMont100}} </div>
+                                </button>
+                            </h2>
+                            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">
+                                    <div class="d-flex align-items-center w-100 justify-content-center " style="background-color: aliceblue;" >
+                                        <div [style]="'background-image: url( '+bill+' )' "
+                                            style="background-repeat: none !important; width: 35px; background-size: 100%, 100%; height: 20px;"
+                                            class="m-1" ></div>
+                                        <div> Billetes </div>
                                     </div>
-                                    <div class="d-flex justify-content-between"> 
-                                        <div class="data-m-l"> $50 </div>
-                                        <div class="data-m-r"> {{automatico.depositoCant50}} </div>
-                                        <div class="data-m-r"> $ {{automatico.depositoMont50}} </div>
+                                    <div class="d-flex justify-content-between p-2"> 
+                                        <span title="Denominación de dinero" >
+                                            <strong> Denomin. </strong>
+                                        </span>
+                                        <span>
+                                            <strong> Cantidad </strong>
+                                        </span>
+                                        <span>
+                                            <strong> Monto </strong>
+                                        </span>
                                     </div>
-                                    <div class="d-flex justify-content-between"> 
-                                        <div class="data-m-l"> $20 </div>
-                                        <div class="data-m-r"> {{automatico.depositoCant20}} </div>
-                                        <div class="data-m-r"> $ {{automatico.depositoMont20}} </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between"> 
-                                        <div class="data-m-l"> $10                           </div>
-                                        <div class="data-m-r"> {{automatico.depositoCant10}} </div>
-                                        <div class="data-m-r"> $ {{automatico.depositoMont10}} </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between "> 
-                                        <div class="data-m-l"> $5 </div>
-                                        <div class="data-m-r"> {{automatico.depositoCant5}} </div>
-                                        <div class="data-m-r"> {{automatico.depositoMont5}} </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between"> 
-                                        <div class="data-m-l"> $2 </div>
-                                        <div class="data-m-r"> {{automatico.depositoCant2}} </div>
-                                        <div class="data-m-r"> $ {{automatico.depositoMont2}} </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between"> 
-                                        <div class="data-m-l"> $1 </div>
-                                        <div class="data-m-r"> {{automatico.depositoCant1}}   </div>
-                                        <div class="data-m-r"> $ {{automatico.depositoMont1}} </div>
-                                    </div>
-                                    <div class="mt-1">
+                                    <div class="stats-maq" *ngFor="let automatico of listaDetalleequipoTransa" >
                                         <div class="d-flex justify-content-between"> 
-                                            <div class="data-m-l bg-warning text-dark shadow-sm">
-                                                Totales:
-                                            </div>
-                                            <div class="data-m-r bg-warning text-dark shadow-sm"> 
-                                                <strong> {{totalBilletesCantidadT}} </strong>
-                                            </div>
-                                            <div class="data-m-r bg-warning text-dark shadow-sm"> 
-                                                <strong> $ {{totalBilletesMontoT  | number : '1.2-2'}} </strong>
+                                            <div class="data-m-l"> $100 </div>
+                                            <div class="data-m-r"> {{automatico.depositoCant100}} </div>
+                                            <div class="data-m-r"> $ {{automatico.depositoMont100}} </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between"> 
+                                            <div class="data-m-l"> $50 </div>
+                                            <div class="data-m-r"> {{automatico.depositoCant50}} </div>
+                                            <div class="data-m-r"> $ {{automatico.depositoMont50}} </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between"> 
+                                            <div class="data-m-l"> $20 </div>
+                                            <div class="data-m-r"> {{automatico.depositoCant20}} </div>
+                                            <div class="data-m-r"> $ {{automatico.depositoMont20}} </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between"> 
+                                            <div class="data-m-l"> $10                           </div>
+                                            <div class="data-m-r"> {{automatico.depositoCant10}} </div>
+                                            <div class="data-m-r"> $ {{automatico.depositoMont10}} </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between "> 
+                                            <div class="data-m-l"> $5 </div>
+                                            <div class="data-m-r"> {{automatico.depositoCant5}} </div>
+                                            <div class="data-m-r"> {{automatico.depositoMont5}} </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between"> 
+                                            <div class="data-m-l"> $2 </div>
+                                            <div class="data-m-r"> {{automatico.depositoCant2}} </div>
+                                            <div class="data-m-r"> $ {{automatico.depositoMont2}} </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between"> 
+                                            <div class="data-m-l"> $1 </div>
+                                            <div class="data-m-r"> {{automatico.depositoCant1}}   </div>
+                                            <div class="data-m-r"> $ {{automatico.depositoMont1}} </div>
+                                        </div>
+                                        <div class="mt-1">
+                                            <div class="d-flex justify-content-between"> 
+                                                <div class="data-m-l bg-warning text-dark shadow-sm">
+                                                    Totales:
+                                                </div>
+                                                <div class="data-m-r bg-warning text-dark shadow-sm"> 
+                                                    <strong> {{totalBilletesCantidadT}} </strong>
+                                                </div>
+                                                <div class="data-m-r bg-warning text-dark shadow-sm"> 
+                                                    <strong> $ {{totalBilletesMontoT  | number : '1.2-2'}} </strong>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                          </div>
                         </div>
                         <div class="accordion-item">
-                          <h2 class="accordion-header" id="flush-headingTwo">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                                Transacciones Manuales
-                            </button>
-                          </h2>
-                          <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body">
-                                <div class="d-flex justify-content-between p-2 "> 
-                                    <span title="Denominación de dinero" >
-                                        <strong> Denomin. </strong>
-                                    </span>
-                                    <span>
-                                        <strong> Cantidad </strong>
-                                    </span>
-                                    <span>
-                                        <strong> Monto </strong>
-                                    </span>
-                                </div>
-                                <div class="d-flex align-items-center w-100 justify-content-center " style="background-color: aliceblue;" >
-                                    <div [style]="'background-image: url( '+bill+' )' " style="background-repeat: none !important; width: 35px; background-size: 100%, 100%; height: 20px;" class="m-1" ></div>
-                                    <div> Billetes </div>
-                                </div>
-                                <div class="stats-maq" *ngFor="let manual of listaDetalleequipoManual" >
-                                    <div class="d-flex justify-content-between "> 
-                                        <div class="data-m-l"> $100 </div>
-                                        <div class="data-m-r"> {{manual.depositoCant100}} </div>
-                                        <div class="data-m-r"> $ {{manual.depositoMont100}} </div>
+                            <h2 class="accordion-header" id="flush-headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                                    Transacciones Manuales
+                                </button>
+                            </h2>
+                            <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">
+                                    <div class="d-flex justify-content-between p-2 "> 
+                                        <span title="Denominación de dinero" >
+                                            <strong> Denomin. </strong>
+                                        </span>
+                                        <span>
+                                            <strong> Cantidad </strong>
+                                        </span>
+                                        <span>
+                                            <strong> Monto </strong>
+                                        </span>
                                     </div>
-                                    <div class="d-flex justify-content-between "> 
-                                        <div class="data-m-l"> $50 </div>
-                                        <div class="data-m-r"> {{manual.depositoCant50}} </div>
-                                        <div class="data-m-r"> $ {{manual.depositoMont50}} </div>
+                                    <div class="d-flex align-items-center w-100 justify-content-center " style="background-color: aliceblue;" >
+                                        <div [style]="'background-image: url( '+bill+' )' " style="background-repeat: none !important; width: 35px; background-size: 100%, 100%; height: 20px;" class="m-1" ></div>
+                                        <div> Billetes </div>
                                     </div>
-                                    <div class="d-flex justify-content-between "> 
-                                        <div class="data-m-l"> $20 </div>
-                                        <div class="data-m-r"> {{manual.depositoCant20}} </div>
-                                        <div class="data-m-r"> $ {{manual.depositoMont20}} </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between "> 
-                                        <div class="data-m-l"> $10                           </div>
-                                        <div class="data-m-r"> {{manual.depositoCant10}} </div>
-                                        <div class="data-m-r"> $ {{manual.depositoMont10}} </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between "> 
-                                        <div class="data-m-l"> $5 </div>
-                                        <div class="data-m-r"> {{manual.depositoCant5}} </div>
-                                        <div class="data-m-r"> $ {{manual.depositoMont5}} </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between "> 
-                                        <div class="data-m-l"> $2 </div>
-                                        <div class="data-m-r"> {{manual.depositoCant2}} </div>
-                                        <div class="data-m-r"> $ {{manual.depositoMont2}} </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between "> 
-                                        <div class="data-m-l"> $1 </div>
-                                        <div class="data-m-r"> {{manual.depositoCant1}} </div>
-                                        <div class="data-m-r"> $ {{manual.depositoMont1}} </div>
-                                    </div>
-                                </div>
-                                <div class="mt-1">
-                                    <div class="d-flex justify-content-between "> 
-                                        <div class="data-m-l bg-warning text-dark shadow-sm">
-                                            Totales:
+                                    <div class="stats-maq" *ngFor="let manual of listaDetalleequipoManual" >
+                                        <div class="d-flex justify-content-between "> 
+                                            <div class="data-m-l"> $100 </div>
+                                            <div class="data-m-r"> {{manual.depositoCant100}} </div>
+                                            <div class="data-m-r"> $ {{manual.depositoMont100}} </div>
                                         </div>
-                                        <div class="data-m-r bg-warning text-dark shadow-sm"> 
-                                            <strong> {{totalBilletesCantidadM }} </strong>
+                                        <div class="d-flex justify-content-between "> 
+                                            <div class="data-m-l"> $50 </div>
+                                            <div class="data-m-r"> {{manual.depositoCant50}} </div>
+                                            <div class="data-m-r"> $ {{manual.depositoMont50}} </div>
                                         </div>
-                                        <div class="data-m-r bg-warning text-dark shadow-sm"> 
-                                            <strong> $ {{totalBilletesMontoM  | number : '1.2-2'}} </strong>
+                                        <div class="d-flex justify-content-between "> 
+                                            <div class="data-m-l"> $20 </div>
+                                            <div class="data-m-r"> {{manual.depositoCant20}} </div>
+                                            <div class="data-m-r"> $ {{manual.depositoMont20}} </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center w-100 justify-content-center " style="background-color: aliceblue;" >
-                                    <div [style]="'background-image: url( '+coin+' )' " class="icono m-1" ></div>
-                                    <div> Monedas </div>
-                                </div>
-                                <div class="stats-maq" *ngFor="let manual of listaDetalleequipoManual">
-                                    <div class="d-flex justify-content-between">
-                                        <div class="data-m-l"> $1.00                            </div>
-                                        <div class="data-m-r"> {{manual.depositoCantCoin100}}   </div>
-                                        <div class="data-m-r"> $ {{manual.depositoMontCoin100}} </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between "> 
-                                        <div class="data-m-l"> $0.50                           </div>
-                                        <div class="data-m-r"> {{manual.depositoCantCoin50}}   </div>
-                                        <div class="data-m-r"> $ {{manual.depositoMontCoin50}} </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between "> 
-                                        <div class="data-m-l"> $0.25                           </div>
-                                        <div class="data-m-r"> {{manual.depositoCantCoin25}}   </div>
-                                        <div class="data-m-r"> $ {{manual.depositoMontCoin25}} </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between "> 
-                                        <div class="data-m-l"> $0.10                           </div>
-                                        <div class="data-m-r"> {{manual.depositoCantCoin10}}   </div>
-                                        <div class="data-m-r"> $ {{manual.depositoMontCoin10}} </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between "> 
-                                        <div class="data-m-l"> $0.05                          </div>
-                                        <div class="data-m-r"> {{manual.depositoCantCoin5}}   </div>
-                                        <div class="data-m-r"> $ {{manual.depositoMontCoin5}} </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between "> 
-                                        <div class="data-m-l"> $0.01                          </div>
-                                        <div class="data-m-r"> {{manual.depositoCantCoin1}}   </div>
-                                        <div class="data-m-r"> $ {{manual.depositoMontCoin1}} </div>
+                                        <div class="d-flex justify-content-between "> 
+                                            <div class="data-m-l"> $10                           </div>
+                                            <div class="data-m-r"> {{manual.depositoCant10}} </div>
+                                            <div class="data-m-r"> $ {{manual.depositoMont10}} </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between "> 
+                                            <div class="data-m-l"> $5 </div>
+                                            <div class="data-m-r"> {{manual.depositoCant5}} </div>
+                                            <div class="data-m-r"> $ {{manual.depositoMont5}} </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between "> 
+                                            <div class="data-m-l"> $2 </div>
+                                            <div class="data-m-r"> {{manual.depositoCant2}} </div>
+                                            <div class="data-m-r"> $ {{manual.depositoMont2}} </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between "> 
+                                            <div class="data-m-l"> $1 </div>
+                                            <div class="data-m-r"> {{manual.depositoCant1}} </div>
+                                            <div class="data-m-r"> $ {{manual.depositoMont1}} </div>
+                                        </div>
                                     </div>
                                     <div class="mt-1">
                                         <div class="d-flex justify-content-between "> 
@@ -338,102 +285,147 @@
                                                 Totales:
                                             </div>
                                             <div class="data-m-r bg-warning text-dark shadow-sm"> 
-                                                <strong> {{totalMonedasCantidadM }} </strong>
+                                                <strong> {{totalBilletesCantidadM }} </strong>
                                             </div>
                                             <div class="data-m-r bg-warning text-dark shadow-sm"> 
-                                                <strong> $ {{totalMonedasMontoM  | number : '1.2-2'}} </strong>
+                                                <strong> $ {{totalBilletesMontoM  | number : '1.2-2'}} </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center w-100 justify-content-center " style="background-color: aliceblue;" >
+                                        <div [style]="'background-image: url( '+coin+' )' " class="icono m-1" ></div>
+                                        <div> Monedas </div>
+                                    </div>
+                                    <div class="stats-maq" *ngFor="let manual of listaDetalleequipoManual">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="data-m-l"> $1.00                            </div>
+                                            <div class="data-m-r"> {{manual.depositoCantCoin100}}   </div>
+                                            <div class="data-m-r"> $ {{manual.depositoMontCoin100}} </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between "> 
+                                            <div class="data-m-l"> $0.50                           </div>
+                                            <div class="data-m-r"> {{manual.depositoCantCoin50}}   </div>
+                                            <div class="data-m-r"> $ {{manual.depositoMontCoin50}} </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between "> 
+                                            <div class="data-m-l"> $0.25                           </div>
+                                            <div class="data-m-r"> {{manual.depositoCantCoin25}}   </div>
+                                            <div class="data-m-r"> $ {{manual.depositoMontCoin25}} </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between "> 
+                                            <div class="data-m-l"> $0.10                           </div>
+                                            <div class="data-m-r"> {{manual.depositoCantCoin10}}   </div>
+                                            <div class="data-m-r"> $ {{manual.depositoMontCoin10}} </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between "> 
+                                            <div class="data-m-l"> $0.05                          </div>
+                                            <div class="data-m-r"> {{manual.depositoCantCoin5}}   </div>
+                                            <div class="data-m-r"> $ {{manual.depositoMontCoin5}} </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between "> 
+                                            <div class="data-m-l"> $0.01                          </div>
+                                            <div class="data-m-r"> {{manual.depositoCantCoin1}}   </div>
+                                            <div class="data-m-r"> $ {{manual.depositoMontCoin1}} </div>
+                                        </div>
+                                        <div class="mt-1">
+                                            <div class="d-flex justify-content-between "> 
+                                                <div class="data-m-l bg-warning text-dark shadow-sm">
+                                                    Totales:
+                                                </div>
+                                                <div class="data-m-r bg-warning text-dark shadow-sm"> 
+                                                    <strong> {{totalMonedasCantidadM }} </strong>
+                                                </div>
+                                                <div class="data-m-r bg-warning text-dark shadow-sm"> 
+                                                    <strong> $ {{totalMonedasMontoM  | number : '1.2-2'}} </strong>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                          </div>
                         </div>
-                      </div>
+                    </div>
                     <div class="stats w-100">
-                    <div class="totales mt-2">
-                        <div class="d-flex justify-content-between "> 
-                            <div class="data-m-l-t  d-flex align-items-center justify-content-end ">
-                                T. T. Automáticas:
-                            </div>
-                            <div class="data-m-r-t d-flex align-items-center fs-5 justify-content-end "
-                                [title]="'Piezas billetes: ' + totalBilletesCantidadT" > 
-                                <strong>  $ {{totalBilletesMontoT  | number : '1.2-2' }} </strong>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="totales mt-1" >
-                        <div class="d-flex justify-content-between "> 
-                            <div class="data-m-l-t d-flex align-items-center justify-content-end ">
-                                T. T. Manuales:
-                            </div>
-                            <div class="data-m-r-t d-flex align-items-center fs-5 justify-content-end "
-                                [title]="'Piezas billetes: ' + totalBilletesCantidadM + ' - Piezas monedas: ' + totalMonedasCantidadM"> 
-                                <strong> $ {{totalBilletesMontoM + totalMonedasMontoM | number : '1.2-2' }} </strong>
+                        <div class="totales mt-2">
+                            <div class="d-flex justify-content-between "> 
+                                <div class="data-m-l-t  d-flex align-items-center justify-content-end ">
+                                    T. T. Automáticas:
+                                </div>
+                                <div class="data-m-r-t d-flex align-items-center fs-5 justify-content-end "
+                                    [title]="'Piezas billetes: ' + totalBilletesCantidadT" > 
+                                    <strong>  $ {{totalBilletesMontoT  | number : '1.2-2' }} </strong>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="dataval mt-1 p-2 rounded-1 text-light" 
-                         [style]="'background-color: '+colorValidateCuadre" 
-                         (click)="validarCuadre()">
-                        <div class="d-flex justify-content-between "> 
-                            <div class="data-m-l-t d-flex align-items-center justify-content-end ">
-                                Totales de dinero:
-                            </div>
-                            <div class="data-m-r-t d-flex align-items-center fs-5 justify-content-end "                                 
-                                 [title]="'Piezas totales: ' + (totalBilletesCantidadM + totalMonedasCantidadM + totalBilletesCantidadT)" > 
-                                <strong> $ {{totalMonedasMontoM + totalBilletesMontoM + totalMonedasMontoT + totalBilletesMontoT  | number : '1.2-2'}} </strong>
+                        <div class="totales mt-1" >
+                            <div class="d-flex justify-content-between "> 
+                                <div class="data-m-l-t d-flex align-items-center justify-content-end ">
+                                    T. T. Manuales:
+                                </div>
+                                <div class="data-m-r-t d-flex align-items-center fs-5 justify-content-end "
+                                    [title]="'Piezas billetes: ' + totalBilletesCantidadM + ' - Piezas monedas: ' + totalMonedasCantidadM"> 
+                                    <strong> $ {{totalBilletesMontoM + totalMonedasMontoM | number : '1.2-2' }} </strong>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="mt-1 p-1 d-flex justify-content-end w-100">
-                        <div class="w-100 d-flex justify-content-center mb-2" *ngIf="xloader">
-                        <span class="xloader"></span>
-                    </div>
-                    </div>
-                    <div class="d-flex flex-column p-2 rounded-2 shadow-sm text-light" 
-                         style="background-color: red; font-size: 12pt;" *ngIf="error">
-                        <div> Tienes problemas con estas transacciones: </div>
-                        <ol>
-                            <li *ngFor="let transac of arrtransacproblemas">
-                                <span> Número de transacción: <strong> {{ transac }} </strong> </span>
-                            </li>
-                        </ol>
+                        <div class="dataval mt-1 p-2 rounded-1 text-light" 
+                            [style]="'background-color: '+colorValidateCuadre" 
+                            (click)="validarCuadre()">
+                            <div class="d-flex justify-content-between "> 
+                                <div class="data-m-l-t d-flex align-items-center justify-content-end ">
+                                    Totales de dinero:
+                                </div>
+                                <div class="data-m-r-t d-flex align-items-center fs-5 justify-content-end "                                 
+                                    [title]="'Piezas totales: ' + (totalBilletesCantidadM + totalMonedasCantidadM + totalBilletesCantidadT)" > 
+                                    <strong> $ {{totalMonedasMontoM + totalBilletesMontoM + totalMonedasMontoT + totalBilletesMontoT  | number : '1.2-2'}} </strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-1 p-1 d-flex justify-content-end w-100">
+                            <div class="w-100 d-flex justify-content-center mb-2" *ngIf="xloader">
+                                <span class="xloader"></span>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column p-2 rounded-2 shadow-sm text-light" 
+                            style="background-color: red; font-size: 12pt;" *ngIf="error">
+                            <div> Tienes problemas con estas transacciones: </div>
+                            <ol>
+                                <li *ngFor="let transac of arrtransacproblemas">
+                                    <span> Número de transacción: <strong> {{ transac }} </strong> </span>
+                                </li>
+                            </ol>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>  
+        <div class="subbox p-2" id="b" [style]="'height: '+ height + ';'">
+            <div id="filtrostransaccionales" class="w-100 p-2">
+                <app-filtrotransaccional (listaTransaccionesEmitGrafica)="recibirTransaccionesGrafica($event)"
+                                        (listaTransaccionesEmitTabla)="recibirTransaccionesTabla($event)"
+                                        (modBusqueda)="recibirTipoFiltro($event)"
+                                        (typeFilter)="recibirTypeFilterDates($event)"
+                                        [listenNserie]="nserie">
+                </app-filtrotransaccional>
+            </div>
+            <div id="graficas" >
+                <app-collectiongraph [datosgenerales]="datosgen"
+                                    [transaccionAutoHub]="EmitAutoTransHub"
+                                    [transaccionManualHub]="EmitManualTransHub"
+                                    [transaccionRecollHub]="EmitRecolTransHub"
+                                    [transaccionesDataGrafica]="transaccionesDataGrafica"               
+                                    [listenNserie]="nserie"
+                                    [tipoDeFiltroFechas]="typeFilterTrasact" >
+                </app-collectiongraph>
+            </div>
+            <div id="transacciones" class="w-100 p-2">
+                <app-tabla-transacciones [transaccionAutoHub]="EmitAutoTransHub"
+                                        [transaccionManualHub]="EmitManualTransHub"
+                                        [transaccionRecollHub]="EmitRecolTransHub"
+                                        [transaccionesDataTabla]="transaccionesDataTabla"
+                                        [tipoFiltro]="tipoFiltro"
+                                        [listenNserie]="nserie">
+                </app-tabla-transacciones>
+            </div>
         </div>
     </div>
-        
-    <div class="subbox p-2" id="b" [style]="'height: '+ height + ';'">
-        <div id="filtrostransaccionales" class="w-100 p-2">
-            <app-filtrotransaccional (listaTransaccionesEmitGrafica)="recibirTransaccionesGrafica($event)"
-                                     (listaTransaccionesEmitTabla)="recibirTransaccionesTabla($event)"
-                                     (modBusqueda)="recibirTipoFiltro($event)"
-                                     (typeFilter)="recibirTypeFilterDates($event)"
-                                     [listenNserie]="nserie">
-            </app-filtrotransaccional>
-        </div>
-        <div id="graficas" >
-            <app-collectiongraph [datosgenerales]="datosgen"
-                                 [transaccionAutoHub]="EmitAutoTransHub"
-                                 [transaccionManualHub]="EmitManualTransHub"
-                                 [transaccionRecollHub]="EmitRecolTransHub"
-                                 [transaccionesDataGrafica]="transaccionesDataGrafica"               
-                                 [listenNserie]="nserie"
-                                 [tipoDeFiltroFechas]="typeFilterTrasact" >
-            </app-collectiongraph>
-        </div>
-        <div id="transacciones" class="w-100 p-2">
-            <app-tabla-transacciones [transaccionAutoHub]="EmitAutoTransHub"
-                                     [transaccionManualHub]="EmitManualTransHub"
-                                     [transaccionRecollHub]="EmitRecolTransHub"
-                                     [transaccionesDataTabla]="transaccionesDataTabla"
-                                     [tipoFiltro]="tipoFiltro"
-                                     [listenNserie]="nserie">
-            </app-tabla-transacciones>
-        </div>
-    </div>
-
-
-</div> 
