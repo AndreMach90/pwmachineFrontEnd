@@ -40,24 +40,27 @@
                 <div class="equipo-monitor w-50" *ngIf="min_box_A"
                     [style]="'height: '+ height_box + '; overflow: auto;'">
                     <div class="w-100">
-                        <section class="filtros p-2 d-flex">                            
+                        <section class="filtros ps-2 pe-3 py-2 d-inline-flex align-items-center">                            
                             <!-- <img src="" alt=""> -->
-                            <div class="input-group mb-2 d-flex w-75">
+                            <div class="input-group d-flex shadow-sm align-items-center">
                                 <form [formGroup]="filterequipForm" class="w-100 d-flex">
-                                    <input class="shadow-sm form-control" 
-                                           fxFlex="auto" type="text"        
+                                    <mat-icon class="m-1">search</mat-icon>
+                                    <input class="form-control" 
+                                           fxFlex="auto"        
                                            formControlName="filterequip"
                                            #filterequip
                                            id="filterequip"                                   
                                            (keyup)="filterEquipos()" 
-                                           placeholder="Equipo">
-                                    <span class="input-group-text"><mat-icon>search</mat-icon></span>
-                                    <!-- [(ngModel)]="filterequip" -->
+                                           placeholder="Equipo"
+                                           type="search">
                                 </form>
+                            </div>
+                            <div class="machineDesact" [ngClass]="{'active': isActive}" (click)="machineDesactive()">
+                                <mat-icon>{{ isActive ? 'visibility' : 'visibility_off' }}</mat-icon>
                             </div>
                             <div>
                                 <button type="submit"                                         
-                                        class="d-flex align-items-center btn btn-outline-light"
+                                        class="d-flex align-items-center btn btn-outline-light p-0"
                                         data-bs-toggle="offcanvas"
                                         data-bs-target="#offcanvasExample"
                                         aria-controls="offcanvasExample"

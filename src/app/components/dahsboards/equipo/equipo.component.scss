@@ -27,3 +27,26 @@
     color: #1b9452;
   }
 }
+.machineDesact{
+  width: 35px;
+  height: 35px;
+  background: rgba(0, 0, 0, 0.349);
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  cursor: pointer;
+  border-radius: 100%;
+  padding: 2px;
+  margin-left: 2px;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.349);
+}
+.machineDesact.active {
+  background: white;
+  color: rgb(15, 78, 132);
+  border: 1px solid rgba(15, 78, 132);
+}
+.machineDesact mat-icon{
+  font-size: 1.5rem;
+}

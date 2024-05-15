@@ -28,6 +28,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   usuario:any;
   search: any = this.env.apiUrlIcon()+'search.png';
   listalertas: any = [];
+  contadorPing: number = 0;
   _show_spinner: boolean = false;
   private urlHub: any = this.env.apiUrlHub();
   private connectionSendPingEquipo: HubConnection;
@@ -44,7 +45,9 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     this.connectionSendPingEquipo = new HubConnectionBuilder()
                   .withUrl(this.urlHub+'PingHubEquipos')
                   .build();
-    this.connectionSendPingEquipo.on("SendPingEquipo", message => { this.PingHub(message); });
+    this.connectionSendPingEquipo.on("SendPingEquipo", message => {
+                  this.PingHub(message); 
+                  this.alertHub(message);});
     this.manualTransactionHub = new HubConnectionBuilder()
                   .withUrl(this.urlHub+'manualTransaction')
                   .build();
@@ -205,6 +208,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       xmsj = 'void';
     }
     let arr: any = {
+      tipo:    tipo,
       msj:     msj,
       colorbg: colorbg,
       colorfg: colorfg,
@@ -213,21 +217,35 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     if( xmsj != 'void' ) {
       this.listalertas.push(arr);
     }
-    // // ////console.warn(this.listalertas);
     const uniqueData = new Map();
+    let key = JSON.stringify({});
     for (const item of this.listalertas) {
-      // Crear una cadena que representa el objeto para verificar duplicados
-      const key = JSON.stringify({
-        tipo: item.tipo,
-        msj: item.msj,
-        colorbg: item.colorbg,
-        colorfg: item.colorfg,
-        nserie: item.nserie
-      });
+      if(item.tipo == "Sincronizacion"){        
+        key = JSON.stringify({
+          tipo: item.tipo,
+          nserie: item.nserie
+        });
+      }
+      else if(item.tipo == "Ultima transaccion"){        
+        key = JSON.stringify({
+          tipo: item.tipo,
+          nserie: item.nserie
+        });
+      }else{
+        // Crear una cadena que representa el objeto para verificar duplicados
+        key = JSON.stringify({
+          tipo: item.tipo,
+          msj: item.msj,
+          colorbg: item.colorbg,
+          colorfg: item.colorfg,
+          nserie: item.nserie
+        });
+      }
       if (!uniqueData.has(key)) {
         uniqueData.set(key, item);
       }
     }
+    this.listalertas = Array.from(uniqueData.values());
     this.nuevoObjectalerts = Array.from(uniqueData.values());
     this.nuevoObjectalerts.filter((elementalerta:any) => {
       if( elementalerta.nserie == this.trannserie ) {
@@ -236,6 +254,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
         }
       }
     })
+    console.log(this.listalertas);
   }
 
   validateSesion() {
@@ -261,6 +280,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
 
   eliminaralerta( i:number ) {
     this.listalertas.splice(i, 1);
+    this.nuevoObjectalerts.splice(i, 1);
   }
 
   listaDetalleequipoManual: any = [];
@@ -565,11 +585,10 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     next: (equipo) => {
       this.listaEsquipoIndicadores = equipo;
       this.listaEsquipoGhostIndicadores = equipo;
-      this._show_spinner = false;
     }, error: (e) => {
       console.error(e);
-      this._show_spinner = false;
     }, complete: () => {
+      this._show_spinner = false;
       this.listaEsquipoIndicadores.filter((element:any) => {
         if( element.totalAsegurado == null || element.totalAsegurado == undefined )                   element.totalAsegurado          = 0;
         if( element.capacidadPesos == null || element.capacidadPesos == undefined )                   element.capacidadPesos          = 0;
@@ -674,5 +693,57 @@ export class MaquinariaMonitoreoComponent implements OnInit {
         equipoFind.tipoTrans = "R"
       }
     }
+  }
+  
+  alertHub(dataPingHub: any){
+    this.contadorPing++;
+    if(this.contadorPing>=30){
+      this.alertTimeSincro(dataPingHub);
+      this.alertTrans();
+      this.contadorPing = 0;
+    }
+    console.log(this.contadorPing);
+  }
+
+  alertTimeSincro(dataPingHub: any){
+    dataPingHub = dataPingHub.filter((element: any) => {
+      return element.estadoPing == 0;
+    });
+    for (let item of dataPingHub) {
+      let validarhora = this.calcularTiempoDesdeAhora(1,item.tiempoSincronizacion);
+      if(validarhora){
+        let tipo = 'Sincronizacion';
+        let equipoFind = this.listaEsquipo.find((itemEquipo:any) =>
+          itemEquipo.ipEquipo === item.ip
+        );
+        let msj  = equipoFind.serieEquipo+' ha estado desactivado por mas de 1h';
+        let colorbg = 'red';
+        let colorfg = 'black';
+        let serie = equipoFind.serieEquipo;
+        this.controlalerts( tipo, msj, colorbg, colorfg, serie);
+      }
+    }
+  }
+
+  alertTrans(){
+    for (let item of this.listaEsquipo) {
+      let validarhora = this.calcularTiempoDesdeAhora(24,item.fechaUltimaTrans);
+      if(validarhora){
+        let tipo = 'Ultima transaccion';
+        let msj  = item.serieEquipo+' no ha hecho transacciones en 24h';
+        let colorbg = 'red';
+        let colorfg = 'black';
+        let serie = item.serieEquipo;
+        this.controlalerts( tipo, msj, colorbg, colorfg, serie);
+      }
+    }
+  }
+
+  calcularTiempoDesdeAhora(horas: number, date: any): boolean {
+    const ahora = new Date();
+    const fecha = new Date(date);
+    const diferenciaEnMilisegundos = ahora.getTime() - fecha.getTime();
+    const diferenciaEnHoras = diferenciaEnMilisegundos / (1000 * 60 * 60);
+    return diferenciaEnHoras > horas;
   }
 }

@@ -1,131 +1,171 @@
 .box {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 #a {
-    border-radius: 6px;
-    border: solid 1px rgb(194, 194, 194);
-    height: 86.5vh;
-    overflow: auto;
+  border-radius: 6px;
+  border: solid 1px rgb(194, 194, 194);
+  height: 86.5vh;
+  overflow: auto;
 }
 
 #b {
-    border-radius: 6px;
-    border: solid 1px rgb(194, 194, 194);
-    height: 86.5vh;
-    overflow: auto;
+  border-radius: 6px;
+  border: solid 1px rgb(194, 194, 194);
+  height: 86.5vh;
+  overflow: auto;
 }
 
 .chips-alert {
-    transition: ease all 0.5s;
-    cursor: pointer;
+  transition: ease all 0.5s;
+  cursor: pointer;
 }
 
 .chips-alert:hover {
-    transition: ease all 0.5s;
-    transform: scale(0.9);
+  transition: ease all 0.5s;
+  transform: scale(0.9);
 }
 
 .minititle {
-    background-color: rgb(235, 235, 235);
-    margin: 7px;
+  background-color: rgb(235, 235, 235);
+  margin: 7px;
 }
 
 .totales {
-    background-color: rgb(239, 195, 0);
-    border-radius: 3px;
-    padding: 8px;
-    border-bottom: solid 0.5px gray;
+  background-color: rgb(239, 195, 0);
+  border-radius: 3px;
+  padding: 8px;
+  border-bottom: solid 0.5px gray;
 }
 
 .data-m-l {
-    width: 80px;
-    padding: 5px;
-    border: solid 1px rgb(219, 219, 219);
-    text-align: left;
-    border-radius: 5px;
+  width: 80px;
+  padding: 5px;
+  border: solid 1px rgb(219, 219, 219);
+  text-align: left;
+  border-radius: 5px;
 }
 
 .data-m-r {
-    width: 80px;
-    padding: 5px;
-    border: solid 1px rgb(219, 219, 219);
-    text-align: right;
-    border-radius: 5px;
+  width: 80px;
+  padding: 5px;
+  border: solid 1px rgb(219, 219, 219);
+  text-align: right;
+  border-radius: 5px;
 }
 
 .example-box {
-    box-sizing: border-box;
-    border: solid 1px #ccc;
-    color: rgba(0, 0, 0, 0.87);
-    background: #fff;
-    border-radius: 4px;
-    position: relative;
-    z-index: 2;
-    transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
-    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
-                0 2px 2px 0 rgba(0, 0, 0, 0.14),
-                0 1px 5px 0 rgba(0, 0, 0, 0.12);
-  }
-  
-  .example-box:active {
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-                0 8px 10px 1px rgba(0, 0, 0, 0.14),
-                0 3px 14px 2px rgba(0, 0, 0, 0.12);
-  }
-  
-  .example-handle {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    color: #ccc;
-    cursor: move;
-  }
+  box-sizing: border-box;
+  border: solid 1px #ccc;
+  color: rgba(0, 0, 0, 0.87);
+  background: #fff;
+  border-radius: 4px;
+  position: relative;
+  z-index: 2;
+  transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
 
-  .dataval {
-    transition: ease-in all 0.5s;
-    cursor: pointer;
-  }
+.example-box:active {
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
 
+.example-handle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #ccc;
+  cursor: move;
+}
 
-  .dataval:hover {
-    transition: ease-in all 0.5s;
-    background-color: rgb(209, 138, 6) !important;
-    cursor: pointer;
-  }
+.dataval {
+  transition: ease-in all 0.5s;
+  cursor: pointer;
+}
 
-  .xloader, .xloader:before, .xloader:after {
-    border-radius: 50%;
-    width: 2.5em;
-    height: 2.5em;
-    animation-fill-mode: both;
-    animation: bblFadInOut 1.8s infinite ease-in-out;
+.dataval:hover {
+  transition: ease-in all 0.5s;
+  background-color: rgb(209, 138, 6) !important;
+  cursor: pointer;
+}
+
+.xloader,
+.xloader:before,
+.xloader:after {
+  border-radius: 50%;
+  width: 2.5em;
+  height: 2.5em;
+  animation-fill-mode: both;
+  animation: bblFadInOut 1.8s infinite ease-in-out;
+}
+.xloader {
+  color: #d4d4d4;
+  font-size: 5px;
+  position: relative;
+  text-indent: -9999em;
+  transform: translateZ(0);
+  animation-delay: -0.16s;
+}
+.xloader:before,
+.xloader:after {
+  content: "";
+  position: absolute;
+  top: 0;
+}
+.xloader:before {
+  left: -3.5em;
+  animation-delay: -0.32s;
+}
+.xloader:after {
+  left: 3.5em;
+}
+
+@keyframes bblFadInOut {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 2.5em 0 -1.3em;
   }
-  .xloader {
-    color: #d4d4d4;
-    font-size: 5px;
-    position: relative;
-    text-indent: -9999em;
-    transform: translateZ(0);
-    animation-delay: -0.16s;
+  40% {
+    box-shadow: 0 2.5em 0 0;
   }
-  .xloader:before,
-  .xloader:after {
-    content: '';
-    position: absolute;
-    top: 0;
-  }
-  .xloader:before {
-    left: -3.5em;
-    animation-delay: -0.32s;
-  }
-  .xloader:after {
-    left: 3.5em;
-  }
-  
-  @keyframes bblFadInOut {
-    0%, 80%, 100% { box-shadow: 0 2.5em 0 -1.3em }
-    40% { box-shadow: 0 2.5em 0 0 }
-  }
-      
+}
+.input-group{
+  border-radius: 20px;
+  padding: 4px;
+  width: fit-content;
+  border: 1px solid rgba(0, 0, 0, 0.151);
+}
+.input-group input{
+  border: 0;
+  outline: none;
+  padding: 0;
+}
+.input-group input:focus{
+  box-shadow: none;
+  outline: none;
+}
+.machineDesact{
+  background: rgba(0, 0, 0, 0.349);
+  display: flex;
+  text-align: center;
+  justify-items: center;
+  align-items: center;
+  color: white;
+  cursor: pointer;
+  border-radius: 100%;
+  padding: 1px;
+  margin-left: 2px;
+}
+.machineDesact.active {
+  background: white;
+  color: rgb(15, 78, 132);
+  border: 1px solid rgba(15, 78, 132);
+}
+.machineDesact mat-icon{
+  padding-top: 1.5px;
+  font-size: 1.25rem;
+}

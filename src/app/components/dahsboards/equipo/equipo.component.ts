@@ -505,7 +505,16 @@ export class EquipoComponent implements OnInit {
     this.equiposerv.obtenerEquipo(tp, ctienda).subscribe({
       next: (equipo) => {
         this.listaEsquipo = equipo;
-        this.listaEsquipoGhost = equipo;
+        
+        if(this.isActive){
+          this.listaEsquipoGhost = equipo;
+        }else{
+          this.listaEsquipo = this.listaEsquipo.filter((element: any) => {
+            return element.active === "A";
+          });
+          this.listaEsquipoGhost = this.listaEsquipo;
+        }
+
         this.listaEsquipo.filter( (element:any) => {
           let arr = {
             ip: element.ipEquipo,
@@ -750,5 +759,11 @@ export class EquipoComponent implements OnInit {
         })
       }
     })
+  }
+
+  isActive: boolean = false;
+  machineDesactive(){
+    this.isActive = !this.isActive;
+    this.obtenerEquipos(1,'void');
   }
 }
