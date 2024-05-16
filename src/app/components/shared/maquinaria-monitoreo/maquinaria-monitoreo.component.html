@@ -9,15 +9,13 @@
    </button>
 </div>
 
-<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+<div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
-      <h2 class="offcanvas-title" id="offcanvasExampleLabel">Registro de alertas</h2>
+      <h2 class="offcanvas-title" id="offcanvasExampleLabel">Registro de alertas  <mat-icon class="btn-del" (click)="eliminarAllAlerts()">delete</mat-icon></h2>
       <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <hr>
-    <div class="offcanvas-body">    
-      <div>
-      </div>
+    <div class="border"></div>
+    <div class="offcanvas-body">
       <div class="alerts-error">
         <audio #audioPlayer>
             <source src="../../../../assets/mp3/errormachine.mp3" type="audio/mpeg">
@@ -40,13 +38,15 @@
             <div class="chips-alert m-2 rounded-3 p-2 shadow animate__animated animate__bounceIn d-flex align-items-center justify-content-between rounded bg-white"
                 *ngFor="let alertas of nuevoObjectalerts; let i = index"
                 [style]="'border-left: 7px solid '+alertas.colorbg+';'">
-                <div class="d-flex align-items-center p-0"
-                    [style]="'overflow: hidden;font-weight: bold;'">
+                <div class="d-inline-block align-items-center p-0"
+                    [style]="'overflow: hidden;white-space: pre-line;'">
+                    <strong>{{alertas.nserie}}</strong>
+                    <br>
                     <span>{{alertas.msj}}</span>
                 </div>
                 <div class="btn-delete justify-content-end d-flex align-items-center" 
                     [style]="'color:'+alertas.colorbg+';cursor: pointer;'"
-                    (click)="eliminaralerta(i)">
+                    (click)="eliminarAlerta(i)">
                     <mat-icon>cancel</mat-icon>
                 </div>
             </div>

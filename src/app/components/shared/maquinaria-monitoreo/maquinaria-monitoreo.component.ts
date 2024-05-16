@@ -1,6 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Environments } from '../../environments/environments';
-import { IndexedDbService } from '../services/indexeddb/indexed-db.service';
 import { MonitoreoService } from '../../dahsboards/monitoreo-equipos/services/monitoreo.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EquipoService } from '../../dahsboards/equipo/services/equipo.service';
@@ -220,19 +219,13 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     const uniqueData = new Map();
     let key = JSON.stringify({});
     for (const item of this.listalertas) {
-      if(item.tipo == "Sincronizacion"){        
-        key = JSON.stringify({
-          tipo: item.tipo,
-          nserie: item.nserie
-        });
-      }
-      else if(item.tipo == "Ultima transaccion"){        
+      if(item.tipo == "Monitoreo Trans TimeSincro"){        
         key = JSON.stringify({
           tipo: item.tipo,
           nserie: item.nserie
         });
       }else{
-        // Crear una cadena que representa el objeto para verificar duplicados
+        //Crear una cadena que representa el objeto para verificar duplicados
         key = JSON.stringify({
           tipo: item.tipo,
           msj: item.msj,
@@ -278,9 +271,13 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     }
   }
 
-  eliminaralerta( i:number ) {
+  eliminarAlerta( i:number ) {
     this.listalertas.splice(i, 1);
     this.nuevoObjectalerts.splice(i, 1);
+  }
+  eliminarAllAlerts(){
+    this.listalertas.splice(0);
+    this.nuevoObjectalerts.splice(0);
   }
 
   listaDetalleequipoManual: any = [];
@@ -679,6 +676,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       equipoFind.fechaUltimaTrans = data[0].fechaTransaccion
     }
   }
+
   updateTransAutRec(data: any){
     const equipoFind = this.listaEsquipo.find((item:any) =>
       item.serieEquipo === data[0].machineSn
@@ -696,50 +694,64 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   }
   
   alertHub(dataPingHub: any){
-    this.contadorPing++;
-    if(this.contadorPing>=30){
-      this.alertTimeSincro(dataPingHub);
+    if(this.contadorPing>=20){
       this.alertTrans();
+      this.alertTimeSincro(dataPingHub);
       this.contadorPing = 0;
     }
+    this.contadorPing++;
     console.log(this.contadorPing);
-  }
-
-  alertTimeSincro(dataPingHub: any){
-    dataPingHub = dataPingHub.filter((element: any) => {
-      return element.estadoPing == 0;
-    });
-    for (let item of dataPingHub) {
-      let validarhora = this.calcularTiempoDesdeAhora(1,item.tiempoSincronizacion);
-      if(validarhora){
-        let tipo = 'Sincronizacion';
-        let equipoFind = this.listaEsquipo.find((itemEquipo:any) =>
-          itemEquipo.ipEquipo === item.ip
-        );
-        let msj  = equipoFind.serieEquipo+' ha estado desactivado por mas de 1h';
-        let colorbg = 'red';
-        let colorfg = 'black';
-        let serie = equipoFind.serieEquipo;
-        this.controlalerts( tipo, msj, colorbg, colorfg, serie);
-      }
-    }
   }
 
   alertTrans(){
     for (let item of this.listaEsquipo) {
       let validarhora = this.calcularTiempoDesdeAhora(24,item.fechaUltimaTrans);
       if(validarhora){
-        let tipo = 'Ultima transaccion';
-        let msj  = item.serieEquipo+' no ha hecho transacciones en 24h';
+        let tipo = 'Monitoreo Trans TimeSincro';
+        let msj  = 'No se ha realizado transacciones en 24h';
         let colorbg = 'red';
         let colorfg = 'black';
         let serie = item.serieEquipo;
+        this.playAudio();
+        this.controlalerts( tipo, msj, colorbg, colorfg, serie);
+      }
+    }
+  }
+  
+  alertTimeSincro(dataPingHub: any){
+    let newMesj = 'Ha estado desactivado por mas de 1h';
+    dataPingHub = dataPingHub.filter((element: any) => {
+      return element.estadoPing == 0;
+    });
+    for (let item of dataPingHub) {
+      let validarhora = this.calcularTiempoDesdeAhora(1,item.tiempoSincronizacion);
+      if(validarhora){
+        let equipoFind = this.listaEsquipo.find((itemEquipo:any) =>
+          itemEquipo.ipEquipo === item.ip
+        );
+        let alerta = this.listalertas.find((itemAlerta:any) =>
+          itemAlerta.tipo === 'Monitoreo Trans TimeSincro' &&
+          itemAlerta.nserie === equipoFind.serieEquipo
+        );
+        if(alerta){
+          let arrayMsj = newMesj.split(" ");
+          let validateMsj = arrayMsj.every(palabra => alerta.msj.includes(palabra));
+          if(!validateMsj){
+            alerta.msj = alerta.msj + '\n' +newMesj;
+          }
+        }
+        let tipo = 'Monitoreo Trans TimeSincro';
+        let msj  = newMesj;
+        let colorbg = 'red';
+        let colorfg = 'black';
+        let serie = equipoFind.serieEquipo;
+        this.playAudio();
         this.controlalerts( tipo, msj, colorbg, colorfg, serie);
       }
     }
   }
 
-  calcularTiempoDesdeAhora(horas: number, date: any): boolean {
+  calcularTiempoDesdeAhora(horas: any, date: any): boolean {
     const ahora = new Date();
     const fecha = new Date(date);
     const diferenciaEnMilisegundos = ahora.getTime() - fecha.getTime();

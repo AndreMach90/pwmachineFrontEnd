@@ -18,7 +18,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "allowedCommonJsDependencies": [
-              "sweetalert2","exceljs"
+              "sweetalert2","exceljs", "file-saver"
             ],
             "outputPath": "dist/pwmachine",
             "index": "src/index.html",

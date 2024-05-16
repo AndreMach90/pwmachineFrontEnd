@@ -35,3 +35,20 @@
   transition: ease all 0.5s;
   opacity: 0.9;
 }
+
+.btn-del{
+  width: 30px;
+  height: 30px;
+  font-size: 1.25rem;
+  background: rgb(255, 0, 0);
+  display: inline-flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  cursor: pointer;
+  border-radius: 100%;
+  padding: 2px;
+  margin-left: 2px;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.349);
+}
