@@ -9,8 +9,8 @@ export class ModalClienteService {
 
   constructor( private env: Environments, private http: HttpClient ) { }
 
-  obtenerLocalidades() {
-    return this.http.get( this.env.apiurl() + 'DataMaster/ObtenerDatamasterLocalidades' );
+  obtenerLocalidades( codcli:any ) {
+    return this.http.get( this.env.apiurl() + 'DataMaster/ObtenerDatamasterLocalidades/' + codcli );
   }
   
   guardarLocalidades( model:any ) {
@@ -18,6 +18,7 @@ export class ModalClienteService {
   }
 
   obtenerLocalidadesCliente( codcli: any ) {
+    console.log(this.env.apiurl() + 'ClienteSignaLocalidad/ObtenerLocalidades/' + codcli)
     return this.http.get( this.env.apiurl() + 'ClienteSignaLocalidad/ObtenerLocalidades/' + codcli );
   }
 

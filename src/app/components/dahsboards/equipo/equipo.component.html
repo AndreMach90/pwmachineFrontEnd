@@ -16,19 +16,19 @@
                   class="mb-2"
                   (ngSubmit)="onSubmit()">
                   <label for="codigoClienteidFk" class="form-label">
-                    <span class="text-primary" > 
+                    <span class="text-primary">
                         Escoge el Cliente 
                     </span>
                     <span class="text-danger">*</span>
                 </label>
-                <select class="inpForms form-select  w-100"
+                <select class="inpForms form-select w-100"
                         (change)="validateTiendas()"
                         formControlName="codigoClienteidFk"
                         #codigoClienteidFk
                         id="codigoClienteidFk">
                         <option *ngFor="let cliente of clientelista"
-                                [value]="cliente.id">
-                                {{cliente.nombreCliente | titlecase }} - {{ cliente.ruc }}
+                                [value]="cliente.codigoCliente">
+                                {{ cliente.nombreCliente | titlecase }} - {{ cliente.ruc }}
                         </option>
                 </select>
 

@@ -289,13 +289,6 @@ export class ModeldataComponent implements OnInit {
     let fechaInicialEscogida: any = new Date( this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value ).toISOString();
     const transaccionFecha = new Date(transaccion['F.Transacciones']).toISOString();
 
-    // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-    // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-    // console.log(fechaInicialEscogida)
-    // console.log(transaccionFecha)
-    // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-    // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-
     const backgroundColor = transaccionFecha < fechaInicialEscogida ? '#FDF9E1' : '';
     
     const addedRow = worksheet.addRow(row);
@@ -626,12 +619,13 @@ export class ModeldataComponent implements OnInit {
     this.sumatoriaTransacciones = this.sumatoriaTransacciones - equipos.longitud;
     this.dataExportarExcel.splice(i, 1);
     this.dataExportarExcelGhost.splice(i, 1);
-    equipos.transacciones.filter( (tran:any) => {
-      this.totalSubstract += tran.total;
-    })
+    if( equipos.transacciones ) {
+      equipos.transacciones.filter( (tran:any) => {
+        this.totalSubstract += tran.total;
+      })
 
-    this.cantidadTransacciones = this.cantidadTransacciones - this.totalSubstract;
-
+      this.cantidadTransacciones = this.cantidadTransacciones - this.totalSubstract;
+    }
     if( this.maquinasEscogidasDialog.length == 0 ) {
       this.limpiar();
     }
@@ -684,20 +678,15 @@ export class ModeldataComponent implements OnInit {
     }
 
     const dialogRef = this.dialog.open( ModalDataEquiposComponent, {
-      height: 'auto',
-      width:  '450px',
+      height: '100%',
+      width:  '60%',
       data:   arr,
     });
 
-    dialogRef.afterClosed().subscribe( (result:any) => {
-      
+    dialogRef.afterClosed().subscribe( (result:any) => {      
       if( result ) {
         
         this.exportdateform.controls['acreditada'].disable();
-        
-        console.log('result')
-        console.log(result)
-
         this._cancel_button    = true;
         this.disbutton_obtener = true;
 
@@ -706,17 +695,14 @@ export class ModeldataComponent implements OnInit {
         }
 
         else {
-          
           result.filter( (equipos: any) => {
             this.maquinasEscogidasDialog.push(equipos);
           })
-
         }
 
         this.maquinasEscogidasDialog.filter( ( element:any ) => {
           this.dataExportarExcel.push( element );
           this.dataExportarExcelGhost.push( element );
-          this.eliminarObjetosDuplicados();
         });
 
       }
@@ -733,31 +719,26 @@ export class ModeldataComponent implements OnInit {
 
   eliminarObjetosDuplicados() {
     const uniqueObjects = this.dataExportarExcel.reduce((unique:any, currentObject:any) => {
-      // Verificar si el objeto ya existe en uniqueObjects por la propiedad nserie
       const exists = unique.some((obj:any) => obj.nserie === currentObject.nserie);
-
-      // Si no existe, agregarlo a uniqueObjects
       if (!exists) {
         unique.push(currentObject);
       }
-
       return unique;
     }, []);
     const uniqueObjects2 = this.dataExportarExcelGhost.reduce((unique:any, currentObject:any) => {
-      // Verificar si el objeto ya existe en uniqueObjects por la propiedad nserie
       const exists = unique.some((obj:any) => obj.nserie === currentObject.nserie);
 
-      // Si no existe, agregarlo a uniqueObjects
       if (!exists) {
         unique.push(currentObject);
       }
 
       return unique;
+
     }, []);
 
-    // Actualizar el array original con los objetos únicos
     this.dataExportarExcel      = uniqueObjects;
     this.dataExportarExcelGhost = uniqueObjects2;
+
   }
 
   validateDataExistDate() {
@@ -817,7 +798,7 @@ export class ModeldataComponent implements OnInit {
         this.tiendaListaGhost = tienda;
       }, complete: () => {
           this.obtenerIDCLiente();
-          this.tiendaListaGhost.filter( ( element:any ) => {
+          this.tiendaListaGhost.filter( (element:any) => {
             if( element.codigoClienteidFk == this.idcliente ) {
               this.tiendalista.push(element);
             }
@@ -827,15 +808,14 @@ export class ModeldataComponent implements OnInit {
     )
   }
 
-  menuAction() { 
+  menuAction() {
     this.items = [{
         label: 'Opciones',
-        items: [
-            {
+        items: [{
                 label: 'Índices guía',
                 // icon: 'pi pi-refresh',
                 command: () => {
-                  this.indices_show = !this.indices_show;                   
+                  this.indices_show = !this.indices_show;
                 }
             },
             {
@@ -995,28 +975,40 @@ export class ModeldataComponent implements OnInit {
       this._show_spinner = true;
       let dini = this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value;
       let dfin = this.exportdateform.controls['datefin'].value + ' ' + this.exportdateform.controls['horafin'].value;
-  
+
+      console.warn('999999999999999999999999999999999999999999999999999')
+      console.warn('DATA PARA CONTRUIR LAS TRANSACCIONES')
+      console.warn(this.dataExportarExcel)
+      console.warn('999999999999999999999999999999999999999999999999999')
+
       Promise.all(this.dataExportarExcel.map((element: any) => {
-        return new Promise<void>((resolve, reject) => {
-          
+        return new Promise<void>((resolve, reject) => {         
+
+          console.warn('*/*/*/*/*/*/*/*/*/*/*/*')
+          console.warn('*/*/*/*/*/*/*/*/*/*/*/*')
+          console.warn(element)
+          console.warn('*/*/*/*/*/*/*/*/*/*/*/*')
+          console.warn('*/*/*/*/*/*/*/*/*/*/*/*')
 
           let modelRange:any = {
             "tipo":        x,
-            "Machine_Sn":  element.nserie,
+            "Machine_Sn":  element.machine_Sn,
             "FechaInicio": dini,
             "FechaFin":    dfin
           };
 
-          console.warn('===================================================================')
-          console.warn('<<<<<<<Este es el modelo que se envia para construir el excel>>>>>>>')
-          console.warn(modelRange)
-          console.warn('===================================================================')
+          // console.warn('===================================================================')
+          // console.warn('<<<<<<<Este es el modelo que se envia para construir el excel>>>>>>>')
+          // console.warn(modelRange)
+          // console.warn('===================================================================')
           
           this.transacciones.filtroTransaccionesRango(modelRange).subscribe({
             
             next: (z) => {
+            
               element.transacciones = z;
-              element.longitud = element.transacciones.length;
+              element.longitud = element.transacciones.length;           
+
               this.obterSaldoTransac(element.nserie);
               
               resolve();
@@ -1107,8 +1099,6 @@ export class ModeldataComponent implements OnInit {
 
   modelDataSaldo: any = [];
   obterSaldoTransac( machineSn:any ) {
-    console.log('machineSn enviado!!')
-    console.log(machineSn)
     this.transacciones.ObtenerEquiposSaldo(machineSn).subscribe({
       next: (x) => {
         this.modelDataSaldo = x;

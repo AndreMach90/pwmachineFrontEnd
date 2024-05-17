@@ -46,12 +46,12 @@ export class ModalLocalidadClienteComponent implements OnInit {
                @Inject(MAT_DIALOG_DATA) public data: any, private env: Environments ) { }
 
     ngOnInit(): void {
-      this.obtenerLocalidades()
+      this.obtenerLocalidades(this.data.codigoCliente)
     }
 
-    obtenerLocalidades() {
+    obtenerLocalidades(codcli:any) {
       this._show_spinner = true;
-      this.loc.obtenerLocalidades().subscribe({
+      this.loc.obtenerLocalidades(codcli).subscribe({
         next: ( localidad ) => {
           this.listaLocalidadesGhost = localidad;
         }, complete: () => {
@@ -63,8 +63,7 @@ export class ModalLocalidadClienteComponent implements OnInit {
       })
     }
 
-    guardarLocalidad() {
-    
+    guardarLocalidad() {    
       this._show_spinner = true;
       this.modelSaveLocalidades = {
         cliente: this.data.codigoCliente,

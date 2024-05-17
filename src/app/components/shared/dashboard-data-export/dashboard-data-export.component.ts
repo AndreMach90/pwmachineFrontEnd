@@ -7,15 +7,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DashboardDataExportComponent implements OnInit {
 
-  constructor() {}
-
-  ngOnInit(): void {
-      
-  }
-
   modulo:string = '';
   hAcred: boolean = false;
   expDatos: boolean = true;
+
+  constructor() {}
+
+  ngOnInit(): void { }
+
   recibirModulos(event:any) {
     this.modulo = event;
     switch( this.modulo ) {
@@ -26,7 +25,7 @@ export class DashboardDataExportComponent implements OnInit {
       case 'Exportar datos':
         this.hAcred   = false;
         this.expDatos = true;
-        break; 
+        break;
     }
   }
 

@@ -335,6 +335,10 @@ export class EquipoComponent implements OnInit {
 
   validateTiendas() {
     this.tiendalista = [];
+
+    console.log(this.tiendaListaGhost)
+    console.log(this.equiposForm.controls['codigoClienteidFk'].value)
+
     this.tiendaListaGhost.filter( (tienda:any) =>{
       if( tienda.codigoClienteidFk == this.equiposForm.controls['codigoClienteidFk'].value ) {
         let arr = {
@@ -526,20 +530,21 @@ export class EquipoComponent implements OnInit {
   clienteListaGhost: any = [];
   clientelista:any = []
   obtenerCliente() {
+    console.log('Obteniendo cliente!  ')
+
     this.clientelista = [];
     this._show_spinner = true;
     this.clienteserv.obtenerCliente()
                     .subscribe({
       next: (cliente) => {
         this.clienteListaGhost = cliente;
-        ////////console.warn(this.clientelista);
         this._show_spinner = false;
       }, error: (e) => {
         this._show_spinner = false;
         console.error(e);
       }, complete: () => {
         this.clienteListaGhost.filter((element:any)=>{
-
+          
           let arr: any = {
             "id": element.id,
             "codigoCliente": element.codigoCliente,
@@ -550,11 +555,10 @@ export class EquipoComponent implements OnInit {
             "emailcontacto": element.emailcontacto,
             "nombrecontacto": element.nombrecontacto
           }
-
           this.clientelista.unshift(arr);
-          ////////console.warn(this.clientelista);
-
+          
         })
+        console.warn(this.clientelista);
       }
     })
   }
