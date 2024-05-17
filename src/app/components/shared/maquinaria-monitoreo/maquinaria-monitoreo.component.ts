@@ -8,6 +8,7 @@ import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { EncryptService } from '../services/encrypt.service';
 import { Router } from '@angular/router';
 import jwt_decode from "jwt-decode";
+import EasySpeech from 'easy-speech';
 
 @Component({
   selector: 'app-maquinaria-monitoreo',
@@ -245,17 +246,22 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     }
   }
 
-  readTextAloud(text: string) {
-    let synth = window.speechSynthesis;
-    let voices = synth.getVoices();
-    let spanishVoice = voices.find(voice => voice.lang.startsWith('es-'));
-    if (spanishVoice) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.voice = spanishVoice;
-      utterance.lang = 'es-LA';
-      synth.speak(utterance);
-    } else {
-      console.error('No se encontró una voz en español disponible.');
+  flagVoice = false;
+  async readTextAloud(textData: string) {
+    try {
+      if (this.flagVoice == false){
+        this.flagVoice = await EasySpeech.init({ maxTimeout: 5000, interval: 250 })
+      }
+      if(this.flagVoice == true){
+        await EasySpeech.speak({ 
+          text: textData,
+          voice: EasySpeech.voices()[1],
+        })
+      }
+      console.log(textData);
+      console.log(EasySpeech.status().status);
+    } catch (error) {
+      console.log('Hubo un error en el speaker: '+error)
     }
   }
 
