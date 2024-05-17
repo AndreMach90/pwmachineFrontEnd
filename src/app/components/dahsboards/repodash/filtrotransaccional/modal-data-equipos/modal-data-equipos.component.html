@@ -1,9 +1,11 @@
 <div class="contdiv p-4" style="background-color: whitesmoke;">    
-    <div class="m-0 d-flex justify-content-between align-items-center">
-        <span>
-          <h2 class="m-0">Data de equipos a importar:</h2>
-        </span>
-    </div>
+  <div class="m-0 d-flex justify-content-between align-items-center">
+      <span><h2 class="m-0">Data de equipos a importar:</h2></span>
+      <span class=" shadow-sm p-3 d-flex justify-content-center align-items-center bg-warning text-dark "
+      style="width: 45px; height: 45px; border-radius: 100%; " > 
+      <strong class="fs-6"> {{localidadesEncontradas.length}}  </strong>
+    </span>
+  </div>
   <hr>
   <div class="body-data">
   <div class="mb-2 d-flex w-100">
@@ -17,82 +19,79 @@
              #input placeholder="Búsqueda de equipos...">
     </form>
   </div>
-  <table class="table table-secondary table-bordered">
-    <thead class="bg-dark text-light align-middle">
-      <th>
-        <div class="d-flex justify-content-center align-items-center bg-dark">
-          <input type="checkbox"
-                 class="form-check-input"
-                 id="equipos-all"
-                 (change)="seleccionarTodosEquipos($event)"
-                 >
+  <div>
+  <div>
+      <div *ngFor="let local of localidadesEncontradas; let i = index;">
+        <div [class]="local.bgloc + ' rounded-1 p-2 shadow-sm m-1 w-75 d-flex justify-content-between'">
+          <strong>{{ i + 1 }}.- {{ local.loc }}</strong>
+          <div [matBadge]="local.equiposTrans.length"
+               matBadgePosition="before"
+               title="Número de equipos asignados a esta localidad"
+               matBadgeColor="warn"></div>
         </div>
-      </th>
-      <th>Nombre</th>
-      <th>Establecimiento</th>
-      <th title="Transacciones automáticas">T.A.</th>
-      <th title="Transacciones manuales">T.M.</th>
-      <!-- <th title="Recolecciones">R.</th> -->
-      <th title="Total de transacciones resagadas automáticas">R.T.A.</th>
-      <th title="Total de transacciones resagadas manuales">R.T.M.</th>
-      <th title="Total de transacciones">T.Tran.</th>
-    </thead>
-    <tbody class="align-middle">
-      <tr *ngFor="let equipos of listaEsquipo; let i = index">
-        <td>
-          <input 
-            type="checkbox" 
-            class="form-check-input" 
-            [checked]="equipos.checkTran" 
-            [id]="'equipos-'+i" 
-            [disabled]="equipos.conteo_A === 0 && equipos.conteo_M === 0 && equipos.conteo_AR === 0  && equipos.conteo_MR === 0"
-            (change)="seleccionarEquipo(equipos, $event)">
-        </td>
-        <td [title]="equipos.ipEquipo" style="cursor: pointer;">
-          {{ equipos.machine_Sn }}
-        </td>
-        <td>
-          {{ equipos.nombreTienda }}
-        </td>
-        <td>
-          <div class="d-flex justify-content-end">
-            <strong> {{ equipos.conteo_A }} </strong>
-          </div>
-        </td>
-        <td>
-          <div class="d-flex justify-content-end">
-            <strong> {{ equipos.conteo_M }} </strong>
-          </div>
-        </td>
-        <td style="background-color: rgb(243, 189, 51);">
-          <div class="d-flex justify-content-end" >
-            <strong> {{ equipos.conteo_AR }} </strong>
-          </div>
-        </td>
-        <td style="background-color: rgb(243, 189, 51);">
-          <div class="d-flex justify-content-end" >
-            <strong> {{ equipos.conteo_MR }} </strong>
-          </div>
-        </td>
-        <!-- <td>
-          <div class="d-flex justify-content-end">
-            <strong> {{ equipos.conteo_R }} </strong>
-          </div>
-        </td> -->
-        <td style="background-color: yellowgreen;" >
-          <div class="d-flex justify-content-end">
-            <strong> {{ equipos.totalTransac }} </strong>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-    
-  </table>
+        <table class="table table-striped table-bordered table-responsive-lg shadow-sm table-dark">
+          <thead class="bg-dark text-light">
+              <th>
+                <input type="checkbox" (change)="selectAll($event, local)">
+              </th>
+              <th title="Nombre de Equipo">
+                N. Equipo
+              </th>
+              <th title="Dirección IP del Equipo">
+                IP Equipo
+              </th>
+              <th title="Nombre de la Tienda asignada">
+                Nombre Tienda
+              </th>
+              <th title="Conteo de transacciones Manuales">
+                Conteo Man.
+              </th>
+              <th title="Conteo de transacciones Automáticas">
+                Conteo Aut.
+              </th>
+              <th title="Conteo de transacciones Resagadas Manuales">
+                Conteo MR
+              </th>
+              <th title="Conteo de transacciones Resagadas Automáticas">
+                Conteo AR
+              </th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let equipo of local.equiposTrans; let j = index">
+              <td>
+                <input type="checkbox" [formControl]="selectedEquiposControl" (change)="toggleSelection(equipo, local)" [id]=" local.loc + '-' + j">
+              </td>
+              <td>
+                {{ equipo.machine_Sn }}
+              </td>
+              <td>
+                {{ equipo.ipEquipo }}
+              </td>
+              <td>
+                {{ equipo.nombreTienda }}
+              </td>
+              <td>
+                {{ equipo.conteo_M }}
+              </td>
+              <td>
+                {{ equipo.conteo_A }}
+              </td>
+              <td>
+                {{ equipo.conteo_MR }}
+              </td>
+              <td>
+                {{ equipo.conteo_AR }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
-</div>
-  <div class="mt-2" >
-    <small class="text-secondary" >Número total de transacciones visualizando:</small>
-    
+</div  >
+  <div class="mt-2" style="background-color: whitesmoke;" >
+    <small class="text-secondary" >Número total de transacciones visualizando:</small>    
     <div>
       <div class="d-flex justify-content-between">
         <span class="d-flex justify-content-between" style="width: 170px;"><span> T. Tr. A.</span> <strong> {{totalAutomaticas}}</strong></span>
@@ -112,10 +111,12 @@
         Importar datos transaccionales
     </button>
   </div>
-  <hr>
-  <footer>
+
+  <footer style="background-color: whitesmoke;" class="w-100">
     <div class="p-1 rounded-pill" style="background-color: rgba(0, 0, 0, 0.05);">
-        <small> {{equiposSeleccionados.length}} de {{ listaEsquipo.length }} equipos seleccionados </small>
+        <small>
+          {{equiposSeleccionados.length}} de {{ listaEsquipo.length }} equipos seleccionados
+        </small>
     </div>
   </footer>
 </div>

@@ -425,13 +425,24 @@
                 <div [style]="'background-image: url( '+menuicon+' ); width: 7px; height: 15px; background-repeat: no-repeat; background-size: auto 100% !important; border-radius: 0px !important;'"></div>
             </button>
         </div>
-        <div class="p-1 m-1 rounded-3 shadow-sm" style="background-color: rgb(226, 226, 226); border: solid 1px rgb(195, 195, 195);">
-            <span class="d-flex flex-wrap justify-content-end">
-                A punto de exportar un total de
-                <span class="text-primary fs-6"> &nbsp; <strong> {{ sumatoriaTransacciones }} </strong></span>
-                &nbsp;<span>transaccione(s), equivalentes a </span>
-                &nbsp;<strong> $ {{ cantidadTransacciones | number : '1.2-2' }} </strong>
-            </span>
+        <div class="p-1 m-1 rounded-3 shadow-sm"
+             style="background-color: rgb(226, 226, 226); border: solid 1px rgb(195, 195, 195);">
+             <span class="d-flex flex-wrap justify-content-end">
+                 A punto de exportar un total de
+                 <span class="text-primary fs-6"> &nbsp;
+                    <strong> 
+                       {{ sumatoriaTransacciones }}
+                    </strong>
+                 </span>
+                 &nbsp;
+                 <span>
+                    transaccione(s), equivalentes a 
+                </span>
+                 &nbsp;
+                 <strong>
+                    $ {{ cantidadTransacciones | number : '1.2-2' }}
+                </strong>
+             </span>
         </div>
         <div class="d-flex m-1 align-items-center">
             <div> Equipos visualizando &nbsp;
@@ -445,19 +456,22 @@
                     class="p-2 m-1 bg-primary text-light rounded-3 shadow-sm animate__animated animate__bounceIn animate__delay-1s ">
                     <div class="d-flex align-items-center justify-content-between flex-wrap" style="min-width: 100px; max-width: 200px;">
                         <div class="mr-2 d-flex align-items-center" >
-                            <strong> {{ equipos.nserie }} </strong> &nbsp;
+                            <strong> {{ equipos.machine_Sn }} </strong> &nbsp;
                             <span>
                                 <strong *ngIf="equipos.longitud > 0"
                                         class="animate__animated animate__bounceIn">
                                         ( {{ equipos.longitud }} )
                                 </strong>
-                                <span class="loaderx"  
-                                      *ngIf="equipos.longitud == 0 || 
-                                             equipos.longitud == undefined || 
-                                             equipos.longitud == null"></span>
+                                <span class="loaderx"
+                                      *ngIf="equipos.longitud == 0 ||
+                                             equipos.longitud == undefined ||
+                                             equipos.longitud == null">
+                                </span>
                             </span>
                         </div>
-                        <div [style]="'background-image: url( '+delete+' )' " (click)="eliminarEquiposDeReporteria(equipos, i)" class="icono-btn" ></div>
+                        <div [style]="'background-image: url( '+delete+' )' "
+                             (click)="eliminarEquiposDeReporteria(equipos, i)"
+                             class="icono-btn"></div>
                     </div>
                 </li>
             </ul>
