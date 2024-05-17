@@ -7,6 +7,7 @@ import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { EncryptService } from '../services/encrypt.service';
 import { Router } from '@angular/router';
 import jwt_decode from "jwt-decode";
+import EasySpeech from 'easy-speech'
 
 @Component({
   selector: 'app-maquinaria-monitoreo',
@@ -247,7 +248,6 @@ export class MaquinariaMonitoreoComponent implements OnInit {
         }
       }
     })
-    console.log(this.listalertas);
   }
 
   validateSesion() {
@@ -257,17 +257,22 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     }
   }
 
-  readTextAloud(text: string) {
-    let synth = window.speechSynthesis;
-    let voices = synth.getVoices();
-    let spanishVoice = voices.find(voice => voice.lang.startsWith('es-'));
-    if (spanishVoice) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.voice = spanishVoice;
-      utterance.lang = 'es-LA';
-      synth.speak(utterance);
-    } else {
-      console.error('No se encontró una voz en español disponible.');
+  flagVoice = false;
+  async readTextAloud(textData: string) {
+    try {
+      console.log(textData);
+      if (this.flagVoice == false){
+        this.flagVoice = await EasySpeech.init({ maxTimeout: 5000, interval: 250 })
+      }
+      if(this.flagVoice == true){
+        await EasySpeech.speak({ 
+          text: textData,
+          voice: EasySpeech.voices()[1],
+        })
+      }
+      console.log(EasySpeech.status().status);
+    } catch (error) {
+      console.log('Hubo un error en el speaker: '+error)
     }
   }
 
@@ -693,19 +698,22 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     }
   }
   
+  fechaNotif: any;
   alertHub(dataPingHub: any){
-    if(this.contadorPing>=20){
+    let fecha = new Date();
+    if(this.contadorPing>=40){
       this.alertTrans();
       this.alertTimeSincro(dataPingHub);
       this.contadorPing = 0;
+      this.fechaNotif = fecha.getTime();
     }
     this.contadorPing++;
-    console.log(this.contadorPing);
   }
 
   alertTrans(){
+    let numHoras = 24;
     for (let item of this.listaEsquipo) {
-      let validarhora = this.calcularTiempoDesdeAhora(24,item.fechaUltimaTrans);
+      let validarhora = this.calcularTiempoDesdeAhora(numHoras,item.fechaUltimaTrans);
       if(validarhora){
         let tipo = 'Monitoreo Trans TimeSincro';
         let msj  = 'No se ha realizado transacciones en 24h';
@@ -719,12 +727,13 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   }
   
   alertTimeSincro(dataPingHub: any){
+    let numHoras = 1;
     let newMesj = 'Ha estado desactivado por mas de 1h';
     dataPingHub = dataPingHub.filter((element: any) => {
       return element.estadoPing == 0;
     });
     for (let item of dataPingHub) {
-      let validarhora = this.calcularTiempoDesdeAhora(1,item.tiempoSincronizacion);
+      let validarhora = this.calcularTiempoDesdeAhora(numHoras,item.tiempoSincronizacion);
       if(validarhora){
         let equipoFind = this.listaEsquipo.find((itemEquipo:any) =>
           itemEquipo.ipEquipo === item.ip
