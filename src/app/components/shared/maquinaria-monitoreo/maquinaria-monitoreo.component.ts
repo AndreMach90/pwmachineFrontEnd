@@ -701,7 +701,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   fechaNotif: any;
   alertHub(dataPingHub: any){
     let fecha = new Date();
-    if(this.contadorPing>=40){
+    if(this.contadorPing>=10){
       this.alertTrans();
       this.alertTimeSincro(dataPingHub);
       this.contadorPing = 0;

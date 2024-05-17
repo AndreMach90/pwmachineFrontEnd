@@ -1,14 +1,4 @@
-<div style="position: fixed; top: 20px; left: 10px;">
-    <button type="submit"
-        style="border: none; background-color: transparent;"
-        class="d-flex align-items-center"
-        data-bs-toggle="offcanvas"
-        data-bs-target="#offcanvasExample"
-        aria-controls="offcanvasExample">
-        <div [matBadge]="nuevoObjectalerts.length" matBadgeColor="warn" [style]="'background-image: url( ../../../../assets/alert.png )'" class="icono"></div>
-   </button>
-</div>
-
+<!-- Esto son las notificaciones o alertas -->
 <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
     <div class="offcanvas-header">
         <h2 class="offcanvas-title pt-3" id="offcanvasExampleLabel">Registro de alertas  <mat-icon class="btn-del" (click)="eliminarAllAlerts()">delete</mat-icon></h2>
@@ -46,8 +36,9 @@
     </div>
 </div>
 
-<div class="equipo-monitor w-100 p-4">
-    <div class=" filter-monitoreo w-50 d-flex align-items-center ">
+<!-- Esto es la ventana principal -->
+<div class="w-100 p-3 bg-white">
+    <div class="filter-monitoreo w-50 d-flex align-items-center ">
         <section class="filtros w-100 animate__animated animate__backInLeft" *ngIf="true" >
             <div class="mb-2 d-flex w-100">
                 <input class=" w-100 shadow-sm form-control rounded-pill"
@@ -60,6 +51,65 @@
             </div>
         </section>
     </div>
+
+    <!-- Header -->
+    <div class="d-flex align-items-end justify-content-end">
+        <button type="submit"
+            style="border: none; background-color: #00000049; color: white; width: 38px; height: 38px;"
+            class="d-flex align-items-center justify-content-center shadow rounded-pill"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasExample"
+            aria-controls="offcanvasExample"
+            [ngClass]="{ 'notification': nuevoObjectalerts.length !== 0 }">
+            <mat-icon matBadgeColor="warn"
+                [matBadge]="nuevoObjectalerts.length">
+                {{ nuevoObjectalerts.length == 0 ? 'notifications' : 'notifications_active' }}
+            </mat-icon>
+        </button>
+    </div>
+    <!-- Body -->
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">First</th>
+            <th scope="col">Last</th>
+            <th scope="col">Handle</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td>Jacob</td>
+            <td>Thornton</td>
+            <td>@fat</td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td colspan="2">Larry the Bird</td>
+            <td>@twitter</td>
+          </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- <div style="position: fixed; top: 20px; left: 10px;">
+    <button type="submit"
+        style="border: none; background-color: transparent;"
+        class="d-flex align-items-center"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#offcanvasExample"
+        aria-controls="offcanvasExample">
+        <div [matBadge]="nuevoObjectalerts.length" matBadgeColor="warn" [style]="'background-image: url( ../../../../assets/alert.png )'" class="icono"></div>
+   </button>
+</div> -->
+<div class="equipo-monitor w-100 p-4">
     <div class="d-flex flex-wrap justify-content-lg-around align-items-center">
         <div class="equipos shadow-sm m-1 rounded-2" *ngFor="let equipos of listaEsquipo"
             [style]="'background-color: ' +equipos.colorEsstado+ '; transition: ease-in all 1s; width: 250px '">

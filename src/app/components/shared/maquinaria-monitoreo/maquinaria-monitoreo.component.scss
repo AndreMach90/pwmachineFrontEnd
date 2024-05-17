@@ -9,20 +9,20 @@
   overflow-y: auto;
 }
 
-.consola {
-  margin: 10px;
-  background-color: whitesmoke;
-  padding: 10px;
-  border-radius: 10px;
-  box-shadow: 10px 10px 10px rgba(5, 12, 24, 0.459);
-}
+// .consola {
+//   margin: 10px;
+//   background-color: whitesmoke;
+//   padding: 10px;
+//   border-radius: 10px;
+//   box-shadow: 10px 10px 10px rgba(5, 12, 24, 0.459);
+// }
 
 .time {
   background-color: rgba(0, 0, 0, 0.126);
 }
 
 .filter-monitoreo {
-  position: absolute;
+  position: fixed;
   bottom: 10px;
   padding: 10px;
   border-radius: 10px;
@@ -51,4 +51,9 @@
   padding: 2px;
   margin-left: 2px;
   box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.349);
+}
+
+button .notification{
+  background-color: rgb(255, 255, 255); 
+  color: rgb(0, 140, 255);
 }
