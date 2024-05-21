@@ -37,8 +37,8 @@
 </div>
 
 <!-- Esto es la ventana principal -->
-<div class="w-100 p-3 bg-white">
-    <div class="filter-monitoreo w-50 d-flex align-items-center ">
+<div class="w-100 p-4 bg-white">
+    <div class="filter-monitoreo w-50 d-flex align-items-center">
         <section class="filtros w-100 animate__animated animate__backInLeft" *ngIf="true" >
             <div class="mb-2 d-flex w-100">
                 <input class=" w-100 shadow-sm form-control rounded-pill"
@@ -53,48 +53,110 @@
     </div>
 
     <!-- Header -->
-    <div class="d-flex align-items-end justify-content-end">
+    <div class="d-flex align-items-end justify-content-end pb-3">
         <button type="submit"
-            style="border: none; background-color: #00000049; color: white; width: 38px; height: 38px;"
-            class="d-flex align-items-center justify-content-center shadow rounded-pill"
+            class="notification d-flex align-items-center justify-content-center shadow rounded-pill"
             data-bs-toggle="offcanvas"
             data-bs-target="#offcanvasExample"
             aria-controls="offcanvasExample"
-            [ngClass]="{ 'notification': nuevoObjectalerts.length !== 0 }">
-            <mat-icon matBadgeColor="warn"
+            [ngClass]="{ 'notifAct ': nuevoObjectalerts.length !== 0 }">
+            <mat-icon matBadgeColor="warn" aria-hidden="false"
                 [matBadge]="nuevoObjectalerts.length">
                 {{ nuevoObjectalerts.length == 0 ? 'notifications' : 'notifications_active' }}
             </mat-icon>
         </button>
     </div>
     <!-- Body -->
-    <table class="table">
+    <table class="table table-hover">
         <thead>
           <tr>
-            <th scope="col">#</th>
-            <th scope="col">First</th>
-            <th scope="col">Last</th>
-            <th scope="col">Handle</th>
+            <th scope="col"></th>
+            <th scope="col">Tienda</th>
+            <th scope="col">Equipo</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Capacidad de Piezas</th>
+            <th scope="col">Monto Asegurado</th>
+            <th scope="col">Tiempo Sincronización</th>
+            <th scope="col">Última Recolección</th>
+            <th scope="col" class="text-center">No. Trans.</th>
+            <th scope="col">Última Trans.</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td colspan="2">Larry the Bird</td>
-            <td>@twitter</td>
-          </tr>
+            <ng-container *ngFor="let equipo of listaEsquipo; let i = index">
+                <tr class="">
+                    <td>
+                        <div class="rounded" 
+                            [style]="'background:'+getColor(equipo.colorEsstado)+';width:10px;height:40px;'">
+                        </div>
+                    </td>
+                    <td>{{equipo.nombreTienda}} <small>{{"\n"+equipo.provincia}}</small> </td>
+                    <td>{{equipo.tipoMaquinaria}} <small>{{"\n"+equipo.nombremarca+" "+equipo.nombremodelo}}</small> </td>
+                    <td>{{equipo.serieEquipo}} <small>{{"\n"+equipo.ipEquipo}}</small> </td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="progress shadow-sm me-2"
+                                style="width: 100px;"
+                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                [title]="equipo.indicadorPorcentajeBilletes + '%'">
+                                <div [class]="equipo.indicadorColorBarProgressBilletes"
+                                    role="progressbar" 
+                                    [style.width]="equipo.indicadorPorcentajeBilletes + '%'"
+                                    style="transition: ease-in-out 1s all;"
+                                    [attr.aria-valuenow]="equipo.indicadorPorcentajeBilletes"
+                                    aria-valuemin="0"
+                                    aria-valuemax="100">
+                                </div>                               
+                            </div>
+                            <small>{{equipo.indicadorPorcentajeBilletes+"%"}} </small>
+                        </div>
+                        <small>{{equipo.indicadorCapacidadBilletes+" / "+equipo.indicadorCapacidadBilletesMax}}</small>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="progress shadow-sm me-2"
+                                style="width: 100px;"
+                                data-bs-toggle="tooltip" data-bs-placement="top" 
+                                [title]="equipo.indicadorPorcentajeTotalMaxAsegurado + '%'">
+                                <div [class]="equipo.indicadorColorBarProgressAsegurado"
+                                    role="progressbar" 
+                                    [style.width]="equipo.indicadorPorcentajeTotalMaxAsegurado + '%'"
+                                    style="transition: ease-in-out 1s all;"
+                                    [attr.aria-valuenow]="equipo.indicadorPorcentajeTotalMaxAsegurado"
+                                    aria-valuemin="0"
+                                    aria-valuemax="100">
+                                </div>
+                            </div>
+                            <small>{{equipo.indicadorPorcentajeTotalMaxAsegurado+"%"}}</small>
+                        </div>
+                        <small>{{"$"+equipo.indicadorTotalAsegurado+" / "+"$"+equipo.indicadorTotalMaxAsegurado}}</small>
+                    </td>
+                    <td>{{equipo.tiempoSincronizacion | date: 'short'}}</td>
+                    <td>{{equipo.ultimaRecoleccion | date: 'short'}}</td>
+                    <td>
+                        <div class="d-flex justify-content-between">
+                            <ng-container *ngIf="equipo.tipoTrans !== null; else vacioNTrans">
+                                <strong>{{ equipo.tipoTrans }}</strong>
+                                {{ equipo.ultimaNoTrans }}
+                            </ng-container>
+                            <ng-template #vacioNTrans>
+                                ---
+                            </ng-template>
+                        </div>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="equipo.fechaUltimaTrans !== null; else vacioFTrans">
+                            {{equipo.fechaUltimaTrans | date: 'short'}}
+                        </ng-container>
+                        <ng-template #vacioFTrans>
+                            ---
+                        </ng-template>
+                    </td>
+                </tr>
+                <!-- <tr id="spacing-row" *ngIf="i < listaEsquipo.length - 1">
+                    <td></td>
+                </tr> -->
+            </ng-container>
         </tbody>
     </table>
 </div>

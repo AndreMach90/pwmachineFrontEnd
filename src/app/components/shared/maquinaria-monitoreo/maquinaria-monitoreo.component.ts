@@ -243,9 +243,9 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     this.nuevoObjectalerts = Array.from(uniqueData.values());
     this.nuevoObjectalerts.filter((elementalerta:any) => {
       if( elementalerta.nserie == this.trannserie ) {
-        for( let i = 0; i <= 1; i++ ) {
-          this.readTextAloud( elementalerta.msj );
-        }
+        // for( let i = 0; i <= 1; i++ ) {
+        //   this.readTextAloud( elementalerta.msj );
+        // }
       }
     })
   }
@@ -708,6 +708,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       this.fechaNotif = fecha.getTime();
     }
     this.contadorPing++;
+    console.log(this.contadorPing);
   }
 
   alertTrans(){
@@ -766,5 +767,15 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     const diferenciaEnMilisegundos = ahora.getTime() - fecha.getTime();
     const diferenciaEnHoras = diferenciaEnMilisegundos / (1000 * 60 * 60);
     return diferenciaEnHoras > horas;
+  }
+
+  getColor(color: any){
+    if(color === '#DAEFE6'){
+      return 'GREEN';
+    }
+    if(color === '#FFDAD2'){
+      return 'RED';
+    }
+    return color;
   }
 }

@@ -9,14 +9,6 @@
   overflow-y: auto;
 }
 
-// .consola {
-//   margin: 10px;
-//   background-color: whitesmoke;
-//   padding: 10px;
-//   border-radius: 10px;
-//   box-shadow: 10px 10px 10px rgba(5, 12, 24, 0.459);
-// }
-
 .time {
   background-color: rgba(0, 0, 0, 0.126);
 }
@@ -53,7 +45,42 @@
   box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.349);
 }
 
-button .notification{
+.notification{
+  border: none; 
+  background-color: #00000049; 
+  color: white; 
+  width: 38px;
+  height: 38px;
+}
+
+.notification.notifAct{
   background-color: rgb(255, 255, 255); 
-  color: rgb(0, 140, 255);
+  color: rgb(21, 51, 92);
+}
+
+.table{
+  --bs-table-hover-bg: rgb(232, 238, 255);
+}
+
+.table tbody td:first-child{
+  border-bottom-left-radius: 10px;
+  border-top-left-radius: 10px;
+}
+.table tbody td:last-child{
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+td{
+  white-space: pre-line;
+}
+
+.bg-blue{
+  // --bs-table-bg: #EBF5FB;
+  --bs-table-bg: #E5E5E5;
+  border-radius: 10px;
+}
+
+#spacing-row{
+  height: 5px;
 }
