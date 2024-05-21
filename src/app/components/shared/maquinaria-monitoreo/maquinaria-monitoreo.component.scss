@@ -55,20 +55,39 @@
 
 .notification.notifAct{
   background-color: rgb(255, 255, 255); 
-  color: rgb(21, 51, 92);
+  color: #2F4656;
 }
 
-.table{
-  --bs-table-hover-bg: rgb(232, 238, 255);
+.tabla{
+  border-radius: 30px;
+  padding: 40px;
 }
 
 .table tbody td:first-child{
-  border-bottom-left-radius: 10px;
-  border-top-left-radius: 10px;
+  border-bottom-left-radius: 15px;
+  border-top-left-radius: 15px;
 }
 .table tbody td:last-child{
-  border-bottom-right-radius: 10px;
-  border-top-right-radius: 10px;
+  border-bottom-right-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+thead{
+  // height: 60px;
+  height: 40px;
+  border-radius: 15px;
+  vertical-align: middle;
+  // --bs-table-bg: #B5CEFC;
+}
+
+.table thead th:first-child {
+  border-bottom-left-radius: 15px;
+  border-top-left-radius: 15px;
+}
+
+.table thead th:last-child {
+  border-bottom-right-radius: 15px;
+  border-top-right-radius: 15px;
 }
 
 td{
@@ -82,17 +101,6 @@ td{
 }
 
 #spacing-row{
-  height: 5px;
-}
-
-[data-bs-theme="light"] {
-  --bs-body-color: white;
-  
-}
-[data-bs-theme="dark"] {
-  --bs-body-color: blue;
-  --bs-body-color-rgb: red;
-  --bs-body-bg: green;
-  --bs-body-bg-rgb: yellow;
-  --bs-tertiary-bg: orange;
+  height: 2px;
+  padding: 0;
 }

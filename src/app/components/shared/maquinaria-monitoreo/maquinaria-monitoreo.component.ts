@@ -30,8 +30,13 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   listalertas: any = [];
   contadorPing: number = 0;
   _show_spinner: boolean = false;
-  theme: any;
-  bgTheme: any;
+  theme: any = {
+    bgColor: '',
+    bgSelectColor: '',
+    ftColor: '',
+    bgTable: '',
+    hoverTable: ''
+  }
   private urlHub: any = this.env.apiUrlHub();
   private connectionSendPingEquipo: HubConnection;
   private manualTransactionHub: HubConnection;
@@ -784,10 +789,18 @@ export class MaquinariaMonitoreoComponent implements OnInit {
 
   getTheme(themeColor: any){
     if(themeColor === 'light'){
-      this.bgTheme = '#FFF';
+      this.theme.bgTheme = '#11264a';
+      this.theme.bgSelectColor = '#FFF';
+      this.theme.ftColor = '#2F4656';
+      this.theme.bgTable = '#FFF';
+      this.theme.hoverTable = '#DFECFF';
     }
     if(themeColor === 'dark'){
-      this.bgTheme = '#1D1D42';
+      this.theme.bgTheme = '#111B21';
+      this.theme.bgSelectColor = '#2A3942';
+      this.theme.ftColor = '#D2D2D9';
+      this.theme.bgTable = '#111B21';
+      this.theme.hoverTable = '#2A3942';
     }
   }
 }
