@@ -84,3 +84,15 @@ td{
 #spacing-row{
   height: 5px;
 }
+
+[data-bs-theme="light"] {
+  --bs-body-color: white;
+  
+}
+[data-bs-theme="dark"] {
+  --bs-body-color: blue;
+  --bs-body-color-rgb: red;
+  --bs-body-bg: green;
+  --bs-body-bg-rgb: yellow;
+  --bs-tertiary-bg: orange;
+}

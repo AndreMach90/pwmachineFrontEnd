@@ -4,7 +4,6 @@
         <h2 class="offcanvas-title pt-3" id="offcanvasExampleLabel">Registro de alertas  <mat-icon class="btn-del" (click)="eliminarAllAlerts()">delete</mat-icon></h2>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="border"></div>
     <div class="offcanvas-body">
         <div class="alerts-error">
             <audio #audioPlayer>
@@ -37,9 +36,9 @@
 </div>
 
 <!-- Esto es la ventana principal -->
-<div class="w-100 p-4 bg-white">
+<div class="w-100 p-4" [style]="'background-color:'+bgTheme+';'">
     <div class="filter-monitoreo w-50 d-flex align-items-center">
-        <section class="filtros w-100 animate__animated animate__backInLeft" *ngIf="true" >
+        <section class="filtros w-100 animate__animated animate__backInLeft" *ngIf="true">
             <div class="mb-2 d-flex w-100">
                 <input class=" w-100 shadow-sm form-control rounded-pill"
                     fxFlex="auto" type="text"

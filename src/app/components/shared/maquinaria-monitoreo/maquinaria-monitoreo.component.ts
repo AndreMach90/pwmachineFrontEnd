@@ -30,6 +30,8 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   listalertas: any = [];
   contadorPing: number = 0;
   _show_spinner: boolean = false;
+  theme: any;
+  bgTheme: any;
   private urlHub: any = this.env.apiUrlHub();
   private connectionSendPingEquipo: HubConnection;
   private manualTransactionHub: HubConnection;
@@ -66,6 +68,55 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     this.recollectTransactionHub.on("SendTransaccionRecoleccion", message => { 
                   this.RecoTransHub(message);
                   this.updateTransAutRec(message)});
+  }
+
+  ngOnInit(): void {
+    this.getTheme('light');
+    this.validateSesion();
+    let xuser: any = sessionStorage.getItem('usuario');
+    this.usuario = xuser;
+    let xtoken:any = sessionStorage.getItem('token');
+    const xtokenDecript: any = this.ncrypt.decryptWithAsciiSeed(xtoken, this.env.es, this.env.hash);
+    if (xtokenDecript != null || xtokenDecript != undefined) {
+      var decoded:any = jwt_decode(xtokenDecript);
+      this.sub                   = decoded["sub"];
+      this.nameidentifier        = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+      this.name                  = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+      this.role                  = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+      this.authorizationdecision = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/authorizationdecision"];
+      this.exp                   = decoded["exp"];
+      this.iss                   = decoded["iss"];
+      this.aud                   = decoded["aud"];
+      const rolEncrypt: any = this.ncrypt.encryptWithAsciiSeed(this.role, this.env.es, this.env.hash);
+      sessionStorage.setItem('PR', rolEncrypt);
+      if(this.role == 'R003') {
+        this.router.navigate(['moneq']);
+      }
+    } else if (xtokenDecript == null || xtokenDecript == undefined) {
+      this.router.navigate(['login'])
+    }
+
+    this.obtenerEquipos(1,'void');
+    this.connectionSendPingEquipo.start().then( ()=> {
+    }).catch( e => {
+      console.error('ALGO HA PASADO CON PING');
+      console.error(e);
+    })
+    this.manualTransactionHub.start().then( ()=> {
+    }).catch( e => {
+      console.error('ALGO HA PASADO CON MT');
+      console.error(e);
+    })
+    this.automaticTransactionHub.start().then( ()=> {
+    }).catch( e => {
+      console.error('ALGO HA PASADO CON AT');
+      console.error(e);
+    })
+    this.recollectTransactionHub.start().then( ()=> {
+    }).catch( e => {
+      console.error('ALGO HA PASADO CON RT');
+      console.error(e);
+    })
   }
 
   @ViewChild('audioPlayer') audioPlayer!: ElementRef;
@@ -505,54 +556,6 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     })
   }
 
-  ngOnInit(): void {
-    this.validateSesion();
-    let xuser: any = sessionStorage.getItem('usuario');
-    this.usuario = xuser;
-    let xtoken:any = sessionStorage.getItem('token');
-    const xtokenDecript: any = this.ncrypt.decryptWithAsciiSeed(xtoken, this.env.es, this.env.hash);
-    if (xtokenDecript != null || xtokenDecript != undefined) {
-      var decoded:any = jwt_decode(xtokenDecript);
-      this.sub                   = decoded["sub"];
-      this.nameidentifier        = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
-      this.name                  = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
-      this.role                  = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
-      this.authorizationdecision = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/authorizationdecision"];
-      this.exp                   = decoded["exp"];
-      this.iss                   = decoded["iss"];
-      this.aud                   = decoded["aud"];
-      const rolEncrypt: any = this.ncrypt.encryptWithAsciiSeed(this.role, this.env.es, this.env.hash);
-      sessionStorage.setItem('PR', rolEncrypt);
-      if(this.role == 'R003') {
-        this.router.navigate(['moneq']);
-      }
-    } else if (xtokenDecript == null || xtokenDecript == undefined) {
-      this.router.navigate(['login'])
-    }
-
-    this.obtenerEquipos(1,'void');
-    this.connectionSendPingEquipo.start().then( ()=> {
-    }).catch( e => {
-      console.error('ALGO HA PASADO CON PING');
-      console.error(e);
-    })
-    this.manualTransactionHub.start().then( ()=> {
-    }).catch( e => {
-      console.error('ALGO HA PASADO CON MT');
-      console.error(e);
-    })
-    this.automaticTransactionHub.start().then( ()=> {
-    }).catch( e => {
-      console.error('ALGO HA PASADO CON AT');
-      console.error(e);
-    })
-    this.recollectTransactionHub.start().then( ()=> {
-    }).catch( e => {
-      console.error('ALGO HA PASADO CON RT');
-      console.error(e);
-    })
-  }
-
   listaEsquipo:any = [];
   listaEsquipoGhost:any = [];
   obtenerEquipos( tp:number, ctienda:string ) {
@@ -777,5 +780,14 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       return 'RED';
     }
     return color;
+  }
+
+  getTheme(themeColor: any){
+    if(themeColor === 'light'){
+      this.bgTheme = '#FFF';
+    }
+    if(themeColor === 'dark'){
+      this.bgTheme = '#1D1D42';
+    }
   }
 }
