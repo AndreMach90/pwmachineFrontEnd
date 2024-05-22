@@ -1,6 +1,6 @@
+<ng-container *ngIf="disenio==1">
 <!-- No se sabe porque se necesita, aparece border innecesario -->
-<div style="position: fixed; top: 20px; left: 10px;">
-</div>
+<div style="position: fixed; top: 20px; left: 10px;"></div>
 <!-- Esto son las notificaciones o alertas -->
 <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel"
     [style]="'background-color:'+theme.bgTable+'; color:'+theme.ftColor+';'">
@@ -74,103 +74,101 @@
     <!-- Body -->
     <div class="tabla table-responsive-lg" [style]="'background: '+theme.bgTable+';'">
         <table class="table table-hover" 
-        [style]="'--bs-table-bg:transparent;--bs-table-color:'+theme.ftColor+';--bs-table-hover-bg:'+theme.hoverTable+';--bs-table-hover-color:'+theme.ftColor+';'">
-        <thead>
-          <tr>
-            <th scope="col"></th>
-            <th scope="col">Tienda</th>
-            <th scope="col">Equipo</th>
-            <th scope="col">Nombre</th>
-            <th scope="col">Capacidad de Piezas</th>
-            <th scope="col">Monto Asegurado</th>
-            <th scope="col">Tiempo Sincronización</th>
-            <th scope="col">Última Recolección</th>
-            <th scope="col" class="text-center">No. Trans.</th>
-            <th scope="col">Última Trans.</th>
-          </tr>
-        </thead>
-        <tbody>
-            <ng-container *ngFor="let equipo of listaEsquipo; let i = index">
-                <tr>
-                    <td>
-                        <div class="rounded" 
-                            [style]="'background:'+getColor(equipo.colorEsstado)+';width:10px;height:40px;'">
-                        </div>
-                    </td>
-                    <td>{{equipo.nombreTienda}} <small>{{"\n"+equipo.provincia}}</small> </td>
-                    <td>{{equipo.tipoMaquinaria}} <small>{{"\n"+equipo.nombremarca+" "+equipo.nombremodelo}}</small> </td>
-                    <td [style]="'color:'+getColor(equipo.colorEsstado)+';'"><strong>{{equipo.serieEquipo}}</strong><small>{{"\n"+equipo.ipEquipo}}</small> </td>
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <div class="progress shadow-sm me-2"
-                                style="width: 100px;"
-                                data-bs-toggle="tooltip" data-bs-placement="top"
-                                [title]="equipo.indicadorPorcentajeBilletes + '%'">
-                                <div [class]="equipo.indicadorColorBarProgressBilletes"
-                                    role="progressbar" 
-                                    [style.width]="equipo.indicadorPorcentajeBilletes + '%'"
-                                    style="transition: ease-in-out 1s all;"
-                                    [attr.aria-valuenow]="equipo.indicadorPorcentajeBilletes"
-                                    aria-valuemin="0"
-                                    aria-valuemax="100">
-                                </div>                               
+            [style]="'--bs-table-bg:transparent;--bs-table-color:'+theme.ftColor+';--bs-table-hover-bg:'+theme.hoverTable+';--bs-table-hover-color:'+theme.ftColor+';'">
+            <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Tienda</th>
+                <th scope="col">Equipo</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Capacidad de Piezas</th>
+                <th scope="col">Monto Asegurado</th>
+                <th scope="col">Tiempo Sincronización</th>
+                <th scope="col">Última Recolección</th>
+                <th scope="col" class="text-center">No. Trans.</th>
+                <th scope="col">Última Trans.</th>
+            </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let equipo of listaEsquipo; let i = index">
+                    <tr>
+                        <td>
+                            <div class="rounded" 
+                                [style]="'background:'+getColor(equipo.colorEsstado)+';width:10px;height:40px;'">
                             </div>
-                            <small>{{equipo.indicadorPorcentajeBilletes+"%"}} </small>
-                        </div>
-                        <small>{{equipo.indicadorCapacidadBilletes+" / "+equipo.indicadorCapacidadBilletesMax}}</small>
-                    </td>
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <div class="progress shadow-sm me-2"
-                                style="width: 100px;"
-                                data-bs-toggle="tooltip" data-bs-placement="top" 
-                                [title]="equipo.indicadorPorcentajeTotalMaxAsegurado + '%'">
-                                <div [class]="equipo.indicadorColorBarProgressAsegurado"
-                                    role="progressbar" 
-                                    [style.width]="equipo.indicadorPorcentajeTotalMaxAsegurado + '%'"
-                                    style="transition: ease-in-out 1s all;"
-                                    [attr.aria-valuenow]="equipo.indicadorPorcentajeTotalMaxAsegurado"
-                                    aria-valuemin="0"
-                                    aria-valuemax="100">
+                        </td>
+                        <td>{{equipo.nombreTienda}} <small>{{"\n"+equipo.provincia}}</small> </td>
+                        <td>{{equipo.tipoMaquinaria}} <small>{{"\n"+equipo.nombremarca+" "+equipo.nombremodelo}}</small> </td>
+                        <td [style]="'color:'+getColor(equipo.colorEsstado)+';'"><strong>{{equipo.serieEquipo}}</strong><small>{{"\n"+equipo.ipEquipo}}</small> </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="progress shadow-sm me-2"
+                                    style="width: 100px;"
+                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                    [title]="equipo.indicadorPorcentajeBilletes + '%'">
+                                    <div [class]="equipo.indicadorColorBarProgressBilletes"
+                                        role="progressbar" 
+                                        [style.width]="equipo.indicadorPorcentajeBilletes + '%'"
+                                        style="transition: ease-in-out 1s all;"
+                                        [attr.aria-valuenow]="equipo.indicadorPorcentajeBilletes"
+                                        aria-valuemin="0"
+                                        aria-valuemax="100">
+                                    </div>                               
                                 </div>
+                                <small>{{equipo.indicadorPorcentajeBilletes+"%"}} </small>
                             </div>
-                            <small>{{equipo.indicadorPorcentajeTotalMaxAsegurado+"%"}}</small>
-                        </div>
-                        <small>{{"$"+equipo.indicadorTotalAsegurado+" / "+"$"+equipo.indicadorTotalMaxAsegurado}}</small>
-                    </td>
-                    <td class="align-middle">{{equipo.tiempoSincronizacion | date: 'short'}}</td>
-                    <td class="align-middle">{{equipo.ultimaRecoleccion | date: 'short'}}</td>
-                    <td class="align-middle">
-                        <div class="d-flex justify-content-between">
-                            <ng-container *ngIf="equipo.tipoTrans !== null; else vacioNTrans">
-                                <strong>{{ equipo.tipoTrans }}</strong>
-                                {{ equipo.ultimaNoTrans }}
+                            <small>{{equipo.indicadorCapacidadBilletes+" / "+equipo.indicadorCapacidadBilletesMax}}</small>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="progress shadow-sm me-2"
+                                    style="width: 100px;"
+                                    data-bs-toggle="tooltip" data-bs-placement="top" 
+                                    [title]="equipo.indicadorPorcentajeTotalMaxAsegurado + '%'">
+                                    <div [class]="equipo.indicadorColorBarProgressAsegurado"
+                                        role="progressbar" 
+                                        [style.width]="equipo.indicadorPorcentajeTotalMaxAsegurado + '%'"
+                                        style="transition: ease-in-out 1s all;"
+                                        [attr.aria-valuenow]="equipo.indicadorPorcentajeTotalMaxAsegurado"
+                                        aria-valuemin="0"
+                                        aria-valuemax="100">
+                                    </div>
+                                </div>
+                                <small>{{equipo.indicadorPorcentajeTotalMaxAsegurado+"%"}}</small>
+                            </div>
+                            <small>{{"$"+equipo.indicadorTotalAsegurado+" / "+"$"+equipo.indicadorTotalMaxAsegurado}}</small>
+                        </td>
+                        <td class="align-middle">{{equipo.tiempoSincronizacion | date: 'short'}}</td>
+                        <td class="align-middle">{{equipo.ultimaRecoleccion | date: 'short'}}</td>
+                        <td class="align-middle">
+                            <div class="d-flex justify-content-between">
+                                <ng-container *ngIf="equipo.tipoTrans !== null; else vacioNTrans">
+                                    <strong>{{ equipo.tipoTrans }}</strong>
+                                    {{ equipo.ultimaNoTrans }}
+                                </ng-container>
+                                <ng-template #vacioNTrans>
+                                    ---
+                                </ng-template>
+                            </div>
+                        </td>
+                        <td class="align-middle">
+                            <ng-container *ngIf="equipo.fechaUltimaTrans !== null; else vacioFTrans">
+                                {{equipo.fechaUltimaTrans | date: 'short'}}
                             </ng-container>
-                            <ng-template #vacioNTrans>
+                            <ng-template #vacioFTrans>
                                 ---
                             </ng-template>
-                        </div>
-                    </td>
-                    <td class="align-middle">
-                        <ng-container *ngIf="equipo.fechaUltimaTrans !== null; else vacioFTrans">
-                            {{equipo.fechaUltimaTrans | date: 'short'}}
-                        </ng-container>
-                        <ng-template #vacioFTrans>
-                            ---
-                        </ng-template>
-                    </td>
-                </tr>
-                <!-- <tr id="spacing-row" *ngIf="i < listaEsquipo.length - 1">
-                    <td></td>
-                </tr> -->
-            </ng-container>
-        </tbody>
-    </table>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
     </div>
-    
 </div>
+</ng-container>
 
-<!-- <div style="position: fixed; top: 20px; left: 10px;">
+<ng-container *ngIf="disenio==2">
+<div style="position: fixed; top: 20px; left: 10px;">
     <button type="submit"
         style="border: none; background-color: transparent;"
         class="d-flex align-items-center"
@@ -179,8 +177,58 @@
         aria-controls="offcanvasExample">
         <div [matBadge]="nuevoObjectalerts.length" matBadgeColor="warn" [style]="'background-image: url( ../../../../assets/alert.png )'" class="icono"></div>
    </button>
-</div> -->
+</div>
+<div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel"
+    [style]="'background-color:'+theme.bgTable+'; color:'+theme.ftColor+';'">
+    <div class="offcanvas-header">
+        <h2 class="offcanvas-title pt-3" id="offcanvasExampleLabel"><strong>Registro de alertas  </strong><mat-icon class="btn-del" (click)="eliminarAllAlerts()">delete</mat-icon></h2>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="border"></div>
+    <div class="offcanvas-body">
+        <div class="alerts-error">
+            <audio #audioPlayer>
+                <source src="../../../../assets/mp3/errormachine.mp3" type="audio/mpeg">
+            </audio>
+            <div class="d-flex flex-column">
+                <div class="chips-alert m-2 rounded-3 p-2 shadow animate__animated animate__bounceIn d-flex align-items-center justify-content-between rounded"
+                    *ngFor="let alertas of nuevoObjectalerts; let i = index"
+                    [style]="'border-left: 7px solid '+alertas.colorbg+';background-color:'+theme.bgSelectColor+';'">
+                    <div class="d-inline-block align-items-center p-0"
+                        [style]="'overflow: hidden;white-space: pre-line;'">
+                        <strong>{{alertas.nserie}}</strong>
+                        <br>
+                        <span>{{alertas.msj}}</span>
+                    </div>
+                    <div>
+                        <div class="btn-delete justify-content-end d-flex align-items-center" 
+                            [style]="'color:'+alertas.colorbg+';cursor: pointer;'"
+                            (click)="eliminarAlerta(i)">
+                            <mat-icon>cancel</mat-icon>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <small>{{fechaNotif | date :'shortTime'}}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>      
+    </div>
+</div>
 <div class="equipo-monitor w-100 p-4">
+    <div class="filter-monitoreo w-50 d-flex align-items-center">
+        <section class="filtros w-100 animate__animated animate__backInLeft" *ngIf="true">
+            <div class="mb-2 d-flex w-100">
+                <input class=" w-100 shadow-sm form-control rounded-pill"
+                    fxFlex="auto" type="text"
+                    [(ngModel)]="filterequip"
+                    (keyup)="filterEquipos()" 
+                    style="font-weight: bold; font-size: 18pt;"
+                    #input
+                    placeholder="Búsqueda de equipos...">
+            </div>
+        </section>
+    </div>
     <div class="d-flex flex-wrap justify-content-lg-around align-items-center">
         <div class="equipos shadow-sm m-1 rounded-2" *ngFor="let equipos of listaEsquipo"
             [style]="'background-color: ' +equipos.colorEsstado+ '; transition: ease-in all 1s; width: 250px '">
@@ -264,3 +312,176 @@
         </div>
     </div>
 </div>
+</ng-container>
+
+<ng-container *ngIf="disenio==3">
+<!-- No se sabe porque se necesita, aparece border innecesario -->
+<div style="position: fixed; top: 20px; left: 10px;"></div>
+<!-- Esto son las notificaciones o alertas -->
+<div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel"
+    [style]="'background-color:'+theme.bgTable+'; color:'+theme.ftColor+';'">
+    <div class="offcanvas-header">
+        <h2 class="offcanvas-title pt-3" id="offcanvasExampleLabel"><strong>Registro de alertas  </strong><mat-icon class="btn-del" (click)="eliminarAllAlerts()">delete</mat-icon></h2>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="border"></div>
+    <div class="offcanvas-body">
+        <div class="alerts-error">
+            <audio #audioPlayer>
+                <source src="../../../../assets/mp3/errormachine.mp3" type="audio/mpeg">
+            </audio>
+            <div class="d-flex flex-column">
+                <div class="chips-alert m-2 rounded-3 p-2 shadow animate__animated animate__bounceIn d-flex align-items-center justify-content-between rounded"
+                    *ngFor="let alertas of nuevoObjectalerts; let i = index"
+                    [style]="'border-left: 7px solid '+alertas.colorbg+';background-color:'+theme.bgSelectColor+';'">
+                    <div class="d-inline-block align-items-center p-0"
+                        [style]="'overflow: hidden;white-space: pre-line;'">
+                        <strong>{{alertas.nserie}}</strong>
+                        <br>
+                        <span>{{alertas.msj}}</span>
+                    </div>
+                    <div>
+                        <div class="btn-delete justify-content-end d-flex align-items-center" 
+                            [style]="'color:'+alertas.colorbg+';cursor: pointer;'"
+                            (click)="eliminarAlerta(i)">
+                            <mat-icon>cancel</mat-icon>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <small>{{fechaNotif | date :'shortTime'}}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>      
+    </div>
+</div>
+
+<!-- Esto es la ventana principal -->
+<div class="w-100 p-4 h-100" [style]="'background-color:'+theme.bgTable+';'">
+    <div class="filter-monitoreo w-50 d-flex align-items-center">
+        <section class="filtros w-100 animate__animated animate__backInLeft" *ngIf="true">
+            <div class="mb-2 d-flex w-100">
+                <input class=" w-100 shadow-sm form-control rounded-pill"
+                    fxFlex="auto" type="text"
+                    [(ngModel)]="filterequip"
+                    (keyup)="filterEquipos()" 
+                    style="font-weight: bold; font-size: 18pt;"
+                    #input
+                    placeholder="Búsqueda de equipos...">
+            </div>
+        </section>
+    </div>
+
+    <!-- Header -->
+    <div class="d-flex align-items-end justify-content-end pb-3">
+        <button type="submit"
+            style="border: none;"
+            class="notification d-flex align-items-center justify-content-center shadow rounded-pill"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasExample"
+            aria-controls="offcanvasExample"
+            [ngClass]="{ 'notifAct ': nuevoObjectalerts.length !== 0 }">
+            <mat-icon matBadgeColor="warn" aria-hidden="false"
+                [matBadge]="nuevoObjectalerts.length">
+                {{ nuevoObjectalerts.length == 0 ? 'notifications' : 'notifications_active' }}
+            </mat-icon>
+        </button>
+    </div>
+    <!-- Body -->
+    <!-- <div class="tabla table-responsive-lg" [style]="'background: '+theme.bgTable+';'"> -->
+        <table class="bg-blue table table-hover table-borderless" 
+            [style]="'--bs-table-bg:transparent;--bs-table-color:'+theme.ftColor+';--bs-table-hover-bg:'+theme.hoverTable+';--bs-table-hover-color:'+theme.ftColor+';'">
+            <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Tienda</th>
+                <th scope="col">Equipo</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Capacidad de Piezas</th>
+                <th scope="col">Monto Asegurado</th>
+                <th scope="col">Tiempo Sincronización</th>
+                <th scope="col">Última Recolección</th>
+                <th scope="col" class="text-center">No. Trans.</th>
+                <th scope="col">Última Trans.</th>
+            </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let equipo of listaEsquipo; let i = index">
+                    <tr>
+                        <td>
+                            <div class="rounded" 
+                                [style]="'background:'+getColor(equipo.colorEsstado)+';width:10px;height:40px;'">
+                            </div>
+                        </td>
+                        <td>{{equipo.nombreTienda}} <small>{{"\n"+equipo.provincia}}</small> </td>
+                        <td>{{equipo.tipoMaquinaria}} <small>{{"\n"+equipo.nombremarca+" "+equipo.nombremodelo}}</small> </td>
+                        <td [style]="'color:'+getColor(equipo.colorEsstado)+';'"><strong>{{equipo.serieEquipo}}</strong><small>{{"\n"+equipo.ipEquipo}}</small> </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="progress shadow-sm me-2"
+                                    style="width: 100px;"
+                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                    [title]="equipo.indicadorPorcentajeBilletes + '%'">
+                                    <div [class]="equipo.indicadorColorBarProgressBilletes"
+                                        role="progressbar" 
+                                        [style.width]="equipo.indicadorPorcentajeBilletes + '%'"
+                                        style="transition: ease-in-out 1s all;"
+                                        [attr.aria-valuenow]="equipo.indicadorPorcentajeBilletes"
+                                        aria-valuemin="0"
+                                        aria-valuemax="100">
+                                    </div>                               
+                                </div>
+                                <small>{{equipo.indicadorPorcentajeBilletes+"%"}} </small>
+                            </div>
+                            <small>{{equipo.indicadorCapacidadBilletes+" / "+equipo.indicadorCapacidadBilletesMax}}</small>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="progress shadow-sm me-2"
+                                    style="width: 100px;"
+                                    data-bs-toggle="tooltip" data-bs-placement="top" 
+                                    [title]="equipo.indicadorPorcentajeTotalMaxAsegurado + '%'">
+                                    <div [class]="equipo.indicadorColorBarProgressAsegurado"
+                                        role="progressbar" 
+                                        [style.width]="equipo.indicadorPorcentajeTotalMaxAsegurado + '%'"
+                                        style="transition: ease-in-out 1s all;"
+                                        [attr.aria-valuenow]="equipo.indicadorPorcentajeTotalMaxAsegurado"
+                                        aria-valuemin="0"
+                                        aria-valuemax="100">
+                                    </div>
+                                </div>
+                                <small>{{equipo.indicadorPorcentajeTotalMaxAsegurado+"%"}}</small>
+                            </div>
+                            <small>{{"$"+equipo.indicadorTotalAsegurado+" / "+"$"+equipo.indicadorTotalMaxAsegurado}}</small>
+                        </td>
+                        <td class="align-middle">{{equipo.tiempoSincronizacion | date: 'short'}}</td>
+                        <td class="align-middle">{{equipo.ultimaRecoleccion | date: 'short'}}</td>
+                        <td class="align-middle">
+                            <div class="d-flex justify-content-between">
+                                <ng-container *ngIf="equipo.tipoTrans !== null; else vacioNTrans">
+                                    <strong>{{ equipo.tipoTrans }}</strong>
+                                    {{ equipo.ultimaNoTrans }}
+                                </ng-container>
+                                <ng-template #vacioNTrans>
+                                    ---
+                                </ng-template>
+                            </div>
+                        </td>
+                        <td class="align-middle">
+                            <ng-container *ngIf="equipo.fechaUltimaTrans !== null; else vacioFTrans">
+                                {{equipo.fechaUltimaTrans | date: 'short'}}
+                            </ng-container>
+                            <ng-template #vacioFTrans>
+                                ---
+                            </ng-template>
+                        </td>
+                    </tr>
+                    <tr id="spacing-row" *ngIf="i < listaEsquipo.length - 1">
+                        <td></td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+<!-- </div> -->
+</ng-container>

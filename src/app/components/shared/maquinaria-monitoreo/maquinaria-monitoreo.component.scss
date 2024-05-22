@@ -77,7 +77,6 @@ thead{
   height: 40px;
   border-radius: 15px;
   vertical-align: middle;
-  // --bs-table-bg: #B5CEFC;
 }
 
 .table thead th:first-child {
@@ -94,13 +93,16 @@ td{
   white-space: pre-line;
 }
 
-.bg-blue{
+.bg-blue tbody {
   // --bs-table-bg: #EBF5FB;
-  --bs-table-bg: #E5E5E5;
+  // --bs-table-bg: #E5E5E5;
+  --bs-table-accent-bg: #E5E5E5;
   border-radius: 10px;
 }
 
 #spacing-row{
   height: 2px;
   padding: 0;
+  --bs-table-accent-bg: white;
+  --bs-table-hover-bg: white;
 }

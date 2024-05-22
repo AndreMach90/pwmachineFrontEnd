@@ -16,6 +16,7 @@ import EasySpeech from 'easy-speech'
 })
 
 export class MaquinariaMonitoreoComponent implements OnInit {
+  disenio: any = 1;
   view_filter: boolean = false;
   nameidentifier:any;
   sub:any;
@@ -788,19 +789,37 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   }
 
   getTheme(themeColor: any){
-    if(themeColor === 'light'){
-      this.theme.bgTheme = '#11264a';
-      this.theme.bgSelectColor = '#FFF';
-      this.theme.ftColor = '#2F4656';
-      this.theme.bgTable = '#FFF';
-      this.theme.hoverTable = '#DFECFF';
+    if(this.disenio==1){
+      if(themeColor === 'light'){
+        this.theme.bgTheme = '#11264a';
+        this.theme.bgSelectColor = '#FFF';
+        this.theme.ftColor = '#2F4656';
+        this.theme.bgTable = '#FFF';
+        this.theme.hoverTable = '#DFECFF';
+      }
+      if(themeColor === 'dark'){
+        this.theme.bgTheme = '#0B141A';
+        this.theme.bgSelectColor = '#2A3942';
+        this.theme.ftColor = '#E9EDEF';
+        this.theme.bgTable = '#202C33';
+        this.theme.hoverTable = '#2A3942';
+      }
     }
-    if(themeColor === 'dark'){
-      this.theme.bgTheme = '#111B21';
-      this.theme.bgSelectColor = '#2A3942';
-      this.theme.ftColor = '#D2D2D9';
-      this.theme.bgTable = '#111B21';
-      this.theme.hoverTable = '#2A3942';
+    if(this.disenio==3){
+      if(themeColor === 'light'){
+        this.theme.bgTheme = '#11264a';
+        this.theme.bgSelectColor = '#FFF';
+        this.theme.ftColor = '#2F4656';
+        this.theme.bgTable = '#FFF';
+        this.theme.hoverTable = '#F0F0F0';
+      }
+      if(themeColor === 'dark'){
+        this.theme.bgTheme = '#0B141A';
+        this.theme.bgSelectColor = '#2A3942';
+        this.theme.ftColor = '#E9EDEF';
+        this.theme.bgTable = '#202C33';
+        this.theme.hoverTable = '#2A3942';
+      }
     }
   }
 }
