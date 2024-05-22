@@ -6,8 +6,8 @@
         </div>
     </div>
 </div>
-
-<div class="contdiv p-4" style="background-color: whitesmoke;">
+<div class="contdiv d-flex justify-content-between align-items-start" style="background-color: whitesmoke;" >
+<div class=" w-75 p-4">
     <div class="m-0 d-flex justify-content-between align-items-center">
         <span>
             <h1> Configuración de exportación de datos: </h1>
@@ -220,7 +220,7 @@
         </form>
     </div>
 </div>
-<div class="w-100" *ngIf="reportVisible" style="height: 600px;" >
+<div class="w-100" *ngIf="reportVisible" >
     <div *ngFor="let equipo of dataExportarExcel" class="bg-secondary mb-2 w-100 table-responsive-lg rounded-2"
          style="border: solid 3px gray; ">
          <div class="w-100 bg-warning p-2 text-dark d-flex justify-content-between">
@@ -417,67 +417,83 @@
 
 </div>
 
-<div class="p-2 w-100 d-flex justify-content-between align-items-center" *ngIf="_transaction_show">
+<div class="p-2 w-100 d-flex justify-content-between align-items-start"
+     *ngIf="_transaction_show">
     <div class="d-flex align-items-center">
         <div class="m-1">
             <p-menu #menu [model]="items" class="shadow-lg" [popup]="true"></p-menu>
-            <button class="btn btn-dark shadow-sm p-1 btn-sm d-flex justify-content-center" type="button" (click)="menu.toggle($event)">
-                <div [style]="'background-image: url( '+menuicon+' ); width: 7px; height: 15px; background-repeat: no-repeat; background-size: auto 100% !important; border-radius: 0px !important;'"></div>
+            <button class="btn btn-dark shadow-sm p-1 btn-sm d-flex justify-content-center"
+                    type="button" (click)="menu.toggle($event)">
+                    <div [style]="'background-image: url( '+menuicon+' ); width: 7px; height: 15px; background-repeat: no-repeat; background-size: auto 100% !important; border-radius: 0px !important;'">
+                    </div>
             </button>
-        </div>
-        <div class="p-1 m-1 rounded-3 shadow-sm"
+        </div>             
+    </div>
+    
+</div>
+
+</div>
+
+<div class="mt-2 w-25 p-2 d-flex flex-column m-1" style="border-left: solid 1px rgb(196, 196, 196);">
+    <div class="m-2"> Equipos visualizando &nbsp;
+        <span>
+            <strong class="text-primary">
+                ({{ maquinasEscogidasDialog.length }})
+            </strong>
+        </span>
+    </div>
+    <div class="p-1 rounded-2 shadow-sm" 
+         style="background-color: #e3e3e3; height: 80vh; overflow-y: auto; border: solid 1px rgb(195, 195, 195);">
+        <ul class="list-group">
+            <li *ngFor=" let equipos of maquinasEscogidasDialog; let i = index; "
+                style="background-color: #e3e3e3; border-bottom: dashed 1px;"
+                class="p-2 m-1 animate__animated animate__fadeIn animate__delay-1s list-group-item">
+                <div class="d-flex align-items-center justify-content-between flex-wrap">
+                    <div class="mr-2 d-flex align-items-center" >
+                        <strong> {{ equipos.machine_Sn }} </strong> &nbsp;
+                        <span>
+                            <strong *ngIf="equipos.longitud > 0"
+                                    class="animate__animated animate__bounceIn">
+                                    ( {{ equipos.longitud }} )
+                            </strong>
+                            <span class="loaderx"
+                                  *ngIf="equipos.longitud == 0 ||
+                                         equipos.longitud == undefined ||
+                                         equipos.longitud == null">
+                            </span>
+                        </span>
+                    </div>
+                    <div [style]="'background-image: url( '+delete+' )' "
+                         (click)="eliminarEquiposDeReporteria(equipos, i)"
+                         class="icono-btn"></div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="mt-2">
+        <div class="p-2 rounded-3 shadow-sm"
              style="background-color: rgb(226, 226, 226); border: solid 1px rgb(195, 195, 195);">
-             <span class="d-flex flex-wrap justify-content-end">
-                 A punto de exportar un total de
-                 <span class="text-primary fs-6"> &nbsp;
-                    <strong> 
+             <span class="d-flex flex-column justify-content-end">
+                 <span class="p-1 fs-6 d-flex justify-content-between" style="border-bottom: dashed 1px gray;"> 
+                     A punto de exportar un total de &nbsp;
+                    <strong class="text-primary" >  
                        {{ sumatoriaTransacciones }}
                     </strong>
                  </span>
-                 &nbsp;
-                 <span>
+                
+                <span class="p-1 fs-6 d-flex justify-content-between">
                     transaccione(s), equivalentes a 
+                    &nbsp;
+                    <strong class="text-primary">
+                        $ {{ cantidadTransacciones | number : '1.2-2' }}
+                    </strong>
                 </span>
-                 &nbsp;
-                 <strong>
-                    $ {{ cantidadTransacciones | number : '1.2-2' }}
-                </strong>
              </span>
-        </div>
-        <div class="d-flex m-1 align-items-center">
-            <div> Equipos visualizando &nbsp;
-                <span>
-                    <strong class="text-primary"> ({{ maquinasEscogidasDialog.length }}) </strong>
-                </span>
-            </div>
-            <ul class=" d-flex justify-content-start flex-wrap ">
-                <li *ngFor="let equipos of maquinasEscogidasDialog; let i = index; "
-                    style="list-style: none; min-width: 100px; max-width: 220px;"
-                    class="p-2 m-1 bg-primary text-light rounded-3 shadow-sm animate__animated animate__bounceIn animate__delay-1s ">
-                    <div class="d-flex align-items-center justify-content-between flex-wrap" style="min-width: 100px; max-width: 200px;">
-                        <div class="mr-2 d-flex align-items-center" >
-                            <strong> {{ equipos.machine_Sn }} </strong> &nbsp;
-                            <span>
-                                <strong *ngIf="equipos.longitud > 0"
-                                        class="animate__animated animate__bounceIn">
-                                        ( {{ equipos.longitud }} )
-                                </strong>
-                                <span class="loaderx"
-                                      *ngIf="equipos.longitud == 0 ||
-                                             equipos.longitud == undefined ||
-                                             equipos.longitud == null">
-                                </span>
-                            </span>
-                        </div>
-                        <div [style]="'background-image: url( '+delete+' )' "
-                             (click)="eliminarEquiposDeReporteria(equipos, i)"
-                             class="icono-btn"></div>
-                    </div>
-                </li>
-            </ul>
-        </div>
+        </div>  
     </div>
-    <div class="d-flex">
+
+    <div class="d-flex justify-content-end m-1">
         <button type="button"
                 class="btn btn-danger btn-sm"
                 *ngIf="_cancel_button"
@@ -488,11 +504,10 @@
         </button>
         <button  class="d-flex align-items-center btn btn-sm btn-outline-primary" 
                  [disabled]="dis_exp_excel"
-                 (click)="exportarExcel()">
+                 (click)="exportToExcel()">
                  <img src="../../../../../../assets/excel.png" width="50px" alt="">
                  <div>Exportar a excel</div>
         </button>
     </div>
 </div>
-
 </div>
