@@ -586,7 +586,7 @@ export class EquipoComponent implements OnInit {
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor:  '#d33',
-      confirmButtonText:  'Sí, eliminar!'
+      confirmButtonText:  'Sí, desactivar!'
     }).then((result) => {
       if (result.isConfirmed) {
         this._show_spinner = true;  
@@ -594,8 +594,8 @@ export class EquipoComponent implements OnInit {
           next: (x) => {
             this._show_spinner = false;
             Swal.fire (
-              'Deleted!',
-              'Equipo eliminado',
+              'Desactivado!',
+              'El equipo está desactivado',
               'success'
             )
           }, error: (e) => {
@@ -603,7 +603,7 @@ export class EquipoComponent implements OnInit {
             this._show_spinner = false;
             Swal.fire(
               'Upps!',
-              'No hemos podido eliminar este equipo',
+              'No hemos podido desactivar este equipo',
               'error'
             )
           }, complete: () => {

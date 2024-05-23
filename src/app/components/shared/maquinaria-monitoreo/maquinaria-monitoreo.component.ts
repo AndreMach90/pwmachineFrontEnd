@@ -8,6 +8,7 @@ import { EncryptService } from '../services/encrypt.service';
 import { Router } from '@angular/router';
 import jwt_decode from "jwt-decode";
 import EasySpeech from 'easy-speech'
+import { ClientesService } from '../../dahsboards/cliente/services/clientes.service';
 
 @Component({
   selector: 'app-maquinaria-monitoreo',
@@ -16,7 +17,6 @@ import EasySpeech from 'easy-speech'
 })
 
 export class MaquinariaMonitoreoComponent implements OnInit {
-  disenio: any = 1;
   view_filter: boolean = false;
   nameidentifier:any;
   sub:any;
@@ -49,7 +49,8 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     private router: Router,
     private monitoreo: MonitoreoService,
     public  dialog: MatDialog,
-    private equiposerv: EquipoService ) {
+    private equiposerv: EquipoService,
+    private clienteService: ClientesService){
     this.connectionSendPingEquipo = new HubConnectionBuilder()
                   .withUrl(this.urlHub+'PingHubEquipos')
                   .build();
@@ -101,7 +102,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     } else if (xtokenDecript == null || xtokenDecript == undefined) {
       this.router.navigate(['login'])
     }
-
+    this.getClientes();
     this.obtenerEquipos(1,'void');
     this.connectionSendPingEquipo.start().then( ()=> {
     }).catch( e => {
@@ -274,6 +275,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     if( xmsj != 'void' ) {
       this.listalertas.push(arr);
     }
+    console.log(this.listalertas);
     const uniqueData = new Map();
     let key = JSON.stringify({});
     for (const item of this.listalertas) {
@@ -331,15 +333,6 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     } catch (error) {
       console.log('Hubo un error en el speaker: '+error)
     }
-  }
-
-  eliminarAlerta( i:number ) {
-    this.listalertas.splice(i, 1);
-    this.nuevoObjectalerts.splice(i, 1);
-  }
-  eliminarAllAlerts(){
-    this.listalertas.splice(0);
-    this.nuevoObjectalerts.splice(0);
   }
 
   listaDetalleequipoManual: any = [];
@@ -665,20 +658,21 @@ export class MaquinariaMonitoreoComponent implements OnInit {
 
   filterequip:any;
   filterEquipos(): void {
-    this.listaEsquipo = this.listaEsquipoGhost.filter((item:any) => 
-    item.serieEquipo.toString().toLowerCase().includes(this.filterequip.toLowerCase()) ||   
-    item.provincia.toString().toLowerCase().includes(this.filterequip.toLowerCase())   ||
-    item.nombreTienda.toLowerCase().includes(this.filterequip.toLowerCase())
-    )
+    if(this.selectedClienteId == 'todoCliente'){
+      this.listaEsquipo = this.listaEsquipoGhost.filter((item:any) => 
+        item.serieEquipo.toString().toLowerCase().includes(this.filterequip.toLowerCase()) ||   
+        item.provincia.toString().toLowerCase().includes(this.filterequip.toLowerCase())   ||
+        item.nombreTienda.toLowerCase().includes(this.filterequip.toLowerCase())
+      )
+    }else{
+      this.listaEsquipo = this.listaEsquipoGhost.filter((item:any) => 
+        (item.serieEquipo.toString().toLowerCase().includes(this.filterequip.toLowerCase()) ||   
+        item.provincia.toString().toLowerCase().includes(this.filterequip.toLowerCase())   ||
+        item.nombreTienda.toLowerCase().includes(this.filterequip.toLowerCase())) &&
+        item.idCliente == this.selectedClienteId
+      )
+    }
   }
-
-  /**
-      item.nombreTienda.toLowerCase().includes(this.filterequip.toLowerCase()) ||
-      item.nombremarca .toLowerCase().includes(this.filterequip.toLowerCase()) ||
-      item.nombremodelo.toLowerCase().includes(this.filterequip.toLowerCase()) ||
-      item.serieEquipo .toLowerCase().includes(this.filterequip.toLowerCase()) ||
-      item.tipoMaquinaria.toLowerCase().includes(this.filterequip.toLowerCase())
-  */
 
   updateTransManual(data: any){
     const equipoFind = this.listaEsquipo.find((item:any) =>
@@ -710,7 +704,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   fechaNotif: any;
   alertHub(dataPingHub: any){
     let fecha = new Date();
-    if(this.contadorPing>=10){
+    if(this.contadorPing>=400){
       this.alertTrans();
       this.alertTimeSincro(dataPingHub);
       this.contadorPing = 0;
@@ -739,33 +733,37 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   alertTimeSincro(dataPingHub: any){
     let numHoras = 1;
     let newMesj = 'Ha estado desactivado por mas de 1h';
+    let equipoFind: any;
+    let alerta: any;
     dataPingHub = dataPingHub.filter((element: any) => {
       return element.estadoPing == 0;
     });
     for (let item of dataPingHub) {
       let validarhora = this.calcularTiempoDesdeAhora(numHoras,item.tiempoSincronizacion);
       if(validarhora){
-        let equipoFind = this.listaEsquipo.find((itemEquipo:any) =>
+        equipoFind = this.listaEsquipo.find((itemEquipo:any) =>
           itemEquipo.ipEquipo === item.ip
         );
-        let alerta = this.listalertas.find((itemAlerta:any) =>
-          itemAlerta.tipo === 'Monitoreo Trans TimeSincro' &&
-          itemAlerta.nserie === equipoFind.serieEquipo
-        );
-        if(alerta){
-          let arrayMsj = newMesj.split(" ");
-          let validateMsj = arrayMsj.every(palabra => alerta.msj.includes(palabra));
-          if(!validateMsj){
-            alerta.msj = alerta.msj + '\n' +newMesj;
+        if(equipoFind){
+          alerta = this.listalertas.find((itemAlerta:any) =>
+            itemAlerta.tipo === 'Monitoreo Trans TimeSincro' &&
+            itemAlerta.nserie === equipoFind.serieEquipo
+          );
+          if(alerta){
+            let arrayMsj = newMesj.split(" ");
+            let validateMsj = arrayMsj.every(palabra => alerta.msj.includes(palabra));
+            if(!validateMsj){
+              alerta.msj = alerta.msj + '\n' +newMesj;
+            }
           }
+          let tipo = 'Monitoreo Trans TimeSincro';
+          let msj  = newMesj;
+          let colorbg = 'red';
+          let colorfg = 'black';
+          let serie = equipoFind.serieEquipo;
+          this.playAudio();
+          this.controlalerts( tipo, msj, colorbg, colorfg, serie);
         }
-        let tipo = 'Monitoreo Trans TimeSincro';
-        let msj  = newMesj;
-        let colorbg = 'red';
-        let colorfg = 'black';
-        let serie = equipoFind.serieEquipo;
-        this.playAudio();
-        this.controlalerts( tipo, msj, colorbg, colorfg, serie);
       }
     }
   }
@@ -776,6 +774,15 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     const diferenciaEnMilisegundos = ahora.getTime() - fecha.getTime();
     const diferenciaEnHoras = diferenciaEnMilisegundos / (1000 * 60 * 60);
     return diferenciaEnHoras > horas;
+  }
+  
+  eliminarAlerta( i:number ) {
+    this.listalertas.splice(i, 1);
+    this.nuevoObjectalerts.splice(i, 1);
+  }
+  eliminarAllAlerts(){
+    this.listalertas.splice(0);
+    this.nuevoObjectalerts.splice(0);
   }
 
   getColor(color: any){
@@ -789,37 +796,59 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   }
 
   getTheme(themeColor: any){
-    if(this.disenio==1){
-      if(themeColor === 'light'){
-        this.theme.bgTheme = '#11264a';
-        this.theme.bgSelectColor = '#FFF';
-        this.theme.ftColor = '#2F4656';
-        this.theme.bgTable = '#FFF';
-        this.theme.hoverTable = '#DFECFF';
-      }
-      if(themeColor === 'dark'){
-        this.theme.bgTheme = '#0B141A';
-        this.theme.bgSelectColor = '#2A3942';
-        this.theme.ftColor = '#E9EDEF';
-        this.theme.bgTable = '#202C33';
-        this.theme.hoverTable = '#2A3942';
-      }
+    if(themeColor === 'light'){
+      this.theme.bgTheme = '#11264a';
+      this.theme.bgSelectColor = '#FFF';
+      this.theme.ftColor = '#2F4656';
+      this.theme.bgTable = '#FFF';
+      this.theme.hoverTable = '#DFECFF';
     }
-    if(this.disenio==3){
-      if(themeColor === 'light'){
-        this.theme.bgTheme = '#11264a';
-        this.theme.bgSelectColor = '#FFF';
-        this.theme.ftColor = '#2F4656';
-        this.theme.bgTable = '#FFF';
-        this.theme.hoverTable = '#F0F0F0';
-      }
-      if(themeColor === 'dark'){
-        this.theme.bgTheme = '#0B141A';
-        this.theme.bgSelectColor = '#2A3942';
-        this.theme.ftColor = '#E9EDEF';
-        this.theme.bgTable = '#202C33';
-        this.theme.hoverTable = '#2A3942';
-      }
+    if(themeColor === 'dark'){
+      this.theme.bgTheme = '#0B141A';
+      this.theme.bgSelectColor = '#2A3942';
+      this.theme.ftColor = '#E9EDEF';
+      this.theme.bgTable = '#202C33';
+      this.theme.hoverTable = '#2A3942';
     }
+  }
+
+  getTipoTrans(tipoTrans: any){
+    if(tipoTrans == 'A'){
+      return 'Automático'
+    }
+    if(tipoTrans == 'M'){
+      return 'Manual'
+    }
+    if(tipoTrans == 'R'){
+      return 'Retiro'
+    }
+    return tipoTrans;
+  }
+
+  listaCliente: any;
+  getClientes(){
+    this.clienteService.obtenerCliente().subscribe(
+      {
+        next: (cliente) => {
+          this.listaCliente = cliente;
+        },
+        error:    (e) => { },
+        complete: ()  => { }
+      }
+    )
+  }
+
+  selectedCliente: any = 'Mostrar todo';
+  selectedClienteId: any = 'todoCliente';
+  filterCliente(idCliente: any, nameCliente:any){
+    this.selectedCliente = nameCliente;
+    this.selectedClienteId = idCliente;
+    this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) => {
+      return item.idCliente === idCliente;
+    });
+    if(idCliente == 'todoCliente'){
+      this.listaEsquipo = this.listaEsquipoGhost;
+    }
+    this.eliminarAllAlerts();
   }
 }
