@@ -4,7 +4,9 @@
 <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel"
     [style]="'background-color:'+theme.bgTable+'; color:'+theme.ftColor+';'">
     <div class="offcanvas-header">
-        <h2 class="offcanvas-title pt-3" id="offcanvasExampleLabel"><strong>Registro de alertas  </strong><mat-icon class="btn-del" (click)="eliminarAllAlerts()">delete</mat-icon></h2>
+        <h2 class="offcanvas-title pt-3" id="offcanvasExampleLabel">
+            <strong>Registro de alertas  </strong><mat-icon class="btn-del" (click)="eliminarAllAlerts()" title="Eliminar todas las notificaciones">delete</mat-icon>
+        </h2>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="border"></div>

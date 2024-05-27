@@ -55,7 +55,8 @@
                                            type="text">
                                 </form>
                             </div>
-                            <div class="machineDesact" [ngClass]="{'active': isActive}" (click)="machineDesactive()">
+                            <div class="machineDesact" [ngClass]="{'active': isActive}" (click)="machineDesactive()"
+                                [title]="isActive ? 'Quitar desactivadas' : 'Mostrar desactivadas'">
                                 <mat-icon>{{ isActive ? 'visibility' : 'visibility_off' }}</mat-icon>
                             </div>
                             <div>

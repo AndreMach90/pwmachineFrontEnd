@@ -33,9 +33,9 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   _show_spinner: boolean = false;
   theme: any = {
     bgTheme: '#11264a',
-    bgSelectColor: '#FFF',
+    bgSelectColor: '#F6FAFD',
     ftColor: '#2F4656',
-    bgTable: '#FFF',
+    bgTable: '#F6FAFD',
     hoverTable: '#DFECFF'
   }
   private urlHub: any = this.env.apiUrlHub();

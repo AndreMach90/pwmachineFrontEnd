@@ -31,6 +31,7 @@
   outline: none;
   padding: 2px;
   width: 200px;
+  background: #F6FAFD;
 }
 
 .input-group input:focus {
@@ -47,7 +48,7 @@
   text-align: center;
   justify-content: center;
   align-items: center;
-  color: white;
+  color: #F6FAFD;
   cursor: pointer;
   border-radius: 100%;
   padding: 2px;
@@ -58,13 +59,13 @@
 .notification {
   border: none;
   background-color: #00000049;
-  color: white;
+  color: #F6FAFD;
   width: 38px;
   height: 38px;
 }
 
 .notification.notifAct {
-  background-color: rgb(255, 255, 255);
+  background-color: #F6FAFD;
   color: #2f4656;
 }
 
