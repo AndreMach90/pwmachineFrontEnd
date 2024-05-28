@@ -274,7 +274,6 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     if( xmsj != 'void' ) {
       this.listalertas.push(arr);
     }
-    console.log(this.listalertas);
     const uniqueData = new Map();
     let key = JSON.stringify({});
     for (const item of this.listalertas) {
@@ -493,7 +492,6 @@ export class MaquinariaMonitoreoComponent implements OnInit {
         this.listaDetalleequipoTransa.push(element);
       }
     })
-
     this.listaDetalleequipoManual.forEach((detalle:any) => {
       if( detalle.tipo == 'Manual') {
         this.totalBilletesCantidadM += detalle.depositoCant100 + detalle.depositoCant50 + detalle.depositoCant20 +
@@ -525,6 +523,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       break;
     }
   }
+
   public countmin: number = 5000;
   private PingHub(data:any) {
     data.filter( (element:any) => {
@@ -779,6 +778,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     this.listalertas.splice(i, 1);
     this.nuevoObjectalerts.splice(i, 1);
   }
+  
   eliminarAllAlerts(){
     this.listalertas.splice(0);
     this.nuevoObjectalerts.splice(0);
