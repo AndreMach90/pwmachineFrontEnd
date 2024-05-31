@@ -100,7 +100,7 @@ export class ModalDataEquiposComponent implements OnInit {
               });
             }
           }
-          console.log(this.listaEsquipo);
+          //console.log(this.listaEsquipo);
           this.localidadesEncontradas = [];
 
           // Recorremos la lista de equipos para crear localidadesEncontradas
@@ -164,7 +164,7 @@ selectAll(event: any, localidad: any) {
 
   }
 
-  // console.warn(this.equiposSeleccionados)
+  // //console.warn(this.equiposSeleccionados)
 
 }
 
@@ -173,13 +173,13 @@ addToSelectedEquipos(equipo: any) {
   if (!this.equiposSeleccionados.includes(equipo)) {
     this.equiposSeleccionados.push(equipo);
   }
-  console.warn(this.equiposSeleccionados);
+  //console.warn(this.equiposSeleccionados);
 }
 
 // Función para remover un equipo de la lista de equipos seleccionados
 removeFromSelectedEquipos(equipo: any) {
   this.equiposSeleccionados = this.equiposSeleccionados.filter( ( selectedEquipo: any ) => selectedEquipo !== equipo );
-  console.warn(this.equiposSeleccionados)
+  //console.warn(this.equiposSeleccionados)
 }
 
 selectedEquiposControl = new FormControl(false);

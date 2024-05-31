@@ -91,8 +91,8 @@ export class TablaTransaccionesComponent implements OnInit, OnChanges {
       if ( this.transaccionAutoHub.length > 0 ) {
         if ( this.listenNserie == this.transaccionAutoHub[0].machine_Sn ) {             
 
-            //console.log('HUB AUTO');
-            //console.log(this.transaccionAutoHub);
+            ////console.log('HUB AUTO');
+            ////console.log(this.transaccionAutoHub);
 
              this.listaTransacciones.unshift( this.transaccionAutoHub[0] );
              if(this.tipoFiltro) this.listaTransacciones.splice( this.listaTransacciones.length - 1, 1 );
@@ -207,14 +207,14 @@ export class TablaTransaccionesComponent implements OnInit, OnChanges {
   //     }
   //   });
     
-  //   //console.log(6)
+  //   ////console.log(6)
     
   //   this.listaTransacciones = [];
-  //   //console.log(7)
+  //   ////console.log(7)
     
   //   this.listaTransacciones = modeloFiltrado;
-  //   //console.log(8)
-  //   //console.log(this.listaTransacciones);    
+  //   ////console.log(8)
+  //   ////console.log(this.listaTransacciones);    
 
   // }
 

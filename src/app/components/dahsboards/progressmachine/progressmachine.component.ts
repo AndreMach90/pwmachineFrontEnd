@@ -50,7 +50,7 @@ export class ProgressmachineComponent implements OnInit, OnChanges {
   colorBarProgressBilletesAs: string = 'progress-bar bg-success text-light';
   textoCapacidadBilletes: string = 'Vacío...';
   obtenerIndicadores(nserie:string) {
-    // ////////console.warn( 'DESDE BAR PROGRESS MACHINE' );
+    // //////////console.warn( 'DESDE BAR PROGRESS MACHINE' );
     this._show_spinner = true;
     this.listaEsquipo = [];
     this.listaEsquipoGhost = [];
@@ -59,8 +59,8 @@ export class ProgressmachineComponent implements OnInit, OnChanges {
       this.monitoreo.obtenerIndicadores(nserie, 2).subscribe({
       next: (equipo) => {
         this.listaEsquipo = equipo;
-        ////////console.warn('Desde el PROGRESS BAR COMPONENT');
-        ////////console.warn(this.listaEsquipo)
+        //////////console.warn('Desde el PROGRESS BAR COMPONENT');
+        //////////console.warn(this.listaEsquipo)
         this.listaEsquipoGhost = equipo;
         this._show_spinner = false;
       }, error: (e) => {
@@ -132,19 +132,19 @@ export class ProgressmachineComponent implements OnInit, OnChanges {
     if ( this.porcentajeAs <= 30 ) {
       // //alertthis.porcentajeAs)
       this.colorBarProgressBilletesAs = 'progress-bar bg-success text-light';
-      //////////console.warn(this.colorBarProgressBilletesAs)
+      ////////////console.warn(this.colorBarProgressBilletesAs)
     } else if ( this.porcentajeAs > 30 && this.porcentajeAs <= 49 ) {
       // //alertthis.porcentajeAs)
       this.colorBarProgressBilletesAs = 'progress-bar bg-success text-light';
-      //////////console.warn(this.colorBarProgressBilletesAs)
+      ////////////console.warn(this.colorBarProgressBilletesAs)
     } else if ( this.porcentajeAs > 49 && this.porcentajeAs <= 90 ) {
       // //alertthis.porcentajeAs)
       this.colorBarProgressBilletesAs = 'progress-bar bg-warning text-dark';
-      //////////console.warn(this.colorBarProgressBilletesAs)
+      ////////////console.warn(this.colorBarProgressBilletesAs)
     } else if ( this.porcentajeAs > 90 ) {
       // //alertthis.porcentaje)
       this.colorBarProgressBilletesAs = 'progress-bar bg-danger text-light';
-      //////////console.warn(this.colorBarProgressBilletesAs)
+      ////////////console.warn(this.colorBarProgressBilletesAs)
       
       if( this.countPorcentajealertAs == 1) {
         this.countPorcentajealertAs = this.countPorcentajealertAs - 1;

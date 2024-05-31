@@ -61,7 +61,7 @@ export class ModalConfigExcelComponent implements OnInit {
   onSubmitDate() {}
 
   submitTransacFilter() {
-    //console.log(this.transac.value);
+    ////console.log(this.transac.value);
   }
 
   dataExportarExcel: any = [];
@@ -95,7 +95,7 @@ export class ModalConfigExcelComponent implements OnInit {
         result.filter( (element:any) => {
           this.dataExportarExcel.push(element);
           this.dataExportarExcelGhost.push(element);
-          //console.log(this.dataExportarExcel)
+          ////console.log(this.dataExportarExcel)
         });
       }
       this.obtenerTransacTabla();
@@ -144,7 +144,7 @@ export class ModalConfigExcelComponent implements OnInit {
   obtenerIDCLiente() {
 
     if ( this.exportdateform.controls['codigoClienteidFk'].value == undefined || this.exportdateform.controls['codigoClienteidFk'].value == null ) {
-      //console.warn('No hay un id');
+      ////console.warn('No hay un id');
       this.idcliente = this.clientelista[0].id;
     }
     else {
@@ -239,7 +239,7 @@ export class ModalConfigExcelComponent implements OnInit {
       console.error("Ingrese ambas fechas para filtrar.");
     }
 
-    //console.warn(this.dataExportarExcel);
+    ////console.warn(this.dataExportarExcel);
 
   }
 

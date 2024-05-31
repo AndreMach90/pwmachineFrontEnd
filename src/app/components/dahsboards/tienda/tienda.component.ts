@@ -124,12 +124,12 @@ export class TiendaComponent implements OnInit {
     switch( this.calwidth ) {
       case true:
         this._width_table = 'tabledata table-responsive w-75 p-2';
-        ////////console.warn(this._width_table);
+        //////////console.warn(this._width_table);
         this.calwidth = false;
         break;
       case false:        
         this._width_table = 'tabledata table-responsive w-100 p-2';
-        ////////console.warn(this._width_table);
+        //////////console.warn(this._width_table);
         this.calwidth = true;
         break;
     }
@@ -338,8 +338,8 @@ export class TiendaComponent implements OnInit {
       next: (tienda) => {
         this.tiendaListaGhost = tienda;
         this.tiendalista = tienda;
-        console.log('ESTA ES MI TIENDA')
-        console.log(this.tiendalista)
+        //console.log('ESTA ES MI TIENDA')
+        //console.log(this.tiendalista)
       }, complete: () => {
         switch(type) {
           case 1:
@@ -389,8 +389,8 @@ export class TiendaComponent implements OnInit {
 
   catchData(data:any) {
 
-    // console.warn('data a editar!!!!!!!!!!')
-    // console.warn(data)
+    // //console.warn('data a editar!!!!!!!!!!')
+    // //console.warn(data)
 
     this.calwidth = true;
     this.widthAutom();
@@ -432,10 +432,10 @@ export class TiendaComponent implements OnInit {
     this.clienteserv.obtenerCliente().subscribe({
       next: (cliente) => {
         this.clienteListaGhost = cliente;
-        console.log('==================================')
-        console.log('Este es el cliente escogido')
-        console.log(this.clienteListaGhost)
-        console.log('==================================')
+        //console.log('==================================')
+        //console.log('Este es el cliente escogido')
+        //console.log(this.clienteListaGhost)
+        //console.log('==================================')
         this._show_spinner = false;
       }, error: (e) => {
         this._show_spinner = false;
@@ -476,13 +476,13 @@ export class TiendaComponent implements OnInit {
     let id: any = this.tiendaForm.controls['codigoClienteidFk'].value;
     this.codcli = id;
     this.obtenerLocalidad(id)
-    console.warn('-*-*-*-*-*-*-*-')
-    console.warn(id)
-    console.warn('-*-*-*-*-*-*-*-')
+    //console.warn('-*-*-*-*-*-*-*-')
+    //console.warn(id)
+    //console.warn('-*-*-*-*-*-*-*-')
     this.clienteserv.obtenerCuentaCliente(id).subscribe({
       next: ( cuentas ) => {
         this.cuentaslista  = cuentas;
-        console.log(this.cuentaslista)
+        //console.log(this.cuentaslista)
         this._show_spinner = false;
       }, error:(e) => {
         console.error(e);
@@ -510,16 +510,16 @@ export class TiendaComponent implements OnInit {
 
   localidadesGuardadasCliente: any = [];
   obtenerLocalidad(id:any) {
-    console.log( "idcli:" )
-    console.log( id )
+    //console.log( "idcli:" )
+    //console.log( id )
     this._show_spinner = true;
     this.loc.obtenerLocalidadesCliente( id ).subscribe({
       next: (x) => {
         this.localidadesGuardadasCliente = x;
-        console.warn('=================================')
-        console.warn('Estas son las localidades')
-        console.warn(this.localidadesGuardadasCliente)
-        console.warn('=================================')
+        //console.warn('=================================')
+        //console.warn('Estas son las localidades')
+        //console.warn(this.localidadesGuardadasCliente)
+        //console.warn('=================================')
       }, complete: () => {
         this._show_spinner = false;
       }, error: (e) => {
@@ -594,7 +594,7 @@ export class TiendaComponent implements OnInit {
 
   eliminarCuentaTienda(data:any, id:number) {
 
-    //console.log(this.tipoAccion);
+    ////console.log(this.tipoAccion);
 
     if( this.tipoAccion == 0 ) {
       this.resultModal.splice( id, 1 );

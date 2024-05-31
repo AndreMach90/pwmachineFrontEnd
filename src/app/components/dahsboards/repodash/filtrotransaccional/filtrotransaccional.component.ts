@@ -110,7 +110,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
     if(changes) {
       this.obtenerTransac(this.listenNserie);
       this.obtenerTransacTabla(this.listenNserie);
-      // //console.log('cambiando desde el filtro transaccional')
+      // ////console.log('cambiando desde el filtro transaccional')
       this.dis_execel_export = false;
     }
   }
@@ -288,7 +288,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
         //alert'incorrecto');
         console.error(e);
       }, complete: () => {
-        //console.log(this.listaTrsansaccionesTabla);
+        ////console.log(this.listaTrsansaccionesTabla);
       }
     })
 
@@ -393,7 +393,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
         if (column.number === 27) {
           column.width = 20;
           column.eachCell((cell: any) => {
-            //console.log('Econtrado indice 27');
+            ////console.log('Econtrado indice 27');
             cell.numFmt = '#,##0.00';
           });
         }

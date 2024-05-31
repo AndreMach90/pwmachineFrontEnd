@@ -50,7 +50,7 @@ export class ModalDetalleMaquinaTranComponent implements OnInit {
             }
  
           })
-          ////////console.warn(this.listaDetalleequipoManual);
+          //////////console.warn(this.listaDetalleequipoManual);
         }, error: (e) => {
           console.error(e);
         }, complete: () => {

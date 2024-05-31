@@ -108,12 +108,12 @@ export class EquipoComponent implements OnInit {
                }
 
                ObtenerUsuarioTemporalHub(data:any) {
-                ////////console.warn(data);
+                //////////console.warn(data);
 
                 this.listaEsquipo.filter((element:any)=> {
                   if( element.ipEquipo == data.ipMachineSolicitud) {
                     element.capacidadUsuariosTemporales ++;
-                    ////////console.warn(element);
+                    //////////console.warn(element);
                   }
                 })
 
@@ -169,7 +169,7 @@ export class EquipoComponent implements OnInit {
       this.obtenerIps();
 
       this.usuarioTemporalHub.start().then( ()=> {
-        ////////console.warn('Conexion fue establecida con el canal de usuario temporal del equipo');         
+        //////////console.warn('Conexion fue establecida con el canal de usuario temporal del equipo');         
       }).catch( e => {
         console.error('ALGO HA PASADO CON PING');
         console.error(e);
@@ -180,7 +180,7 @@ export class EquipoComponent implements OnInit {
   catchDataUserMaq(data:any) {
     this.calwidth = true;
     // this.widthAutom();
-    ////////console.warn(data);
+    //////////console.warn(data);
     this._nombresx  = data.nombres;
     this._cedula   = data.cedula;
     this._telefono = data.telefono;
@@ -261,8 +261,8 @@ export class EquipoComponent implements OnInit {
 
     this.ipmaquinaUserMaq = data.ipEquipo;
     this.codigoTiendaidFk = data.codigoTiendaidFk;
-    ////////console.warn(this.ipmaquinaUserMaq)
-    ////////console.warn(this.codigoTiendaidFk)
+    //////////console.warn(this.ipmaquinaUserMaq)
+    //////////console.warn(this.codigoTiendaidFk)
 
     this.equiposerv.obtenerUsuariosIp(data.ipEquipo).subscribe({
       next: (x) => {
@@ -279,12 +279,12 @@ export class EquipoComponent implements OnInit {
     switch( this.calwidth ) {
       case true:
         this._width_table = 'tabledata table-responsive w-75 p-2';
-        ////////console.warn(this._width_table);
+        //////////console.warn(this._width_table);
         this.calwidth = false;
         break;
       case false:        
         this._width_table = 'tabledata table-responsive w-100 p-2';
-        ////////console.warn(this._width_table);
+        //////////console.warn(this._width_table);
         this.calwidth = true;
         break;
     }
@@ -304,7 +304,7 @@ export class EquipoComponent implements OnInit {
     this.tiendaservs.obtenerTiendas().subscribe({
       next: (tienda) => {
         this.tiendaListaGhost = tienda;
-        //console.log(this.tiendaListaGhost)
+        ////console.log(this.tiendaListaGhost)
       }
     })
   }
@@ -313,7 +313,7 @@ export class EquipoComponent implements OnInit {
   filterUsuariosMaquinaria() {
     let filter: any = this.filterUserEquiposForm.controls['filterusermaq'].value;
     this.listaUsuariosMaquina = this.listaUsuariosMaquinaGhost.filter((item:any) => 
-    // console.log( item )
+    // //console.log( item )
       item.usuario     .toLowerCase().includes(filter.toLowerCase()) ||
       item.nombres     .toLowerCase().includes(filter.toLowerCase()) ||
       item.nombreTienda.toLowerCase().includes(filter.toLowerCase()) ||
@@ -336,8 +336,8 @@ export class EquipoComponent implements OnInit {
   validateTiendas() {
     this.tiendalista = [];
 
-    console.log(this.tiendaListaGhost)
-    console.log(this.equiposForm.controls['codigoClienteidFk'].value)
+    //console.log(this.tiendaListaGhost)
+    //console.log(this.equiposForm.controls['codigoClienteidFk'].value)
 
     this.tiendaListaGhost.filter( (tienda:any) =>{
       if( tienda.codigoClienteidFk == this.equiposForm.controls['codigoClienteidFk'].value ) {
@@ -364,8 +364,8 @@ export class EquipoComponent implements OnInit {
         this.tiendalista.push(arr);
       }
 
-      // ////////console.warn('<<<<<<<<this.tiendalista>>>>>>>>');
-      // ////////console.warn(this.tiendalista);
+      // //////////console.warn('<<<<<<<<this.tiendalista>>>>>>>>');
+      // //////////console.warn(this.tiendalista);
 
     })
   }
@@ -414,7 +414,7 @@ export class EquipoComponent implements OnInit {
           tiempoSincronizacion: new Date()
         }
       }
-      ////////console.warn( this.modeloEquipos );
+      //////////console.warn( this.modeloEquipos );
       this.equiposerv.actualizarEquipo(this.idEquipo, this.modeloEquipos).subscribe({
         next: (x) => {
           Toast.fire({ icon: 'success', title: 'Equipo actualizado' });
@@ -471,7 +471,7 @@ export class EquipoComponent implements OnInit {
   }
 
   obtenerUsuariosMaquinarias(ip:string) {
-    ////////console.warn(ip);
+    //////////console.warn(ip);
   }
 
   modeloEquipos: any = [];
@@ -504,7 +504,7 @@ export class EquipoComponent implements OnInit {
         tiempoSincronizacion: tiempoSincronizacion
       }
 
-      ////////console.warn( this.modeloEquipos );
+      //////////console.warn( this.modeloEquipos );
       setTimeout(() => {
       this.equiposerv.guardarEquipo(this.modeloEquipos).subscribe(
         {
@@ -530,7 +530,7 @@ export class EquipoComponent implements OnInit {
   clienteListaGhost: any = [];
   clientelista:any = []
   obtenerCliente() {
-    console.log('Obteniendo cliente!  ')
+    //console.log('Obteniendo cliente!  ')
 
     this.clientelista = [];
     this._show_spinner = true;
@@ -558,7 +558,7 @@ export class EquipoComponent implements OnInit {
           this.clientelista.unshift(arr);
           
         })
-        console.warn(this.clientelista);
+        //console.warn(this.clientelista);
       }
     })
   }
@@ -572,7 +572,7 @@ export class EquipoComponent implements OnInit {
     this.equiposerv.obtenerEquipo(tp, ctienda).subscribe({
       next: (equipo) => {
         this.listaEsquipo = equipo;
-        ////////console.warn('Lista de equipos')
+        //////////console.warn('Lista de equipos')
         ////console.table(this.listaEsquipo);
 
         this.listaEsquipoGhost = equipo;
@@ -705,8 +705,8 @@ export class EquipoComponent implements OnInit {
     this.equiposerv.obtenerIPEquipos().subscribe({
       next: (x) => {
         this.listaIps = x;
-        ////////console.warn('listaIps');
-        ////////console.warn(this.listaIps);
+        //////////console.warn('listaIps');
+        //////////console.warn(this.listaIps);
       }
     })
   }
@@ -717,7 +717,7 @@ export class EquipoComponent implements OnInit {
     this.a = x.split('/');
     this.equiposForm.controls['serieEquipo'].setValue(this.a[1]);
     this.ipeditar = this.a[0];
-    ////////console.warn(this.a);
+    //////////console.warn(this.a);
   }
 
   filterEquipos() {
@@ -766,15 +766,15 @@ export class EquipoComponent implements OnInit {
     this.equiposerv.obtenerMarca(x).subscribe({
       next: (x) => {
         this.listaMarcas = x;
-        ////////console.warn(this.listaMarcas);
+        //////////console.warn(this.listaMarcas);
       }, error: (e) => {
         console.error(e);
       }, complete: () => {
         this.show_modelos = true;
         setTimeout(() => {
-          ////////console.warn('OBTENIENDO MODELOS 1')
+          //////////console.warn('OBTENIENDO MODELOS 1')
           this.obtenerModelos();
-          ////////console.warn('OBTENIENDO MODELOS 2')
+          //////////console.warn('OBTENIENDO MODELOS 2')
         }, 500);
       }
     })
@@ -803,7 +803,7 @@ export class EquipoComponent implements OnInit {
           this.tipomaqlista = this.listaCompleta.filter((item:any) => 
             item.nombre === "DEPOSITARIO DE BILLETES" || item.nombre === "DEPOSITARIO DE MONEDAS"
           );
-          // //////console.log(this.tipomaqlista);
+          // ////////console.log(this.tipomaqlista);
           break;
         }
       }
