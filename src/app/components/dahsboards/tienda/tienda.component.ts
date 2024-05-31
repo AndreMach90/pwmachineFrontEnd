@@ -114,8 +114,10 @@ export class TiendaComponent implements OnInit {
       this.secondary_a = this.env.appTheme.colorSecondary_A;
       this.secondary_b = this.env.appTheme.colorSecondary_B;  
       // this.getDataMaster('PRV00');  
+      // this.getDataMaster('PRV00');  
       this.obtenerCliente();
       this.obtenerTiendas(1);
+      // this.obtenerLocalidad();
       // this.obtenerLocalidad();
       
   }
@@ -401,6 +403,7 @@ export class TiendaComponent implements OnInit {
     this.idtienda = data.id;
     this.codecTienda = data.codigoTienda;
     this.tiendaForm.controls['codigoClienteidFk'].setValue(data.codigoCliente);
+    this.tiendaForm.controls['codigoClienteidFk'].setValue(data.codigoCliente);
     this.obtenerCuentaBancariaCliente();
     this.obtenerCuentasTienda(this.codecTienda);
     this.editcatch = true;
@@ -442,6 +445,7 @@ export class TiendaComponent implements OnInit {
         console.error(e);
       }, complete: () => {
         this.clienteListaGhost.filter( (element:any) => {
+        this.clienteListaGhost.filter( (element:any) => {
           let arr: any = {
             "id": element.id,
             "codigoCliente": element.codigoCliente,
@@ -453,6 +457,7 @@ export class TiendaComponent implements OnInit {
             "nombrecontacto": element.nombrecontacto
           }
           this.clientelista.unshift(arr);
+      })
       })
       }
     })
@@ -466,10 +471,17 @@ export class TiendaComponent implements OnInit {
       item.nombreAdmin    .toLowerCase().includes(filtertien.toLowerCase()) ||
       item.nombreCliente  .toLowerCase().includes(filtertien.toLowerCase()) 
     );
+    this.tiendalista = this.tiendaListaGhost.filter( (item:any) => 
+      item.nombreTienda   .toLowerCase().includes(filtertien.toLowerCase()) ||
+      item.nombreProvincia.toLowerCase().includes(filtertien.toLowerCase()) ||
+      item.nombreAdmin    .toLowerCase().includes(filtertien.toLowerCase()) ||
+      item.nombreCliente  .toLowerCase().includes(filtertien.toLowerCase()) 
+    );
   }
 
   codcli: any;
   obtenerCuentaBancariaCliente() {
+
 
     this._show_spinner = true;
     this.cuentaslista = [];
@@ -489,6 +501,7 @@ export class TiendaComponent implements OnInit {
         this._show_spinner = false;
       }
     })
+
 
   }
 
@@ -638,9 +651,6 @@ export class TiendaComponent implements OnInit {
               })
             }
         })
-  
-    
     }}
   }
-
 }

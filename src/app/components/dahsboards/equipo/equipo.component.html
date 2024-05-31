@@ -5,18 +5,18 @@
 </div>
 
 <div class="dashworks p-2 m-2 rounded-3 shadow "
-     [ngStyle]="{'background-color': 'white'}">
-     <div class="register d-flex justify-content-between">
-         <div class="w-25 p-3" *ngIf="viewForm" >
+    [ngStyle]="{'background-color': 'white'}">
+    <div class="register d-flex justify-content-between">
+        <div class="w-25 p-3" *ngIf="viewForm" >
             <div class="">
                 <h1>Registro de equipos <span style="opacity: 0;"> {{count}}</span> </h1>
             </div>
             <hr>
             <form [formGroup]="equiposForm"
-                  class="mb-2"
-                  (ngSubmit)="onSubmit()">
-                  <label for="codigoClienteidFk" class="form-label">
-                    <span class="text-primary">
+                class="mb-2"
+                (ngSubmit)="onSubmit()">
+                <label for="codigoClienteidFk" class="form-label">
+                    <span class="text-primary" > 
                         Escoge el Cliente 
                     </span>
                     <span class="text-danger">*</span>
@@ -31,7 +31,6 @@
                                 {{ cliente.nombreCliente | titlecase }} - {{ cliente.ruc }}
                         </option>
                 </select>
-
                 <div class="mb-3">
                     <label for="codigoClienteidFk" class="form-label ">
                         <span class="text-primary" > Escoge la Tienda </span>
@@ -47,7 +46,6 @@
                     </select>
                 </div>
                 <div *ngIf="equiposForm" class="animate__animated animate__backInLeft p-2 bg-light rounded-2 "  >
-                        
                     <div class="mb-3">
                         <label for="tipomaq" class="form-label ">
                             <span class="text-primary" > Tipo de Equipo </span>
@@ -58,8 +56,8 @@
                                 (change)="obtenerMarcas()"
                                 aria-label="">
                                 <option *ngFor="let tipo of tipomaqlista"
-                                        [value]="tipo.codigo" >
-                                        {{tipo.nombre | titlecase }}                                
+                                    [value]="tipo.codigo" >
+                                    {{tipo.nombre | titlecase }}                                
                                 </option>
                         </select>
                     </div>
@@ -74,15 +72,15 @@
                             <span class="text-danger">*</span>
                         </label>
                         <select class="inpForms form-select w-100"
-                                formControlName="nomMarc"
-                                #nomMarc
-                                id="nomMarc"
-                                (change)="obtenerModelos()"
-                                aria-label="">
-                                <option *ngFor="let marca of listaMarcas"
-                                        [value]="marca.codmarca">
-                                        {{marca.nombremarca | titlecase }} / {{marca.codmarca}}
-                                </option>
+                            formControlName="nomMarc"
+                            #nomMarc
+                            id="nomMarc"
+                            (change)="obtenerModelos()"
+                            aria-label="">
+                            <option *ngFor="let marca of listaMarcas"
+                                [value]="marca.codmarca">
+                                {{marca.nombremarca | titlecase }} / {{marca.codmarca}}
+                            </option>
                         </select>
                     </div>
                     <div class="mb-3" *ngIf="show_modelos">
@@ -93,40 +91,40 @@
                             <span class="text-danger">*</span>
                         </label>
                         <select class="inpForms form-select w-100"
-                                formControlName="nomMod"
-                                #nomMod
-                                id="nomMod"
-                                aria-label="">
-                                <option *ngFor="let modelo of listaModelos"
-                                        [value]="modelo.codmodelo">
-                                        {{modelo.nombremodelo | titlecase }} / {{modelo.codmodelo }}
-                                </option>
+                            formControlName="nomMod"
+                            #nomMod
+                            id="nomMod"
+                            aria-label="">
+                            <option *ngFor="let modelo of listaModelos"
+                                [value]="modelo.codmodelo">
+                                {{modelo.nombremodelo | titlecase }} / {{modelo.codmodelo }}
+                            </option>
                         </select>
                     </div>                    
                         <div class="mb-3 w-100">
                             <label for="ipmaquina"
-                                   class="form-label text-secondary">
-                                   I.P. del Equipo:
-                                   <span class="fs-6 text-success">
-                                        <strong> {{ipeditar}} </strong>
-                                   </span>
-                                   <span class="text-danger">*</span>
+                                class="form-label text-secondary">
+                                I.P. del Equipo:
+                                <span class="fs-6 text-success">
+                                    <strong> {{ipeditar}} </strong>
+                                </span>
+                                <span class="text-danger">*</span>
                             </label>
                             <select class="form-select w-100"
-                                    formControlName="ipmaquina"
-                                    aria-label="Disabled select example"
-                                    (change)="validateDataIP();"
-                                    #ipmaquina
-                                    id="ipmaquina"
-                                    aria-label="">
-                                    <option *ngFor="let ip of listaIps"
-                                            [value]="ip.ipEquipo+'/'+ip.serieEquipo">
-                                            <small class="text-secondary"
-                                                   style="font-size: 9pt;">
-                                                   {{ip.ipEquipo}}
-                                            </small>
-                                    </option>
-                           </select>                            
+                                formControlName="ipmaquina"
+                                aria-label="Disabled select example"
+                                (change)="validateDataIP();"
+                                #ipmaquina
+                                id="ipmaquina"
+                                aria-label="">
+                                <option *ngFor="let ip of listaIps"
+                                    [value]="ip.ipEquipo+'/'+ip.serieEquipo">
+                                    <small class="text-secondary"
+                                        style="font-size: 9pt;">
+                                        {{ip.ipEquipo}}
+                                    </small>
+                                </option>
+                            </select>                            
                         </div>                    
                         <div class="mb-3 w-100">
                             <label for="serieEquipo"
@@ -212,8 +210,8 @@
                     <h1 class="m-0"> Equipos Registrados <span class="text-secondary" > ({{listaEsquipo.length}}) </span> </h1>
                 </div>
                 <div class="w-75" >
-                    <section class="filtros mt-2 mb-2 w-100 d-flex">
-                        <div class="mb-2 d-flex w-100">
+                    <section class="filtros mt-2 mb-2 w-100 d-inline-flex align-items-center">
+                        <div class="d-flex w-100">
                             <form [formGroup]="filterForm" class="w-100">
                                 <input class=" w-100 shadow-sm form-control rounded-pill" 
                                        fxFlex="auto" type="text"
@@ -224,6 +222,10 @@
                                        #input placeholder="Búsqueda de equipos registrados...">
                                        <!-- [(ngModel)]="filterequip" -->
                             </form>
+                        </div>
+                        <div class="machineDesact" [ngClass]="{'active': isActive}" (click)="machineDesactive()"
+                            [title]="isActive ? 'Quitar desactivadas' : 'Mostrar desactivadas'">
+                            <mat-icon>{{ isActive ? 'visibility' : 'visibility_off' }}</mat-icon>
                         </div>
                         <div *ngIf="permisonUsers">
                             <div [style]="'background-image: url( '+add+' )' "
@@ -268,13 +270,22 @@
                     </th>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let equipos of listaEsquipo; let i = index" >
-                        <td *ngIf="permisonUsers">
-                            <div class="d-flex">
-                            <div [style]="'background-image: url( '+edit+' )' " (click)="catchData(equipos)" class="icono-btn" ></div>
-                            <div [style]="'background-image: url( '+delete+' )' " (click)="eliminarEquipos(equipos, i)" class="icono-btn" ></div>
-                            </div>
-                        </td>
+                    <tr *ngFor="let equipos of listaEsquipo; let i = index" [ngClass]="{ 'activeEquipo': equipos.active !== 'A' }">
+                        <ng-container *ngIf="equipos.active == 'A'; else EquipoDesactivado">
+                            <td *ngIf="permisonUsers">
+                                <div class="d-flex">
+                                <div [style]="'background-image: url( '+edit+' )' " (click)="catchData(equipos)" class="icono-btn" title="Editar"></div>
+                                <div [style]="'background-image: url( '+delete+' )' " (click)="eliminarEquipos(equipos, i)" class="icono-btn" title="Desactivar"></div>
+                                </div>
+                            </td>
+                        </ng-container>
+                        <ng-template #EquipoDesactivado>
+                            <td *ngIf="permisonUsers" class="td_button">
+                                <div class="button_task" (click)="updateActive(equipos)" title="Activar">
+                                    <mat-icon>add_to_queue</mat-icon>
+                                </div>
+                            </td>
+                        </ng-template>
                         <td>
                             {{ equipos.ipEquipo }}
                         </td>
@@ -283,7 +294,6 @@
                         </td>
                         <td>
                             {{ equipos.nombreTienda }} 
-                            <!-- <br> <small>{{equipos.provincia}}</small> -->
                         </td>
                         <td>
                             {{ equipos.capacidadIni }}
@@ -300,166 +310,168 @@
                         <td>
                             {{ equipos.nombremodelo }}
                         </td>
-                        <td *ngIf="permisonUsers" >
-                            <div class="btn btn-warning btn-sm m-1"
-                                 [matBadge]="equipos.capacidadUsuariosTemporales"
-                                 matBadgePosition="before"
-                                 matBadgeColor="warn"
-                                 (click)="openDialogUserTemporales(equipos)">
-                                 <div [style]="'background-image: url('+search+')'"
-                                      class="icono"></div>
-                            </div>
-                            <div class="btn btn-primary btn-sm m-1"
-                                 [matBadge]="equipos.capacidadUsuarios"
-                                 matBadgePosition="before"
-                                 matBadgeColor="warn"
-                                 (click)="op.toggle($event);obtenerUsuariosIpMaquina(equipos)">
-                                 <div [style]="'background-image: url('+users+')'"
-                                      class="icono"></div>
-                            </div>
-                            <p-overlayPanel #op>
-
-                                <div>
-                                    <div class="d-flex justify-content-between align-items-center mb-2 ">
-                    
-                                        <span class="fs-6" > Usuarios Equipos <strong class="text-primary" >( {{listaUsuariosMaquina.length}} )</strong> </span>
-                                        <div class="w-75" >
-                                            <section class="filtros mt-2 mb-2">
-                                                <div class="mb-2 d-flex">
-
-                                                    <form [formGroup]="filterUserEquiposForm" class="w-100">
-                                                        <input class=" w-100 shadow-sm form-control rounded-pill" 
-                                                               fxFlex="auto" type="text"
-                                                               formControlName="filterusermaq"
-                                                               #filterusermaq
-                                                               id="filterusermaq"
-                                                               #input 
-                                                               (keyup)="filterUsuariosMaquinaria()"
-                                                               placeholder="Búsqueda de usuarios maquinarias..."
-                                                               >
-                                                    </form>
-
-                                                </div>
-                                            </section>
-                                        </div>                                        
-                                    </div>
-                                    <section class="sect-edit d-flex align-items-end" *ngIf="edit_temporal_user" >
-
-                                        <form [formGroup]="filterEquiposForm" class="w-100">
-                                            <div class="col" >
-                                                <label for="_nombres">
-                                                    Establecimiento
-                                                </label>
-                                                <input type="text"
-                                                       formControlName="_nombres"
-                                                       #_nombres
-                                                       id="_nombres"                                                        
-                                                       class="form-control form-control-sm"
-                                                       >
-                                            </div>
-                                            <div class="col">
-                                                <label for="_cedula">
-                                                    Cod. Establecimiento
-                                                </label>
-                                                <input type="text"
-                                                       formControlName="_cedula"
-                                                       #_cedula
-                                                       id="_cedula"  
-                                                       (keyup)="validateInputNumber('cedula')"
-                                                       class="form-control form-control-sm">
-                                            </div>
-                                            <!-- <div class="col">
-                                                <label for="_telefono">
-                                                    Teléfono
-                                                </label>
-                                                <input type="text" [(ngModel)]="_telefono"
-                                                       id="_telefono"
-                                                       (keyup)="validateInputNumber('_telefono')" 
-                                                       class="form-control form-control-sm">
-                                            </div> -->
-=======
-                                        
-                                            <div class="col d-flex">
-                                                <button type="button"
-                                                        class="btn btn-danger btn-sm "
-                                                        *ngIf="_cancel_button_us"
-                                                        (click)="limpiarMqU()">
-                                                        <div [style]="'background-image: url( '+cancel+' )' " class="icono" ></div>
-                                                </button>
-                                                <button type="button" class="d-flex align-items-center btn btn-sm btn-primary "
-                                                        (click)="editarUsuarioMaquina()"
-                                                        *ngIf="_create_show" >
-                                                        <div [style]="'background-image: url( '+crear+' )' " class="icono" ></div>
-                                                        <div >{{_action_butto_us}} Usuario</div>
-                                                </button>    
-                                            </div>
-                                        </form>        
-                                    </section>
-                                    <div style="max-height: 300px; overflow-y: auto;" >
-                                    <table class="table table-hover table-bordered table-warning table-striped align-middle" >
-                                        <thead class="bg-dark text-light" >
-                                            <th class="p-2" *ngIf="permisonUsers"></th>
-                                            <th class="p-2" >
-                                                Nombre de usuario
-                                            </th>
-                                            <th class="p-2">
-                                                Cod. Establecimiento
-                                            </th>
-                                            <th class="p-2">
-                                                Establecimiento
-                                            </th>
-                                            <th class="p-2">
-                                                Tienda pertenciente
-                                            </th>
-                                            <!-- <th class="p-2">
-                                                Teléfono
-                                            </th> -->
-                                            <th class="p-2">
-                                                Cta. Bancaria
-                                            </th>
-                                        </thead>
-                                        <tbody>
-                                            
-                                            <tr *ngFor="let usuariosm of listaUsuariosMaquina">
-                                                <td *ngIf="permisonUsers">
-                                                    <!-- (click)="catchData(usuariosm, 'mq')" -->
-                                                    <div class="d-flex w-100">
-                                                        <div (click)="edit_temporal_user = !edit_temporal_user; catchDataUserMaq(usuariosm);"
-                                                             [style]="'background-image: url( '+edit+' )'"                                                             
-                                                             class="icono-btn">
-                                                        </div>
+                        <ng-container *ngIf="equipos.active == 'A'; else EquipoDesactivadoModelo">
+                            <td *ngIf="permisonUsers">
+                                <div class="btn btn-warning btn-sm m-1"
+                                     [matBadge]="equipos.capacidadUsuariosTemporales"
+                                     matBadgePosition="before"
+                                     matBadgeColor="warn"
+                                     (click)="openDialogUserTemporales(equipos)">
+                                     <div [style]="'background-image: url('+search+')'"
+                                          class="icono"></div>
+                                </div>
+                                <div class="btn btn-primary btn-sm m-1"
+                                     [matBadge]="equipos.capacidadUsuarios"
+                                     matBadgePosition="before"
+                                     matBadgeColor="warn"
+                                     (click)="op.toggle($event);obtenerUsuariosIpMaquina(equipos)">
+                                     <div [style]="'background-image: url('+users+')'"
+                                          class="icono"></div>
+                                </div>
+                                <p-overlayPanel #op>
+    
+                                    <div>
+                                        <div class="d-flex justify-content-between align-items-center mb-2 ">
+                        
+                                            <span class="fs-6" > Usuarios Equipos <strong class="text-primary" >( {{listaUsuariosMaquina.length}} )</strong> </span>
+                                            <div class="w-75" >
+                                                <section class="filtros mt-2 mb-2">
+                                                    <div class="mb-2 d-flex">
+    
+                                                        <form [formGroup]="filterUserEquiposForm" class="w-100">
+                                                            <input class=" w-100 shadow-sm form-control rounded-pill" 
+                                                                   fxFlex="auto" type="text"
+                                                                   formControlName="filterusermaq"
+                                                                   #filterusermaq
+                                                                   id="filterusermaq"
+                                                                   #input 
+                                                                   (keyup)="filterUsuariosMaquinaria()"
+                                                                   placeholder="Búsqueda de usuarios maquinarias..."
+                                                                   >
+                                                        </form>
+    
                                                     </div>
-                                                </td>
-                                                <td> {{ usuariosm.usuario }} </td>
-                                                <td> {{ usuariosm.cedula  }} </td>
-                                                <td> {{ usuariosm.nombres }} </td>
-                                                <td>
-                                                    <span>
-                                                        {{ usuariosm.nombreTienda | uppercase }}
-                                                    </span>
-                                                    <br>
-                                                    <small class="text-secondary">
-                                                        {{ usuariosm.nombreProvincia }}
-                                                    </small>
-                                                </td>
-                                                <!-- <td>
-                                                    {{ usuariosm.telefono }}
-                                                </td> -->
-                                                <td>
-                                                    <strong>
-                                                         <span> No. {{ usuariosm.numerocuenta }} </span>
-                                                        <small class="text-secondary" >  {{ usuariosm.nombanco }} / Cuenta {{ usuariosm.tipoCuenta }} </small>
-                                                    </strong>
-                                                </td>
-                                            </tr>
-                    
-                                        </tbody>
-                                    </table>
-                                </div>
-                                </div>
-                                
-                            </p-overlayPanel>
-                        </td>
+                                                </section>
+                                            </div>                                        
+                                        </div>
+                                        <section class="sect-edit d-flex align-items-end" *ngIf="edit_temporal_user" >
+    
+                                            <form [formGroup]="filterEquiposForm" class="w-100">
+                                                <div class="col" >
+                                                    <label for="_nombres">
+                                                        Establecimiento
+                                                    </label>
+                                                    <input type="text"
+                                                           formControlName="_nombres"
+                                                           #_nombres
+                                                           id="_nombres"                                                        
+                                                           class="form-control form-control-sm"
+                                                           >
+                                                </div>
+                                                <div class="col">
+                                                    <label for="_cedula">
+                                                        Cod. Establecimiento
+                                                    </label>
+                                                    <input type="text"
+                                                           formControlName="_cedula"
+                                                           #_cedula
+                                                           id="_cedula"  
+                                                           (keyup)="validateInputNumber('cedula')"
+                                                           class="form-control form-control-sm">
+                                                </div>
+                                                <!-- <div class="col">
+                                                    <label for="_telefono">
+                                                        Teléfono
+                                                    </label>
+                                                    <input type="text" [(ngModel)]="_telefono"
+                                                           id="_telefono"
+                                                           (keyup)="validateInputNumber('_telefono')" 
+                                                           class="form-control form-control-sm">
+                                                </div> -->
+    <!-- ======= -->        
+                                                <div class="col d-flex">
+                                                    <button type="button"
+                                                            class="btn btn-danger btn-sm "
+                                                            *ngIf="_cancel_button_us"
+                                                            (click)="limpiarMqU()">
+                                                            <div [style]="'background-image: url( '+cancel+' )' " class="icono" ></div>
+                                                    </button>
+                                                    <button type="button" class="d-flex align-items-center btn btn-sm btn-primary "
+                                                            (click)="editarUsuarioMaquina()"
+                                                            *ngIf="_create_show" >
+                                                            <div [style]="'background-image: url( '+crear+' )' " class="icono" ></div>
+                                                            <div >{{_action_butto_us}} Usuario</div>
+                                                    </button>    
+                                                </div>
+                                            </form>        
+                                        </section>
+                                        <div style="max-height: 300px; overflow-y: auto;" >
+                                        <table class="table table-hover table-bordered table-warning table-striped align-middle" >
+                                            <thead class="bg-dark text-light" >
+                                                <th class="p-2" *ngIf="permisonUsers"></th>
+                                                <th class="p-2" >
+                                                    Nombre de usuario
+                                                </th>
+                                                <th class="p-2">
+                                                    Cod. Establecimiento
+                                                </th>
+                                                <th class="p-2">
+                                                    Establecimiento
+                                                </th>
+                                                <th class="p-2">
+                                                    Tienda pertenciente
+                                                </th>
+                                                <!-- <th class="p-2">
+                                                    Teléfono
+                                                </th> -->
+                                                <th class="p-2">
+                                                    Cta. Bancaria
+                                                </th>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let usuariosm of listaUsuariosMaquina">
+                                                    <td *ngIf="permisonUsers">
+                                                        <!-- (click)="catchData(usuariosm, 'mq')" -->
+                                                        <div class="d-flex w-100">
+                                                            <div (click)="edit_temporal_user = !edit_temporal_user; catchDataUserMaq(usuariosm);"
+                                                                 [style]="'background-image: url( '+edit+' )'"                                                             
+                                                                 class="icono-btn">
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td> {{ usuariosm.usuario }} </td>
+                                                    <td> {{ usuariosm.cedula  }} </td>
+                                                    <td> {{ usuariosm.nombres }} </td>
+                                                    <td>
+                                                        <span>
+                                                            {{ usuariosm.nombreTienda | uppercase }}
+                                                        </span>
+                                                        <br>
+                                                        <small class="text-secondary">
+                                                            {{ usuariosm.nombreProvincia }}
+                                                        </small>
+                                                    </td>
+                                                    <!-- <td>
+                                                        {{ usuariosm.telefono }}
+                                                    </td> -->
+                                                    <td>
+                                                        <strong>
+                                                             <span> No. {{ usuariosm.numerocuenta }} </span>
+                                                            <small class="text-secondary" >  {{ usuariosm.nombanco }} / Cuenta {{ usuariosm.tipoCuenta }} </small>
+                                                        </strong>
+                                                    </td>
+                                                </tr>
+                        
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    </div>
+                                </p-overlayPanel>
+                            </td>
+                        </ng-container>
+                        <ng-template #EquipoDesactivadoModelo>
+                            <td *ngIf="permisonUsers"></td>
+                        </ng-template>
                     </tr>
                 </tbody>
             </table>

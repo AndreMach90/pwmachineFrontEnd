@@ -1,147 +1,194 @@
-<div style="position: fixed; top: 20px; left: 10px;">
-    <button type="submit"
-            style="border: none; background-color: transparent;"
-            class="d-flex align-items-center"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasExample"
-            aria-controls="offcanvasExample">
-            <div [matBadge]="nuevoObjectalerts.length"   matBadgeColor="warn" [style]="'background-image: url( ../../../../assets/alert.png )'" class="icono"></div>
-   </button>
-</div>
-
-<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+<!-- No se sabe porque se necesita, aparece border innecesario -->
+<div style="position: fixed; top: 20px; left: 10px;"></div>
+<!-- Esto son las notificaciones o alertas -->
+<div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel"
+    [style]="'background-color:'+theme.bgTable+'; color:'+theme.ftColor+';'">
     <div class="offcanvas-header">
-      <h2 class="offcanvas-title" id="offcanvasExampleLabel">Registro de alertas</h2>
-      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <h2 class="offcanvas-title pt-3" id="offcanvasExampleLabel">
+            <strong>Registro de alertas  </strong><mat-icon class="btn-del" (click)="eliminarAllAlerts()" title="Eliminar todas las notificaciones">delete</mat-icon>
+        </h2>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <hr>
-    <div class="offcanvas-body">    
-      <div>
-        
-      </div>
-      <div class="alerts-error">
-        <audio #audioPlayer>
-            <source src="../../../../assets/mp3/errormachine.mp3" type="audio/mpeg">
-        </audio>
-        <div class="d-flex flex-column">
-        <div class="chips-alert m-2 rounded-2 shadow-sm p-2 animate__animated animate__bounceIn"
-             *ngFor="let alertas of nuevoObjectalerts; let i = index"
-             [style]="'background-color:'+alertas.colorbg +'; color:'+alertas.colorfg+'; border: groove 1px ' + alertas.colorfg"
-             (click)="eliminaralerta(i)">
-             <div>
-                <!-- <span><strong>{{alertas.tipo}}</strong></span>
-                <br> -->
-                <strong>@</strong> <span> {{alertas.msj}} </span>
-             </div>
-             <div></div>
-        </div>
-        </div>
-    </div>      
+    <div class="border"></div>
+    <div class="offcanvas-body">
+        <div class="alerts-error">
+            <audio #audioPlayer>
+                <source src="../../../../assets/mp3/errormachine.mp3" type="audio/mpeg">
+            </audio>
+            <div class="d-flex flex-column">
+                <div class="chips-alert m-2 rounded-3 p-2 shadow animate__animated animate__bounceIn d-flex align-items-center justify-content-between rounded"
+                    *ngFor="let alertas of nuevoObjectalerts; let i = index"
+                    [style]="'border-left: 7px solid '+alertas.colorbg+';background-color:'+theme.bgSelectColor+';'">
+                    <div class="d-inline-block align-items-center p-0"
+                        [style]="'overflow: hidden;white-space: pre-line;'">
+                        <strong>{{alertas.nserie}}</strong>
+                        <br>
+                        <span>{{alertas.msj}}</span>
+                    </div>
+                    <div>
+                        <div class="btn-delete justify-content-end d-flex align-items-center" 
+                            [style]="'color:'+alertas.colorbg+';cursor: pointer;'"
+                            (click)="eliminarAlerta(i)">
+                            <mat-icon>cancel</mat-icon>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <small>{{fechaNotif | date :'shortTime'}}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>      
     </div>
 </div>
-  
 
-<div class="equipo-monitor w-100 p-4">
-    <div class=" filter-monitoreo w-50 d-flex align-items-center ">
-        <!-- <div class="m-1">
-            <button class="btn btn-outline-warning" style="font-weight: bold;" (click)="view_filter = !view_filter" > Filtrar </button>
-        </div> -->
-        <section class="filtros w-100 animate__animated animate__backInLeft" *ngIf="true" >
-            <div class="mb-2 d-flex w-100">
-              <input class=" w-100 shadow-sm form-control rounded-pill"
-                     fxFlex="auto" type="text"
-                     [(ngModel)]="filterequip"
-                     (keyup)="filterEquipos()" 
-                     style="font-weight: bold; font-size: 18pt;"
-                     #input
-                     placeholder="Búsqueda de equipos...">
+<!-- Esto es la ventana principal -->
+<div class="w-100 p-4" [style]="'background-color:'+theme.bgTheme+';height: 100vh;'">
+    <!-- Header -->
+    <div class="d-flex align-items-end justify-content-between pb-3">
+        <div class="dropdown d-flex p-0 m-0">
+            <button type="button" 
+                class="btn-cliente dropdown-toggle" 
+                data-bs-toggle="dropdown" 
+                aria-expanded="false"
+                [style]="'background:'+theme.bgTable+';'">
+                {{selectedCliente}}
+            </button>
+            <ul class="dropdown-menu" [style]="'--bs-dropdown-link-hover-bg:'+theme.hoverTable+';'">
+                <li class="dropdown-item" (click)="filterCliente('todoCliente', 'Mostrar todo')"
+                    [ngClass]="{'active': selectedClienteId === 'todoCliente'}">
+                    <strong>Mostrar todo</strong>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <ng-container *ngFor="let cliente of listaCliente">
+                    <li class="dropdown-item" (click)="filterCliente(cliente.codigoCliente, cliente.nombreCliente)"
+                        [ngClass]="{'active': selectedClienteId === cliente.codigoCliente}">
+                        {{cliente.nombreCliente}}
+                    </li>
+                </ng-container>
+            </ul>
+        </div>
+        <div class="d-flex p-0 m-0">
+            <div class="input-group d-flex shadow-sm align-items-center"
+                [style]="'background:'+theme.bgTable+';'">
+                <mat-icon class="m-1">search</mat-icon>
+                <input class="form-control rounded-pill"
+                    type="text"
+                    fxFlex="auto"
+                    [(ngModel)]="filterequip"
+                    (keyup)="filterEquipos()"
+                    #input
+                    placeholder="Búsqueda de equipos...">
             </div>
-        </section>
-    </div>
+            <button type="submit"
+                style="border: none;"
+                class="notification d-flex align-items-center justify-content-center shadow rounded-pill"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasExample"
+                aria-controls="offcanvasExample"
+                [ngClass]="{ 'notifAct ': nuevoObjectalerts.length !== 0 }">
+                <mat-icon matBadgeColor="warn" aria-hidden="false"
+                    [matBadge]="nuevoObjectalerts.length">
+                    {{ nuevoObjectalerts.length == 0 ? 'notifications' : 'notifications_active' }}
+                </mat-icon>
+            </button>
+        </div>
         
-
-    <div class="d-flex flex-wrap justify-content-lg-around  align-items-center">
-     <div class="equipos shadow-sm m-1 rounded-2" *ngFor="let equipos of listaEsquipo" 
-          [style]="'background-color: ' +equipos.colorEsstado+ '; transition: ease-in all 1s; width: 250px '" >
-          <div class="p-1" >
-              <span class="p-2 d-flex justify-content-between align-items-end " >
-                  <small>Equipo</small> &nbsp;&nbsp; 
-                  <div style="text-align: right; background-color: rgba(0, 0, 0, 0.1);" class=" p-2 rounded-2 " >
-                    <div [class]="equipos.colorTexto"> <strong> {{ equipos.nombreTienda }} / {{ equipos.provincia }} </strong> </div>
-                    <strong [class]="equipos.colorTexto" > {{ equipos.serieEquipo }} </strong>
-                  </div>
-                 
-              </span>                            
-              <span class="p-2 d-flex justify-content-between">
-                  <small>IP:</small> &nbsp;&nbsp;
-                  <strong [class]="equipos.colorTexto">
-                    {{ equipos.ipEquipo }}
-                  </strong>
-              </span>
-          </div>
-          <div class="p-2">
-            <div class="m-1 d-flex justify-content-between">
-                <span> % Cantidad de Piezas </span>
-                <div>
-                    <strong>
-                        {{equipos.indicadorPorcentajeBilletes}} %
-                    </strong>
-                    <!-- <strong>
-                        {{ equipos.indicadorCapacidadBilletes }} / {{ equipos.indicadorCapacidadBilletesMax }}
-                    </strong> -->
-                </div>
-             </div>
-            <div class="progress shadow-sm m-1"
-                data-bs-toggle="tooltip" data-bs-placement="top"
-                [title]=" equipos.indicadorPorcentajeBilletes + '%' ">
-                <div [class]="equipos.indicadorColorBarProgressBilletes"
-                     role="progressbar" 
-                     [style.width]="equipos.indicadorPorcentajeBilletes + '%'"
-                     style="transition: ease-in-out 1s all;"
-                     [attr.aria-valuenow]="equipos.indicadorPorcentajeBilletes"
-                     aria-valuemin="0"
-                     aria-valuemax="100">
-                     <!-- {{equipos.indicadorPorcentajeBilletes}} % -->
-                </div>                                
-            </div>
-            <div class="m-1 d-flex justify-content-between">
-                <span> % Monto Asegurado </span>
-                <div>
-                    <!-- <strong> $  {{equipos.indicadorTotalAsegurado}} / $ {{equipos.indicadorTotalMaxAsegurado}} </strong> -->
-                    <strong> {{equipos.indicadorPorcentajeTotalMaxAsegurado}} % </strong>
-                </div>
-            </div>
-            <div class="progress shadow-sm m-1"
-                 data-bs-toggle="tooltip" data-bs-placement="top" 
-                 [title]="equipos.indicadorPorcentajeTotalMaxAsegurado + '%' ">
-                <div [class]="equipos.indicadorColorBarProgressAsegurado"
-                     role="progressbar" 
-                     [style.width]="equipos.indicadorPorcentajeTotalMaxAsegurado + '%'"
-                     style="transition: ease-in-out 1s all;"
-                     [attr.aria-valuenow]="equipos.indicadorPorcentajeTotalMaxAsegurado"
-                     aria-valuemin="0"
-                     aria-valuemax="100"
-                     >
-                     <!-- {{equipos.indicadorPorcentajeTotalMaxAsegurado}} % -->
-                </div>
-            </div>
-            <div class="d-flex justify-content-between" >
-                <div class="time p-1 text-dark rounded-2 m-1">
-                    <small>Tiempo Sincronización:</small> <br>
-                    <span>{{ equipos.tiempoSincronizacion | date: 'short' }} </span>
-                </div>
-                <div class="time p-1 text-dark rounded-2 m-1">
-                    <small>Última Recolección:</small> <br>
-                    <span>{{ equipos.ultimaRecoleccion | date: 'short' }} </span>
-                </div>
-            </div>
-          </div>
-          <!-- <div class="w-100">
-              <button [class]="equipos.colorBtn"
-                      (click)="obtenerDetalleEquipos(equipos)">
-                      Monitorear
-              </button>
-          </div> -->
-     </div>
     </div>
- </div>
+    <!-- Body -->
+    <div class="tabla table-responsive-lg" [style]="'background:'+theme.bgTable+';'">
+        <div class="bordeTabla">
+            <table class="table table-hover" 
+                [style]="'--bs-table-color:'+theme.ftColor+';--bs-table-hover-bg:'+theme.hoverTable+';--bs-table-hover-color:'+theme.ftColor+';'">
+                <thead [style]="'--bs-table-bg:'+theme.bgTable+';'">
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Tienda</th>
+                    <th scope="col">Equipo</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Capacidad de Piezas</th>
+                    <th scope="col">Monto Asegurado</th>
+                    <th scope="col">Tiempo Sincronización</th>
+                    <th scope="col">Última Recolección</th>
+                    <th scope="col">No. Trans. / Tipo</th>
+                    <th scope="col">Última Trans.</th>
+                </tr>
+                </thead>
+                <tbody [style]="'--bs-table-bg:transparent;'">
+                    <ng-container *ngFor="let equipo of listaEsquipo; let i = index">
+                        <tr>
+                            <td>
+                                <div class="rounded" 
+                                    [style]="'background:'+getColor(equipo.colorEsstado)+';width:10px;height:40px;'">
+                                </div>
+                            </td>
+                            <td>{{equipo.nombreTienda}} <small>{{"\n"+equipo.provincia}}</small> </td>
+                            <td>{{equipo.tipoMaquinaria}} <small>{{"\n"+equipo.nombremarca+" "+equipo.nombremodelo}}</small> </td>
+                            <td [style]="'color:'+getColor(equipo.colorEsstado)+';'"><strong>{{equipo.serieEquipo}}</strong><small>{{"\n"+equipo.ipEquipo}}</small> </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="progress shadow-sm me-2"
+                                        style="width: 100px;"
+                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                        [title]="equipo.indicadorPorcentajeBilletes + '%'">
+                                        <div [class]="equipo.indicadorColorBarProgressBilletes"
+                                            role="progressbar" 
+                                            [style.width]="equipo.indicadorPorcentajeBilletes + '%'"
+                                            style="transition: ease-in-out 1s all;"
+                                            [attr.aria-valuenow]="equipo.indicadorPorcentajeBilletes"
+                                            aria-valuemin="0"
+                                            aria-valuemax="100">
+                                        </div>                               
+                                    </div>
+                                    <small>{{equipo.indicadorPorcentajeBilletes+"%"}} </small>
+                                </div>
+                                <small>{{equipo.indicadorCapacidadBilletes+" / "+equipo.indicadorCapacidadBilletesMax}}</small>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="progress shadow-sm me-2"
+                                        style="width: 100px;"
+                                        data-bs-toggle="tooltip" data-bs-placement="top" 
+                                        [title]="equipo.indicadorPorcentajeTotalMaxAsegurado + '%'">
+                                        <div [class]="equipo.indicadorColorBarProgressAsegurado"
+                                            role="progressbar" 
+                                            [style.width]="equipo.indicadorPorcentajeTotalMaxAsegurado + '%'"
+                                            style="transition: ease-in-out 1s all;"
+                                            [attr.aria-valuenow]="equipo.indicadorPorcentajeTotalMaxAsegurado"
+                                            aria-valuemin="0"
+                                            aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                    <small>{{equipo.indicadorPorcentajeTotalMaxAsegurado+"%"}}</small>
+                                </div>
+                                <small>{{"$"+equipo.indicadorTotalAsegurado+" / "+"$"+equipo.indicadorTotalMaxAsegurado}}</small>
+                            </td>
+                            <td class="align-middle">{{equipo.tiempoSincronizacion | date: 'short'}}</td>
+                            <td class="align-middle">{{equipo.ultimaRecoleccion | date: 'short'}}</td>
+                            <td class="align-middle">
+                                <div class="d-flex justify-content-center">
+                                    <ng-container *ngIf="equipo.tipoTrans !== null; else vacioNTrans">
+                                        {{ equipo.ultimaNoTrans }}/
+                                        <strong [title]="getTipoTrans(equipo.tipoTrans)">
+                                            {{ equipo.tipoTrans }}
+                                        </strong>
+                                    </ng-container>
+                                    <ng-template #vacioNTrans>
+                                        ---
+                                    </ng-template>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <ng-container *ngIf="equipo.fechaUltimaTrans !== null; else vacioFTrans">
+                                    {{equipo.fechaUltimaTrans | date: 'short'}}
+                                </ng-container>
+                                <ng-template #vacioFTrans>
+                                    ---
+                                </ng-template>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

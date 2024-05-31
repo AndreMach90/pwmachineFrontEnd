@@ -21,6 +21,14 @@ import { machine } from 'os';
 import { ConsolidadoService } from './services/consolidado.service';
 
 
+///////////////////////////////////////////////////////////////
+// import * as XLSX from 'xlsx';
+// import * as XLSX from 'xlsx-js-style';
+// import * as FileSaver from 'file-saver';
+
+///////////////////////////////////////////////////////////////
+
+
 const Toast = Swal.mixin({
   
   toast: true,
@@ -1526,8 +1534,6 @@ export class ModeldataComponent implements OnInit {
 
   }
 
-
-
   respladoDataTran() {
     this._show_spinner = true;
     this.dataExportarExcelGhost.filter( (element:any) => {
@@ -1539,8 +1545,6 @@ export class ModeldataComponent implements OnInit {
             elementtr.fechaTransaccion = xdate[0];
             elementtr.hora = xdate[1].slice(0,8);
           })
-
-          
           this._show_spinner = false;
         }, error: (e) => {
           console.error(e);
@@ -1662,4 +1666,5 @@ export class ModeldataComponent implements OnInit {
     }
   }
 
+ 
 }

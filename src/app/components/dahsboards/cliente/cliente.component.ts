@@ -65,7 +65,6 @@ export class ClienteComponent implements OnInit {
   _cancel_button: boolean = false;
 
   clientelista:any = [];
-  localidadesGuardadasCliente: any = [];
 
   public clienteForm = new FormGroup({
     Nombre_Cliente:   new FormControl(''), 
@@ -125,13 +124,14 @@ export class ClienteComponent implements OnInit {
               validateInputNumber(data: any) {
                 this.controlInputsService.validateAndCleanNumberInput(data);
               }
-
+  
+  localidadesGuardadasCliente: any = [];
   obtenerLocalidad( codcli:any ) {
     this._show_spinner = true;
     this.loc.obtenerLocalidadesCliente( codcli ).subscribe({
       next: (x) => {
         this.localidadesGuardadasCliente = x;
-        //console.warn(this.localidadesGuardadasCliente)
+        console.warn(this.localidadesGuardadasCliente)
         this._show_spinner = false;
       }, complete: () => {
         this._show_spinner = false;
@@ -153,12 +153,17 @@ export class ClienteComponent implements OnInit {
       }, complete: () => {
         this._show_spinner = false;
         this.localidadesGuardadasCliente.splice(index, 1);
-
-        this.clientelista.filter( (x:any) => { 
-          if ( x.id == idcliente ) x.cantidadLocalidades = x.cantidadLocalidades -1          
+        this.clientelista.filter( (x:any) => {
+          console.log( x.id )
+          console.log( idcliente )
+          if ( x.id == idcliente ) {
+            console.warn( 'cliente encontrado: '  )
+            console.warn( x )
+            x.cantidadLocalidades -1
+          }
         })
-        }
-      })
+      }
+    })
   }
   
   widthAutom() {
@@ -185,11 +190,11 @@ export class ClienteComponent implements OnInit {
                     .subscribe({
       next: (cliente) => {
         this.clienteListaGhost = cliente;
-        //console.warn('-*-*-*-*-*-*--*-*-*-*-*-*-*-*-');
-        //console.warn('-*-*-*-*-*-*--*-*-*-*-*-*-*-*-');
-        //console.warn(this.clienteListaGhost);
-        //console.warn('-*-*-*-*-*-*--*-*-*-*-*-*-*-*-');
-        //console.warn('-*-*-*-*-*-*--*-*-*-*-*-*-*-*-');
+        console.warn('----------------');
+        console.warn('----------------');
+        console.warn(this.clienteListaGhost);
+        console.warn('----------------');
+        console.warn('----------------');
         this._show_spinner = false;
       }, error: (e) => {
         this._show_spinner = false;
@@ -197,7 +202,7 @@ export class ClienteComponent implements OnInit {
       }, complete: () => {
         this.clienteListaGhost.filter((element:any)=>{
 
-          //////////console.warn(element)
+          ////////console.warn(element)
 
           let arr: any = {
             "id": element.id,
@@ -213,7 +218,7 @@ export class ClienteComponent implements OnInit {
           }
 
           this.clientelista.unshift(arr);
-          // //////////console.warn(this.clientelista);
+          // ////////console.warn(this.clientelista);
 
         })
       }
@@ -324,10 +329,10 @@ export class ClienteComponent implements OnInit {
   }
 
   obtenerCuentaTransac(data:any) {
-    ////console.log(data)
+    //console.log(data)
     this.clienteserv.obtenerCuentaTransacCant(data.id).subscribe({
       next: (x) => {
-        ////console.warn(x);
+        //console.warn(x);
       }
     })
   }
@@ -338,7 +343,7 @@ export class ClienteComponent implements OnInit {
     this.clienteserv.obtenerCuentaCliente(id).subscribe({
       next: ( cuentas ) => {
         this.cuentaslista = cuentas;
-        ////console.log(this.cuentaslista);
+        //console.log(this.cuentaslista);
         this._show_spinner = false;
       }, error:(e) => {
         console.error(e);
@@ -478,7 +483,9 @@ export class ClienteComponent implements OnInit {
       data: modelData, 
     });
 
-    dialogRef.afterClosed().subscribe( result => {
+
+    dialogRef.afterClosed().subscribe( result => {      
+      ////////console.warn(result);
       this.obtenerCliente();
     });
 
@@ -486,7 +493,7 @@ export class ClienteComponent implements OnInit {
 
   openDialogAsignarLocalidad(data:any): void {
 
-    this.obtenerLocalidad(data.codigoCliente)
+    console.log(data);
 
     const dialogRef = this.dialog.open( ModalLocalidadClienteComponent, {
       height: 'auto',
@@ -495,7 +502,8 @@ export class ClienteComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe( result => {
-      this.obtenerCliente()
+      ////////console.warn(result);
+      // this.obtenerCliente();
     });
 
   }
@@ -511,11 +519,11 @@ export class ClienteComponent implements OnInit {
 
 
     dialogRef.afterClosed().subscribe( result => {      
-      //////////console.warn(result);
+      ////////console.warn(result);
       this.obtenerCliente();
-    });
+    });
 
 
-  }
+  }
 
 }
