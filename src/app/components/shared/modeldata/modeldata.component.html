@@ -6,7 +6,8 @@
         </div>
     </div>
 </div>
-<div class="contdiv d-flex justify-content-between align-items-start" style="background-color: whitesmoke;" >
+
+<div class="contdiv d-flex justify-content-between align-items-start" style="background-color: whitesmoke;">
 <div class=" w-75 p-4">
     <div class="m-0 d-flex justify-content-between align-items-center">
         <span>
@@ -25,6 +26,7 @@
                                        <span> Filtrar por cliente </span>
                                    </label>
                         </div>
+
                         <!-- <div class="m-1" *ngIf="checktiendas">
                             <input type="checkbox"
                                    class="form-check-input"
@@ -34,6 +36,7 @@
                                        <span> Filtrar por tiendas </span>
                                    </label>
                         </div> -->
+
                     </div>
                     <div *ngIf="_transaction_show">
                         <form [formGroup]="transac"
@@ -504,7 +507,7 @@
         </button>
         <button  class="d-flex align-items-center btn btn-sm btn-outline-primary" 
                  [disabled]="dis_exp_excel"
-                 (click)="exportToExcel()">
+                 (click)="exportarToExcelComplete();">
                  <img src="../../../../../../assets/excel.png" width="50px" alt="">
                  <div>Exportar a excel</div>
         </button>

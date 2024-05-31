@@ -748,6 +748,12 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
         next: (equipo) => {
           this.listaEsquipo = equipo;
           this.listaEsquipoGhost = equipo;
+
+          console.log(' ========================================= ');
+          console.log(' EQUIPOS MOSTRADOS AL INICIO DE HOME ');
+          console.log(this.listaEsquipo);
+          console.log(' ========================================= ');
+
         },
         error:    (e) => {
           Swal.fire({
