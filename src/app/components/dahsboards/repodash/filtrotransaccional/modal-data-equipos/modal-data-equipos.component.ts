@@ -34,19 +34,22 @@ export class ModalDataEquiposComponent implements OnInit {
                
                public equipoCliForm = new FormGroup({
                 filterEqui:   new FormControl('')
-              })
+               })
 
   ngOnInit(): void {
     this.obtenerEquiposTran();
     this.result = this.data.equiposExistentes;
+    console.warn('/*/*/*/*/*/*/*/*/*');
+    console.warn(this.result);
+    console.warn('/*/*/*/*/*/*/*/*/*');
   }
 
   totalResagadasAutomaticas: number = 0;
   totalResagadasManuales:    number = 0;
-  totalManuales:    number = 0;
-  totalAutomaticas: number = 0;
-  SumatotalTransac: number = 0;
-  SumatotalTransacResag: number = 0;
+  totalManuales:             number = 0;
+  totalAutomaticas:          number = 0;
+  SumatotalTransac:          number = 0;
+  SumatotalTransacResag:     number = 0;
   sumatoriaResagadasTransac( objeto:any ) {
     this.totalResagadasAutomaticas = 0;
     this.totalResagadasManuales    = 0;
