@@ -9,40 +9,30 @@ import { Router } from '@angular/router';
 import { MonitoreoService } from '../../monitoreo-equipos/services/monitoreo.service';
 import { FormControl, FormGroup } from '@angular/forms';
 
-
 @Component({
   selector: 'app-filtrotransaccional',
   templateUrl: './filtrotransaccional.component.html',
   styleUrls: ['./filtrotransaccional.component.scss']
 })
+
 export class FiltrotransaccionalComponent implements OnInit, OnChanges {
+  @Output() listaTransaccionesEmitGrafica:  EventEmitter<any[]> = new EventEmitter<any[]>();
+  @Output() listaTransaccionesEmitTabla:    EventEmitter<any[]> = new EventEmitter<any[]>();
+  @Output() typeFilter:                     EventEmitter<any> = new EventEmitter<any>();
+  @Output() modBusqueda:                    EventEmitter<any> = new EventEmitter<any>();
+  @Input() listenNserie!:                   any;
 
-  diasEncontrar: number  = 31;
-  disButton:     boolean = true;
+  diasEncontrar:                number  = 31;
+  disButton:                    boolean = true;
+  tienda:                       any;
+  cliente:                      any;
+  arrlistatran:                 any = [];
+  listaTrsansaccionesTabla:     any = [];
+  listaTrsansaccionesTablaGhost:any = [];
+  filterTransacc:               any;
+  dis_execel_export:            boolean = true;
+  nombreTienda:                 string = '';
 
-  tienda:any;
-  cliente:any;
-  arrlistatran:any = [];
-
-  @Output() listaTransaccionesEmitGrafica:      EventEmitter<any[]> = new EventEmitter<any[]>();
-  @Output() listaTransaccionesEmitTabla:        EventEmitter<any[]> = new EventEmitter<any[]>();
-  @Output() typeFilter:EventEmitter<any> = new EventEmitter<any>();
-
-  @Output() modBusqueda: EventEmitter<any> = new EventEmitter<any>();
-
-  listaTrsansaccionesTabla: any = [];
-  listaTrsansaccionesTablaGhost: any = [];
-
-
-  filterTransacc:any;
-  
-  dis_execel_export: boolean = true;
-  @Input() listenNserie!: any;
-  
-
-  nombreTienda: string = '';
-
-  /**----------------------------------------------------- */
   sumatoriaTotales:         number = 0;
   manual_Deposito_Coin_100: number = 0;
   manual_Deposito_Coin_50:  number = 0;
@@ -87,7 +77,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
   sumatoriaNoRecollect: number = 0;
 
   public filterTransaccForm = new FormGroup({
-    filterTransacc:   new FormControl('')
+    filterTransacc: new FormControl('')
   })
 
   public filterDateForm = new FormGroup({
@@ -103,21 +93,19 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
                private router: Router ) {}
 
   ngOnInit(): void {
-      if ( this.listaTransacciones.length == 0 ) this.dis_execel_export = true;
+    if ( this.listaTransacciones.length == 0 ) this.dis_execel_export = true;
   }
   
   ngOnChanges(changes: SimpleChanges): void {
     if(changes) {
       this.obtenerTransac(this.listenNserie);
       this.obtenerTransacTabla(this.listenNserie);
-      // ////console.log('cambiando desde el filtro transaccional')
       this.dis_execel_export = false;
     }
   }
 
-  /** Obtentiene la data de las Transacciones para la Gráfica transaccional */
+  /** Obtiene la data de las Transacciones para la Gráfica transaccional */
   obtenerTransac(id: any) {
-    
     this.transacciones.obtenerTransaccionesTienda(id, 2).subscribe({
       next: (tran:any) => {
         this.listaTransacciones      = tran;
@@ -129,18 +117,17 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
       complete: () => {
         this.listaTransaccionesEmitGrafica.emit(this.listaTransacciones.reverse());
         this.sumatoriaTotal();
-        
-        if( this.listaTransacciones[0].nombreCliente == undefined || this.listaTransacciones[0].nombreCliente == null ) this.listaTransacciones[0].nombreCliente = '';
-        if( this.listaTransacciones[0].nombreTienda == undefined  || this.listaTransacciones[0].nombreTienda == null )  this.listaTransacciones[0].nombreTienda  = '';
-        this.cliente = this.listaTransacciones[0].nombreCliente;
-        this.tienda  = this.listaTransacciones[0].nombreTienda;
+        if(this.listaTransacciones.length !== 0){
+          if( this.listaTransacciones[0].nombreCliente == undefined || this.listaTransacciones[0].nombreCliente == null ) this.listaTransacciones[0].nombreCliente = '';
+          if( this.listaTransacciones[0].nombreTienda == undefined  || this.listaTransacciones[0].nombreTienda == null )  this.listaTransacciones[0].nombreTienda  = '';
+          this.cliente = this.listaTransacciones[0].nombreCliente;
+          this.tienda  = this.listaTransacciones[0].nombreTienda;
+        }
       }
     });
-
   }
 
-
-  /** Obtentiene la data de las Transacciones para la Tabla transaccional */
+  /** Obtiene la data de las Transacciones para la Tabla transaccional */
   obtenerTransacTabla(id:any) {
     this.listaTrsansaccionesTablaGhost= [];
     this.listaTrsansaccionesTabla = [];
@@ -152,36 +139,26 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
           console.error(e);
         },
         complete: () => {
-
-          let arr : any = [];
           this.sumatoriaNoRecollect = 0;
           this.listaTrsansaccionesTablaGhost.filter((element:any) => {
-
             let xdate = element.fechaTransaccion.toString().split('T');
             element.hora = xdate[1].slice(0,8);
-            
             if( element.fechaRecoleccion == null && element.tipoTransaccion !== 'Recolección' ) {
               this.sumatoriaNoRecollect += element.total;
             }
-
             if( element.acreditada == 'A' ) element.colorRow = '#D8F1EC';
             if( element.acreditada == 'E' ) element.colorRow = '#F1F090';
             if( element.acreditada == 'N' ) element.colorRow = '#F1E3D8';
             if( element.acreditada == 'R' ) element.colorRow = '#F1C590';
-            
             this.listaTrsansaccionesTabla.push(element);
-
           })
-
           this.monitoreoServs.obtenerValorUnico(id).subscribe( (x:any) => {
-              if ( x[0].total == null || x[0].total == undefined ) localStorage.setItem('valor_validador', (0).toString());
+            if ( x[0].total == null || x[0].total == undefined ) localStorage.setItem('valor_validador', (0).toString());
               localStorage.setItem('valor_validador', x[0].total.toFixed(2).toString());
             }
           );
-
           this.listaTransaccionesEmitTabla.emit(this.listaTrsansaccionesTabla);
           this.sumatoriaTotal();
-
         }
       }
     );
@@ -194,9 +171,6 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
   
   /** Filtro de transacciones tanto para la gráfica como para la tabla de transacciones */
   filterTransaccos() {
-
-    // let filterTransacc: any = 
-
     this.listaTransacciones = this.listaTransaccionesGhost.filter( (item:any) => 
       item.machine_Sn             .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
       item.nombreCliente          .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
@@ -226,14 +200,11 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
     this.listaTransaccionesEmitGrafica.emit(this.listaTransacciones);
     this.listaTransaccionesEmitTabla.emit(this.listaTrsansaccionesTabla);
     this.sumatoriaTotal();
-
   }
 
   validarRangoDeFechas() {
-
     let startDate: any = this.filterDateForm.controls['startDate'].value;
     let endDate: any = this.filterDateForm.controls['endDate'].value;
-
     const fechaInicio = new Date(startDate);
     const fechaFin = new Date(endDate);
     if (fechaFin < fechaInicio) {
@@ -253,18 +224,14 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
   }
 
   goRangeDates(calendarShow:boolean) {
-    
     this.typeFilter.emit(calendarShow);
-    
     if( calendarShow ) {
       this.listaTransaccionesEmitGrafica.emit(this.listaTransacciones);
       this.listaTransaccionesEmitTabla.emit(this.listaTrsansaccionesTabla);
     }
-
   }
 
   filterByDateRange() {
-
     const fechaFin = new Date(this.filterDateForm.controls['endDate'].value);
     fechaFin.setDate(fechaFin.getDate() + 1);
     let modelRange:any = {
@@ -276,8 +243,6 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
 
     this.transacciones.filtroTransaccionesRango(modelRange).subscribe({
       next: (x) => {
-        // //alert'correcto');
-        //console.table(x);
         this.listaTransacciones = x;
         this.listaTrsansaccionesTabla = x;
         this.listaTransaccionesGhost = x;
@@ -285,35 +250,25 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
         this.listaTransaccionesEmitTabla.emit(this.listaTrsansaccionesTabla);
         this.modBusqueda.emit( true );
       }, error: (e) => {
-        //alert'incorrecto');
         console.error(e);
-      }, complete: () => {
-        ////console.log(this.listaTrsansaccionesTabla);
-      }
+      }, complete: () => { }
     })
-
     this.sumatoriaTotal();
-
   }
 
   openDialogConfiguracionExcel(data:any): void {
-
     const dialogRef = this.dialog.open( ModalConfigExcelComponent, {
         height: 'auto',
         width:  '90%',
         data:   this.listaTrsansaccionesTabla, 
       }
     );
-
     dialogRef.afterClosed().subscribe( result => { });
-
   }
 
   exportToExcel(): void {
-    
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Transacciones');
-  
     const table: any = document.querySelector('.table');
     const headers: any = [];
     const data:    any = [];
@@ -324,21 +279,16 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
     });
   
     rows.forEach((row: any) => {
-      
       const rowData: any = [];
-      
       row.querySelectorAll('td').forEach((cell: any) => {
         rowData.push(cell.textContent.trim());
       });
-      
       data.push(rowData);
-
     });
       
     const numericColumnsIni = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ];
     const numericColumns    = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,26];
     const titleRow = worksheet.addRow(['Transacciones del equipo: ' + this.listenNserie + ' - ' + new Date().toLocaleDateString()]);
-    
     titleRow.getCell(1).font = { bold: true, size: 17, color: { argb: "8F8F8F" } };
     const headerRow = worksheet.addRow(headers);
     headerRow.eachCell((cell) => {
@@ -393,7 +343,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
         if (column.number === 27) {
           column.width = 20;
           column.eachCell((cell: any) => {
-            ////console.log('Econtrado indice 27');
+            ////console.log('Encontrado indice 27');
             cell.numFmt = '#,##0.00';
           });
         }
@@ -411,7 +361,6 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
       a.click();
       window.URL.revokeObjectURL(url);
     });
-
   }
   
   sumatoriaTotal() {   
@@ -431,22 +380,20 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
     this.deposito_Bill_1          = 0;
 
     this.listaTransacciones.filter( (element:any) => { 
-        this.sumatoriaTotales          += element.total; 
-        this.manual_Deposito_Coin_100  += element.manual_Deposito_Coin_100; 
-        this.manual_Deposito_Coin_50   += element.manual_Deposito_Coin_50; 
-        this.manual_Deposito_Coin_20   += element.manual_Deposito_Coin_25; 
-        this.manual_Deposito_Coin_10   += element.manual_Deposito_Coin_10; 
-        this.manual_Deposito_Coin_5    += element.manual_Deposito_Coin_5; 
-        this.manual_Deposito_Coin_1    += element.manual_Deposito_Coin_1; 
-        this.deposito_Bill_100         += element.deposito_Bill_100; 
-        this.deposito_Bill_50          += element.deposito_Bill_50; 
-        this.deposito_Bill_20          += element.deposito_Bill_20; 
-        this.deposito_Bill_10          += element.deposito_Bill_10; 
-        this.deposito_Bill_5           += element.deposito_Bill_5; 
-        this.deposito_Bill_2           += element.deposito_Bill_2; 
-        this.deposito_Bill_1           += element.deposito_Bill_1; 
+      this.sumatoriaTotales          += element.total; 
+      this.manual_Deposito_Coin_100  += element.manual_Deposito_Coin_100; 
+      this.manual_Deposito_Coin_50   += element.manual_Deposito_Coin_50; 
+      this.manual_Deposito_Coin_20   += element.manual_Deposito_Coin_25; 
+      this.manual_Deposito_Coin_10   += element.manual_Deposito_Coin_10; 
+      this.manual_Deposito_Coin_5    += element.manual_Deposito_Coin_5; 
+      this.manual_Deposito_Coin_1    += element.manual_Deposito_Coin_1; 
+      this.deposito_Bill_100         += element.deposito_Bill_100; 
+      this.deposito_Bill_50          += element.deposito_Bill_50; 
+      this.deposito_Bill_20          += element.deposito_Bill_20; 
+      this.deposito_Bill_10          += element.deposito_Bill_10; 
+      this.deposito_Bill_5           += element.deposito_Bill_5; 
+      this.deposito_Bill_2           += element.deposito_Bill_2; 
+      this.deposito_Bill_1           += element.deposito_Bill_1; 
     })
-
   }
-  
 }

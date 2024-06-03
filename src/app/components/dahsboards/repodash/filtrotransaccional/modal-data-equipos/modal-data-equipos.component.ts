@@ -154,13 +154,13 @@ export class ModalDataEquiposComponent implements OnInit {
     )
   }
 
-  removeDuplicateRecords() {
-    const seen = new Set();
-    return this.data.equiposExistentes.filter((item:any) => {
-      const key = JSON.stringify(item);
-      return seen.has(key) ? false : seen.add(key);
-    });
-  }
+  // removeDuplicateRecords() {
+  //   const seen = new Set();
+  //   return this.data.equiposExistentes.filter((item:any) => {
+  //     const key = JSON.stringify(item);
+  //     return seen.has(key) ? false : seen.add(key);
+  //   });
+  // }
 
   // Función para seleccionar/deseleccionar todos los equipos
   selectedEquipos: any[] = []; // Variable para almacenar los equipos seleccionados
