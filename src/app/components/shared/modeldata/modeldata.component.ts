@@ -20,15 +20,6 @@ import { SharedService } from '../services/shared.service';
 import { machine } from 'os';
 import { ConsolidadoService } from './services/consolidado.service';
 
-
-///////////////////////////////////////////////////////////////
-// import * as XLSX from 'xlsx';
-// import * as XLSX from 'xlsx-js-style';
-// import * as FileSaver from 'file-saver';
-
-///////////////////////////////////////////////////////////////
-
-
 const Toast = Swal.mixin({
   
   toast: true,
@@ -365,7 +356,7 @@ export class ModeldataComponent implements OnInit {
           item.transacciones.forEach((transaccion: any) => {
             worksheet.addRow([
               item.localidad,
-              this.convertirfecha(transaccion.fechaTransaccion),
+              transaccion.fechaTransaccion.split("T")[0],
               transaccion.hora,
               transaccion.nombreCliente,
               transaccion.nombreTienda,
@@ -402,11 +393,6 @@ export class ModeldataComponent implements OnInit {
     } catch (error) {
       //console.log("No se puede crear el archivo Excel: "+error);
     }
-  }
-
-  convertirfecha(date: any){
-    let fecha = new Date(date.split("T")[0]);
-    return `${fecha.getDate()}-${fecha.getMonth()+1}-${fecha.getFullYear()}`;
   }
 
   async exportToExcel(): Promise<void> {
