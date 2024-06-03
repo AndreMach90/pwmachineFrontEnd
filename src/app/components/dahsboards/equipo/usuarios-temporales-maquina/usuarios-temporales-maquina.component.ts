@@ -55,7 +55,7 @@ export class UsuariosTemporalesMaquinaComponent implements OnInit {
     })
     
   ngOnInit(): void {
-    ////////console.warn(this.data);
+    //////////console.warn(this.data);
     this.obtenerUsuariosTemporales();
     this.obtenerCuentasTienda()
   }
@@ -123,13 +123,13 @@ export class UsuariosTemporalesMaquinaComponent implements OnInit {
 listaCuentaTiendasBanc:any = [];
 obtenerCuentasTienda() {
 
-  console.log(this.data.codigoTienda);
+  //console.log(this.data.codigoTienda);
 
   this.tiendaservs.obtenerCuentasAsignadas(this.data.codigoTienda).subscribe({
     next: (cuentaTiendaBank) => {
       this.listaCuentaTiendasBanc = cuentaTiendaBank;
-      console.log('Estas son las cuentas encontrados')
-      console.log(this.listaCuentaTiendasBanc)
+      //console.log('Estas son las cuentas encontrados')
+      //console.log(this.listaCuentaTiendasBanc)
     }
   })
 }
@@ -180,7 +180,7 @@ closeDialog() {
 eliminarUsuarioTemporal(id:number) {
   this.eqipserv.eliminarUsuarioTemporal(id).subscribe({
     next: (x) => {
-      //console.warn('Actualizado a F');
+      ////console.warn('Actualizado a F');
     }, error: (e) => {
       console.error(e);
     },    

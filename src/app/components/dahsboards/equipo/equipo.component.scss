@@ -1,0 +1,52 @@
+.activeEquipo {
+  --bs-table-striped-bg: #f9f9fb;
+  --bs-table-hover-bg: #f9f9fb;
+  --bs-table-bg: #f9f9fb;
+}
+.td_button {
+  display: flex;
+  justify-content: center;
+}
+.button_task {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  cursor: pointer;
+  color: #9baacf;
+  transition: all 0.5s ease;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+  &:active {
+    box-shadow: 2px 2px 6px rgba(27, 148, 82, 0.4);
+    color: rgb(27, 148, 82);
+  }
+  &:hover {
+    color: #1b9452;
+  }
+}
+.machineDesact{
+  width: 35px;
+  height: 35px;
+  background: rgba(0, 0, 0, 0.349);
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  cursor: pointer;
+  border-radius: 100%;
+  padding: 2px;
+  margin-left: 2px;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.349);
+}
+.machineDesact.active {
+  background: white;
+  color: rgb(15, 78, 132);
+  border: 1px solid rgba(15, 78, 132);
+}
+.machineDesact mat-icon{
+  font-size: 1.5rem;
+}

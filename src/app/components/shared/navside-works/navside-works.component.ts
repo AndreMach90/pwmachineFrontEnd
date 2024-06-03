@@ -86,14 +86,14 @@ export class NavsideWorksComponent implements OnInit {
   }
 
   obtenerModulos () {
-    ////////console.warn(this.modelModules);
+    //////////console.warn(this.modelModules);
     return this.modelModules;
   }
 
 
 botonClick(data: any) {
 
-  // ////////console.warn(data);
+  // //////////console.warn(data);
 
     let modulo: Modulo = {
       nombre: data.nombre_module,

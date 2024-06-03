@@ -82,8 +82,8 @@ export class HistorialAcreditacionComponent implements OnInit {
     this.hcred.obtenerEquiposAcreditados( data.nombreArchivo ).subscribe({
       next: (x) => {
         this.dataExportarExcel = x;
-        //console.log('this.dataExportarExcel');
-        //console.log( this.dataExportarExcel );
+        ////console.log('this.dataExportarExcel');
+        ////console.log( this.dataExportarExcel );
       }, complete: () => {
         this.obtenerTransaccionesEquipos(data.nombreArchivo);
       }
@@ -152,9 +152,9 @@ export class HistorialAcreditacionComponent implements OnInit {
             return 0;
           });
         });  
-        // //console.log('==========================');
-        // //console.log(this.dataExportarExcel);
-        // //console.log('==========================');
+        // ////console.log('==========================');
+        // ////console.log(this.dataExportarExcel);
+        // ////console.log('==========================');
       }, complete: () => {
         this.exportarExcel(nombreArchivo);
       }, error: (e) => {
@@ -194,14 +194,14 @@ export class HistorialAcreditacionComponent implements OnInit {
 
   modelDataSaldo: any = [];
   obterSaldoTransac( machineSn:any ) {
-    console.log( '<<<<<obteniendo saldos>>>>> : '  + machineSn )
+    //console.log( '<<<<<obteniendo saldos>>>>> : '  + machineSn )
     
     this.transacciones.ObtenerEquiposSaldo(machineSn).subscribe({
       next: (x) => {
         this.modelDataSaldo = x;
-        // console.log('===============================');
-        // console.log(this.modelDataSaldo);
-        // console.log('===============================');
+        // //console.log('===============================');
+        // //console.log(this.modelDataSaldo);
+        // //console.log('===============================');
       }
     })
   }
@@ -462,8 +462,8 @@ export class HistorialAcreditacionComponent implements OnInit {
         setTimeout(() => {
           this.dataExportarExcel = [];
           this.dataExportarExcel = [];
-          //console.log('this.dataExportarExcel limpiada!')
-          //console.log(this.dataExportarExcel)
+          ////console.log('this.dataExportarExcel limpiada!')
+          ////console.log(this.dataExportarExcel)
         }, 1000);
       });
 
@@ -524,15 +524,15 @@ export class HistorialAcreditacionComponent implements OnInit {
         FechaFin: fechaFin.toISOString() // Convierte la fecha a formato ISO (opcional)
       };
 
-      console.log('this.modelConsult');
-      console.log(this.modelConsult);
+      //console.log('this.modelConsult');
+      //console.log(this.modelConsult);
   
       // Realiza la consulta con la nueva fecha
       this.hcred.obtenerAcreditadasTran(this.modelConsult).subscribe({
         next: (x) => {
-          //console.log(x);
+          ////console.log(x);
           this.listaAcreditadasOk = x;
-          console.log(this.listaAcreditadasOk);
+          //console.log(this.listaAcreditadasOk);
         }
       });
     } else {

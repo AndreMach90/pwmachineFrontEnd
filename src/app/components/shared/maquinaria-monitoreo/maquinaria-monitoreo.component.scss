@@ -1,33 +1,108 @@
-.equipo-monitor {
-    background: rgb(17,38,74);
-background: linear-gradient(311deg, rgba(17,38,74,0.9221813725490196) 0%, rgba(28,70,120,0.9527777777777777) 100%);
-    height: 95vh;
-    overflow-y: auto;
+.btn-cliente{
+  width: auto;
+  padding: 9px;
+  border: none;
+  border-radius: 15px;
+  font-size: 1rem;
 }
 
-.consola {
-    margin: 10px;
-    background-color: whitesmoke;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 10px 10px 10px rgba(5, 12, 24, 0.459);
+.dropdown-menu{
+  max-height: 500px;
+  overflow: auto;
 }
 
-.time {
-    background-color: rgba(0, 0, 0, 0.126);
+.dropdown-item{
+  cursor: pointer;
 }
 
-.filter-monitoreo {
-    position: absolute;
-    bottom: 10px;
-    padding: 10px;
-    border-radius: 10px;
-    background-color: rgba(0, 0, 0, 0.2);
-    transition: ease all 1.5s;
-    opacity: 0.3;
+.dropdown-item .active{
+  background-color: #11264a;
 }
 
-.filter-monitoreo:hover {
-    transition: ease all 0.5s;
-    opacity: 0.9;
+.input-group {
+  border-radius: 20px;
+  padding: 3px;
+  width: fit-content;
+  margin-right: 5px;
+}
+
+.input-group input {
+  border: 0;
+  outline: none;
+  padding: 2px;
+  width: 200px;
+  background: #F6FAFD;
+}
+
+.input-group input:focus {
+  box-shadow: none;
+  outline: none;
+}
+
+.btn-del {
+  width: 30px;
+  height: 30px;
+  font-size: 1.25rem;
+  background: rgb(255, 0, 0);
+  display: inline-flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  color: #F6FAFD;
+  cursor: pointer;
+  border-radius: 100%;
+  padding: 2px;
+  margin-left: 2px;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.349);
+}
+
+.notification {
+  border: none;
+  background-color: #00000049;
+  color: #F6FAFD;
+  width: 38px;
+  height: 38px;
+}
+
+.notification.notifAct {
+  background-color: #F6FAFD;
+  color: #2f4656;
+}
+
+.tabla {
+  border-radius: 30px;
+  padding: 40px;
+  height: 92%;
+}
+
+.bordeTabla{
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: auto;
+}
+
+.tabla thead th { 
+  position: sticky; 
+  top: 0; 
+  z-index: 1; 
+}
+
+thead {
+  height: 40px;
+  border-radius: 15px;
+  vertical-align: middle;
+}
+
+td {
+  white-space: pre-line;
+}
+
+.table tbody td:first-child {
+  border-bottom-left-radius: 15px;
+  border-top-left-radius: 15px;
+}
+.table tbody td:last-child {
+  border-bottom-right-radius: 15px;
+  border-top-right-radius: 15px;
 }
