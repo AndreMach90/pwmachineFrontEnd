@@ -1368,10 +1368,6 @@ export class ModeldataComponent implements OnInit {
         } 
       });
     }
-
-    //console.warn('TRANSACCIONES ADHERIDAS A LOS EQUIPOS')
-    //console.warn(this.dataExportarExcel)
-
   }
 
   detectaTransaccionesResagadas(dateIni: any, dateFin: any, type: number) {
@@ -1652,5 +1648,9 @@ export class ModeldataComponent implements OnInit {
     }
   }
 
- 
+  checkFiltrarCliente(checktienda: boolean){
+    if(!checktienda){
+      this.exportdateform.controls['codigoClienteidFk'].setValue(null);
+    }
+  }
 }

@@ -27,6 +27,8 @@
     color: #1b9452;
   }
 }
+
+// Icono del ojo para desactivar equipos
 .machineDesact{
   width: 35px;
   height: 35px;
@@ -49,4 +51,19 @@
 }
 .machineDesact mat-icon{
   font-size: 1.5rem;
+}
+
+// Tabla
+.bordeTabla {
+  margin: 0;
+  padding: 0;
+  height: 90%;
+  overflow: auto;
+}
+.bordeTabla thead th { 
+  position: sticky; 
+  top: 0; 
+  z-index: 1;
+  background: #0D6EFD;
+  color: white;
 }

@@ -185,6 +185,7 @@ export class ClienteComponent implements OnInit {
   clienteListaGhost: any = [];
   obtenerCliente() {
     this.clientelista = [];
+    this.clienteListaGhost = [];
     this._show_spinner = true;
     this.clienteserv.obtenerCliente()
                     .subscribe({
@@ -218,8 +219,7 @@ export class ClienteComponent implements OnInit {
           }
 
           this.clientelista.unshift(arr);
-          // ////////console.warn(this.clientelista);
-
+          // console.warn(this.clientelista);
         })
       }
     })

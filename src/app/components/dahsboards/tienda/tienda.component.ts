@@ -30,56 +30,49 @@ const Toast = Swal.mixin({
   styleUrls: ['./tienda.component.scss']
 })
 export class TiendaComponent implements OnInit {
-
-  dis_account_shop: boolean = false;
-  _width_table: string                  = 'tabledata table-responsive w-100 p-2';
-  delete:any                            = this.env.apiUrlIcon()+'delete.png';
-  edit:any                              = this.env.apiUrlIcon()+'edit.png';
-  crear:any                             = this.env.apiUrlIcon()+'accept.png';
-  cancel:any                            = this.env.apiUrlIcon()+'cancel.png';
-  search:any                            = this.env.apiUrlIcon()+'search.png';
-  add: any                              = this.env.apiUrlIcon()+'add.png';
-  viewForm: boolean                     = false;
-  
-  public provinciaLista:        any     = [];
-  _edit_btn:                    boolean = false;
-  _delete_show:                 boolean = true;
-  _edit_show:                   boolean = true;
-  _create_show:                 boolean = true;
-  _form_create:                 boolean = true;
-
-  _action_butto = 'Crear';
-  _show_spinner: boolean = false;
-  _icon_button: string = 'add';
-  _cancel_button: boolean = false;
-  tiendalista: any = []
-
-  editcatch: boolean = false;
-  listaCuentaTiendasBanc:any = [];
-  
-  modelTienda: any = [];
-  clienteListaGhost: any = [];
-  clientelista:any = [];
-  primary:any;
-  secondary:any;
-  secondary_a:any;
-  secondary_b:any;
-  namemodulo:any = '';
-  permisonUsers: boolean = true;
-  calwidth: boolean = true;
-
-  resultModal:any = [];
-  addOnBlur = true;
-  readonly separatorKeysCodes = [ENTER, COMMA] as const;
-
-  tipoAccion: number = 0;
-  token:any;
-  tiendaListaGhost:any = [];
-  count: number = 0;
-  intervalId: any;  
-  cuentaslista: any = [];
-  codecTienda:any;
-  idtienda: number = 0;
+  dis_account_shop:       boolean = false;
+  _width_table:            string = 'tabledata table-responsive w-100 p-2';
+  delete:                     any = this.env.apiUrlIcon()+'delete.png';
+  edit:                       any = this.env.apiUrlIcon()+'edit.png';
+  crear:                      any = this.env.apiUrlIcon()+'accept.png';
+  cancel:                     any = this.env.apiUrlIcon()+'cancel.png';
+  search:                     any = this.env.apiUrlIcon()+'search.png';
+  add:                        any = this.env.apiUrlIcon()+'add.png';
+  viewForm:               boolean = false;
+  public provinciaLista:      any = [];
+  _edit_btn:              boolean = false;
+  _delete_show:           boolean = true;
+  _edit_show:             boolean = true;
+  _create_show:           boolean = true;
+  _form_create:           boolean = true;
+  _action_butto                   = 'Crear';
+  _show_spinner:          boolean = false;
+  _icon_button:            string = 'add';
+  _cancel_button:         boolean = false;
+  tiendalista:                any = []
+  editcatch:              boolean = false;
+  listaCuentaTiendasBanc:     any = [];
+  modelTienda:                any = [];
+  clienteListaGhost:          any = [];
+  clientelista:               any = [];
+  primary:                    any;
+  secondary:                  any;
+  secondary_a:                any;
+  secondary_b:                any;
+  namemodulo:                 any = '';
+  permisonUsers:          boolean = true;
+  calwidth:               boolean = true;
+  resultModal:                any = [];
+  addOnBlur                       = true;
+  readonly separatorKeysCodes     = [ENTER, COMMA] as const;
+  tipoAccion:              number = 0;
+  token:                      any;
+  tiendaListaGhost:           any = [];
+  count:                   number = 0;
+  intervalId:                 any;  
+  cuentaslista:               any = [];
+  codecTienda:                any;
+  idtienda:                number = 0;
 
   public tiendaForm = new FormGroup({
     codigoClienteidFk:     new FormControl(''), 
@@ -94,11 +87,10 @@ export class TiendaComponent implements OnInit {
   })
 
   public filtertienForm = new FormGroup({
-    filtertien:     new FormControl()
+    filtertien: new FormControl()
   })
 
   ngOnInit(): void {
-
     let x:any = this.sharedservs.validateRol();
     switch( x ) {
       case 1:
@@ -108,34 +100,25 @@ export class TiendaComponent implements OnInit {
         this.permisonUsers = false; 
         break;
     }
-
-      this.primary     = this.env.appTheme.colorPrimary;
-      this.secondary   = this.env.appTheme.colorSecondary_C;
-      this.secondary_a = this.env.appTheme.colorSecondary_A;
-      this.secondary_b = this.env.appTheme.colorSecondary_B;  
-      // this.getDataMaster('PRV00');  
-      // this.getDataMaster('PRV00');  
-      this.obtenerCliente();
-      this.obtenerTiendas(1);
-      // this.obtenerLocalidad();
-      // this.obtenerLocalidad();
-      
+    this.primary     = this.env.appTheme.colorPrimary;
+    this.secondary   = this.env.appTheme.colorSecondary_C;
+    this.secondary_a = this.env.appTheme.colorSecondary_A;
+    this.secondary_b = this.env.appTheme.colorSecondary_B;
+    this.obtenerCliente();
+    this.obtenerTiendas(1);
   }
     
   widthAutom() {
     switch( this.calwidth ) {
       case true:
         this._width_table = 'tabledata table-responsive w-75 p-2';
-        //////////console.warn(this._width_table);
         this.calwidth = false;
         break;
       case false:        
         this._width_table = 'tabledata table-responsive w-100 p-2';
-        //////////console.warn(this._width_table);
         this.calwidth = true;
         break;
     }
-    
     this.tiendaForm.controls['codigoClienteidFk'].enable();
     this.tiendaForm.controls['codigoClienteidFk'].setValue('');
     this.tiendaForm.controls['cuentaBanco'].setValue('');
@@ -155,7 +138,6 @@ export class TiendaComponent implements OnInit {
     this.editcatch        = false;
     this._create_show     =  true;
     this.dis_account_shop = false;
-
   }
 
   constructor( private env:                  Environments,
@@ -166,17 +148,15 @@ export class TiendaComponent implements OnInit {
                private loc:                  ModalClienteService,
                private sharedservs:          ServicesSharedService) {}
 
-
-    validateInputText(data:any) {
-      this.controlInputsService.validateAndCleanInput(data);
-    }
+  validateInputText(data:any) {
+    this.controlInputsService.validateAndCleanInput(data);
+  }
     
-    validateInputNumber(data: any) {
-      this.controlInputsService.validateAndCleanNumberInput(data);
-    }
+  validateInputNumber(data: any) {
+    this.controlInputsService.validateAndCleanNumberInput(data);
+  }
 
   eliminarTiendas( data:any, i:number ) {
-
     Swal.fire({
       title: 'Estás seguro?',
       text: "Esta acción es irreversible y podría provocar perdida de datos en otros procesos!",
@@ -208,10 +188,9 @@ export class TiendaComponent implements OnInit {
             this.obtenerTiendas(1);
             this.limpiar();
           } 
-          })
-        }
+        })
+      }
     })
-
   }
 
   limpiar() {
@@ -254,7 +233,6 @@ export class TiendaComponent implements OnInit {
     else if (this.tiendaForm.controls['direccion'].value == undefined || this.tiendaForm.controls['direccion'].value == null || this.tiendaForm.controls['nombreTienda'].value == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo direcció de tienda vacío' });
     else {
       this._show_spinner = true;
-
       this.modelTienda = {
         codigoTienda:       this.codecTienda,
         codigoClienteidFk:  this.tiendaForm.controls['codigoClienteidFk'].value,
@@ -312,10 +290,9 @@ export class TiendaComponent implements OnInit {
         idCentroProceso:    null,
         Active: 'A'
       }
-
+      console.log(this.modelTienda);
       setTimeout( () => {
-        this.tiendaservs.guardarTiendas(this.modelTienda).subscribe(
-          {
+        this.tiendaservs.guardarTiendas(this.modelTienda).subscribe({
             next:(x) => {
               Toast.fire({ icon: 'success', title: 'Tienda guardado con éxito' });
               this._show_spinner = false;
@@ -340,8 +317,6 @@ export class TiendaComponent implements OnInit {
       next: (tienda) => {
         this.tiendaListaGhost = tienda;
         this.tiendalista = tienda;
-        //console.log('ESTA ES MI TIENDA')
-        //console.log(this.tiendalista)
       }, complete: () => {
         switch(type) {
           case 1:
@@ -357,9 +332,7 @@ export class TiendaComponent implements OnInit {
                   }
                   this.tiendaservs.guardarCuentAsigna(arr).subscribe({
                     next:(x) =>
-                    {
-
-                    },
+                    { },
                     error: (e) => {
                       console.error(e);
                     }, 
@@ -367,9 +340,7 @@ export class TiendaComponent implements OnInit {
                       tienda.cantidadCuentasAsign ++;
                       this.limpiar();
                     }
-                  });          
-
-                  
+                  });
                 })
               }
             })
@@ -377,11 +348,8 @@ export class TiendaComponent implements OnInit {
       }, error: (e) => {
         console.error(e);
       }
-
     })
-
   }
-
 
   validateCatchData(data: any) {
     for ( let x = 0; x<1; x++ ) {
@@ -390,10 +358,6 @@ export class TiendaComponent implements OnInit {
   }
 
   catchData(data:any) {
-
-    // //console.warn('data a editar!!!!!!!!!!')
-    // //console.warn(data)
-
     this.calwidth = true;
     this.widthAutom();
     this.dis_account_shop = true;
@@ -416,17 +380,9 @@ export class TiendaComponent implements OnInit {
     this.tiendaForm.controls['codProv'].setValue(data.codProv.toString().trim());
     this._action_butto = 'Editar';
     this._cancel_button = true;
-
     setTimeout(() => {
-      // alert('CatchData acti:'  + this.resultModal.length )
       this.tiendaForm.controls['codigoClienteidFk'].disable()
     }, 1000);
-
-    // if( this.resultModal.length > 0 ) { 
-    //   alert('Es mayor a 0')
-    //   this.tiendaForm.controls['codigoClienteidFk'].disable
-    // }
-
   }
 
   obtenerCliente() {
@@ -445,7 +401,6 @@ export class TiendaComponent implements OnInit {
         console.error(e);
       }, complete: () => {
         this.clienteListaGhost.filter( (element:any) => {
-        this.clienteListaGhost.filter( (element:any) => {
           let arr: any = {
             "id": element.id,
             "codigoCliente": element.codigoCliente,
@@ -457,7 +412,6 @@ export class TiendaComponent implements OnInit {
             "nombrecontacto": element.nombrecontacto
           }
           this.clientelista.unshift(arr);
-      })
       })
       }
     })
@@ -481,28 +435,20 @@ export class TiendaComponent implements OnInit {
 
   codcli: any;
   obtenerCuentaBancariaCliente() {
-
-
     this._show_spinner = true;
     this.cuentaslista = [];
     let id: any = this.tiendaForm.controls['codigoClienteidFk'].value;
     this.codcli = id;
     this.obtenerLocalidad(id)
-    //console.warn('-*-*-*-*-*-*-*-')
-    //console.warn(id)
-    //console.warn('-*-*-*-*-*-*-*-')
     this.clienteserv.obtenerCuentaCliente(id).subscribe({
       next: ( cuentas ) => {
         this.cuentaslista  = cuentas;
-        //console.log(this.cuentaslista)
         this._show_spinner = false;
       }, error:(e) => {
         console.error(e);
         this._show_spinner = false;
       }
     })
-
-
   }
 
   eliminarCuentaBancaria(index: number) {
@@ -523,16 +469,10 @@ export class TiendaComponent implements OnInit {
 
   localidadesGuardadasCliente: any = [];
   obtenerLocalidad(id:any) {
-    //console.log( "idcli:" )
-    //console.log( id )
     this._show_spinner = true;
     this.loc.obtenerLocalidadesCliente( id ).subscribe({
       next: (x) => {
         this.localidadesGuardadasCliente = x;
-        //console.warn('=================================')
-        //console.warn('Estas son las localidades')
-        //console.warn(this.localidadesGuardadasCliente)
-        //console.warn('=================================')
       }, complete: () => {
         this._show_spinner = false;
       }, error: (e) => {
@@ -606,9 +546,6 @@ export class TiendaComponent implements OnInit {
   }
 
   eliminarCuentaTienda(data:any, id:number) {
-
-    ////console.log(this.tipoAccion);
-
     if( this.tipoAccion == 0 ) {
       this.resultModal.splice( id, 1 );
     } 

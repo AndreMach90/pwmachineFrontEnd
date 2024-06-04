@@ -100,18 +100,18 @@
             <table class="table table-hover" 
                 [style]="'--bs-table-color:'+theme.ftColor+';--bs-table-hover-bg:'+theme.hoverTable+';--bs-table-hover-color:'+theme.ftColor+';'">
                 <thead [style]="'--bs-table-bg:'+theme.bgTable+';'">
-                <tr>
-                    <th scope="col"></th>
-                    <th scope="col">Tienda</th>
-                    <th scope="col">Equipo</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Capacidad de Piezas</th>
-                    <th scope="col">Monto Asegurado</th>
-                    <th scope="col">Tiempo Sincronización</th>
-                    <th scope="col">Última Recolección</th>
-                    <th scope="col">No. Trans. / Tipo</th>
-                    <th scope="col">Última Trans.</th>
-                </tr>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Tienda</th>
+                        <th scope="col">Equipo</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Capacidad de Piezas</th>
+                        <th scope="col">Monto Asegurado</th>
+                        <th scope="col">Tiempo Sincronización</th>
+                        <th scope="col">Última Recolección</th>
+                        <th scope="col">No. Trans. / Tipo</th>
+                        <th scope="col">Última Trans.</th>
+                    </tr>
                 </thead>
                 <tbody [style]="'--bs-table-bg:transparent;'">
                     <ng-container *ngFor="let equipo of listaEsquipo; let i = index">

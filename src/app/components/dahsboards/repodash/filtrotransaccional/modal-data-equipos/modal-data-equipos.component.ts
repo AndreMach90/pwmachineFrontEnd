@@ -38,7 +38,6 @@ export class ModalDataEquiposComponent implements OnInit {
   ngOnInit(): void {
     this.obtenerEquiposTran();
     this.result = this.data.equiposExistentes;
-    console.log("hola");
   }
 
   totalResagadasAutomaticas: number = 0;
@@ -79,34 +78,26 @@ export class ModalDataEquiposComponent implements OnInit {
           console.error(e);
         },
         complete: ()  => {
-          /** Reparando esta sección */
-          console.log(this.data);
-          if (this.data.codigocliente !== null && this.data.codigocliente !== undefined) {
-            console.log("Pasando if 1");
+          /** Si hay codigo cliente */
+          if (this.data.codigocliente !== null) {
             if (this.data.equiposExistentes == null || this.data.equiposExistentes.length == 0 ) {
-              console.log("Pasando if 2");
-              this.listaEsquipo = this.listaEsquipoGhost.filter((equiposCliente: any) => equiposCliente.idCliente === this.data.codigocliente);
-            } else {
-              console.log("Pasando else 2");
-              console.log(this.data.equiposExistentes);
-              this.listaEsquipo = this.listaEsquipoGhost.filter( (equiposCliente:any) =>  equiposCliente.idCliente === this.data.codigocliente && equiposCliente.machine_Sn);
+              this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => x.idCliente2 == this.data.codigocliente );
+            } else if ( this.data.equiposExistentes != null ) {
+              this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => x.idCliente2 == this.data.codigocliente );
               this.listaEsquipo = this.listaEsquipo.filter( (x:any) => {
-                return !this.result.some( (element:any) => element.machine_Sn === x.machine_Sn);
+                return !this.result.some((element:any) => element.machine_Sn === x.machine_Sn);
               });
             }
-          } else {
-            console.log("Pasando else 1");
+          }  
+          /** Si no hay codigo cliente */
+          else if (this.data.codigocliente == null) {
+            console.log('No hay codigo cliente!!!!');
             if (this.data.equiposExistentes == null || this.data.equiposExistentes.length == 0 ) {
-              console.log("Pasando if 3");
               this.listaEsquipo = this.listaEsquipoGhost;
             } else {
-              console.log("Pasando else 3");
-              console.log(this.listaEsquipoGhost);
-              console.log(this.result);
               this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => {
                 return !this.result.some((element:any) => element.machine_Sn === x.machine_Sn);
               });
-              // console.log(this.removeDuplicateRecords());
             }
           }
 
@@ -153,15 +144,7 @@ export class ModalDataEquiposComponent implements OnInit {
       }
     )
   }
-
-  // removeDuplicateRecords() {
-  //   const seen = new Set();
-  //   return this.data.equiposExistentes.filter((item:any) => {
-  //     const key = JSON.stringify(item);
-  //     return seen.has(key) ? false : seen.add(key);
-  //   });
-  // }
-
+  
   // Función para seleccionar/deseleccionar todos los equipos
   selectedEquipos: any[] = []; // Variable para almacenar los equipos seleccionados
   selectAll(event: any, localidad: any) {

@@ -21,22 +21,11 @@
                             <input type="checkbox"
                                    class="form-check-input"
                                    id="clientecheck"
-                                   (change)="checktiendas = !checktiendas; choicetiendas = false"/>
+                                   (change)="checktiendas = !checktiendas; choicetiendas = false; checkFiltrarCliente(checktiendas)"/>
                                    <label for="clientecheck">
                                        <span> Filtrar por cliente </span>
                                    </label>
                         </div>
-
-                        <!-- <div class="m-1" *ngIf="checktiendas">
-                            <input type="checkbox"
-                                   class="form-check-input"
-                                   id="tiendacheck"
-                                   (change)="choicetiendas = !choicetiendas"/>
-                                   <label for="tiendacheck">
-                                       <span> Filtrar por tiendas </span>
-                                   </label>
-                        </div> -->
-
                     </div>
                     <div *ngIf="_transaction_show">
                         <form [formGroup]="transac"
@@ -62,14 +51,6 @@
                                                  <span>Transacciones Automáticas</span>
                                              </label>
                                   </div>
-                                  <!-- <div class="m-1">
-                                      <input type="checkbox" class="form-check-input" id="recolecciones"
-                                             (change)="transaccionesRecoleccionesSolo()"
-                                             formControlName="recolecciones" />
-                                             <label for="recolecciones" >
-                                                 <span> Recolecciones </span>
-                                             </label>
-                                  </div> -->
                               </div>
                         </form>
                     </div>
@@ -191,7 +172,6 @@
                                                id="acreditada">
                                     </div>
                         </div>
-                        <!-- [disabled]="disbutton_obtener" -->
                         <div class="p-2 d-flex align-items-end">
                             <button type="button"
                                     class="btn btn-outline-dark"
@@ -200,12 +180,6 @@
                                     style="height: 37px;" title="Obtener transacciones de equipos seleccionados">
                                     Obtener
                             </button>
-                            <!-- <button type="button"
-                                    class="btn btn-outline-dark"
-                                    (click)="createExcel()"
-                                    style="height: 37px;" title="Obtener transacciones de equipos seleccionados">
-                                    Obtener
-                            </button> -->
                         </div>
                     </div>
                     <div class=" rounded-pill d-flex shadow-sm align-items-center"

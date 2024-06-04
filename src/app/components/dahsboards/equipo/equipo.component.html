@@ -1,13 +1,14 @@
-<div class="spinner-overlay"  *ngIf="_show_spinner" >
+<div class="spinner-overlay"  *ngIf="_show_spinner">
     <div class="spinner-container">
       <span class="loader"></span>
     </div>
 </div>
 
-<div class="dashworks p-2 m-2 rounded-3 shadow "
+<div class="dashworks p-2 rounded-3 d-flex w-100 h-100"
     [ngStyle]="{'background-color': 'white'}">
-    <div class="register d-flex justify-content-between">
-        <div class="w-25 p-3" *ngIf="viewForm" >
+    <div class="register d-flex justify-content-between w-100">
+        <div class="w-25 p-3" *ngIf="viewForm"
+            [style]="'overflow-y: auto'">
             <div class="">
                 <h1>Registro de equipos <span style="opacity: 0;"> {{count}}</span> </h1>
             </div>
@@ -41,7 +42,7 @@
                             aria-label="">
                             <option *ngFor="let tiendas of tiendalista"
                                     [value]="tiendas.id" >
-                                    {{tiendas.nombreTienda | titlecase }}                                
+                                    {{tiendas.nombreTienda }}                                
                             </option>
                     </select>
                 </div>
@@ -147,8 +148,7 @@
                                    formControlName="capacidadIni"
                                    #capacidadIni
                                    id="capacidadIni"
-                                   placeholder=""
-                                   (keyup)="validateInputNumber(capacidadIni)">
+                                   placeholder="">
                         </div>
                         <div class="mb-3 w-100">
                             <label for="capacidadAsegurada" class="form-label text-secondary ">
@@ -174,7 +174,6 @@
                                    class="form-control"
                                    placeholder=""
                                    (keyup)="validateInputNumber(capacidadIniSobres)">
-                                   <!-- <span> lbs. </span> -->
                             </div>
                         </div>
                         <div class="mb-3 w-100">
@@ -205,7 +204,7 @@
             </form>
         </div>
         <div [class]="_width_table">
-            <div class="p-2 d-flex  justify-content-between align-items-center ">
+            <div class="p-2 d-flex justify-content-between align-items-center">
                 <div class="w-25">
                     <h1 class="m-0"> Equipos Registrados <span class="text-secondary" > ({{listaEsquipo.length}}) </span> </h1>
                 </div>
@@ -214,13 +213,12 @@
                         <div class="d-flex w-100">
                             <form [formGroup]="filterForm" class="w-100">
                                 <input class=" w-100 shadow-sm form-control rounded-pill" 
-                                       fxFlex="auto" type="text"
-                                       formControlName="filterequip"
-                                       #filterequip
-                                       id="filterequip"
-                                       (keyup)="filterEquipos()" 
-                                       #input placeholder="Búsqueda de equipos registrados...">
-                                       <!-- [(ngModel)]="filterequip" -->
+                                    fxFlex="auto" type="text"
+                                    formControlName="filterequip"
+                                    #filterequip
+                                    id="filterequip"
+                                    (keyup)="filterEquipos()" 
+                                    #input placeholder="Búsqueda de equipos registrados...">
                             </form>
                         </div>
                         <div class="machineDesact" [ngClass]="{'active': isActive}" (click)="machineDesactive()"
@@ -236,246 +234,166 @@
                 </div>
                 <hr>
             </div>
-            <table class="table table-hover table-bordered table-primary table-striped align-middle" >
-                <thead class="bg-primary text-light" >
-                    <th class="p-2" *ngIf="permisonUsers" >
-                        
-                    </th>
-                    <th class="p-2" >
-                        IP
-                    </th>
-                    <th class="p-2" >
-                        Nombre del Equipo
-                    </th>
-                    <th class="p-2" >
-                        Nombre Tienda
-                    </th>
-                    <th class="p-2">
-                        Capacidad de Billetes
-                    </th>
-                    <th class="p-2">
-                        Capacidad Asegurada
-                    </th>
-                    <th class="p-2">
-                       Tipo de Equipo
-                    </th>
-                    <th class="p-2">
-                        Marca
-                    </th>
-                    <th class="p-2">
-                        Modelo
-                    </th>
-                    <th class="p-2" *ngIf="permisonUsers">
-                        
-                    </th>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let equipos of listaEsquipo; let i = index" [ngClass]="{ 'activeEquipo': equipos.active !== 'A' }">
-                        <ng-container *ngIf="equipos.active == 'A'; else EquipoDesactivado">
-                            <td *ngIf="permisonUsers">
-                                <div class="d-flex">
-                                <div [style]="'background-image: url( '+edit+' )' " (click)="catchData(equipos)" class="icono-btn" title="Editar"></div>
-                                <div [style]="'background-image: url( '+delete+' )' " (click)="eliminarEquipos(equipos, i)" class="icono-btn" title="Desactivar"></div>
-                                </div>
-                            </td>
-                        </ng-container>
-                        <ng-template #EquipoDesactivado>
-                            <td *ngIf="permisonUsers" class="td_button">
-                                <div class="button_task" (click)="updateActive(equipos)" title="Activar">
-                                    <mat-icon>add_to_queue</mat-icon>
-                                </div>
-                            </td>
-                        </ng-template>
-                        <td>
-                            {{ equipos.ipEquipo }}
-                        </td>
-                        <td>
-                            {{ equipos.serieEquipo }}
-                        </td>
-                        <td>
-                            {{ equipos.nombreTienda }} 
-                        </td>
-                        <td>
-                            {{ equipos.capacidadIni }}
-                        </td>
-                        <td>
-                            {{ equipos.capacidadAsegurada }}
-                        </td>
-                        <td>
-                           {{ equipos.tipoMaquinaria }}
-                        </td>
-                        <td>
-                            {{ equipos.nombremarca }}
-                        </td>
-                        <td>
-                            {{ equipos.nombremodelo }}
-                        </td>
-                        <ng-container *ngIf="equipos.active == 'A'; else EquipoDesactivadoModelo">
-                            <td *ngIf="permisonUsers">
-                                <div class="btn btn-warning btn-sm m-1"
-                                     [matBadge]="equipos.capacidadUsuariosTemporales"
-                                     matBadgePosition="before"
-                                     matBadgeColor="warn"
-                                     (click)="openDialogUserTemporales(equipos)">
-                                     <div [style]="'background-image: url('+search+')'"
-                                          class="icono"></div>
-                                </div>
-                                <div class="btn btn-primary btn-sm m-1"
-                                     [matBadge]="equipos.capacidadUsuarios"
-                                     matBadgePosition="before"
-                                     matBadgeColor="warn"
-                                     (click)="op.toggle($event);obtenerUsuariosIpMaquina(equipos)">
-                                     <div [style]="'background-image: url('+users+')'"
-                                          class="icono"></div>
-                                </div>
-                                <p-overlayPanel #op>
-    
-                                    <div>
-                                        <div class="d-flex justify-content-between align-items-center mb-2 ">
-                        
-                                            <span class="fs-6" > Usuarios Equipos <strong class="text-primary" >( {{listaUsuariosMaquina.length}} )</strong> </span>
-                                            <div class="w-75" >
-                                                <section class="filtros mt-2 mb-2">
-                                                    <div class="mb-2 d-flex">
-    
-                                                        <form [formGroup]="filterUserEquiposForm" class="w-100">
-                                                            <input class=" w-100 shadow-sm form-control rounded-pill" 
-                                                                   fxFlex="auto" type="text"
-                                                                   formControlName="filterusermaq"
-                                                                   #filterusermaq
-                                                                   id="filterusermaq"
-                                                                   #input 
-                                                                   (keyup)="filterUsuariosMaquinaria()"
-                                                                   placeholder="Búsqueda de usuarios maquinarias..."
-                                                                   >
-                                                        </form>
-    
+            <div class="bordeTabla">
+                <table class="table table-hover table-primary table-striped align-middle" >
+                    <thead>
+                        <tr>
+                            <th class="p-2" *ngIf="permisonUsers"></th>
+                            <th class="p-2">IP</th>
+                            <th class="p-2">Nombre del Equipo</th>
+                            <th class="p-2">Nombre Tienda</th>
+                            <th class="p-2">Capacidad de Billetes</th>
+                            <th class="p-2">Capacidad Asegurada</th>
+                            <th class="p-2">Tipo de Equipo</th>
+                            <th class="p-2">Marca</th>
+                            <th class="p-2">Modelo</th>
+                            <th class="p-2" *ngIf="permisonUsers"></th></tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let equipos of listaEsquipo; let i = index" [ngClass]="{ 'activeEquipo': equipos.active !== 'A' }">
+                            <ng-container *ngIf="equipos.active == 'A'; else EquipoDesactivado">
+                                <td *ngIf="permisonUsers">
+                                    <div class="d-flex">
+                                    <div [style]="'background-image: url( '+edit+' )' " (click)="catchData(equipos)" class="icono-btn" title="Editar"></div>
+                                    <div [style]="'background-image: url( '+delete+' )' " (click)="eliminarEquipos(equipos, i)" class="icono-btn" title="Desactivar"></div>
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <ng-template #EquipoDesactivado>
+                                <td *ngIf="permisonUsers" class="td_button">
+                                    <div class="button_task" (click)="updateActive(equipos)" title="Activar">
+                                        <mat-icon>add_to_queue</mat-icon>
+                                    </div>
+                                </td>
+                            </ng-template>
+                            <td>{{ equipos.ipEquipo }}</td>
+                            <td>{{ equipos.serieEquipo }}</td>
+                            <td>{{ equipos.nombreTienda }}</td>
+                            <td>{{ equipos.capacidadIni }}</td>
+                            <td>{{ equipos.capacidadAsegurada }}</td>
+                            <td>{{ equipos.tipoMaquinaria }}</td>
+                            <td>{{ equipos.nombremarca }}</td>
+                            <td>{{ equipos.nombremodelo }}</td>
+                            <ng-container *ngIf="equipos.active == 'A'; else EquipoDesactivadoModelo">
+                                <td *ngIf="permisonUsers">
+                                    <div class="btn btn-warning btn-sm m-1"
+                                        [matBadge]="equipos.capacidadUsuariosTemporales"
+                                        matBadgePosition="before"
+                                        matBadgeColor="warn"
+                                        (click)="openDialogUserTemporales(equipos)">
+                                        <div [style]="'background-image: url('+search+')'" class="icono"></div>
+                                    </div>
+                                    <div class="btn btn-primary btn-sm m-1"
+                                        [matBadge]="equipos.capacidadUsuarios"
+                                        matBadgePosition="before"
+                                        matBadgeColor="warn"
+                                        (click)="op.toggle($event);obtenerUsuariosIpMaquina(equipos)">
+                                        <div [style]="'background-image: url('+users+')'"class="icono"></div>
+                                    </div>
+                                    <p-overlayPanel #op>
+                                        <div>
+                                            <div class="d-flex justify-content-between align-items-center mb-2 ">
+                                                <span class="fs-6" > Usuarios Equipos <strong class="text-primary" >( {{listaUsuariosMaquina.length}} )</strong> </span>
+                                                <div class="w-75" >
+                                                    <section class="filtros mt-2 mb-2">
+                                                        <div class="mb-2 d-flex">
+                                                            <form [formGroup]="filterUserEquiposForm" class="w-100">
+                                                                <input class=" w-100 shadow-sm form-control rounded-pill" 
+                                                                    fxFlex="auto" type="text"
+                                                                    formControlName="filterusermaq"
+                                                                    #filterusermaq
+                                                                    id="filterusermaq"
+                                                                    #input 
+                                                                    (keyup)="filterUsuariosMaquinaria()"
+                                                                    placeholder="Búsqueda de usuarios maquinarias...">
+                                                            </form>
+                                                        </div>
+                                                    </section>
+                                                </div>                                        
+                                            </div>
+                                            <section class="sect-edit d-flex align-items-end" *ngIf="edit_temporal_user" >
+                                                <form [formGroup]="filterEquiposForm" class="w-100">
+                                                    <div class="col" >
+                                                        <label for="_nombres">Establecimiento</label>
+                                                        <input type="text"
+                                                            formControlName="_nombres"
+                                                            #_nombres
+                                                            id="_nombres"                                                        
+                                                            class="form-control form-control-sm">
                                                     </div>
-                                                </section>
-                                            </div>                                        
-                                        </div>
-                                        <section class="sect-edit d-flex align-items-end" *ngIf="edit_temporal_user" >
-    
-                                            <form [formGroup]="filterEquiposForm" class="w-100">
-                                                <div class="col" >
-                                                    <label for="_nombres">
-                                                        Establecimiento
-                                                    </label>
-                                                    <input type="text"
-                                                           formControlName="_nombres"
-                                                           #_nombres
-                                                           id="_nombres"                                                        
-                                                           class="form-control form-control-sm"
-                                                           >
-                                                </div>
-                                                <div class="col">
-                                                    <label for="_cedula">
-                                                        Cod. Establecimiento
-                                                    </label>
-                                                    <input type="text"
-                                                           formControlName="_cedula"
-                                                           #_cedula
-                                                           id="_cedula"  
-                                                           (keyup)="validateInputNumber('cedula')"
-                                                           class="form-control form-control-sm">
-                                                </div>
-                                                <!-- <div class="col">
-                                                    <label for="_telefono">
-                                                        Teléfono
-                                                    </label>
-                                                    <input type="text" [(ngModel)]="_telefono"
-                                                           id="_telefono"
-                                                           (keyup)="validateInputNumber('_telefono')" 
-                                                           class="form-control form-control-sm">
-                                                </div> -->
-    <!-- ======= -->        
-                                                <div class="col d-flex">
-                                                    <button type="button"
+                                                    <div class="col">
+                                                        <label for="_cedula">Cod. Establecimiento</label>
+                                                        <input type="text"
+                                                            formControlName="_cedula"
+                                                            #_cedula
+                                                            id="_cedula"
+                                                            class="form-control form-control-sm">
+                                                    </div>
+                                                    <div class="col d-flex">
+                                                        <button type="button"
                                                             class="btn btn-danger btn-sm "
                                                             *ngIf="_cancel_button_us"
                                                             (click)="limpiarMqU()">
                                                             <div [style]="'background-image: url( '+cancel+' )' " class="icono" ></div>
-                                                    </button>
-                                                    <button type="button" class="d-flex align-items-center btn btn-sm btn-primary "
+                                                        </button>
+                                                        <button type="button" class="d-flex align-items-center btn btn-sm btn-primary "
                                                             (click)="editarUsuarioMaquina()"
                                                             *ngIf="_create_show" >
                                                             <div [style]="'background-image: url( '+crear+' )' " class="icono" ></div>
                                                             <div >{{_action_butto_us}} Usuario</div>
-                                                    </button>    
-                                                </div>
-                                            </form>        
-                                        </section>
-                                        <div style="max-height: 300px; overflow-y: auto;" >
-                                        <table class="table table-hover table-bordered table-warning table-striped align-middle" >
-                                            <thead class="bg-dark text-light" >
-                                                <th class="p-2" *ngIf="permisonUsers"></th>
-                                                <th class="p-2" >
-                                                    Nombre de usuario
-                                                </th>
-                                                <th class="p-2">
-                                                    Cod. Establecimiento
-                                                </th>
-                                                <th class="p-2">
-                                                    Establecimiento
-                                                </th>
-                                                <th class="p-2">
-                                                    Tienda pertenciente
-                                                </th>
-                                                <!-- <th class="p-2">
-                                                    Teléfono
-                                                </th> -->
-                                                <th class="p-2">
-                                                    Cta. Bancaria
-                                                </th>
-                                            </thead>
-                                            <tbody>
-                                                <tr *ngFor="let usuariosm of listaUsuariosMaquina">
-                                                    <td *ngIf="permisonUsers">
-                                                        <!-- (click)="catchData(usuariosm, 'mq')" -->
-                                                        <div class="d-flex w-100">
-                                                            <div (click)="edit_temporal_user = !edit_temporal_user; catchDataUserMaq(usuariosm);"
-                                                                 [style]="'background-image: url( '+edit+' )'"                                                             
-                                                                 class="icono-btn">
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td> {{ usuariosm.usuario }} </td>
-                                                    <td> {{ usuariosm.cedula  }} </td>
-                                                    <td> {{ usuariosm.nombres }} </td>
-                                                    <td>
-                                                        <span>
-                                                            {{ usuariosm.nombreTienda | uppercase }}
-                                                        </span>
-                                                        <br>
-                                                        <small class="text-secondary">
-                                                            {{ usuariosm.nombreProvincia }}
-                                                        </small>
-                                                    </td>
-                                                    <!-- <td>
-                                                        {{ usuariosm.telefono }}
-                                                    </td> -->
-                                                    <td>
-                                                        <strong>
-                                                             <span> No. {{ usuariosm.numerocuenta }} </span>
-                                                            <small class="text-secondary" >  {{ usuariosm.nombanco }} / Cuenta {{ usuariosm.tipoCuenta }} </small>
-                                                        </strong>
-                                                    </td>
-                                                </tr>
-                        
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    </div>
-                                </p-overlayPanel>
-                            </td>
-                        </ng-container>
-                        <ng-template #EquipoDesactivadoModelo>
-                            <td *ngIf="permisonUsers"></td>
-                        </ng-template>
-                    </tr>
-                </tbody>
-            </table>
+                                                        </button>    
+                                                    </div>
+                                                </form>        
+                                            </section>
+                                            <div style="max-height: 300px; overflow-y: auto;" >
+                                                <table class="table table-hover table-bordered table-warning table-striped align-middle" >
+                                                    <thead class="bg-dark text-light">
+                                                        <th class="p-2" *ngIf="permisonUsers"></th>
+                                                        <th class="p-2" >Nombre de usuario</th>
+                                                        <th class="p-2">Cod. Establecimiento</th>
+                                                        <th class="p-2">Establecimiento</th>
+                                                        <th class="p-2">Tienda pertenciente</th>
+                                                        <th class="p-2">Cta. Bancaria</th>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let usuariosm of listaUsuariosMaquina">
+                                                            <td *ngIf="permisonUsers">
+                                                                <div class="d-flex w-100">
+                                                                    <div (click)="edit_temporal_user = !edit_temporal_user; catchDataUserMaq(usuariosm);"
+                                                                        [style]="'background-image: url( '+edit+' )'"                                                             
+                                                                        class="icono-btn">
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td> {{ usuariosm.usuario }} </td>
+                                                            <td> {{ usuariosm.cedula  }} </td>
+                                                            <td> {{ usuariosm.nombres }} </td>
+                                                            <td> 
+                                                                <span>{{ usuariosm.nombreTienda | uppercase }}</span>
+                                                                <br>
+                                                                <small class="text-secondary"> {{ usuariosm.nombreProvincia }}</small>
+                                                            </td>
+                                                            <td>
+                                                                <strong>
+                                                                    <span> No. {{ usuariosm.numerocuenta }} </span>
+                                                                    <small class="text-secondary"> {{ usuariosm.nombanco }} / Cuenta {{ usuariosm.tipoCuenta }} </small>
+                                                                </strong>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </p-overlayPanel>
+                                </td>
+                            </ng-container>
+                            <ng-template #EquipoDesactivadoModelo>
+                                <td *ngIf="permisonUsers"></td>
+                            </ng-template>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
      </div>
-
 </div>
