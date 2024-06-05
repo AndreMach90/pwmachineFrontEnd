@@ -111,7 +111,7 @@ export class DahsboardsComponent implements OnInit {
     }
 
     estadow: boolean = true;
-    height_app: any = '90vh';
+    height_app: any = '100vh';
     controlWidth() {
       switch( this.estadow ) {
         case true:

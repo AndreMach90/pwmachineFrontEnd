@@ -1,6 +1,21 @@
-:host ::ng-deep  .p-password {
-    width: 100% !important;
+:host ::ng-deep .p-password {
+  width: 100% !important;
 }
-:host ::ng-deep  .p-inputtext {
-    width: 100% !important;
+:host ::ng-deep .p-inputtext {
+  width: 100% !important;
+}
+
+// Tabla
+.bordeTabla {
+  margin: 0;
+  padding: 0;
+  height: 87%;
+  overflow: auto;
+}
+.bordeTabla thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #0d6efd;
+  color: white;
 }

@@ -133,22 +133,23 @@
     box-shadow: 0 2.5em 0 0;
   }
 }
-.input-group{
+
+.input-group {
   border-radius: 20px;
   padding: 4px;
   width: fit-content;
   border: 1px solid rgba(0, 0, 0, 0.151);
 }
-.input-group input{
+.input-group input {
   border: 0;
   outline: none;
   padding: 0;
 }
-.input-group input:focus{
+.input-group input:focus {
   box-shadow: none;
   outline: none;
 }
-.machineDesact{
+.machineDesact {
   background: rgba(0, 0, 0, 0.349);
   display: flex;
   text-align: center;
@@ -165,7 +166,7 @@
   color: rgb(15, 78, 132);
   border: 1px solid rgba(15, 78, 132);
 }
-.machineDesact mat-icon{
+.machineDesact mat-icon {
   padding-top: 1.5px;
   font-size: 1.25rem;
 }

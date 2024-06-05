@@ -1,12 +1,8 @@
-
-
-<div *ngFor="let modulos of modelModules" >
-
-    <div class="nav-side-content d-flex align-items-center p-3 "
-         (click)="botonClick(modulos);"
-         [ngStyle]="{'background-color': secondary}"
-         [title]="modulos.description_module">
-         <div class="fs-6 text-light" > {{modulos.nombre_module | uppercase }} </div>
-    </div>
-
+<div *ngFor="let modulos of modelModules">
+  <div class="nav-side-content d-flex align-items-center p-3 h-100"
+    (click)="botonClick(modulos)"
+    [ngStyle]="{ 'background-color': secondary }"
+    [title]="modulos.description_module">
+    <div class="fs-6 text-light">{{ modulos.nombre_module | uppercase }}</div>
+  </div>
 </div>

@@ -1,318 +1,221 @@
-<div class="spinner-overlay"  *ngIf="_show_spinner" >
-    <div class="spinner-container">
-      <span class="loader"></span>
-    </div>
+<div class="spinner-overlay" *ngIf="_show_spinner">
+  <div class="spinner-container">
+    <span class="loader"></span>
+  </div>
 </div>
 
-
-<div class="dashworks p-2 m-2 rounded-3 shadow "
-     [ngStyle]="{'background-color': 'white'}">
-     <div class="register d-flex justify-content-between " >
-         <div class="w-25 p-3" *ngIf="viewForm" >
-            <div class="">
-                <h1> Registro de Usuario </h1>
-                <hr>
-            </div>
-
-        <form [formGroup]="userForm" class="mb-2" (ngSubmit)="onSubmit()">
-
-                <div class="mb-3 mt-2" *ngIf="_show_tienda" >
-                    <label for="codigoTiendaidFk" class="form-label ">
-                        <span class="text-primary" > Escoge la Tienda </span>
-                        <span class="text-danger">*</span>
-                    </label>
-                    <select class="inpForms form-select w-100"
-                            formControlName="codigoTiendaidFk"
-                            #codigoTiendaidFk
-                            id="codigoTiendaidFk"
-                            aria-label="">
-                            <option *ngFor="let tiendas of tiendalista"
-                                    [value]="tiendas.id" >
-                                    {{ tiendas.nombreTienda | titlecase }}
-                            </option>
-                    </select>
-                </div>
-                <div *ngIf="_form" >
-                    <div class="mb-3 w-100 mt-1 bg-warning p-2 rounded-2" *ngIf="verTokenUser" >
-                        <label for="usuario" class="form-label text-dark  "  >
-                            Token de usuario (Automático):
-                        </label>
-                        <input type="text"
-                               class="form-control" 
-                               formControlName="usuario"
-                               #usuario
-                               id="usuario"
-                               style="background-color: rgb(219, 184, 26);"
-                               readonly
-                               placeholder="">
-                    </div>
-                    <div class="mb-3 w-100">
-                        <label for="Nombre" class="form-label text-secondary  ">
-                            Nombres:
-                        </label>
-                        <input type="text"
-                               class="form-control" 
-                               formControlName="nombres"
-                               #nombres
-                               id="nombres"
-                               placeholder="José Carlos"
-                               (keyup)="validateInputText(nombres)">
-                    </div>
-                    <div class="mb-3 w-100">
-                        <label for="Apellido" class="form-label text-secondary ">
-                            Apellidos:
-                        </label>
-                        <input type="text" class="form-control"
-                               formControlName="apellidos" #apellidos id="apellidos"
-                               placeholder="Mora Cedeño"
-                               (keyup)="validateInputText(apellidos)">
-                    </div>
-                    <div class="mb-3 w-100">
-                        <label for="cedula" class="form-label text-secondary">
-                            Cédula:
-                        </label>
-                        <input type="text"
-                               class="form-control"
-                               formControlName="cedula"
-                               #cedula
-                               id="cedula"
-                               placeholder="099988555"
-                               (keyup)="validateInputNumber(cedula)">
-                    </div>
-                    <div class="mb-3 w-100">
-                        <label for="Telf" class="form-label text-secondary">
-                            Teléfono:
-                        </label>
-                        <input type="text"
-                               class="form-control"
-                               formControlName="telefono"
-                               #telefono
-                               id="telefono"
-                               placeholder="091258533"
-                               (keyup)="validateInputNumber(telefono)">
-                    </div>
-                    <div class="mb-3 w-100" *ngIf="_contrasenia">
-                        <label for="Contrasenia" class="form-label text-secondary">
-                            Contraseña:
-                        </label>
-                        <div class="card flex justify-content-center w-100">
-                            <p-password [toggleMask]="true"
-                                        (keyup)="validatePassword()"
-                                        formControlName="contrasenia"
-                                        styleClass="passwordpg"
-                                        #contrasenia
-                                        id="contrasenia">
-                                        <ng-template pTemplate="header">
-                                            <h6>Escribe tu contraseña:</h6>
-                                        </ng-template>
-                                        <ng-template pTemplate="footer">
-                                            <p-divider></p-divider>
-                                            <p class="mt-2">Suggestions</p>
-                                            <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
-                                                <li> Mínimo una letra minúscula </li>
-                                                <li> Mínimo una letra mayúscula </li>
-                                                <li> Mínimo un número           </li>
-                                                <li> Mínimo 8 caracteres        </li>
-                                            </ul>
-                                        </ng-template>
-                            </p-password>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="codigoClienteidFk" class="form-label ">
-                            <span class="text-primary" > Rol de usuario: </span>
-                            <span class="text-danger">*</span>
-                        </label>
-                        <select class="inpForms form-select   w-100"
-                                formControlName="rol" 
-                                #rol
-                                id="rol" 
-                                aria-label="">
-                                <option *ngFor="let rol of rolLista"
-                                        [value]="rol.codigo" >
-                                        {{rol.nombre | titlecase }}                                
-                                </option>
-                        </select>
-                    </div>
-                <div class="d-flex flex-wrap justify-content-between">                    
-                    <div class="floating-button">
-                        <button type="button"
-                                class="btn btn-danger btn-sm "
-                                *ngIf="_cancel_button"
-                                (click)="limpiar()">
-                                <div [style]="'background-image: url( '+cancel+' )' " class="icono" ></div>
-                        </button>
-                        <button type="submit" class="d-flex align-items-center btn btn-sm btn-primary "
-                                *ngIf="_create_show" >
-                                <div [style]="'background-image: url( '+crear+' )' " class="icono" ></div>
-                                <div >{{_action_butto}} Usuario</div>
-                        </button>    
-                    </div>
-                </div>
-            </div>
-        </form>
+<div class="dashworks p-2 rounded-3 d-flex w-100 h-100"
+  [ngStyle]="{ 'background-color': 'white' }">
+  <div class="register d-flex justify-content-between w-100">
+    <div class="w-25 p-3" *ngIf="viewForm" [style]="'overflow-y: auto'">
+      <div class="">
+        <h1>Registro de Usuario</h1>
+        <hr />
+      </div>
+      <form [formGroup]="userForm" class="mb-2" (ngSubmit)="onSubmit()">
+        <div class="mb-3 mt-2" *ngIf="_show_tienda">
+          <label for="codigoTiendaidFk" class="form-label">
+            <span class="text-primary"> Escoge la Tienda </span>
+            <span class="text-danger">*</span>
+          </label>
+          <select aria-label=""
+            class="inpForms form-select w-100"
+            formControlName="codigoTiendaidFk"
+            #codigoTiendaidFk
+            id="codigoTiendaidFk">
+            <option *ngFor="let tiendas of tiendalista" [value]="tiendas.id">
+              {{ tiendas.nombreTienda | titlecase }}
+            </option>
+          </select>
         </div>
-        <div [class]="_width_table">
-            <div class="p-2" >
-                <h1> Usuarios Registrados </h1>
-                <hr>
-            </div>              
-            <div class="d-flex justify-content-between align-items-center mb-2 ">
-                <span class="fs-6">
-                    Usuarios Portal Web
-                    <strong class="text-primary">
-                        ( {{ listaUsuariosPortalWeb.length }} )
-                    </strong>
-                </span>
-                <div class="w-75" >
-                    <section class="filtros mt-2 mb-2 w-100 d-flex">
-                        <div class="mb-2 d-flex w-100">
-                          <input class=" w-100 shadow-sm form-control rounded-pill" 
-                                 fxFlex="auto" type="text"
-                                 [(ngModel)]="filteruserportal"
-                                 (keyup)="filterUsuariosPortalWeb()"
-                                 #input placeholder="Búsqueda de usuarios portal web...">
-                        </div>
-                        <div *ngIf="permisonUsers">
-                            <div [style]="'background-image: url( '+add+' )' "
-                                 (click)="viewForm = !viewForm; widthAutom();"
-                                 class="icono-btn" ></div>
-                        </div>
-                    </section>
-                </div>
-            </div>      
-            <table class="table table-hover table-bordered table-primary table-striped align-middle" >
-                <thead class="bg-primary text-light" >
-                    <th class="p-2" *ngIf="permisonUsers"></th>
-                    <th class="p-2">
-                        Nombre de usuario
-                    </th>
-                    <th class="p-2">
-                        Cédula
-                    </th>
-                    <th class="p-2">
-                        Nombres
-                    </th>
-                    <th class="p-2">
-                        Rol
-                    </th>
-                    <th class="p-2">
-                        Teléfono
-                    </th>
-                    <!-- <th class="p-2">
-                        Contraseña
-                    </th> -->
-                </thead>
-                <tbody>
-                    <tr *ngFor="let usuariosp of listaUsuariosPortalWeb">
-                        <td *ngIf="permisonUsers" >
-                            <div class="d-flex" >
-                                <div [style]="'background-image: url( '+edit+' )'"
-                                     (click)="catchData(usuariosp, 'pw')"
-                                     class="icono-btn">
-                                </div>
-                                <div [style]="'background-image: url( '+delete+' )'"
-                                     (click)="eliminarUsuarios(usuariosp.id, 2)"
-                                     class="icono-btn">
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            {{ usuariosp.usuario }}
-                        </td>
-                        <td>
-                            {{ usuariosp.cedula }}
-                        </td>
-                        <td>
-                            {{ usuariosp.nombres }} {{ usuariosp.apellidos }}
-                        </td>
-                        <td>
-                            {{ usuariosp.rolNombre | uppercase }}
-                        </td>
-                        <td>
-                            {{ usuariosp.telefono }}
-                        </td>
-                        <!-- <td>
-                            {{ usuariosp.contrasenia }}
-                        </td> -->
-                    </tr>
-                </tbody>
-            </table>
-
-            <!-- <div>
-                <div class="d-flex justify-content-between align-items-center mb-2 ">
-
-                    <span class="fs-6" > Usuarios Equipos <strong class="text-primary" >( {{listaUsuariosMaquina.length}} )</strong> </span>
-                    <div class="w-75" >
-                        <section class="filtros mt-2 mb-2">
-                            <div class="mb-2 d-flex">
-                              <input class=" w-100 shadow-sm form-control rounded-pill" 
-                                     fxFlex="auto" type="text"
-                                     [(ngModel)]="filterusermaq"
-                                     (keyup)="filterUsuariosMaquinaria()" 
-                                     #input placeholder="Búsqueda de usuarios maquinarias...">
-                            </div>
-                        </section>
-                    </div>
-                </div>
-                <table class="table table-hover table-bordered table-warning table-striped align-middle" >
-                    <thead class="bg-dark text-light" >
-                        <th class="p-2" *ngIf="permisonUsers"></th>
-                        <th class="p-2" >
-                            Nombre de usuario
-                        </th>
-                        <th class="p-2">
-                            Cédula
-                        </th>
-                        <th class="p-2">
-                            Nombres
-                        </th>
-                        <th class="p-2">
-                            Tienda pertenciente
-                        </th>
-                        <th class="p-2">
-                            Teléfono
-                        </th>
-                    </thead>
-                    <tbody>
-                        
-                        <tr *ngFor="let usuariosm of listaUsuariosMaquina">
-                            <td *ngIf="permisonUsers">
-                                <div class="d-flex w-100">
-                                    <div [style]="'background-image: url( '+edit+' )'"
-                                         (click)="catchData(usuariosm, 'mq')"
-                                         class="icono-btn">
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                {{ usuariosm.usuario }}
-                            </td>
-                            <td>
-                                {{ usuariosm.cedula }}
-                            </td>
-                            <td>
-                                {{ usuariosm.nombres }} {{ usuariosm.apellidos }}
-                            </td>
-                            <td>
-                                <span>
-                                    {{ usuariosm.nombreTienda | uppercase }}
-                                </span>
-                                <br>
-                                <small class="text-secondary">
-                                    {{ usuariosm.nombreProvincia }}
-                                </small>
-                            </td>
-                            <td>
-                                {{ usuariosm.telefono }}
-                            </td>
-                        </tr>
-
-                    </tbody>
-                </table>
-            </div> -->
-
+        <div *ngIf="_form">
+          <div *ngIf="verTokenUser"
+            class="mb-3 w-100 mt-1 bg-warning p-2 rounded-2">
+            <label for="usuario" class="form-label text-dark">
+              Token de usuario (Automático):
+            </label>
+            <input type="text"
+              class="form-control"
+              formControlName="usuario"
+              #usuario
+              id="usuario"
+              style="background-color: rgb(219, 184, 26)"
+              readonly
+              placeholder=""/>
+          </div>
+          <div class="mb-3 w-100">
+            <label for="Nombre" class="form-label text-secondary">
+              Nombres:
+            </label>
+            <input type="text"
+              class="form-control"
+              formControlName="nombres"
+              #nombres
+              id="nombres"
+              placeholder="José Carlos"
+              (keyup)="validateInputText(nombres)"/>
+          </div>
+          <div class="mb-3 w-100">
+            <label for="Apellido" class="form-label text-secondary">
+              Apellidos:
+            </label>
+            <input type="text"
+              class="form-control"
+              formControlName="apellidos"
+              #apellidos
+              id="apellidos"
+              placeholder="Mora Cedeño"
+              (keyup)="validateInputText(apellidos)"/>
+          </div>
+          <div class="mb-3 w-100">
+            <label for="cedula" class="form-label text-secondary">
+              Cédula:
+            </label>
+            <input type="text"
+              class="form-control"
+              formControlName="cedula"
+              #cedula
+              id="cedula"
+              placeholder="099988555"
+              (keyup)="validateInputNumber(cedula)"/>
+          </div>
+          <div class="mb-3 w-100">
+            <label for="Telf" class="form-label text-secondary">
+              Teléfono:
+            </label>
+            <input type="text"
+              class="form-control"
+              formControlName="telefono"
+              #telefono
+              id="telefono"
+              placeholder="091258533"
+              (keyup)="validateInputNumber(telefono)"/>
+          </div>
+          <div class="mb-3 w-100" *ngIf="_contrasenia">
+            <label for="Contrasenia" class="form-label text-secondary">
+              Contraseña:
+            </label>
+            <div class="card flex justify-content-center w-100">
+              <p-password [toggleMask]="true"
+                (keyup)="validatePassword()"
+                formControlName="contrasenia"
+                styleClass="passwordpg"
+                #contrasenia
+                id="contrasenia">
+                <ng-template pTemplate="header">
+                  <h6>Escribe tu contraseña:</h6>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                  <p-divider></p-divider>
+                  <p class="mt-2">Suggestions</p>
+                  <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
+                    <li>Mínimo una letra minúscula</li>
+                    <li>Mínimo una letra mayúscula</li>
+                    <li>Mínimo un número</li>
+                    <li>Mínimo 8 caracteres</li>
+                  </ul>
+                </ng-template>
+              </p-password>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="codigoClienteidFk" class="form-label">
+              <span class="text-primary"> Rol de usuario: </span>
+              <span class="text-danger">*</span>
+            </label>
+            <select id="rol"
+              class="inpForms form-select w-100"
+              formControlName="rol"
+              #rol
+              aria-label="">
+              <option *ngFor="let rol of rolLista" [value]="rol.codigo">
+                {{ rol.nombre | titlecase }}
+              </option>
+            </select>
+          </div>
+          <div class="d-flex flex-wrap justify-content-between">
+            <div class="floating-button">
+              <button type="button"
+                class="btn btn-danger btn-sm"
+                *ngIf="_cancel_button"
+                (click)="limpiar()">
+                <div class="icono" [style]="'background-image: url( ' + cancel + ' )'"></div>
+              </button>
+              <button type="submit"
+                class="d-flex align-items-center btn btn-sm btn-primary"
+                *ngIf="_create_show">
+                <div class="icono" [style]="'background-image: url( ' + crear + ' )'"></div>
+                <div>{{ _action_butto }} Usuario</div>
+              </button>
+            </div>
+          </div>
         </div>
-     </div>
-
+      </form>
+    </div>
+    <div [class]="_width_table">
+      <div class="p-2 d-flex justify-content-between align-items-center">
+        <div class="w-25">
+          <h1 class="m-0">
+            Usuarios Portal Web
+            <strong class="text-primary">
+              ( {{ listaUsuariosPortalWeb.length }} )
+            </strong>
+          </h1>
+        </div>
+        <div class="w-75">
+          <section class="filtros mt-2 mb-2 w-100 d-flex">
+            <div class="mb-2 d-flex w-100">
+              <input type="text"
+                class="w-100 shadow-sm form-control rounded-pill"
+                fxFlex="auto"
+                [(ngModel)]="filteruserportal"
+                (keyup)="filterUsuariosPortalWeb()"
+                #input
+                placeholder="Búsqueda de usuarios portal web..."
+              />
+            </div>
+            <div *ngIf="permisonUsers">
+              <div class="icono-btn"
+                [style]="'background-image: url( ' + add + ' )'"
+                (click)="viewForm = !viewForm; widthAutom()">
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+      <div class="bordeTabla">
+        <table class="table table-hover table-primary table-striped align-middle">
+          <thead class="bg-primary text-light">
+            <th class="p-2" *ngIf="permisonUsers"></th>
+            <th class="p-2">Nombre de usuario</th>
+            <th class="p-2">Cédula</th>
+            <th class="p-2">Nombres</th>
+            <th class="p-2">Rol</th>
+            <th class="p-2">Teléfono</th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let usuariosp of listaUsuariosPortalWeb">
+              <td *ngIf="permisonUsers">
+                <div class="d-flex">
+                  <div class="icono-btn"
+                    [style]="'background-image: url( ' + edit + ' )'"
+                    (click)="catchData(usuariosp, 'pw')">
+                  </div>
+                  <div class="icono-btn"
+                    [style]="'background-image: url( ' + delete + ' )'"
+                    (click)="eliminarUsuarios(usuariosp.id, 2)">
+                  </div>
+                </div>
+              </td>
+              <td>{{ usuariosp.usuario }}</td>
+              <td>{{ usuariosp.cedula }}</td>
+              <td>{{ usuariosp.nombres }} {{ usuariosp.apellidos }}</td>
+              <td>{{ usuariosp.rolNombre | uppercase }}</td>
+              <td>{{ usuariosp.telefono }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
