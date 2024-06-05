@@ -138,8 +138,10 @@ export class ModalDataEquiposComponent implements OnInit {
                   // Si no existe, la agregamos junto con sus propiedades
                   this.localidadesEncontradas.push({ loc: element.localidad, bgloc: element.bgloc, equiposTrans: [] });
               }
+              
               // Luego, siempre agregamos los equipos a la matriz equiposTrans correspondiente
               this.localidadesEncontradas[localidadIndex !== -1 ? localidadIndex : this.localidadesEncontradas.length - 1].equiposTrans.push(element);
+
           });
 
           this.sumatoriaResagadasTransac(this.listaEsquipo);
