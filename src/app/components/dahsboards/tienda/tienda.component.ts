@@ -313,6 +313,8 @@ export class TiendaComponent implements OnInit {
         Active: 'A'
       }
 
+      console.log(this.modelTienda)
+
       setTimeout( () => {
         this.tiendaservs.guardarTiendas(this.modelTienda).subscribe(
           {

@@ -41,6 +41,8 @@ export class ModalDataEquiposComponent implements OnInit {
     this.result = this.data.equiposExistentes;
     console.warn('/*/*/*/*/*/*/*/*/*');
     console.warn(this.result);
+    console.warn('CLIENTE!!');
+    console.warn(this.data.codigocliente);
     console.warn('/*/*/*/*/*/*/*/*/*');
   }
 
@@ -83,23 +85,25 @@ export class ModalDataEquiposComponent implements OnInit {
           console.error(e);
         },
         complete: ()  => {
-          /** Reparando esta sección */            
-          if (this.data.codigocliente !== null && this.data.codigocliente !== undefined) {
+          /** Si hay codigo cliente */
+          if (this.data.codigocliente !== null) {
             if (this.data.equiposExistentes == null || this.data.equiposExistentes.length == 0 ) {
-              this.listaEsquipo = this.listaEsquipoGhost.filter((equiposCliente: any) => equiposCliente.idCliente === this.data.codigocliente);
-            } else {
-              this.listaEsquipo = this.listaEsquipoGhost.filter( (equiposCliente:any) =>  equiposCliente.idCliente === this.data.codigocliente && equiposCliente.machine_Sn);
+              this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => x.idCliente2 == this.data.codigocliente );
+            } else if ( this.data.equiposExistentes != null ) {
+              this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => x.idCliente2 == this.data.codigocliente );
               this.listaEsquipo = this.listaEsquipo.filter( (x:any) => {
-                return !this.result.some( (element:any) => element.nserie === x.machine_Sn);
+                return !this.result.some((element:any) => element.machine_Sn === x.machine_Sn);
               });
             }
           }  
-          else {
+          /** Si no hay codigo cliente */
+          else if (this.data.codigocliente == null) {
+            console.log('No hay codigo cliente!!!!');
             if (this.data.equiposExistentes == null || this.data.equiposExistentes.length == 0 ) {
               this.listaEsquipo = this.listaEsquipoGhost;
             } else {
               this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => {
-                return !this.result.some((element:any) => element.nserie === x.machine_Sn);
+                return !this.result.some((element:any) => element.machine_Sn === x.machine_Sn);
               });
             }
           }
