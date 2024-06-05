@@ -11,7 +11,7 @@ export class Environments {
     constructor( private encrypt: EncryptService ) { }
         
     // apingRok: any = 'http://181.188.224.4:5208';
-    apingRok: any = 'http://192.168.100.12:9095';
+    apingRok: any = 'http://192.168.55.173:9095';
     // apingRok: any = 'https://sfiback.azurewebsites.net';
 
 
