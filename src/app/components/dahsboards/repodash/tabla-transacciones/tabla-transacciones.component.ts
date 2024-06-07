@@ -89,35 +89,50 @@ export class TablaTransaccionesComponent implements OnInit, OnChanges {
     if(changes) {
 
       if ( this.transaccionAutoHub.length > 0 ) {
-        if ( this.listenNserie == this.transaccionAutoHub[0].machine_Sn ) {             
+        
+        console.warn('♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦');
+        console.warn('♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦');
+        console.warn(this.transaccionAutoHub);
+        console.warn('♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦');
+        console.warn('♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦');
 
-            ////console.log('HUB AUTO');
-            ////console.log(this.transaccionAutoHub);
+        if ( this.listenNserie == this.transaccionAutoHub[0].machine_Sn ) {
 
              this.listaTransacciones.unshift( this.transaccionAutoHub[0] );
              if(this.tipoFiltro) this.listaTransacciones.splice( this.listaTransacciones.length - 1, 1 );
-
+             
              if(this.transaccionAutoHub[0].acreditada == 'A') {
               this.transaccionAutoHub[0].colorRow = '#D8F1EC';
-             }  
+             }
              
              if(this.transaccionAutoHub[0].acreditada == 'E') {
                 this.transaccionAutoHub[0].colorRow = '#F1F090';
-             }  
+             }
 
              else if(this.transaccionAutoHub[0].acreditada == 'N') {
               this.transaccionAutoHub[0].colorRow = '#F1E3D8';
-             }  
+             }
 
              this.transaccionAutoHub   = [];
              this.transaccionManualHub = [];
              this.transaccionRecollHub = [];
              this.finsumat = false;
+
         }
+
       }
 
       if (this.transaccionManualHub.length > 0) {
+
+        console.warn('♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦');
+        console.warn('♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦');
+        console.warn(this.listenNserie);
+        console.warn(this.transaccionManualHub);
+        console.warn('♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦');
+        console.warn('♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦');
+
         if ( this.listenNserie == this.transaccionManualHub[0].machine_Sn ) {
+             alert('99999')
              this.listaTransacciones.unshift( this.transaccionManualHub[0] );
              if(this.tipoFiltro) this.listaTransacciones.splice( this.listaTransacciones.length - 1, 1 );     
              

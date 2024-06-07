@@ -91,7 +91,8 @@
                 </th>
             </thead>
             <tbody>
-                <tr *ngFor="let transac of listaTransacciones" [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'" >
+                <tr *ngFor="let transac of listaTransacciones" 
+                    [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'" >
                     <td>
                         {{ transac.fechaTransaccion | date: 'dd-MM-yyyy' }}
                     </td>
