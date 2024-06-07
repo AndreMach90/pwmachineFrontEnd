@@ -31,11 +31,21 @@ export class UsuariosService {
   }
 
   obtenerUsuarios() {
-    return this.http.get( this.env.apiurl() + 'Usuario/ObtenerUsuario' )
+    // return this.http.get( this.env.apiurl() + 'Usuario/ObtenerUsuario' );
+    const apiUrl = this.env.apiurl() + 'Usuario/ObtenerUsuario';
+    const headers = new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true'
+    });
+    return this.http.get(apiUrl, { headers });
   }
 
   obtenerUsuariosPortal() {
-    return this.http.get( this.env.apiurl() + 'UsuarioPortal/ObtenerUsuario' )
+    // return this.http.get( this.env.apiurl() + 'UsuarioPortal/ObtenerUsuario' );
+    const apiUrl = this.env.apiurl() + 'UsuarioPortal/ObtenerUsuario';
+    const headers = new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true'
+    });
+    return this.http.get(apiUrl, { headers });
   }
 
   actualizarUsuario( id:number,  model:any []) {
@@ -57,5 +67,4 @@ export class UsuariosService {
   deleteUsuarioPortal( id:number ) {
     return this.http.delete( this.env.apiurl()+ 'UsuarioPortal/BorrarUsuario/' + id );
   }
-
 }

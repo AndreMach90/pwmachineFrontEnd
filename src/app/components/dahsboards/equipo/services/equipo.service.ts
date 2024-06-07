@@ -12,11 +12,21 @@ export class EquipoService {
                private http: HttpClient ) { }
 
   obtenerModelo( codtipomaq: any, codmarca: any ) {
-    return this.http.get( this.env.apiurl() + 'MarcaModeloEquipo/ObtenerModelo/' + codtipomaq + '/' + codmarca );
+    // return this.http.get( this.env.apiurl() + 'MarcaModeloEquipo/ObtenerModelo/' + codtipomaq + '/' + codmarca );
+    const apiUrl = this.env.apiurl() + 'MarcaModeloEquipo/ObtenerModelo/' + codtipomaq + '/' + codmarca;
+    const headers = new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true'
+    });
+    return this.http.get(apiUrl, { headers });
   }
 
   obtenerMarca( codtipomaq:string ) {
-    return this.http.get( this.env.apiurl() + 'MarcaModeloEquipo/ObtenerMarca/' + codtipomaq );
+    // return this.http.get( this.env.apiurl() + 'MarcaModeloEquipo/ObtenerMarca/' + codtipomaq );
+    const apiUrl = this.env.apiurl() + 'MarcaModeloEquipo/ObtenerMarca/' + codtipomaq;
+    const headers = new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true'
+    });
+    return this.http.get(apiUrl, { headers });
   }
 
   guardarEquipo(model: any []) {
@@ -32,7 +42,12 @@ export class EquipoService {
   }
 
   obtenerEquipo( tp:number, ctienda:string ) {
-    return this.http.get(this.env.apiurl() + 'Equipo/ObtenerEquipo/'+ tp + '/' + ctienda);
+    // return this.http.get(this.env.apiurl() + 'Equipo/ObtenerEquipo/'+ tp + '/' + ctienda);
+    const apiUrl = this.env.apiurl() + 'Equipo/ObtenerEquipo/'+ tp + '/' + ctienda;
+    const headers = new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true'
+    });
+    return this.http.get(apiUrl, { headers });
   }
 
   obtenerEquipoConteoTran( option:any, model:any [] ) {
@@ -44,21 +59,38 @@ export class EquipoService {
   }
 
   obtenerUsuariosTemporales(ip:string) {
-    return this.http.get( this.env.apiurl() + 'UsuarioTemporal/Usuario/'+ip )
+    // return this.http.get( this.env.apiurl() + 'UsuarioTemporal/Usuario/'+ip );
+    const apiUrl = this.env.apiurl() + 'UsuarioTemporal/Usuario/'+ip;
+    const headers = new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true'
+    });
+    return this.http.get(apiUrl, { headers });
   }
 
   obtenerUsuariosIp(ip:string) {
-    return this.http.get( this.env.apiurl() + 'Usuario/ObtenerUsuarioIP/'+ip )
+    // return this.http.get( this.env.apiurl() + 'Usuario/ObtenerUsuarioIP/'+ip );
+    const apiUrl = this.env.apiurl() + 'Usuario/ObtenerUsuarioIP/'+ip;
+    const headers = new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true'
+    });
+    return this.http.get(apiUrl, { headers });
   }
 
   eliminarUsuarioTemporal(id:number) {
-    return this.http.get( this.env.apiurl() + 'UsuarioTemporal/UsuarioDelete/' + id );
+    // return this.http.get( this.env.apiurl() + 'UsuarioTemporal/UsuarioDelete/' + id );
+    const apiUrl = this.env.apiurl() + 'UsuarioTemporal/UsuarioDelete/' + id;
+    const headers = new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true'
+    });
+    return this.http.get(apiUrl, { headers });
   } 
 
   obtenerIPEquipos() {
-    return this.http.get( this.env.apiurl() + 'Equipo/EquipoNuevo' );
+    // return this.http.get( this.env.apiurl() + 'Equipo/EquipoNuevo' );
+    const apiUrl = this.env.apiurl() + 'Equipo/EquipoNuevo';
+    const headers = new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true'
+    });
+    return this.http.get(apiUrl, { headers });
   }
-
-  
-
 }

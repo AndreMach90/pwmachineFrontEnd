@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Environments } from '../../environments/environments';
 
@@ -22,8 +22,11 @@ export class SharedService {
   }
 
   getDataMaster(master: any) {
-    return this.http.get( this.env.apiurl() + 'DataMaster/GetDataMaster/' + master );
+    // return this.http.get( this.env.apiurl() + 'DataMaster/GetDataMaster/' + master );
+    const apiUrl = this.env.apiurl() + 'DataMaster/GetDataMaster/' + master;
+    const headers = new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true'
+    });
+    return this.http.get(apiUrl, { headers });
   }
-
-
 }

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Environments } from 'src/app/components/environments/environments';
 
@@ -15,7 +15,12 @@ export class HistoriaAcreditacionService {
   }
 
   obtenerPreAcreditacion() {
-    return this.http.get( this.env.apiurl() + 'Acreeditacion/GenerarCard' );
+    // return this.http.get( this.env.apiurl() + 'Acreeditacion/GenerarCard' );
+    const apiUrl = this.env.apiurl() + 'Acreeditacion/GenerarCard';
+    const headers = new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true'
+    });
+    return this.http.get(apiUrl, { headers });
   }
 
   obtenerAcreditadasTran(model:any []) {
@@ -23,15 +28,24 @@ export class HistoriaAcreditacionService {
   }
 
   obtenerEquiposAcreditados( data:string ) {
-    return this.http.get( this.env.apiurl() + 'Acreeditacion/GenerarTransacciones/' + data );
+    // return this.http.get( this.env.apiurl() + 'Acreeditacion/GenerarTransacciones/' + data );
+    const apiUrl = this.env.apiurl() + 'Acreeditacion/GenerarTransacciones/' + data;
+    const headers = new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true'
+    });
+    return this.http.get(apiUrl, { headers });
   }
 
   actualizarEquiposAcreditados(nombreArchivo:any) {
-    return this.http.get( this.env.apiurl() + 'Acreeditacion/AprobacionTransacciones/' + nombreArchivo );
+    // return this.http.get( this.env.apiurl() + 'Acreeditacion/AprobacionTransacciones/' + nombreArchivo );
+    const apiUrl = this.env.apiurl() + 'Acreeditacion/AprobacionTransacciones/' + nombreArchivo;
+    const headers = new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true'
+    });
+    return this.http.get(apiUrl, { headers });
   }
 
   cancelarEquiposAcreditados(nombreArchivo:any) {
     return this.http.delete( this.env.apiurl() + 'Acreeditacion/BorrarTransacciones/' + nombreArchivo );
   }
-
 }

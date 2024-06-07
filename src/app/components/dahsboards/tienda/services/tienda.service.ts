@@ -21,7 +21,12 @@ export class TiendaService {
   }
 
   obtenerTiendas() {
-    return this.http.get(this.env.apiurl() + 'tiendas/ObtenerTiendasCompletas');
+    // return this.http.get(this.env.apiurl() + 'tiendas/ObtenerTiendasCompletas');
+    const apiUrl = this.env.apiurl() + 'tiendas/ObtenerTiendasCompletas';
+    const headers = new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true'
+    });
+    return this.http.get(apiUrl, { headers });
   }
 
   editarTiendas( model:any ) {
@@ -43,13 +48,15 @@ export class TiendaService {
   }
 
   obtenerCuentasAsignadas(idtienda:any) {
-    return this.http.get( this.env.apiurl() + 'TiendaCuenta/ObtenerTiendaCuentas/' + idtienda );
+    // return this.http.get( this.env.apiurl() + 'TiendaCuenta/ObtenerTiendaCuentas/' + idtienda );
+    const apiUrl = this.env.apiurl() + 'TiendaCuenta/ObtenerTiendaCuentas/' + idtienda;
+    const headers = new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true'
+    });
+    return this.http.get(apiUrl, { headers });
   }
 
   eliminarCuentasAsignadas(id:number) {
     return this.http.delete( this.env.apiurl() + 'TiendaCuenta/BorrarCuentaTienda/' + id );
   }
-
-
-
 }

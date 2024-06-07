@@ -27,21 +27,33 @@ export class ClientesService {
   }
 
   obtenerCliente() {    
-    return this.http.get( this.env.apiurl()+'Cliente/obtenerCliente');
+    // return this.http.get( this.env.apiurl()+'Cliente/obtenerCliente');
+    const apiUrl = this.env.apiurl() + 'Cliente/obtenerCliente';
+    const headers = new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true'
+    });
+    return this.http.get(apiUrl, { headers });
   }
 
   obtenerCuentaCliente(id:number) {    
-    //console.log(this.env.apiurl()+'Cliente/ObtenerCuentaCliente/'+id)
-    return this.http.get( this.env.apiurl()+'Cliente/ObtenerCuentaCliente/'+id);
+    // return this.http.get( this.env.apiurl()+'Cliente/ObtenerCuentaCliente/'+id);
+    const apiUrl = this.env.apiurl() + 'Cliente/ObtenerCuentaCliente/'+id;
+    const headers = new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true'
+    });
+    return this.http.get(apiUrl, { headers });
   }
 
   obtenerCuentaTransacCant(id:number) {    
-    return this.http.get( this.env.apiurl()+'Cuenta/NTransacciones/'+id);
+    // return this.http.get( this.env.apiurl()+'Cuenta/NTransacciones/'+id);
+    const apiUrl = this.env.apiurl() + 'Cuenta/NTransacciones/'+id;
+    const headers = new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true'
+    });
+    return this.http.get(apiUrl, { headers });
   }
-
 
   eliminarCliente( codigoCliente:string ) {
     return this.http.delete( this.env.apiurl() + 'Cliente/BorrarCliente/' + codigoCliente );
   }
-
 }
