@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { LoginService } from '../../login/services/login.service';
 import { Router } from '@angular/router';
 import { Environments } from '../../environments/environments';
@@ -16,8 +16,12 @@ export interface Modulo {
   templateUrl: './navside-works.component.html',
   styleUrls: ['./navside-works.component.scss'],
 })
-export class NavsideWorksComponent implements OnInit {
+export class NavsideWorksComponent implements OnInit, OnChanges {
   @Output() modulo: EventEmitter<Modulo> = new EventEmitter<Modulo>();
+  // @Output() tp: EventEmitter<any> = new EventEmitter();
+
+  @Input() tp: any;
+
   /** TEMPORAL */
   modelModules: any = [
     {
@@ -44,7 +48,7 @@ export class NavsideWorksComponent implements OnInit {
     {
       nombre_module: 'Equipo',
       description_module: 'Controla los equipos de las tiendas',
-      icon_module: 'room_preferences',
+      icon_module: 'point_of_sale',
       permison: 1,
       state: 1,
     },
@@ -81,6 +85,15 @@ export class NavsideWorksComponent implements OnInit {
     this.obtenerModulos();
   }
 
+  onlyIcons: boolean = true;
+  ngOnChanges(changes: SimpleChanges): void {
+      if(changes) {
+        // if(!this.tp) {
+        //   this.onlyIcons = false;
+        // }
+      }
+  }
+
   obtenerModulos() {
     return this.modelModules;
   }
@@ -96,5 +109,6 @@ export class NavsideWorksComponent implements OnInit {
     localStorage.setItem('modulo', modulo.nombre);
     localStorage.setItem('iconmodulo', modulo.icono);
     this.modulo.emit(modulo);
+    this.tp.emit(true);
   }
 }
