@@ -3,6 +3,7 @@
     (click)="botonClick(modulos)"
     [ngStyle]="{ 'background-color': secondary }"
     [title]="modulos.description_module">
+    <mat-icon class="icon">{{modulos.icon_module}}</mat-icon>
     <div class="fs-6 text-light">{{ modulos.nombre_module | uppercase }}</div>
   </div>
 </div>
