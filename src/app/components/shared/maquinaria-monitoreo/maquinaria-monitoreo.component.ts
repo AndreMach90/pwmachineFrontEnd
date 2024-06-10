@@ -658,14 +658,17 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   filterEquipos(): void {
     if(this.selectedClienteId == 'todoCliente'){
       this.listaEsquipo = this.listaEsquipoGhost.filter((item:any) => 
-        item.serieEquipo.toString().toLowerCase().includes(this.filterequip.toLowerCase()) ||   
-        item.provincia.toString().toLowerCase().includes(this.filterequip.toLowerCase())   ||
+        item.serieEquipo.toString().toLowerCase().includes(this.filterequip.toLowerCase())    ||  
+        item.tipoMaquinaria.toString().toLowerCase().includes(this.filterequip.toLowerCase()) || 
+        item.provincia.toString().toLowerCase().includes(this.filterequip.toLowerCase())      ||
         item.nombreTienda.toLowerCase().includes(this.filterequip.toLowerCase())
       )
+      console.log(this.listaEsquipo);
     }else{
       this.listaEsquipo = this.listaEsquipoGhost.filter((item:any) => 
-        (item.serieEquipo.toString().toLowerCase().includes(this.filterequip.toLowerCase()) ||   
-        item.provincia.toString().toLowerCase().includes(this.filterequip.toLowerCase())   ||
+        (item.serieEquipo.toString().toLowerCase().includes(this.filterequip.toLowerCase())   || 
+        item.tipoMaquinaria.toString().toLowerCase().includes(this.filterequip.toLowerCase()) || 
+        item.provincia.toString().toLowerCase().includes(this.filterequip.toLowerCase())      ||
         item.nombreTienda.toLowerCase().includes(this.filterequip.toLowerCase())) &&
         item.idCliente == this.selectedClienteId
       )

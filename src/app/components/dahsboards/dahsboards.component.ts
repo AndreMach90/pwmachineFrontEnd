@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { LoginService } from '../login/services/login.service';
 import { Router } from '@angular/router';
 import { Environments } from '../environments/environments';
@@ -11,7 +11,7 @@ import { EncryptService } from '../shared/services/encrypt.service';
   styleUrls: ['./dahsboards.component.scss'],
 })
 
-export class DahsboardsComponent implements OnInit, OnChanges {
+export class DahsboardsComponent implements OnInit {
   @Output() estadointerfaz: any = new EventEmitter();
   modimagen: any = this.env.apiUrlIcon() + 'modulos.png';
   moduloEmitter: any;
@@ -45,14 +45,6 @@ export class DahsboardsComponent implements OnInit, OnChanges {
   aud: any;
   usuario: any;
   monitor: boolean = false;
-
-  tpsend: any;
-  ngOnChanges(changes: SimpleChanges): void {
-      if(changes) {
-        console.log('TPSEND')
-        console.log(this.tpsend)
-      }
-  }
 
   ngOnInit(): void {
     this.validateSesion();
@@ -128,9 +120,6 @@ export class DahsboardsComponent implements OnInit, OnChanges {
   estadow: boolean = true;
   height_app: any = '100vh';
   controlWidth() {
-
-    this.tpsend = 1;
-
     switch (this.estadow) {
       case true:
         this.width_menu = '50px';
@@ -146,8 +135,6 @@ export class DahsboardsComponent implements OnInit, OnChanges {
         break;
     }
   }
-
-
 
   recibirModulo(modulo: any) {
     this.moduloEmitter = modulo;

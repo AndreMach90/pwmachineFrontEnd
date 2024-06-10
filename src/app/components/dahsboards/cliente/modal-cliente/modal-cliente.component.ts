@@ -71,9 +71,6 @@ export class ModalClienteComponent implements OnInit {
                 this.controlInputsService.validateAndCleanNumberInput(data);
               }
   ngOnInit(): void {
-    
-    alert(1)
-    
     this.primary =  this.env.appTheme.colorPrimary;
     this.secondary = this.env.appTheme.colorSecondary_C;
     this.secondary_a = this.env.appTheme.colorSecondary_A;
@@ -83,23 +80,17 @@ export class ModalClienteComponent implements OnInit {
 
     switch(this.data.action) {
       case 'C':
-        //////////console.warn('Modal para crear');
         this._action_butto = 'Crear';
         break;
       case 'E':
-        //////////console.warn('Modal para editar');
         this.obtenerCuentaBancariaCliente();
         this._action_butto = 'Editar';
         this.ctaBancariaForm.controls['nombanco']
             .setValue(this.data.nombanco);
         this.ctaBancariaForm.controls['numerocuenta'] 
             .setValue(this.data.numerocuenta);
-        
-        // this.ctaBancariaForm.controls['tipoCuenta'].setValue(this.data.tipoCuenta);
-
         break;
     }
-
   }
 
   modelCuentasBancarias:any = [];
