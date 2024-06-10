@@ -481,16 +481,11 @@ export class TiendaComponent implements OnInit {
 
   codcli: any;
   obtenerCuentaBancariaCliente() {
-
-
     this._show_spinner = true;
     this.cuentaslista = [];
     let id: any = this.tiendaForm.controls['codigoClienteidFk'].value;
     this.codcli = id;
     this.obtenerLocalidad(id)
-    //console.warn('-*-*-*-*-*-*-*-')
-    //console.warn(id)
-    //console.warn('-*-*-*-*-*-*-*-')
     this.clienteserv.obtenerCuentaCliente(id).subscribe({
       next: ( cuentas ) => {
         this.cuentaslista  = cuentas;
@@ -542,33 +537,41 @@ export class TiendaComponent implements OnInit {
     })
   }
 
-  openDialogCuentas(): void {
-    this.generarCodectienda();
+
+
+  openDialogCuentas( data:any ): void {
+    this.obtenerCuentasTienda(data.codigoTienda);
     let nombreCliente: string = '';
     let idCLiente:     number = 0;
     const xuser: any = sessionStorage.getItem('usuario');
     this.clienteListaGhost.filter( ( element:any ) => {
-        if ( this.tiendaForm.controls['codigoClienteidFk'].value == element.id ) {
+        if ( data.codigoCliente == element.codigoCliente ) {
+
+          console.log('data entrada')
+          console.log(element)
+
           nombreCliente = element.nombreCliente;
           idCLiente     = element.id;
         }
     })
-
-    const dialogRef = this.dialog.open( ModalTiendaCuentaComponent, {
-      height: 'auto',
-      width:  '50%',
-      data: {
-        nombreCliente: nombreCliente,
-        idCLiente: this.codcli,
-        res: this.resultModal,
-        type: this.tipoAccion,
-        codigoTiendaEdicion: this.codecTienda
-      },
-    });
-
-    dialogRef.afterClosed().subscribe( (result:any) => { 
+    this._show_spinner = true;
+    setTimeout(() => {
+      const dialogRef = this.dialog.open( ModalTiendaCuentaComponent, {
+        height: 'auto',
+        width:  '50%',
+        data: {
+          nombreCliente: nombreCliente,
+          idCLiente: idCLiente,
+          res:  this.listaCuentaTiendasBanc,
+          type: 0,
+          codigoTiendaEdicion: data.codigoTienda
+        },
+      });
+      this._show_spinner = false;
+      dialogRef.afterClosed().subscribe( (result:any) => { 
         if ( result != null ||  result != undefined ) {
             result.filter( (res:any) => {
+              this.obtenerTiendas(1)
               this.resultModal.push(res);
             }
           )          
@@ -576,6 +579,7 @@ export class TiendaComponent implements OnInit {
         }
       }
     );
+    }, 2000); 
 
   }
 
@@ -588,17 +592,21 @@ export class TiendaComponent implements OnInit {
   }
 
   obtenerCuentasTienda(id:any) {
+    console.log(id)
     this.listaCuentaTiendasBanc = [];
     this.tiendaservs.obtenerCuentasAsignadas(id).subscribe({
       next: (cuentaTiendaBank) => {
         this.listaCuentaTiendasBanc = cuentaTiendaBank;
+        console.warn(this.listaCuentaTiendasBanc);
       }, error: (e) => {
         console.error(e);
       }, complete: () => {
         if( this.editcatch ) {
-          this.listaCuentaTiendasBanc.filter((element:any)=>{
+          
+          this.listaCuentaTiendasBanc.filter( ( element:any ) => {
             this.resultModal.push(element);
           })
+
           this.validationCtaBancarias();
         }
       }
@@ -607,16 +615,6 @@ export class TiendaComponent implements OnInit {
 
   eliminarCuentaTienda(data:any, id:number) {
 
-    ////console.log(this.tipoAccion);
-
-    if( this.tipoAccion == 0 ) {
-      this.resultModal.splice( id, 1 );
-    } 
-    else {
-    if( data.id == null ) {
-      return 
-    }
-    else {
         Swal.fire({
           title: 'Estás seguro?',
           text: "Esta acción es irreversible y podría provocar perdida de datos en otros procesos!",
@@ -651,6 +649,7 @@ export class TiendaComponent implements OnInit {
               })
             }
         })
-    }}
-  }
+    }
+  
+  
 }
