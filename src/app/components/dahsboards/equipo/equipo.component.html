@@ -247,7 +247,8 @@
                             <th class="p-2">Tipo de Equipo</th>
                             <th class="p-2">Marca</th>
                             <th class="p-2">Modelo</th>
-                            <th class="p-2" *ngIf="permisonUsers"></th></tr>
+                            <th class="p-2" *ngIf="permisonUsers"></th>
+                        </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let equipos of listaEsquipo; let i = index" [ngClass]="{ 'activeEquipo': equipos.active !== 'A' }">
