@@ -63,11 +63,17 @@ export class ModalUsuariosTemporalesComponent implements OnInit {
 
     cuentaslista: any = [];
     obtenerCuentaBancariaCliente() {
+
+      console.log('Este es el ID obtenido de la DATA enciada')
+      console.log(this.data.id)
+
       this._show_spinner = true;
       this.cuentaslista = [];
       this.clienteserv.obtenerCuentaCliente(this.data.id).subscribe({
         next: ( cuentas ) => {  
           this.cuentaslista = cuentas;
+          console.log('Cuentas bancarias creadas');
+          console.log(this.cuentaslista);
           this._show_spinner = false;
   
         }, error:(e) => {

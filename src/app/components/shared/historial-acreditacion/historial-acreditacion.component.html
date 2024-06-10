@@ -5,44 +5,6 @@
 </div>
 
 <div class="contdiv p-4" style="background-color: whitesmoke;">
-
-
-    <!-- <div class="accordion shadow-sm" id="accordionExample">
-        <div class="accordion-item">
-          <h2 class="accordion-header">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-              <strong> Transacciones en proceso de acreditación ({{ listaAcreditadas.length }}) </strong>
-            </button>
-          </h2>
-          <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-              
-                
-            
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <div class="accordion-header d-flex justify-content-between">
-            <button class="accordion-button collapsed"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#collapseTwo"
-                    aria-expanded="false"
-                    aria-controls="collapseTwo">
-                    <strong>
-                        Transacciones acreditadas ( {{listaAcreditadasOk.length}} )
-                    </strong>
-            </button>
-            
-          </div>
-          <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-               
-            </div>
-          </div>
-        </div>
-      </div> -->
       <div>
       <div class="w-100" >
         <strong> Transacciones en proceso de acreditación ({{ listaAcreditadas.length }}) </strong>
@@ -180,7 +142,7 @@
        <th class="p-1">Fecha Inicial</th>
        <th class="p-1">Fecha final</th>
        <th class="p-1">N. Transacciones</th>
-       <th class="p-1"></th>
+       <!-- <th class="p-1"></th> -->
    </thead>
    <tbody>
        <tr *ngFor="let acredit of listaAcreditadasOk; let i = index;">
@@ -232,11 +194,11 @@
                    </div>
                </p-overlayPanel>
            </td>
-           <td>
+           <!-- <td>
                <div class="desbtn p-1" title="Descargar Excel" (click)="obtenerTransacTabla(acredit)">
                    <div [style]="'background-image: url( '+descargar+' )'" class="iconodes"></div>
                </div>
-           </td>
+           </td> -->
        </tr>
    </tbody>
 </table>

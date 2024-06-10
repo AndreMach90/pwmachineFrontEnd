@@ -28,7 +28,6 @@ export class TablaTransaccionesComponent implements OnInit, OnChanges {
   deposito_Bill_2:           number = 0;
   deposito_Bill_1:           number = 0;
 
-
   sumatoriaTotalesLastRecol: number = 0;
 
   @Input() transaccionesDataTabla: any = [];
@@ -89,35 +88,37 @@ export class TablaTransaccionesComponent implements OnInit, OnChanges {
     if(changes) {
 
       if ( this.transaccionAutoHub.length > 0 ) {
-        if ( this.listenNserie == this.transaccionAutoHub[0].machine_Sn ) {             
 
-            ////console.log('HUB AUTO');
-            ////console.log(this.transaccionAutoHub);
+        if ( this.listenNserie == this.transaccionAutoHub[0].machine_Sn ) {
 
              this.listaTransacciones.unshift( this.transaccionAutoHub[0] );
-             if(this.tipoFiltro) this.listaTransacciones.splice( this.listaTransacciones.length - 1, 1 );
-
-             if(this.transaccionAutoHub[0].acreditada == 'A') {
-              this.transaccionAutoHub[0].colorRow = '#D8F1EC';
-             }  
+             if (this.tipoFiltro) this.listaTransacciones.splice( this.listaTransacciones.length - 1, 1 );
              
-             if(this.transaccionAutoHub[0].acreditada == 'E') {
+             if (this.transaccionAutoHub[0].acreditada == 'A') {
+              this.transaccionAutoHub[0].colorRow = '#D8F1EC';
+             }
+             
+             if (this.transaccionAutoHub[0].acreditada == 'E') {
                 this.transaccionAutoHub[0].colorRow = '#F1F090';
-             }  
+             }
 
-             else if(this.transaccionAutoHub[0].acreditada == 'N') {
+             else if (this.transaccionAutoHub[0].acreditada == 'N') {
               this.transaccionAutoHub[0].colorRow = '#F1E3D8';
-             }  
+             }
 
              this.transaccionAutoHub   = [];
              this.transaccionManualHub = [];
              this.transaccionRecollHub = [];
              this.finsumat = false;
+
         }
+
       }
 
       if (this.transaccionManualHub.length > 0) {
+
         if ( this.listenNserie == this.transaccionManualHub[0].machine_Sn ) {
+             alert('99999')
              this.listaTransacciones.unshift( this.transaccionManualHub[0] );
              if(this.tipoFiltro) this.listaTransacciones.splice( this.listaTransacciones.length - 1, 1 );     
              
@@ -183,40 +184,6 @@ export class TablaTransaccionesComponent implements OnInit, OnChanges {
     }
 
   }
-
-  // eliminarObjetosDuplicados(modelo: any[]) {
-  //   // Creamos un conjunto (Set) para almacenar objetos únicos
-  //   let conjuntoUnico = new Set();
-    
-  //   // Filtramos el modelo para eliminar duplicados
-  //   let modeloFiltrado = modelo.filter(obj => {
-    
-  //     // Convertimos cada objeto a una cadena JSON y lo añadimos al conjunto
-  //     let objetoString = JSON.stringify(obj);
-    
-      
-  //     // Si el conjunto ya contiene la cadena, el objeto es duplicado
-  //     // Si no, lo añadimos al conjunto y lo incluimos en el modelo filtrado
-  //     if (conjuntoUnico.has(objetoString)) {
-    
-  //       return false; // Objeto duplicado, no lo incluimos en el resultado
-  //     } else {
-  //       conjuntoUnico.add(objetoString);
-    
-  //       return true; // Objeto no duplicado, lo incluimos en el resultado
-  //     }
-  //   });
-    
-  //   ////console.log(6)
-    
-  //   this.listaTransacciones = [];
-  //   ////console.log(7)
-    
-  //   this.listaTransacciones = modeloFiltrado;
-  //   ////console.log(8)
-  //   ////console.log(this.listaTransacciones);    
-
-  // }
 
   sumatoriaTotal() {
 

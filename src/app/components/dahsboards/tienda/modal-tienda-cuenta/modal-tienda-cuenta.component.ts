@@ -39,29 +39,22 @@ export class ModalTiendaCuentaComponent implements OnInit {
   obtenerCuentaBancariaCliente() {
     this.cuentaslista = [];
     let id: any = this.data.idCLiente;
-    //console.log('ESTA ES LA DATA MODAL CLIENTE')
-    //console.log(this.data)
-    //////////console.warn(id);
+    // console.log('ESTA ES LA DATA MODAL CLIENTE')
+    // console.log(this.data)
+    // console.warn(id);
     this.clienteserv.obtenerCuentaCliente(id).subscribe({
       next: ( cuentas:any ) => {
-        // //alertthis.data.type);
-        switch(this.data.type) {
-          case 1:
-            this.cuentaslista = cuentas.filter((cuenta:any) => {
-              return !this.data.res.some((resItem:any) => resItem.idcuentabancaria === cuenta.id);
-            });
-            break;
-          case 0:
-            this.cuentaslista = cuentas.filter((cuenta:any) => {
-              return !this.data.res.some((resItem:any) => resItem.id === cuenta.id);
-            });
-            break;
-        }
+        // console.warn('cuentas desde el modal')
+        // console.warn(cuentas)
+        this.cuentaslista = cuentas.filter((cuenta:any) => {
+          return !this.data.res.some((resItem:any) => resItem.idcuentabancaria === cuenta.idCuentasBancarias);
+        });        
+
         this.cuentasGhost = cuentas;
       }, error:(e) => {
          console.error(e); 
-        },
-         complete: () => { }
+      },
+      complete: () => { }
     })
   }
 
@@ -111,13 +104,18 @@ export class ModalTiendaCuentaComponent implements OnInit {
         break;
       case 2:
         if(!this.selectAll) {
+          // alert(1)
+          console.table(this.selectedAccounts)
           this.selectedAccounts.filter( (element:any) => {
           
             let arr:any = {
               idtienda:         this.data.codigoTiendaEdicion,
-              idcuentabancaria: element.id,
+              idcuentabancaria: element.idCuentasBancarias,
               fcrea:            new Date()
             }
+
+            console.log(arr);
+
             this.guardarCuentasBancarias(arr);
           })
           
@@ -125,11 +123,13 @@ export class ModalTiendaCuentaComponent implements OnInit {
     
         } 
         else if (this.selectAll){
+          // alert(2)
+          console.log(this.cuentaslista)
           this.cuentaslista.filter( (element:any) => {
             
             let arr:any = {
               idtienda:         this.data.codigoTiendaEdicion,
-              idcuentabancaria: element.id,
+              idcuentabancaria: element.idCuentasBancarias,
               fcrea:            new Date()
             }        
             
@@ -152,24 +152,20 @@ export class ModalTiendaCuentaComponent implements OnInit {
     // ////////console.log('Cuentas seleccionadas:', this.selectedAccounts);
   }
 
-  guardarCuentasBancarias(arr:any[]) {
-
-    ////console.warn(this.data.type);
-
-    if( this.data.type == 1 ) {
+  guardarCuentasBancarias(arr:any []) {
     this.tiendaservs.guardarCuentAsigna(arr).subscribe({
-    next:(x) =>
-    { 
-      ////console.log('cuenta guardada');
-    },
-    error: (e) => {
-      console.error(e);
-    }, 
-    complete: () => {
-      // this.limpiar();
-    }
-  });
-}
+      next:(x) =>
+      { 
+        console.log('cuenta guardada');
+      },
+      error: (e) => {
+        console.error(e);
+      }, 
+      complete: () => {
+        // this.limpiar();
+      }
+    });
   }
+  
 
 }

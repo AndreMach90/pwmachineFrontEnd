@@ -82,8 +82,12 @@ export class HistorialAcreditacionComponent implements OnInit {
     this.hcred.obtenerEquiposAcreditados( data.nombreArchivo ).subscribe({
       next: (x) => {
         this.dataExportarExcel = x;
-        ////console.log('this.dataExportarExcel');
-        ////console.log( this.dataExportarExcel );
+        console.log('/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*')
+        console.log('this.dataExportarExcel')
+        console.log(data.nombreArchivo)
+        console.log('________________________________')
+        console.log(this.dataExportarExcel)
+        console.log('/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*')
       }, complete: () => {
         this.obtenerTransaccionesEquipos(data.nombreArchivo);
       }
@@ -193,23 +197,15 @@ export class HistorialAcreditacionComponent implements OnInit {
   }
 
   modelDataSaldo: any = [];
-  obterSaldoTransac( machineSn:any ) {
-    //console.log( '<<<<<obteniendo saldos>>>>> : '  + machineSn )
-    
+  obterSaldoTransac( machineSn:any ) {    
     this.transacciones.ObtenerEquiposSaldo(machineSn).subscribe({
       next: (x) => {
         this.modelDataSaldo = x;
-        // //console.log('===============================');
-        // //console.log(this.modelDataSaldo);
-        // //console.log('===============================');
       }
     })
   }
 
   exportarExcel( nombreArchivo:any ): void {
-
-    // alert('Exportando a Excel')
-
     const workbook = new ExcelJS.Workbook();
     let res:number = 0;
     let clientes:string = '';
@@ -235,11 +231,6 @@ export class HistorialAcreditacionComponent implements OnInit {
 
     const worksheet = workbook.addWorksheet('TodasTransacciones');
     this.dataExportarExcel.forEach( (equipo: any) => {
-
-      // this.obterSaldoTransac(equipo.nserie);
-
-      // const nserie = equipo.nserie || 'NoNserie'; // Si equipo.nserie es undefined, usa 'NoNserie'
-      // const worksheet = workbook.addWorksheet(`Transacciones_${nserie}`); 
       const headers = this.getHeaderRow();
       const numericColumns = [ 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 ];
 
@@ -461,9 +452,6 @@ export class HistorialAcreditacionComponent implements OnInit {
         window.URL.revokeObjectURL(url);
         setTimeout(() => {
           this.dataExportarExcel = [];
-          this.dataExportarExcel = [];
-          ////console.log('this.dataExportarExcel limpiada!')
-          ////console.log(this.dataExportarExcel)
         }, 1000);
       });
 

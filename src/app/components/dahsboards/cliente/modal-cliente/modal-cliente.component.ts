@@ -71,12 +71,15 @@ export class ModalClienteComponent implements OnInit {
                 this.controlInputsService.validateAndCleanNumberInput(data);
               }
   ngOnInit(): void {
+    
+    alert(1)
+    
     this.primary =  this.env.appTheme.colorPrimary;
     this.secondary = this.env.appTheme.colorSecondary_C;
     this.secondary_a = this.env.appTheme.colorSecondary_A;
     this.secondary_b = this.env.appTheme.colorSecondary_B;
-    //////////console.warn('this.data modal cliente');
-    //////////console.warn(this.data);
+    console.warn('this.data modal cliente');
+    console.warn(this.data);
 
     switch(this.data.action) {
       case 'C':
@@ -158,15 +161,15 @@ export class ModalClienteComponent implements OnInit {
   corriente:boolean = false;
   cuentaslista: any = [];
     obtenerCuentaBancariaCliente() {
-      //////////console.warn(this.data.idCliente);
+      console.warn(this.data.idCliente);
       
       this._show_spinner = true;
       this.cuentaslista = [];
       this.clienteserv.obtenerCuentaCliente(this.data.idCliente).subscribe({
           next: ( cuentas ) => {  
             this.cuentaslista = cuentas;
-            ////////console.log('this.cuentaslista desde el mdoal cliente');
-            ////console.table(this.cuentaslista);
+            console.log('this.cuentaslista desde el mdoal cliente');
+            console.table(this.cuentaslista);
             this._show_spinner = false;          
           }, error:(e) => {
             console.error(e);

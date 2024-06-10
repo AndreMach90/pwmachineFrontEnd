@@ -243,6 +243,12 @@ export class ModeldataComponent implements OnInit {
     this.filtrarTransaccionesFueraDeRango();
     this.obtenerConsolidado();
     this.exportToExcelConsolidadoGeneral();
+    let dt: any = new Date();
+    this._show_spinner = true;
+    setTimeout(() => {
+      this.transPush( `transacciones_acreditadas_${dt}.xlsx` );
+      this._show_spinner = false;
+    }, 2000);
   }
   
   
@@ -679,7 +685,7 @@ export class ModeldataComponent implements OnInit {
         });
       
         // Añadir la fila de total general
-        const totalGeneralRow = consolidadosSheet.addRow(['', '', '', '', '', '', totalGeneral]);
+        const totalGeneralRow = consolidadosSheet.addRow([ '', '', '', '', '', '', totalGeneral ]);
         consolidadosSheet.mergeCells(`A${totalGeneralRow.number}:F${totalGeneralRow.number}`);
         totalGeneralRow.getCell('A').value = 'Total General:';
         totalGeneralRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
@@ -703,7 +709,7 @@ export class ModeldataComponent implements OnInit {
         // Si no hay datos de consolidados, agregar un mensaje
         consolidadosSheet.addRow(['No hay datos consolidados para esta localidad.']);
       }
-  
+
       const buffer = await workbook.xlsx.writeBuffer();
       // Descargar el archivo Excel con el nombre de la localidad
       this.downloadExcelFile(buffer, `transacciones_${localidad}.xlsx`);
@@ -843,56 +849,76 @@ export class ModeldataComponent implements OnInit {
   }
 
   transPush(nombreArchivo: any) {
-    if (this.exportdateform.controls['acreditada'].value) {
-      let xtoken: any = sessionStorage.getItem('usuario');
-      let totalTransacciones = 0;   
-      // Paso 1: Recopilar transacciones en this.tran
-      this.dataExportarExcel.forEach((element: any) => {
-        element.transacciones.filter((transaccion: any) => {
-        
-          const arr = {
-            noTransaction:    transaccion.transaccion_No,
-            machineSn:        transaccion.machine_Sn,
-            fechaTransaction: transaccion.fechaTransaccion,
-            fechaIni:         this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value,
-            fechaFin:         this.exportdateform.controls['datefin'].value + ' ' + this.exportdateform.controls['horafin'].value,
-            nombreArchivo:    nombreArchivo,
-            usuarioRegistro:  xtoken,
-          }
-        
-          this.tran.push(arr);
-        
-        });
-    
-        totalTransacciones = this.tran.length;
+     if (this.exportdateform.controls['acreditada'].value) {
+         let xtoken: any = sessionStorage.getItem('usuario');
+         let totalTransacciones = 0;   
+         this.tran = []; // Asegúrate de inicializar el array tran
+         // Paso 1: Recopilar transacciones en this.tran
+         this.dataExportarExcel.forEach((element: any) => {
+             element.transacciones.filter((transaccion: any) => {
+                 const arr = {
+                     noTransaction:    transaccion.transaccion_No,
+                     machineSn:        transaccion.machine_Sn, // Corregido a machineSn
+                     fechaTransaction: transaccion.fechaTransaccion,
+                     fechaIni:         this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value,
+                     fechaFin:         this.exportdateform.controls['datefin'].value + ' ' + this.exportdateform.controls['horafin'].value,
+                     nombreArchivo:    nombreArchivo,
+                     usuarioRegistro:  xtoken,
+                 };
+                 this.tran.push(arr);
+             });
+             totalTransacciones = this.tran.length;
+         });
+       
+         // Paso 2: Ejecutar el primer bloque paso a paso usando RxJS
+         if (totalTransacciones > 0) {
+             interval(5) // Emitir un valor cada 5 milisegundos
+                 .pipe(
+                     takeWhile(() => this.countTransaction < totalTransacciones),
+                     finalize(() => {
+                         this.countTransaction = totalTransacciones;
+                         console.log( '/*/*/*/*/*/*/*/*/*/*/*/*/*/*' );
+                         console.log( this.tran );
+                         console.log( '/*/*/*/*/*/*/*/*/*/*/*/*/*/*' );
+                         this.guardarTransaccionesAc(this.tran);
+                     })
+                 )
+                 .subscribe(() => {
+                     this.countTransaction++;
+                     this.porcentaje = ( this.countTransaction / totalTransacciones ) * 100;
+                     if( this.porcentaje == 100 ) {
+                         this._show_spinner = true;
+                         setTimeout(() => {   
+                             this._show_spinner = false;
+                             this.moduleChange.emit(true);
+                         }, 2000);
+                     }
+                 });
+         }
+     }
+  }
 
-      });
-    
-      // Paso 2: Ejecutar el primer bloque paso a paso usando RxJS
-      if (totalTransacciones > 0) {
-        interval(5) // Emitir un valor cada 5 milisegundos
-          .pipe(
-            takeWhile(() => this.countTransaction < totalTransacciones),
-            finalize(() => {
-              this.countTransaction = totalTransacciones;
-              this.guardarTransaccionesAc(this.tran);
-            })
-          )
-          .subscribe(() => {
-            this.countTransaction++;
-            this.porcentaje = ( this.countTransaction / totalTransacciones ) * 100;
-
-            if( this.porcentaje == 100 ) {
-              this._show_spinner = true;
-              setTimeout( () => {   
-                this._show_spinner = false;
-                this.moduleChange.emit(true);
-              }, 2000);
-            }
-
-          });
-      }
-    }
+  guardarTransaccionesAc(model: any[]) {
+    this._show_spinner = true;
+    this.conttransaccion = true;
+    this.transacciones.GuardarTransaccionesAcreditadas(model).subscribe({
+        next: (x) => {
+            Toast.fire({ icon: 'success', title: 'Transacciones generadas, en espera de acreditación ', position: 'center' });
+        },
+        error: (e) => {
+            console.error(e);
+            this._show_spinner = false;
+            Toast.fire({ 
+                icon: 'error',
+                title: 'Algo ha pasado, no hemos podido generar la acreditación'
+            });
+        },
+        complete: () => {
+            this._show_spinner = false;
+            this.conttransaccion = false;
+            this.limpiar();
+        },
+    });
   }
 
   validateExistDate() {
@@ -1248,29 +1274,7 @@ export class ModeldataComponent implements OnInit {
 
   }
 
-  guardarTransaccionesAc(model:any []) {
-    this._show_spinner = true;
-    this.conttransaccion = true;
-    this.transacciones.GuardarTransaccionesAcreditadas(model).subscribe({
-      next: (x) => {
-        ////console.warn('GUARDADO!');
-        Toast.fire({ icon: 'success', title: 'Transacciones generadas, en espera de acreditación ', position: 'center' });
-      },
-      error: (e) => {
-        console.error(e);
-        this._show_spinner    = false;
-        Toast.fire({ 
-           icon: 'error',
-           title: 'Algo ha pasado, no hemos podido generar la acreditación'
-        });
-      },
-      complete: () => {
-        this._show_spinner    = false;
-        this.conttransaccion  = false;
-        this.limpiar();
-      },
-    });
-  }
+
 
   limpiar() {
     this.countTransaction        = 0;
