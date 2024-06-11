@@ -901,6 +901,11 @@ export class ModeldataComponent implements OnInit {
   guardarTransaccionesAc(model: any[]) {
     this._show_spinner = true;
     this.conttransaccion = true;
+
+    console.log('=============================');
+    console.log(model);
+    console.log('=============================');
+
     this.transacciones.GuardarTransaccionesAcreditadas(model).subscribe({
         next: (x) => {
             Toast.fire({ icon: 'success', title: 'Transacciones generadas, en espera de acreditación ', position: 'center' });
@@ -1111,6 +1116,7 @@ export class ModeldataComponent implements OnInit {
     this.clienteserv.obtenerCliente().subscribe({
       next: (cliente) => {
         this.clienteListaGhost = cliente;
+        // console.log(this.clienteListaGhost)
         this._show_spinner = false;
       }, error: (e) => {
         this._show_spinner = false;

@@ -47,21 +47,26 @@ export class ModalDataEquiposComponent implements OnInit {
   SumatotalTransac: number = 0;
   SumatotalTransacResag: number = 0;
   sumatoriaResagadasTransac( objeto:any ) {
+
     this.totalResagadasAutomaticas = 0;
     this.totalResagadasManuales    = 0;
     this.totalManuales = 0;
     this.totalAutomaticas = 0;
+
     objeto.filter( ( x:any ) => { 
       this.totalResagadasAutomaticas += x.conteo_AR;
       this.totalResagadasManuales    += x.conteo_MR;
       this.totalManuales             += x.conteo_M;
       this.totalAutomaticas          += x.conteo_A;
     })
-    this.SumatotalTransac = this.totalManuales + this.totalAutomaticas;
+
+    this.SumatotalTransac      = this.totalManuales + this.totalAutomaticas;
     this.SumatotalTransacResag = this.totalResagadasAutomaticas + this.totalResagadasManuales;
+
   }
 
   obtenerEquiposTran() {
+
     let xi: number = 0;
     if ( this.data.acreditado == 1 ) xi = 2
     else xi = 1
@@ -69,10 +74,17 @@ export class ModalDataEquiposComponent implements OnInit {
       fechaIni : this.data.fecchaIni,
       fechaFin : this.data.fechaFin
     }
+
+    console.log(this.modelFilterTranEqipos)
+
     this.equiposerv.obtenerEquipoConteoTran(xi, this.modelFilterTranEqipos).subscribe(
       {
         next: (equipo) => {
           this.listaEsquipoGhost = equipo;
+
+          console.log('Estos son los equipos que traigo por la API');
+          console.log(this.listaEsquipoGhost);
+
         },
         error: (e) => {
           console.error(e);
