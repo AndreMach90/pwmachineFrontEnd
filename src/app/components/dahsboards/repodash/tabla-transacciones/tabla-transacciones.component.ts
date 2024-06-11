@@ -118,7 +118,7 @@ export class TablaTransaccionesComponent implements OnInit, OnChanges {
       if (this.transaccionManualHub.length > 0) {
 
         if ( this.listenNserie == this.transaccionManualHub[0].machine_Sn ) {
-             alert('99999')
+             
              this.listaTransacciones.unshift( this.transaccionManualHub[0] );
              if(this.tipoFiltro) this.listaTransacciones.splice( this.listaTransacciones.length - 1, 1 );     
              

@@ -246,7 +246,7 @@ export class ModeldataComponent implements OnInit {
     let dt: any = new Date();
     this._show_spinner = true;
     setTimeout(() => {
-      this.transPush( `transacciones_acreditadas_${dt}.xlsx` );
+      this.transPush( `transacciones_acreditadas_${dt.getDay()}_${dt.getMonth()}_${dt.getFullYear()}.xlsx` );
       this._show_spinner = false;
     }, 2000);
   }
