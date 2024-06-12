@@ -563,6 +563,12 @@ export class MaquinariaMonitoreoComponent implements OnInit {
           this.listaEsquipo = this.listaEsquipo.filter((element: any) => {
             return element.active === "A";
           });
+          this.listaEsquipo = this.listaEsquipo.map((element: any) => {
+            if (element.provincia === null) {
+              element.provincia = "";
+            }
+            return element;
+          });
           this.listaEsquipoGhost = this.listaEsquipo;
         },
         error:    (e) => { },
@@ -663,7 +669,6 @@ export class MaquinariaMonitoreoComponent implements OnInit {
         item.provincia.toString().toLowerCase().includes(this.filterequip.toLowerCase())      ||
         item.nombreTienda.toLowerCase().includes(this.filterequip.toLowerCase())
       )
-      console.log(this.listaEsquipo);
     }else{
       this.listaEsquipo = this.listaEsquipoGhost.filter((item:any) => 
         (item.serieEquipo.toString().toLowerCase().includes(this.filterequip.toLowerCase())   || 

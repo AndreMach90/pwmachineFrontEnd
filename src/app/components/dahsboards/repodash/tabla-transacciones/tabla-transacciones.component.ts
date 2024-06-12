@@ -118,7 +118,7 @@ export class TablaTransaccionesComponent implements OnInit, OnChanges {
       if (this.transaccionManualHub.length > 0) {
 
         if ( this.listenNserie == this.transaccionManualHub[0].machine_Sn ) {
-             alert('99999')
+            //  alert('99999')
              this.listaTransacciones.unshift( this.transaccionManualHub[0] );
              if(this.tipoFiltro) this.listaTransacciones.splice( this.listaTransacciones.length - 1, 1 );     
              
@@ -142,7 +142,7 @@ export class TablaTransaccionesComponent implements OnInit, OnChanges {
       }
 
       if (this.transaccionRecollHub.length > 0) {
-        if ( this.listenNserie == this.transaccionRecollHub[0].machine_Sn ) {
+                if ( this.listenNserie == this.transaccionRecollHub[0].machine_Sn ) {
              this.listaTransacciones.unshift( this.transaccionRecollHub[0] );
              if(this.tipoFiltro) this.listaTransacciones.splice( this.listaTransacciones.length - 1, 1 );
              if(this.transaccionRecollHub[0].acreditada == 'R') {
