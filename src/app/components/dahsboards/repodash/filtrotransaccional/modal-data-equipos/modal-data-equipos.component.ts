@@ -116,7 +116,9 @@ export class ModalDataEquiposComponent implements OnInit {
           this.localidadesEncontradas = [];
           // Recorremos la lista de equipos para crear localidadesEncontradas
           this.listaEsquipo.forEach((element: any) => {
-              element.localidad = element.localidad.toString().trim()
+              console.log('element.localidad')
+              console.log(element.localidad)
+              
               if (element.conteo_A == null || element.conteo_A == undefined) {
                 element.conteo_A = 0;
               }
@@ -135,9 +137,11 @@ export class ModalDataEquiposComponent implements OnInit {
               if (element.localidad == null || element.localidad == undefined) {
                 element.localidad = 'No asignado';
                 element.bgloc = 'bg-secondary text-light '
-              }
-              if (element.localidad != null || element.localidad != undefined) {
-                element.bgloc = 'bg-primary text-light'
+                element.localidad = element.localidad.toString().trim()
+                }
+                if (element.localidad != null || element.localidad != undefined) {
+                  element.bgloc = 'bg-primary text-light'
+                  element.localidad = element.localidad.toString().trim()
               }
               if (element.nombreTienda == null || element.nombreTienda == undefined) {
                 element.nombreTienda = 'No asignado';

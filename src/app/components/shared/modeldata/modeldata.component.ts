@@ -1064,8 +1064,8 @@ export class ModeldataComponent implements OnInit {
         }
 
         this.maquinasEscogidasDialog.filter( ( element:any ) => {
-          this.dataExportarExcel.push( element );
-          this.dataExportarExcelGhost.push( element );
+          this.dataExportarExcel     .push(element);
+          this.dataExportarExcelGhost.push(element);
         });
 
       }
