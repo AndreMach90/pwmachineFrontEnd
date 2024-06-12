@@ -22,17 +22,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
   @Output() modBusqueda:                    EventEmitter<any> = new EventEmitter<any>();
   @Input() listenNserie!:                   any;
 
-  diasEncontrar:                number  = 31;
-  disButton:                    boolean = true;
-  tienda:                       any;
-  cliente:                      any;
-  arrlistatran:                 any = [];
-  listaTrsansaccionesTabla:     any = [];
-  listaTrsansaccionesTablaGhost:any = [];
-  filterTransacc:               any;
-  dis_execel_export:            boolean = true;
-  nombreTienda:                 string = '';
-
+  diasEncontrar:            number  = 31;
   sumatoriaTotales:         number = 0;
   manual_Deposito_Coin_100: number = 0;
   manual_Deposito_Coin_50:  number = 0;
@@ -47,6 +37,8 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
   deposito_Bill_5:          number = 0;
   deposito_Bill_2:          number = 0;
   deposito_Bill_1:          number = 0;
+  sumatoriaNoRecollect:     number = 0;
+
   delete:                   any = this.env.apiUrlIcon() + 'delete.png';
   edit:                     any = this.env.apiUrlIcon() + 'edit.png';
   crear:                    any = this.env.apiUrlIcon() + 'accept.png';
@@ -55,26 +47,37 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
   calendar:                 any = this.env.apiUrlIcon() + 'calendar.png';
   excel:                    any = this.env.apiUrlIcon() + 'excel.png';
   configblack:              any = this.env.apiUrlIcon() + 'configblack.png';
-  listaTransacciones:       any = [];
-  listaTransaccionesGhost:  any = [];
 
-  _edit_btn:      boolean = false;
-  _delete_show:   boolean = true;
-  _edit_show:     boolean = true;
-  _create_show:   boolean = true;
-  _form_create:   boolean = true;
-  calendar_show:  boolean = false;
-  _action_butto:  string  = 'Crear';
-  _show_spinner:  boolean = false;
-  _icon_button:   string  = 'add';
-  _cancel_button: boolean = false;
-  selectedTime:   any;
-  primary:        any;
-  secondary:      any;
-  secondary_a:    any;
-  secondary_b:    any;
-  dias_estimados: string = '';
-  sumatoriaNoRecollect: number = 0;
+  arrlistatran:                 any = [];
+  listaTrsansaccionesTabla:     any = [];
+  listaTrsansaccionesTablaGhost:any = [];
+  listaTransacciones:           any = [];
+  listaTransaccionesGhost:      any = [];
+
+  calendar_show:      boolean = false;
+  _show_spinner:      boolean = false;
+  _cancel_button:     boolean = false;
+  _edit_btn:          boolean = false;
+  _delete_show:       boolean = true;
+  _edit_show:         boolean = true;
+  _create_show:       boolean = true;
+  _form_create:       boolean = true;
+  dis_execel_export:  boolean = true;
+  disButton:          boolean = true;
+  
+  _action_butto:      string = 'Crear';
+  _icon_button:       string = 'add';
+  dias_estimados:     string = '';
+  nombreTienda:       string = '';
+
+  selectedTime:       any;
+  primary:            any;
+  secondary:          any;
+  secondary_a:        any;
+  secondary_b:        any;
+  tienda:             any;
+  cliente:            any;
+  filterTransacc:     any;
 
   public filterTransaccForm = new FormGroup({
     filterTransacc: new FormControl('')
@@ -89,7 +92,6 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
                private monitoreoServs: MonitoreoService,
                public dialog: MatDialog,
                private transacciones: TransaccionesTiendaService,
-               private sharedservs: ServicesSharedService,
                private router: Router ) {}
 
   ngOnInit(): void {
@@ -111,9 +113,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
         this.listaTransacciones      = tran;
         this.listaTransaccionesGhost = tran;
       },
-      error: (e) => {
-        console.error(e);        
-      },
+      error: (e) => { console.error(e); },
       complete: () => {
         this.listaTransaccionesEmitGrafica.emit(this.listaTransacciones.reverse());
         this.sumatoriaTotal();
@@ -230,6 +230,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
   }
 
   filterByDateRange() {
+    this._show_spinner = true;
     const fechaFin = new Date(this.filterDateForm.controls['endDate'].value);
     fechaFin.setDate(fechaFin.getDate() + 1);
     let modelRange:any = {
@@ -238,7 +239,6 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
       "FechaInicio": this.filterDateForm.controls['startDate'].value,
       "FechaFin":    fechaFin
     }
-
     this.transacciones.filtroTransaccionesRango(modelRange).subscribe({
       next: (x) => {
         this.listaTransacciones = x;
@@ -247,9 +247,8 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
         this.listaTransaccionesEmitGrafica.emit(this.listaTransacciones.reverse());
         this.listaTransaccionesEmitTabla.emit(this.listaTrsansaccionesTabla);
         this.modBusqueda.emit( true );
-      }, error: (e) => {
-        console.error(e);
-      }, complete: () => { }
+      }, error: (e) => { console.error(e); }
+      , complete: () => { this._show_spinner = false; }
     })
     this.sumatoriaTotal();
   }
