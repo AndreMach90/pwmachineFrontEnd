@@ -91,80 +91,79 @@
                 </th>
             </thead>
             <tbody>
-                <tr *ngFor="let transac of listaTransacciones" 
-                    [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'" >
-                    <td>
+                <tr *ngFor="let transac of listaTransacciones">
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.fechaTransaccion | date: 'dd-MM-yyyy' }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.hora }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.nombreCliente }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.nombreTienda }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.transaccion_No }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.machine_Sn }}
                     </td>                    
-                    <td [title]="transac.nombreUsuario" >
+                    <td [title]="transac.nombreUsuario" [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.usuarios_idFk }}
                     </td>
-                    <td> {{ transac.establecimiento }} </td>
-                    <td>  {{ transac.codigoEstablecimiento }} </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'"> {{ transac.establecimiento }} </td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">  {{ transac.codigoEstablecimiento }} </td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.observacion | titlecase }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.numerocuenta }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.nombanco | titlecase }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.tipoCuenta | titlecase }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.deposito_Bill_1 }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.deposito_Bill_2 }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.deposito_Bill_5 }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.deposito_Bill_10 }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.deposito_Bill_20 }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.deposito_Bill_50 }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.deposito_Bill_100 }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.manual_Deposito_Coin_1 }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.manual_Deposito_Coin_5 }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.manual_Deposito_Coin_10 }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.manual_Deposito_Coin_25 }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.manual_Deposito_Coin_50 }}
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         {{ transac.manual_Deposito_Coin_100 }}
                     </td>
                     <td style="background-color: rgb(191, 245, 191) !important; "  >
@@ -172,7 +171,7 @@
                             {{ transac.total | number : '1.2-2' }}
                         </div>
                     </td>
-                    <td>
+                    <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                         <strong> {{ transac.tipoTransaccion | slice:0:1 }} </strong>
                     </td>
 
