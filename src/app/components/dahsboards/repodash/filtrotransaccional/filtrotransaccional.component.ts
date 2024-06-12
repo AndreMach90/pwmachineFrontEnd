@@ -135,9 +135,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
         next: (transactab:any) => {
           this.listaTrsansaccionesTablaGhost = transactab;
         },
-        error: (e) => {
-          console.error(e);
-        },
+        error: (e) => { console.error(e); },
         complete: () => {
           this.sumatoriaNoRecollect = 0;
           this.listaTrsansaccionesTablaGhost.filter((element:any) => {
