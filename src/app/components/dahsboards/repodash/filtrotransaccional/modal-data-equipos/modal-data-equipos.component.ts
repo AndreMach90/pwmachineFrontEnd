@@ -1,4 +1,3 @@
-
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EquipoService } from '../../../equipo/services/equipo.service';
@@ -29,12 +28,12 @@ export class ModalDataEquiposComponent implements OnInit {
                private equiposerv: EquipoService,
                @Inject(MAT_DIALOG_DATA) public data: any,
                private env: Environments,
-               public dialogRef: MatDialogRef<ModeldataComponent>) {}
-               
-               
-               public equipoCliForm = new FormGroup({
-                filterEqui:   new FormControl('')
-              })
+               public dialogRef: MatDialogRef<ModeldataComponent>
+              ) {}
+
+  public equipoCliForm = new FormGroup({
+    filterEqui:   new FormControl('')
+  })
 
   ngOnInit(): void {
     this.obtenerEquiposTran();
@@ -48,21 +47,26 @@ export class ModalDataEquiposComponent implements OnInit {
   SumatotalTransac: number = 0;
   SumatotalTransacResag: number = 0;
   sumatoriaResagadasTransac( objeto:any ) {
+
     this.totalResagadasAutomaticas = 0;
     this.totalResagadasManuales    = 0;
     this.totalManuales = 0;
     this.totalAutomaticas = 0;
+
     objeto.filter( ( x:any ) => { 
       this.totalResagadasAutomaticas += x.conteo_AR;
       this.totalResagadasManuales    += x.conteo_MR;
       this.totalManuales             += x.conteo_M;
       this.totalAutomaticas          += x.conteo_A;
     })
-    this.SumatotalTransac = this.totalManuales + this.totalAutomaticas;
+
+    this.SumatotalTransac      = this.totalManuales + this.totalAutomaticas;
     this.SumatotalTransacResag = this.totalResagadasAutomaticas + this.totalResagadasManuales;
+
   }
 
   obtenerEquiposTran() {
+
     let xi: number = 0;
     if ( this.data.acreditado == 1 ) xi = 2
     else xi = 1
@@ -71,60 +75,77 @@ export class ModalDataEquiposComponent implements OnInit {
       fechaFin : this.data.fechaFin
     }
 
+    console.log(this.modelFilterTranEqipos)
+
     this.equiposerv.obtenerEquipoConteoTran(xi, this.modelFilterTranEqipos).subscribe(
       {
         next: (equipo) => {
           this.listaEsquipoGhost = equipo;
+
+          console.log('Estos son los equipos que traigo por la API');
+          console.log(this.listaEsquipoGhost);
+
         },
         error: (e) => {
           console.error(e);
         },
         complete: ()  => {
-          /** Reparando esta sección */            
-          if (this.data.codigocliente !== null && this.data.codigocliente !== undefined) {
+          /** Si hay codigo cliente */
+          if (this.data.codigocliente !== null) {
             if (this.data.equiposExistentes == null || this.data.equiposExistentes.length == 0 ) {
-              this.listaEsquipo = this.listaEsquipoGhost.filter((equiposCliente: any) => equiposCliente.idCliente === this.data.codigocliente);
-            } else {
-              this.listaEsquipo = this.listaEsquipoGhost.filter( (equiposCliente:any) =>  equiposCliente.idCliente === this.data.codigocliente && equiposCliente.machine_Sn);
+              this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => x.idCliente2 == this.data.codigocliente );
+            } else if ( this.data.equiposExistentes != null ) {
+              this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => x.idCliente2 == this.data.codigocliente );
               this.listaEsquipo = this.listaEsquipo.filter( (x:any) => {
-                return !this.result.some( (element:any) => element.nserie === x.machine_Sn);
+                return !this.result.some((element:any) => element.machine_Sn === x.machine_Sn);
               });
             }
           }  
-          else {
+          /** Si no hay codigo cliente */
+          else if (this.data.codigocliente == null) {
+            console.log('No hay codigo cliente!!!!');
             if (this.data.equiposExistentes == null || this.data.equiposExistentes.length == 0 ) {
               this.listaEsquipo = this.listaEsquipoGhost;
             } else {
               this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => {
-                return !this.result.some((element:any) => element.nserie === x.machine_Sn);
+                return !this.result.some((element:any) => element.machine_Sn === x.machine_Sn);
               });
             }
           }
-          //console.log(this.listaEsquipo);
-          this.localidadesEncontradas = [];
 
+          this.localidadesEncontradas = [];
           // Recorremos la lista de equipos para crear localidadesEncontradas
           this.listaEsquipo.forEach((element: any) => {
-              element.localidad = element.localidad.toString().trim()
+              console.log('element.localidad')
+              console.log(element.localidad)
+              
               if (element.conteo_A == null || element.conteo_A == undefined) {
-                  element.conteo_A = 0;
-              } else if (element.conteo_M == null || element.conteo_M == undefined) {
-                  element.conteo_M = 0;
-              } else if (element.conteo_R == null || element.conteo_R == undefined) {
-                  element.conteo_R = 0;
-              } else if (element.conteo_AR == null || element.conteo_AR == undefined) {
-                  element.conteo_AR = 0;
-              } else if (element.conteo_MR == null || element.conteo_MR == undefined) {
-                  element.conteo_MR = 0;
-              } else if (element.localidad == null || element.localidad == undefined) {
-                  element.localidad = 'No asignado';
-                  element.bgloc = 'bg-secondary text-light '
-              } else if (element.localidad != null || element.localidad != undefined) {
-                  element.bgloc = 'bg-primary text-light'
-              } else if (element.nombreTienda == null || element.nombreTienda == undefined) {
-                  element.nombreTienda = 'No asignado';
+                element.conteo_A = 0;
               }
-            
+              if (element.conteo_M == null || element.conteo_M == undefined) {
+                element.conteo_M = 0;
+              }
+              if (element.conteo_R == null || element.conteo_R == undefined) {
+                element.conteo_R = 0;
+              }
+              if (element.conteo_AR == null || element.conteo_AR == undefined) {
+                element.conteo_AR = 0;
+              }
+              if (element.conteo_MR == null || element.conteo_MR == undefined) {
+                element.conteo_MR = 0;
+              }
+              if (element.localidad == null || element.localidad == undefined) {
+                element.localidad = 'No asignado';
+                element.bgloc = 'bg-secondary text-light '
+                element.localidad = element.localidad.toString().trim()
+                }
+                if (element.localidad != null || element.localidad != undefined) {
+                  element.bgloc = 'bg-primary text-light'
+                  element.localidad = element.localidad.toString().trim()
+              }
+              if (element.nombreTienda == null || element.nombreTienda == undefined) {
+                element.nombreTienda = 'No asignado';
+              }
               // Verificamos si la localidad ya existe en localidadesEncontradas
               let localidadIndex = this.localidadesEncontradas.findIndex((x: any) => x.loc === element.localidad);
               if (localidadIndex === -1) {
@@ -134,62 +155,51 @@ export class ModalDataEquiposComponent implements OnInit {
               // Luego, siempre agregamos los equipos a la matriz equiposTrans correspondiente
               this.localidadesEncontradas[localidadIndex !== -1 ? localidadIndex : this.localidadesEncontradas.length - 1].equiposTrans.push(element);
           });
-
           this.sumatoriaResagadasTransac(this.listaEsquipo);
-          
         }
       }
     )
   }
+  
+  // Función para seleccionar/deseleccionar todos los equipos
+  selectedEquipos: any[] = []; // Variable para almacenar los equipos seleccionados
+  selectAll(event: any, localidad: any) {
+    const checked = event.target.checked;
+    if (checked) {
+      localidad.equiposTrans.forEach((equipo: any, index: number) => {
+        let checkbox = document.getElementById(equipo.localidad.toString().trim() + '-' + index) as HTMLInputElement;
+        checkbox.checked = true;
+        this.addToSelectedEquipos(equipo);
+      });
+    } else {
+      localidad.equiposTrans.forEach((equipo: any, index: number) => {
+        let checkbox = document.getElementById(equipo.localidad.toString().trim() + '-' + index) as HTMLInputElement;
+        checkbox.checked = false;
+        this.removeFromSelectedEquipos(equipo);
+      });
+    }
+  }
 
-  // Variable para almacenar los equipos seleccionados
-selectedEquipos: any[] = [];
+  // Función para agregar un equipo a la lista de equipos seleccionados
+  addToSelectedEquipos(equipo: any) {
+    if (!this.equiposSeleccionados.includes(equipo)) {
+      this.equiposSeleccionados.push(equipo);
+    }
+  }
 
-// Función para seleccionar/deseleccionar todos los equipos
-selectAll(event: any, localidad: any) {
-  const checked = event.target.checked;
-  if (checked) {
-    localidad.equiposTrans.forEach((equipo: any, index: number) => {
-      let checkbox = document.getElementById(equipo.localidad.toString().trim() + '-' + index) as HTMLInputElement;
-      checkbox.checked = true;
+  // Función para remover un equipo de la lista de equipos seleccionados
+  removeFromSelectedEquipos(equipo: any) {
+    this.equiposSeleccionados = this.equiposSeleccionados.filter( ( selectedEquipo: any ) => selectedEquipo !== equipo );
+  }
+
+  selectedEquiposControl = new FormControl(false);
+  toggleSelection(equipo: any, localidad: any) {
+    if (this.selectedEquiposControl.value) {
       this.addToSelectedEquipos(equipo);
-    });
-  } else {
-
-    localidad.equiposTrans.forEach((equipo: any, index: number) => {
-      let checkbox = document.getElementById(equipo.localidad.toString().trim() + '-' + index) as HTMLInputElement;
-      checkbox.checked = false;
+    } else {
       this.removeFromSelectedEquipos(equipo);
-    });
-
+    }
   }
-
-  // //console.warn(this.equiposSeleccionados)
-
-}
-
-// Función para agregar un equipo a la lista de equipos seleccionados
-addToSelectedEquipos(equipo: any) {
-  if (!this.equiposSeleccionados.includes(equipo)) {
-    this.equiposSeleccionados.push(equipo);
-  }
-  //console.warn(this.equiposSeleccionados);
-}
-
-// Función para remover un equipo de la lista de equipos seleccionados
-removeFromSelectedEquipos(equipo: any) {
-  this.equiposSeleccionados = this.equiposSeleccionados.filter( ( selectedEquipo: any ) => selectedEquipo !== equipo );
-  //console.warn(this.equiposSeleccionados)
-}
-
-selectedEquiposControl = new FormControl(false);
-toggleSelection(equipo: any, localidad: any) {
-  if (this.selectedEquiposControl.value) {
-    this.addToSelectedEquipos(equipo);
-  } else {
-    this.removeFromSelectedEquipos(equipo);
-  }
-}
 
   seleccionarTodosEquipos(event: any) {
     if (event.target && event.target.checked !== undefined) {
@@ -209,7 +219,6 @@ toggleSelection(equipo: any, localidad: any) {
           }
         });
         this.equiposSeleccionados = this.equiposSeleccionados.filter((equipo:any) => equipo !== null);
-        
       } else {
         this.equiposSeleccionados = [];
         this.listaEsquipo.filter((element:any) => element.checkTran = false );
@@ -219,7 +228,6 @@ toggleSelection(equipo: any, localidad: any) {
   }
 
   seleccionarEquipo(equipo: any, event: any) {
-
     if (event.target && event.target.checked !== undefined) {
       const seleccionado = event.target.checked;
       if (seleccionado) {
@@ -228,10 +236,11 @@ toggleSelection(equipo: any, localidad: any) {
         );  
         if (!existe) {
           this.equiposSeleccionados.push({
-            nserie: equipo.machine_Sn,
-            ipequipo: equipo.ipEquipo,
-            transaccionesResagadas: equipo.transaccionesResagados
-          });
+              nserie:   equipo.machine_Sn,
+              ipequipo: equipo.ipEquipo,
+              transaccionesResagadas: equipo.transaccionesResagados
+            }
+          );
         }
       } else {
         this.equiposSeleccionados = this.equiposSeleccionados.filter(
@@ -242,7 +251,6 @@ toggleSelection(equipo: any, localidad: any) {
   }  
 
   filterEquipo () {
-
     let filterEqui: any = this.equipoCliForm.controls['filterEqui'].value;
     this.listaEsquipoGhost.filter( (equip: any) => { if (  equip.nombreTienda == null ) equip.nombreTienda = '' } );
     this.listaEsquipo = this.listaEsquipoGhost.filter( (item:any) => 
@@ -250,14 +258,11 @@ toggleSelection(equipo: any, localidad: any) {
       item.localidad.toLowerCase()   .includes(filterEqui.toLowerCase()) ||
       item.nombreTienda.toLowerCase().includes(filterEqui.toLowerCase())
     );
-
     this.sumatoriaResagadasTransac(this.listaEsquipo);
-
   }
 
   closeDialog() {
     // selectedEquipos
     this.dialogRef.close(this.equiposSeleccionados);
   }
-  
 }

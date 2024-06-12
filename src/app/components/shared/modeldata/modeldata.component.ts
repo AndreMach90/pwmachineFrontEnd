@@ -20,15 +20,6 @@ import { SharedService } from '../services/shared.service';
 import { machine } from 'os';
 import { ConsolidadoService } from './services/consolidado.service';
 
-
-///////////////////////////////////////////////////////////////
-// import * as XLSX from 'xlsx';
-// import * as XLSX from 'xlsx-js-style';
-// import * as FileSaver from 'file-saver';
-
-///////////////////////////////////////////////////////////////
-
-
 const Toast = Swal.mixin({
   
   toast: true,
@@ -255,7 +246,7 @@ export class ModeldataComponent implements OnInit {
     let dt: any = new Date();
     this._show_spinner = true;
     setTimeout(() => {
-      this.transPush( `transacciones_acreditadas_${dt}.xlsx` );
+      this.transPush( `transacciones_acreditadas_${dt.getDay()}_${dt.getMonth()}_${dt.getFullYear()}.xlsx` );
       this._show_spinner = false;
     }, 2000);
   }
@@ -371,7 +362,7 @@ export class ModeldataComponent implements OnInit {
           item.transacciones.forEach((transaccion: any) => {
             worksheet.addRow([
               item.localidad,
-              this.convertirfecha(transaccion.fechaTransaccion),
+              transaccion.fechaTransaccion.split("T")[0],
               transaccion.hora,
               transaccion.nombreCliente,
               transaccion.nombreTienda,
@@ -408,11 +399,6 @@ export class ModeldataComponent implements OnInit {
     } catch (error) {
       //console.log("No se puede crear el archivo Excel: "+error);
     }
-  }
-
-  convertirfecha(date: any){
-    let fecha = new Date(date.split("T")[0]);
-    return `${fecha.getDate()}-${fecha.getMonth()+1}-${fecha.getFullYear()}`;
   }
 
   async exportToExcel(): Promise<void> {
@@ -915,6 +901,11 @@ export class ModeldataComponent implements OnInit {
   guardarTransaccionesAc(model: any[]) {
     this._show_spinner = true;
     this.conttransaccion = true;
+
+    console.log('=============================');
+    console.log(model);
+    console.log('=============================');
+
     this.transacciones.GuardarTransaccionesAcreditadas(model).subscribe({
         next: (x) => {
             Toast.fire({ icon: 'success', title: 'Transacciones generadas, en espera de acreditación ', position: 'center' });
@@ -1073,8 +1064,8 @@ export class ModeldataComponent implements OnInit {
         }
 
         this.maquinasEscogidasDialog.filter( ( element:any ) => {
-          this.dataExportarExcel.push( element );
-          this.dataExportarExcelGhost.push( element );
+          this.dataExportarExcel     .push(element);
+          this.dataExportarExcelGhost.push(element);
         });
 
       }
@@ -1125,6 +1116,7 @@ export class ModeldataComponent implements OnInit {
     this.clienteserv.obtenerCliente().subscribe({
       next: (cliente) => {
         this.clienteListaGhost = cliente;
+        // console.log(this.clienteListaGhost)
         this._show_spinner = false;
       }, error: (e) => {
         this._show_spinner = false;
@@ -1386,10 +1378,6 @@ export class ModeldataComponent implements OnInit {
         } 
       });
     }
-
-    //console.warn('TRANSACCIONES ADHERIDAS A LOS EQUIPOS')
-    //console.warn(this.dataExportarExcel)
-
   }
 
   detectaTransaccionesResagadas(dateIni: any, dateFin: any, type: number) {
@@ -1670,5 +1658,9 @@ export class ModeldataComponent implements OnInit {
     }
   }
 
- 
+  checkFiltrarCliente(checktienda: boolean){
+    if(!checktienda){
+      this.exportdateform.controls['codigoClienteidFk'].setValue(null);
+    }
+  }
 }
