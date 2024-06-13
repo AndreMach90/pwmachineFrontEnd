@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Environments } from '../../environments/environments';
 import { TiendaService } from '../tienda/services/tienda.service';
@@ -11,6 +11,7 @@ import { UsuariosTemporalesMaquinaComponent } from './usuarios-temporales-maquin
 import { ControlinputsService } from '../../shared/services/controlinputs.service';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { UsuariosService } from '../usuarios/services/usuarios.service';
+import { OverlayPanel } from 'primeng/overlaypanel';
 
 const Toast = Swal.mixin({
   toast: true,
@@ -31,6 +32,7 @@ const Toast = Swal.mixin({
 })
 
 export class EquipoComponent implements OnInit {
+  @ViewChild('op') overlayPanel!: OverlayPanel;
   private usuarioTemporalHub: HubConnection;
   private urlHub: any = this.env.apiUrlHub();
 
@@ -206,16 +208,14 @@ export class EquipoComponent implements OnInit {
     this._nombresx         = data.nombres;
     this._cedula           = data.cedula;
     this._telefono         = data.telefono;
-    this.calwidth          = true;
-    this._nombresx         = data.nombres;
-    this._cedula           = data.cedula;
-    this._telefono         = data.telefono;
     this.idusermaquina     = data.id;
     this.idDatosPersonales = data.idDatosPersonales;
     this.nombreUserMaquina = data.usuario;
     this.observacion       = data.observacion;
     this.cuentasIdFk       = data.cuentasidFk;
     this.ipMachine         = data.ipMachine;
+    this.filterEquiposForm.get('_nombres')?.setValue(data.nombres);
+    this.filterEquiposForm.get('_cedula')?.setValue(data.cedula);
   }
 
   editarUsuarioMaquina() {
@@ -232,13 +232,12 @@ export class EquipoComponent implements OnInit {
     this.modelDatosPersonales = {
       id:          this.idDatosPersonales,
       usuarioidFk: this.nombreUserMaquina,
-      nombres:     this._nombresx,
-      cedula:      this._cedula,
+      nombres:     this.filterEquiposForm.get('_nombres')?.value,
+      cedula:      this.filterEquiposForm.get('_cedula')?.value,
       apellidos:   '-',
       telefono:    '',
       active:      'A'
     }
-    // console.log(this.idusermaquina);
     this.userservs.actualizarUsuario(this.idusermaquina, this.modelUsers).subscribe({
       next: (x) => {
         Toast.fire({ icon: 'success', title: 'Usuario de máquina se ha actualizado con éxito' });
@@ -250,7 +249,6 @@ export class EquipoComponent implements OnInit {
         this.limpiarMqU();
       }
     })
-    // console.log(this.modelUsers);
   }
 
   limpiarMqU() {
@@ -262,6 +260,8 @@ export class EquipoComponent implements OnInit {
     this.nombreUserMaquina = '';
     this.observacion = '';
     this.cuentasIdFk = '';
+    this.filterEquiposForm.get('_nombres')?.setValue('');
+    this.filterEquiposForm.get('_cedula')?.setValue('');
     this.edit_temporal_user = false;
   }
 
@@ -410,9 +410,6 @@ export class EquipoComponent implements OnInit {
           tiempoSincronizacion: new Date()
         }
       }
-      // console.log("/////////////////////////////////////////////");
-      // console.log( this.modeloEquipos );
-      // console.log("/////////////////////////////////////////////");
       this.equiposerv.actualizarEquipo(this.idEquipo, this.modeloEquipos).subscribe({
         next: (x) => {
           Toast.fire({ icon: 'success', title: 'Equipo actualizado' });
