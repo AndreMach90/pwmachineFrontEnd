@@ -257,6 +257,7 @@ export class ModalDataEquiposComponent implements OnInit {
   }  
 
   filterEquipo () {
+    
     let filterEqui: any = this.equipoCliForm.controls['filterEqui'].value;
     this.localidadesEncontradas = this.localidadesEncontradasGhost.filter((localidad:any) =>
       localidad.loc.toLowerCase().includes(filterEqui.toLowerCase())
@@ -271,12 +272,11 @@ export class ModalDataEquiposComponent implements OnInit {
         equiposTrans: filteredEquipos
       };
     }).filter((localidad:any) => localidad.equiposTrans.length > 0);
-    
 
   }
 
   closeDialog() {
-    // selectedEquipos
     this.dialogRef.close(this.equiposSeleccionados);
   }
+
 }
