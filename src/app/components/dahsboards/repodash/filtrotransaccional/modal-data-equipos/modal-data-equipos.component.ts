@@ -65,6 +65,7 @@ export class ModalDataEquiposComponent implements OnInit {
 
   }
 
+  localidadesEncontradasGhost: any = [];
   obtenerEquiposTran() {
 
     let xi: number = 0;
@@ -148,12 +149,18 @@ export class ModalDataEquiposComponent implements OnInit {
               }
               // Verificamos si la localidad ya existe en localidadesEncontradas
               let localidadIndex = this.localidadesEncontradas.findIndex((x: any) => x.loc === element.localidad);
+              let localidadIndex2 = this.localidadesEncontradasGhost.findIndex((x: any) => x.loc === element.localidad);
               if (localidadIndex === -1) {
-                  // Si no existe, la agregamos junto con sus propiedades
-                  this.localidadesEncontradas.push({ loc: element.localidad, bgloc: element.bgloc, equiposTrans: [] });
+                // Si no existe, la agregamos junto con sus propiedades
+                this.localidadesEncontradas.push({ loc: element.localidad, bgloc: element.bgloc, equiposTrans: [] });
+              }
+              if (localidadIndex2 === -1) {
+                // Si no existe, la agregamos junto con sus propiedades
+                this.localidadesEncontradasGhost.push({ loc: element.localidad, bgloc: element.bgloc, equiposTrans: [] });
               }
               // Luego, siempre agregamos los equipos a la matriz equiposTrans correspondiente
               this.localidadesEncontradas[localidadIndex !== -1 ? localidadIndex : this.localidadesEncontradas.length - 1].equiposTrans.push(element);
+              this.localidadesEncontradasGhost[localidadIndex !== -1 ? localidadIndex : this.localidadesEncontradasGhost.length - 1].equiposTrans.push(element);
           });
           this.sumatoriaResagadasTransac(this.listaEsquipo);
         }
@@ -251,13 +258,21 @@ export class ModalDataEquiposComponent implements OnInit {
 
   filterEquipo () {
     let filterEqui: any = this.equipoCliForm.controls['filterEqui'].value;
-    this.listaEsquipoGhost.filter( (equip: any) => { if (  equip.nombreTienda == null ) equip.nombreTienda = '' } );
-    this.listaEsquipo = this.listaEsquipoGhost.filter( (item:any) => 
-      item.machine_Sn.toLowerCase()  .includes(filterEqui.toLowerCase()) ||
-      item.localidad.toLowerCase()   .includes(filterEqui.toLowerCase()) ||
-      item.nombreTienda.toLowerCase().includes(filterEqui.toLowerCase())
+    this.localidadesEncontradas = this.localidadesEncontradasGhost.filter((localidad:any) =>
+      localidad.loc.toLowerCase().includes(filterEqui.toLowerCase())
     );
-    this.sumatoriaResagadasTransac(this.listaEsquipo);
+    
+    this.localidadesEncontradas = this.localidadesEncontradasGhost.map((localidad:any) => {
+      const filteredEquipos = localidad.equiposTrans.filter((equipo:any) =>
+        equipo.machine_Sn.toLowerCase().includes(filterEqui.toLowerCase())
+      );
+      return {
+        ...localidad,
+        equiposTrans: filteredEquipos
+      };
+    }).filter((localidad:any) => localidad.equiposTrans.length > 0);
+    
+
   }
 
   closeDialog() {
