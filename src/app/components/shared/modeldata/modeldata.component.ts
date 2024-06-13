@@ -1333,17 +1333,14 @@ export class ModeldataComponent implements OnInit {
             "Machine_Sn":  element.machine_Sn,
             "FechaInicio": dini,
             "FechaFin":    dfin
-          };          
+          };
 
-          //console.log(modelRange)
+          console.warn(modelRange)
 
           this.transacciones.filtroTransaccionesRango(modelRange).subscribe({            
             next: (z) => {
-              //console.warn('/*/*/*//*/*/*/*/*/*/*/*/*');
-              //console.warn(z);
-              //console.warn('/*/*/*//*/*/*/*/*/*/*/*/*');
               element.transacciones = z;
-              element.longitud = element.transacciones.length;
+              element.longitud      = element.transacciones.length;
               this.obterSaldoTransac(element.nserie);
               resolve();
             },            
@@ -1638,16 +1635,17 @@ export class ModeldataComponent implements OnInit {
   }
 
   estaEnRangoDeHoras(hora: string, horaInicial: string, horaFinal: string): boolean {
+
       const horaTransaccion  =  new Date(`1970-01-01T${hora}`);
       const horaInicio       =  new Date(`1970-01-01T${horaInicial}`);
       const horaFin          =  new Date(`1970-01-01T${horaFinal}`);
       return horaTransaccion >= horaInicio && horaTransaccion <= horaFin;
+
   }
   
   filtrarPorHoras() {
     const horaInicial:any = this.exportdateform.controls['horaini'].value;
     const horaFinal:any = this.exportdateform.controls['horafin'].value;
-    ////console.warn(this.exportdateform.controls['ciclo'].value)
     switch(this.exportdateform.controls['ciclo'].value) {
       case false:
         this.dataExportarExcel = this.filtrarPorRangoDeHoras(this.dataExportarExcel, horaInicial, horaFinal);

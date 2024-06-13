@@ -8,12 +8,10 @@ import { Environments } from 'src/app/components/environments/environments';
 export class TransaccionesTiendaService {
 
   constructor( private env: Environments, private http: HttpClient ) { }
-  // Transacciones/ObtenerTransacciones/
+  
   obtenerTransaccionesTienda(id:any, tp: number) {
     return this.http.get( this.env.apiurl()+'Transacciones/ObtenerTransacciones/'+id + '/' + tp );
   }
-
-  
 
   filtroTransaccionesRango( model:any [] ) {
     return this.http.post( this.env.apiurl() + 'FiltroFechas/Filtrar', model );
@@ -25,6 +23,6 @@ export class TransaccionesTiendaService {
 
   ObtenerEquiposSaldo( machineSn: any ) {
     return this.http.get( this.env.apiurl() + 'EquipoDetalle/ObtenerTotales/' + machineSn );
-  }  
+  }
 
 }
