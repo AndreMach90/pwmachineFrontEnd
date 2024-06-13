@@ -9,7 +9,6 @@ import Chart from 'chart.js/auto';
 })
 
 export class CollectiongraphComponent implements OnInit, OnChanges {
-  @HostListener('document:keydown', ['$event'])
   @Input() datosgenerales:            any = [];
   @Input() transaccionAutoHub:        any = [];
   @Input() transaccionManualHub:      any = [];
@@ -149,6 +148,7 @@ export class CollectiongraphComponent implements OnInit, OnChanges {
     this.$diasShow = false;
   }
 
+  @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent): void {
     if (event.ctrlKey && event.altKey && event.key === '1') {
       this.recuperarDatos();

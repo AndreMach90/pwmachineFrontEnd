@@ -481,14 +481,14 @@ export class TiendaComponent implements OnInit {
     this.tiendalista = this.tiendaListaGhost.filter(
       (item: any) =>
         item.nombreTienda.toLowerCase().includes(filtertien.toLowerCase()) ||
-        item.nombreProvincia.toLowerCase().includes(filtertien.toLowerCase()) ||
+        // item.nombreProvincia.toLowerCase().includes(filtertien.toLowerCase()) ||
         item.nombreAdmin.toLowerCase().includes(filtertien.toLowerCase()) ||
         item.nombreCliente.toLowerCase().includes(filtertien.toLowerCase())
     );
     this.tiendalista = this.tiendaListaGhost.filter(
       (item: any) =>
         item.nombreTienda.toLowerCase().includes(filtertien.toLowerCase()) ||
-        item.nombreProvincia.toLowerCase().includes(filtertien.toLowerCase()) ||
+        // item.nombreProvincia.toLowerCase().includes(filtertien.toLowerCase()) ||
         item.nombreAdmin.toLowerCase().includes(filtertien.toLowerCase()) ||
         item.nombreCliente.toLowerCase().includes(filtertien.toLowerCase())
     );
