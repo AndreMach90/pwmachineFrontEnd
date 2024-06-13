@@ -111,7 +111,16 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
     this.transacciones.obtenerTransaccionesTienda(id, 2).subscribe({
       next: (tran:any) => {
         this.listaTransacciones      = tran;
-        this.listaTransaccionesGhost = tran;
+        this.listaTransacciones = this.listaTransacciones.map((element: any) => {
+          if (element.tipoCuenta === null) {
+            element.tipoCuenta = "";
+          }
+          if (element.nombanco === null) {
+            element.nombanco = "";
+          }
+          return element;
+        });
+        this.listaTransaccionesGhost = this.listaTransacciones;
       },
       error: (e) => { console.error(e); },
       complete: () => {
@@ -169,32 +178,29 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
   
   /** Filtro de transacciones tanto para la gráfica como para la tabla de transacciones */
   filterTransaccos() {
+    let filtertTrans: any = this.filterTransaccForm.controls['filterTransacc'].value;
     this.listaTransacciones = this.listaTransaccionesGhost.filter( (item:any) => 
-      item.machine_Sn             .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.nombreCliente          .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.tipoTransaccion        .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.usuarios_idFk          .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.machine_Sn             .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.tipoCuenta             .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.nombanco               .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.establecimiento        .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.codigoEstablecimiento  .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.transaccion_No         .toString().toLowerCase().includes(this.filterTransacc.toLowerCase())
+      item.machine_Sn             .toLowerCase().includes(filtertTrans.toLowerCase()) ||
+      item.nombreCliente          .toLowerCase().includes(filtertTrans.toLowerCase()) ||
+      item.tipoTransaccion        .toLowerCase().includes(filtertTrans.toLowerCase()) ||
+      item.usuarios_idFk          .toString().toLowerCase().includes(filtertTrans.toLowerCase()) ||
+      item.tipoCuenta             .toLowerCase().includes(filtertTrans.toLowerCase()) ||
+      item.nombanco               .toLowerCase().includes(filtertTrans.toLowerCase()) ||
+      item.establecimiento        .toLowerCase().includes(filtertTrans.toLowerCase()) ||
+      item.codigoEstablecimiento  .toLowerCase().includes(filtertTrans.toLowerCase()) ||
+      item.transaccion_No         .toString().toLowerCase().includes(filtertTrans.toLowerCase())
     )
-
     this.listaTrsansaccionesTabla = this.listaTransaccionesGhost.filter((item:any) => 
-      item.machine_Sn           .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.nombreCliente        .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.tipoTransaccion      .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.usuarios_idFk        .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.machine_Sn           .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.tipoCuenta           .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.nombanco             .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.establecimiento      .toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.codigoEstablecimiento.toLowerCase().includes(this.filterTransacc.toLowerCase()) ||
-      item.transaccion_No       .toString().toLowerCase().includes(this.filterTransacc.toLowerCase())      
+      item.machine_Sn           .toLowerCase().includes(filtertTrans.toLowerCase()) ||
+      item.nombreCliente        .toLowerCase().includes(filtertTrans.toLowerCase()) ||
+      item.tipoTransaccion      .toLowerCase().includes(filtertTrans.toLowerCase()) ||
+      item.usuarios_idFk        .toString().toLowerCase().includes(filtertTrans.toLowerCase()) ||
+      item.tipoCuenta           .toLowerCase().includes(filtertTrans.toLowerCase()) ||
+      item.nombanco             .toLowerCase().includes(filtertTrans.toLowerCase()) ||
+      item.establecimiento      .toLowerCase().includes(filtertTrans.toLowerCase()) ||
+      item.codigoEstablecimiento.toLowerCase().includes(filtertTrans.toLowerCase()) ||
+      item.transaccion_No       .toString().toLowerCase().includes(filtertTrans.toLowerCase())      
     )
-
     this.listaTransaccionesEmitGrafica.emit(this.listaTransacciones);
     this.listaTransaccionesEmitTabla.emit(this.listaTrsansaccionesTabla);
     this.sumatoriaTotal();

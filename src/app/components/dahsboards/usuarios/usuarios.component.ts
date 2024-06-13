@@ -449,8 +449,6 @@ export class UsuariosComponent implements OnInit {
         next: (x) => {
           this.listaUsuariosMaquina = x;
           this.listaUsuariosMaquinaGhost = x;
-          //////////console.warn('USUARIOS MAQUINAS');
-          //////////console.warn(this.listaUsuariosMaquina);
           this._show_spinner = false;
         }, error: (e) => {
           this._show_spinner = false;
@@ -496,10 +494,6 @@ export class UsuariosComponent implements OnInit {
         })
         break;
       case 2:
-
-      // ////////console.log(id)
-      // ////////console.log(type)
-
         this.userservs.deleteUsuarioPortal(id).subscribe({
           next: (x) => {
             this.obtenerUsuarioPortalWeb();
@@ -520,9 +514,34 @@ export class UsuariosComponent implements OnInit {
     this.userservs.obtenerUsuariosPortal().subscribe({
       next: (x) => {
         this.listaUsuariosPortalWeb = x;
-        this.listaUsuariosPortalWebGhost = x;
-        //////////console.warn('USUARIOS PORTAL WEB');
-        //////////console.warn(this.listaUsuariosPortalWeb);
+        this.listaUsuariosPortalWeb = this.listaUsuariosPortalWeb.map((element: any) => {
+          if (element.activeDatosPersonales === null) {
+            element.activeDatosPersonales = "";
+          }
+          if (element.apellidos === null) {
+            element.apellidos = "";
+          }
+          if (element.cedula === null) {
+            element.cedula = "";
+          }
+          if (element.idDatosPersonales === null) {
+            element.idDatosPersonales = "";
+          }
+          if (element.nombres === null) {
+            element.nombres = "";
+          }
+          if (element.telefono === null) {
+            element.telefono = "";
+          }
+          if (element.usuarioPortaidFk === null) {
+            element.usuarioPortaidFk = "";
+          }
+          if (element.usuarioidFk === null) {
+            element.usuarioidFk = "";
+          }
+          return element;
+        });
+        this.listaUsuariosPortalWebGhost = this.listaUsuariosPortalWeb;
         this._show_spinner = false;
       }, error: (e) => {
         console.error(e);
