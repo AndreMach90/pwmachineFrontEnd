@@ -288,10 +288,10 @@
                                         [matBadge]="equipos.capacidadUsuarios"
                                         matBadgePosition="before"
                                         matBadgeColor="warn"
-                                        (click)="op.toggle($event);obtenerUsuariosIpMaquina(equipos)">
+                                        (click)="op.toggle($event);obtenerUsuariosIpMaquina(equipos);limpiarMqU()">
                                         <div [style]="'background-image: url('+users+')'"class="icono"></div>
                                     </div>
-                                    <p-overlayPanel #op>
+                                    <p-overlayPanel #op [dismissable]="false">
                                         <div>
                                             <div class="d-flex justify-content-between align-items-center mb-2 ">
                                                 <span class="fs-6" > Usuarios Equipos <strong class="text-primary" >( {{listaUsuariosMaquina.length}} )</strong> </span>
