@@ -19,11 +19,13 @@ const Toast = Swal.mixin({
   }
 });
 
-@Component({
-  selector: 'app-modal-localidad-cliente',
-  templateUrl: './modal-localidad-cliente.component.html',
-  styleUrls: ['./modal-localidad-cliente.component.scss']
-})
+@Component(
+  {
+    selector: 'app-modal-localidad-cliente',
+    templateUrl: './modal-localidad-cliente.component.html',
+    styleUrls: ['./modal-localidad-cliente.component.scss'] 
+  }
+)
 
 export class ModalLocalidadClienteComponent implements OnInit {
 
