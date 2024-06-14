@@ -218,7 +218,7 @@ export class EquipoComponent implements OnInit {
     this.filterEquiposForm.get('_cedula')?.setValue(data.cedula);
   }
 
-  editarUsuarioMaquina() {
+  async editarUsuarioMaquina(data: any) {
     this.modelUsers = {
       id:           this.idusermaquina,
       Usuario:      this.nombreUserMaquina,
@@ -238,17 +238,16 @@ export class EquipoComponent implements OnInit {
       telefono:    '',
       active:      'A'
     }
-    this.userservs.actualizarUsuario(this.idusermaquina, this.modelUsers).subscribe({
-      next: (x) => {
-        Toast.fire({ icon: 'success', title: 'Usuario de máquina se ha actualizado con éxito' });
-      }, error: (e) => {
-        console.error(e);
-        Toast.fire({ icon: 'error', title: 'No hemos podido actualizar el usuario' });
-      }, complete: () => {
-        this.actualizarDatosPersonales(this.idDatosPersonales, this.modelDatosPersonales);
-        this.limpiarMqU();
-      }
-    })
+    try {
+      await this.userservs.actualizarUsuario(this.idusermaquina, this.modelUsers).toPromise();
+      Toast.fire({ icon: 'success', title: 'Usuario de máquina se ha actualizado con éxito' });
+      await this.actualizarDatosPersonales(this.idDatosPersonales, this.modelDatosPersonales);
+      this.limpiarMqU();
+    } catch (e) {
+      console.error(e);
+      Toast.fire({ icon: 'error', title: 'No hemos podido actualizar el usuario' });
+    }
+    await this.obtenerUsuariosIpMaquina(data);
   }
 
   limpiarMqU() {
@@ -270,9 +269,7 @@ export class EquipoComponent implements OnInit {
       next: (x) => {
       }, error: (e) => {
         console.error(e);
-      }, complete: () => {
-        this.obtenerUsuariosIpMaquina(this.ipMachine);
-      }
+      }, complete: () => { }
     })
   }
 
