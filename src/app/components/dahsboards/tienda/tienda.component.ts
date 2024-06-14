@@ -499,7 +499,7 @@ export class TiendaComponent implements OnInit {
     this.cuentaslista = [];
     let id: any = this.tiendaForm.controls['codigoClienteidFk'].value;
     this.codcli = id;
-    this.obtenerLocalidad(id);
+    this.obtenerLocalidad();
     this.clienteserv.obtenerCuentaCliente(id).subscribe({
       next: (cuentas) => {
         this.cuentaslista = cuentas;
@@ -528,7 +528,9 @@ export class TiendaComponent implements OnInit {
     });
   }
 
-  obtenerLocalidad(id: any) {
+  obtenerLocalidad() {
+
+    let id: any = this.tiendaForm.controls['codigoClienteidFk'].value;
     this._show_spinner = true;
     this.loc.obtenerLocalidadesCliente(id).subscribe({
       next: (x) => {

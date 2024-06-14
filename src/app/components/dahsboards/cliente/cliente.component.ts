@@ -162,6 +162,7 @@ export class ClienteComponent implements OnInit {
             x.cantidadLocalidades -1
           }
         })
+        this.obtenerCliente();
       }
     })
   }
@@ -191,11 +192,8 @@ export class ClienteComponent implements OnInit {
                     .subscribe({
       next: (cliente) => {
         this.clienteListaGhost = cliente;
-        console.warn('----------------');
-        console.warn('----------------');
-        console.warn(this.clienteListaGhost);
-        console.warn('----------------');
-        console.warn('----------------');
+        // this.clientelista = cliente;
+        // console.log(this.clienteListaGhost)
         this._show_spinner = false;
       }, error: (e) => {
         this._show_spinner = false;
@@ -203,7 +201,7 @@ export class ClienteComponent implements OnInit {
       }, complete: () => {
         this.clienteListaGhost.filter((element:any)=>{
 
-          ////////console.warn(element)
+          console.warn(element)
 
           let arr: any = {
             "id": element.id,
@@ -219,7 +217,7 @@ export class ClienteComponent implements OnInit {
           }
 
           this.clientelista.unshift(arr);
-          // console.warn(this.clientelista);
+          console.warn(this.clientelista);
         })
       }
     })
@@ -506,7 +504,7 @@ export class ClienteComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe( result => {
       ////////console.warn(result);
-      // this.obtenerCliente();
+      this.obtenerCliente();
     });
 
   }

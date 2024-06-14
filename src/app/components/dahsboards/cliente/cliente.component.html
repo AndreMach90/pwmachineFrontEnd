@@ -103,7 +103,9 @@
         <div class="w-25">
           <h1 class="m-0">
             Clientes Registrados
-            <span class="text-secondary"> ({{ clientelista.length }}) </span>
+            <span class="text-secondary"> 
+              ({{ clientelista.length }})
+            </span>
           </h1>
         </div>
         <div class="w-75">
@@ -111,13 +113,13 @@
             <div class="mb-2 d-flex w-100">
               <form [formGroup]="filterForm" class="w-100">
                 <input type="text"
-                  class="w-100 shadow-sm form-control rounded-pill"
-                  fxFlex="auto"
-                  formControlName="filterCli"
-                  #filterCli
-                  id="filterCli"
-                  (keyup)="filterCliente()"
-                  placeholder="Búsqueda de clientes registrados..."/>
+                       class="w-100 shadow-sm form-control rounded-pill"
+                       fxFlex="auto"
+                       formControlName="filterCli"
+                       #filterCli
+                       id="filterCli"
+                       (keyup)="filterCliente()"
+                       placeholder="Búsqueda de clientes registrados..."/>
               </form>
             </div>
             <div *ngIf="permisonUsers">
@@ -140,12 +142,8 @@
             <th class="p-2">Email</th>
             <th class="p-2">Teléfono</th>
             <th class="p-2">Dirección</th>
-            <th class="p-2" title="Agregar cuentas contables del cliente">
-              Cta.Cont.
-            </th>
-            <th class="p-2" title="Agregar cuentas contables del cliente">
-              Localidades
-            </th>
+            <th class="p-2" title="Agregar cuentas contables del cliente">Cta.Cont.</th>
+            <th class="p-2" title="Agregar cuentas contables del cliente">Localidades</th>
           </thead>
           <tbody>
             <tr *ngFor="let usuarios of clientelista; let i = index">
@@ -161,56 +159,60 @@
                   </div>
                 </div>
               </td>
-              <td>{{ usuarios.ruc }}</td>
-              <td>{{ usuarios.nombreCliente }}</td>
-              <td>{{ usuarios.nombrecontacto }}</td>
-              <td>{{ usuarios.emailcontacto }}</td>
-              <td>{{ usuarios.telefcontacto }}</td>
-              <td>{{ usuarios.direccion }}</td>
+              <td>
+                {{ usuarios.ruc }}
+              </td>
+              <td>
+                {{ usuarios.nombreCliente }}
+              </td>
+              <td>
+                {{ usuarios.nombrecontacto }}
+              </td>
+              <td>
+                {{ usuarios.emailcontacto }}
+              </td>
+              <td>
+                {{ usuarios.telefcontacto }}
+              </td>
+              <td>
+                {{ usuarios.direccion }}
+              </td>
               <td>
                 <div class="d-flex">
                   <div style="width: 30px; height: 30px"
-                    (click)="openDialogUsuariosAsignados(usuarios)"
-                    class="btn btn-warning btn-sm d-flex justify-content-center align-items-center p-1">
+                       (click)="openDialogUsuariosAsignados(usuarios)"
+                       class="btn btn-warning btn-sm d-flex justify-content-center align-items-center p-1">
                     <span matBadgeColor="warn"
-                      [matBadge]="usuarios.cantidadCuntasBancarias"
-                      matBadgePosition="before">
+                          [matBadge]="usuarios.cantidadCuntasBancarias"
+                          matBadgePosition="before">
                       <strong> o </strong>
                     </span>
                   </div>
                   <div *ngIf="permisonUsers"
-                    class="btn btn-primary btn-sm d-flex justify-content-center align-items-center p-1"
-                    style="width: 30px; height: 30px"
-                    (click)="
-                      obtenerCuentaBancariaCliente(usuarios.id);
-                      openDialogCrearCuentaBancaria(usuarios, 'C')
-                    ">
-                    <span class="">
-                      <strong>+</strong>
-                    </span>
+                       class="btn btn-primary btn-sm d-flex justify-content-center align-items-center p-1"
+                       style="width: 30px; height: 30px"
+                       (click)="obtenerCuentaBancariaCliente(usuarios.id); openDialogCrearCuentaBancaria(usuarios, 'C')">
+                       <span class="">
+                         <strong>+</strong>
+                       </span>
                   </div>
                 </div>
               </td>
               <td *ngIf="permisonUsers">
                 <div class="d-flex">
-                  <span
-                    [style]="'background-image: url( ' + localidad2 + ' )'"
-                    class="icono-btn"
-                    [matBadge]="usuarios.cantidadLocalidades"
-                    matBadgePosition="before"
-                    matBadgeColor="warn"
-                    (click)="
-                      op.toggle($event);
-                      obtenerLocalidad(usuarios.codigoCliente)
-                    "
-                    style="background-color: rgb(80, 37, 149) !important;
-                      background-size: 65% 65%;
-                      background-repeat: no-repeat !important;
-                      border: solid 2px rgb(225, 202, 254);
-                      background-position: 5px 4px;
-                    ">
+                  <span [style]="'background-image: url( ' + localidad2 + ' )'"
+                        class="icono-btn"
+                        [matBadge]="usuarios.cantidadLocalidades"
+                        matBadgePosition="before"
+                        matBadgeColor="warn"
+                        (click)=" op.toggle($event); obtenerLocalidad(usuarios.codigoCliente) "
+                        style="background-color: rgb(80, 37, 149) !important;
+                               background-size: 65% 65%;
+                               background-repeat: no-repeat !important;
+                               border: solid 2px rgb(225, 202, 254);
+                               background-position: 5px 4px; ">
                     <p-overlayPanel #op>
-                      <div *ngFor="let loc of localidadesGuardadasCliente;let i = index"
+                      <div *ngFor="let loc of localidadesGuardadasCliente; let i = index"
                         class="d-flex justify-content-start align-items-center"
                         style="border-bottom: dashed 1px gray">
                         <div class="m-1">
@@ -224,15 +226,13 @@
                     </p-overlayPanel>
                   </span>
                   <div class="icono-btn"
-                    [style]="'background-image: url( ' + localidad1 + ' )'"
-                    (click)="openDialogAsignarLocalidad(usuarios)"
-                    style="
-                      background-color: rgb(80, 37, 149) !important;
-                      background-size: 65% 65%;
-                      background-repeat: no-repeat !important;
-                      border: solid 2px rgb(225, 202, 254);
-                      background-position: 5px 4px;
-                    ">
+                       [style]="'background-image: url( ' + localidad1 + ' )'"
+                       (click)="openDialogAsignarLocalidad(usuarios)"
+                       style="background-color: rgb(80, 37, 149) !important;
+                              background-size: 65% 65%;
+                              background-repeat: no-repeat !important;
+                              border: solid 2px rgb(225, 202, 254);
+                              background-position: 5px 4px;">
                   </div>
                 </div>
               </td>

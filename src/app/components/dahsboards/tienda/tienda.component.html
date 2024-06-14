@@ -22,6 +22,7 @@
             class="inpForms form-select w-100"
             formControlName="codigoClienteidFk"
             #codigoClienteidFk
+            (change)="this.obtenerLocalidad();"
             aria-label="">
             <option *ngFor="let cliente of clientelista"
               [value]="cliente.codigoCliente">
@@ -29,7 +30,7 @@
             </option>
           </select>
         </div>
-        <div *ngIf="tiendasForm"
+        <div *ngIf="true"
           class="animate_animated animate_backInLeft p-2 bg-light rounded-2">
           <div class="mb-3 w-100">
             <label for="nombreTienda" class="form-label text-secondary">
