@@ -86,6 +86,9 @@ export class ModalTransaccionesComponent implements OnInit {
   listaTransacciones: any = [];
   listaTransaccionesGhost: any = [];
   obtenerTransac(id:number) {
+
+    
+
     this.transacciones.obtenerTransaccionesTienda(id, 1).subscribe({
       next:( tran ) => {
         this.listaTransacciones = tran;

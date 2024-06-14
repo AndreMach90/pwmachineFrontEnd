@@ -338,6 +338,9 @@ export class ClienteComponent implements OnInit {
   obtenerCuentaBancariaCliente(id:number) {
     console.log('id cliente')
     console.log(id)
+
+    console.log(this.clientelista)
+
     this._show_spinner = true;
     this.cuentaslista = [];
     this.clienteserv.obtenerCuentaCliente(id).subscribe({
