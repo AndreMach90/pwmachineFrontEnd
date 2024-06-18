@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ModeldataComponent } from './modeldata.component';
+import { ModeldataComponent } from './ModeldataComponent';
 
 describe('ModeldataComponent', () => {
   let component: ModeldataComponent;

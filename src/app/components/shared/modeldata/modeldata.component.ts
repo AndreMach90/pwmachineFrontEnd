@@ -17,7 +17,7 @@ import Swal from 'sweetalert2'
 import { HistoriaAcreditacionService } from '../historial-acreditacion/services/historia-acreditacion.service';
 import { EncryptService } from '../services/encrypt.service';
 import { SharedService } from '../services/shared.service';
-import { machine } from 'os';
+
 import { ConsolidadoService } from './services/consolidado.service';
 
 const Toast = Swal.mixin({
@@ -186,6 +186,9 @@ export class ModeldataComponent implements OnInit {
     this.dataExportarExcel.forEach((machine: any) => {      
       const transaccionesFueraDeRango = machine.transacciones.filter((transaccion: any) => {
         const fechaTransaccion = new Date(transaccion.fechaTransaccion);
+        console.warn( '-----------------------------------------------------------------------------------' )
+        console.warn( fechaTransaccion + ' < ' + inicio + ' || ' + fechaTransaccion + ' > ' + fin )
+        console.warn( '-----------------------------------------------------------------------------------' )
         return fechaTransaccion < inicio || fechaTransaccion > fin;
       });
       if (transaccionesFueraDeRango.length > 0) {
@@ -223,13 +226,13 @@ export class ModeldataComponent implements OnInit {
       fechaFin: fin 
     }
 
-    //console.log(this.modelConsolidadoSend);
+    console.log(this.modelConsolidadoSend);
 
     this.consolidado.obtenerConsolidado( this.modelConsolidadoSend ).subscribe({
       next: (x) => {
         this.listaConsolidados = x;
-        //console.log('Despues del settimeout 1000')
-        //console.log(this.listaConsolidados)
+        console.log('Despues del settimeout 1000')
+        console.log(this.listaConsolidados)
       }, error: (e) => {
         console.error(e);
       }, complete: () => {
@@ -240,9 +243,9 @@ export class ModeldataComponent implements OnInit {
   }
 
   exportarToExcelComplete() {
-    this.filtrarTransaccionesFueraDeRango();
     this.obtenerConsolidado();
     this.exportToExcelConsolidadoGeneral();
+    // this.filtrarTransaccionesFueraDeRango();
     let dt: any = new Date();
     this._show_spinner = true;
     setTimeout(() => {
@@ -250,35 +253,38 @@ export class ModeldataComponent implements OnInit {
       this._show_spinner = false;
     }, 2000);
   }
-  
-  
-  filtrarTransaccionesDentroDeRango(): void {
 
+
+  filtrarTransaccionesDentroDeRango(): void {
     this.transaccionesDentroDeRango = [];    
     let di: any = this.exportdateform.controls['dateini'].value;
     let df: any = this.exportdateform.controls['datefin'].value;
-    const inicio = new Date(di);
-    const fin    = new Date(df);
+    let inicio  = new Date(di);
+    let fin     = new Date(df);
 
-    this.dataExportarExcel.forEach( (machine: any) => {
+    // Añadir un día a la fecha de inicio y fin
+    inicio.setDate(inicio.getDate() + 1);
+    fin.setDate(fin.getDate() + 1);
+
+    this.dataExportarExcel.forEach((machine: any) => {
       const transaccionesEnRango = machine.transacciones.filter((transaccion: any) => {
         const fechaTransaccion = new Date(transaccion.fechaTransaccion);
         return fechaTransaccion >= inicio && fechaTransaccion <= fin;
       });
-
+      
       if (transaccionesEnRango.length > 0) {        
         this.transaccionesDentroDeRango.push({
-          machine_Sn:    machine.machine_Sn,
-          localidad:     machine.localidad,
+          machine_Sn: machine.machine_Sn,
+          localidad: machine.localidad,
           transacciones: transaccionesEnRango
         });
       }
-
     });
 
     this.exportToExcel();
 
-  }
+}
+
 
 
   async exportToExcelConsolidadoGeneral(): Promise<void> {
@@ -410,6 +416,7 @@ export class ModeldataComponent implements OnInit {
     const fin    = new Date(df);
 
     this.transaccionesRecoleccionesSolo();
+
     // Crear un objeto para agrupar las localidades con sus equipos y transacciones
     const localidadesMap: { [key: string]: any[] } = {};
     // Iterar sobre los datos para agrupar por localidad
@@ -1335,7 +1342,7 @@ export class ModeldataComponent implements OnInit {
             "FechaFin":    dfin
           };          
 
-          //console.log(modelRange)
+          console.log(modelRange)
 
           this.transacciones.filtroTransaccionesRango(modelRange).subscribe({            
             next: (z) => {

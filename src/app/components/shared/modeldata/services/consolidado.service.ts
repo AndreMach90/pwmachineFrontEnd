@@ -11,6 +11,7 @@ export class ConsolidadoService {
   constructor( private env: Environments, private http: HttpClient ) { }
 
   obtenerConsolidado( model:any) {
+    console.warn(this.env.apiurl() + 'FiltroFechas/Consolidado')
     return this.http.post( this.env.apiurl() + 'FiltroFechas/Consolidado', model );
   }
 

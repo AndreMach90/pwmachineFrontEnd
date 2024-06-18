@@ -32,6 +32,10 @@ export class ModalTiendaCuentaComponent implements OnInit {
   ngOnInit(): void {
     this.nombreCliente = this.data.nombreCliente;
     this.obtenerCuentaBancariaCliente();
+
+    console.warn('MIRA ALEJITO');
+    console.warn(this.data);
+
   }
 
   cuentaslista: any = [];
@@ -39,17 +43,16 @@ export class ModalTiendaCuentaComponent implements OnInit {
   obtenerCuentaBancariaCliente() {
     this.cuentaslista = [];
     let id: any = this.data.idCLiente;
-    // console.log('ESTA ES LA DATA MODAL CLIENTE')
-    // console.log(this.data)
-    // console.warn(id);
+    console.log('ESTA ES LA DATA MODAL CLIENTE')
+    console.log(this.data)
+    console.warn(id);
     this.clienteserv.obtenerCuentaCliente(id).subscribe({
       next: ( cuentas:any ) => {
-        // console.warn('cuentas desde el modal')
-        // console.warn(cuentas)
+        console.warn('cuentas desde el modal')
+        console.warn(cuentas)
         this.cuentaslista = cuentas.filter((cuenta:any) => {
-          return !this.data.res.some((resItem:any) => resItem.idcuentabancaria === cuenta.idCuentasBancarias);
-        });        
-
+          return !this.data.res.some((resItem:any) => resItem.idcuentabancaria === cuenta.id); 
+        });
         this.cuentasGhost = cuentas;
       }, error:(e) => {
          console.error(e); 
@@ -107,10 +110,11 @@ export class ModalTiendaCuentaComponent implements OnInit {
           // alert(1)
           console.table(this.selectedAccounts)
           this.selectedAccounts.filter( (element:any) => {
-          
+            
+
             let arr:any = {
               idtienda:         this.data.codigoTiendaEdicion,
-              idcuentabancaria: element.idCuentasBancarias,
+              idcuentabancaria: element.id,
               fcrea:            new Date()
             }
 
@@ -129,7 +133,7 @@ export class ModalTiendaCuentaComponent implements OnInit {
             
             let arr:any = {
               idtienda:         this.data.codigoTiendaEdicion,
-              idcuentabancaria: element.idCuentasBancarias,
+              idcuentabancaria: element.id,
               fcrea:            new Date()
             }        
             

@@ -59,7 +59,6 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
 import {OverlayModule} from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
-import { ModeldataComponent } from './components/shared/modeldata/modeldata.component';
 
 //primeng
 import { AccordionModule } from 'primeng/accordion';

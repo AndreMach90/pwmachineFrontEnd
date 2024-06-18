@@ -438,12 +438,15 @@ export class TiendaComponent implements OnInit {
     this.tiendaForm.controls['nombreAdmin'].setValue(data.nombreAdmin);
     this.tiendaForm.controls['telfAdmin'].setValue(data.telfAdmin);
     this.tiendaForm.controls['emailAdmin'].setValue(data.emailAdmin);
-    this.tiendaForm.controls['codProv'].setValue(data.codProv.toString().trim());
     this._action_butto = 'Editar';
     this._cancel_button = true;
     setTimeout(() => {
-      this.tiendaForm.controls['codigoClienteidFk'].disable();
-    }, 1000);
+      this.localidadesGuardadasCliente.filter( (x:any) => {
+        x.codigo = x.codigo.toString().trim()
+        })
+        this.tiendaForm.controls['codigoClienteidFk'].disable();
+        this.tiendaForm.controls['codProv'].setValue(data.codProv.toString().trim());
+    }, 500);
   }
 
   obtenerCliente() {
@@ -556,7 +559,7 @@ export class TiendaComponent implements OnInit {
         console.log('data entrada');
         console.log(element);
         nombreCliente = element.nombreCliente;
-        idCLiente = element.id;
+        idCLiente = element.codigoCliente;
       }
     });
     this._show_spinner = true;

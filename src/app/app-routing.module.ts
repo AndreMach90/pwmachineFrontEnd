@@ -6,7 +6,7 @@ import { MonitoreoEquiposComponent } from './components/dahsboards/monitoreo-equ
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MaquinariaMonitoreoComponent } from './components/shared/maquinaria-monitoreo/maquinaria-monitoreo.component';
-import { ModeldataComponent } from './components/shared/modeldata/modeldata.component';
+
 import { DashboardDataExportComponent } from './components/shared/dashboard-data-export/dashboard-data-export.component';
 
 
