@@ -177,33 +177,47 @@ export class ModeldataComponent implements OnInit {
     if( xtoken == undefined || xtoken == null || xtoken == '' ) this.router.navigate(['login']);
   }
 
-  filtrarTransaccionesFueraDeRango() {
-    let di: any  = this.exportdateform.controls['dateini'].value;
-    let df: any  = this.exportdateform.controls['datefin'].value;
-    const inicio = new Date(di);
-    const fin    = new Date(df);
+
+  filtrarTransaccionesFueraDeRango(): void {
+    /** Tomamos las fechas para concatenarla para más después */
+    let di: any = this.exportdateform.controls['dateini'].value;
+    let df: any = this.exportdateform.controls['datefin'].value;
+    
+    /** Tomamos la hora para concatenarla para más después */
+    let hi: any = this.exportdateform.controls['horaini'].value;
+    let hf: any = this.exportdateform.controls['horafin'].value;
+
+    let inicio = new Date(di);
+    let fin = new Date(df);
+
+    // Dividir las horas en horas y minutos
+    const [inicioHoras, inicioMinutos] = hi.split(':').map(Number);
+    const [finHoras, finMinutos] = hf.split(':').map(Number);
+
+    // Establecems la hora y minutos en las fechas de inicio y fin
+    inicio.setHours(inicioHoras, inicioMinutos, 0, 0);
+    fin.setHours(finHoras, finMinutos, 0, 0);
+
+    // Añadir un día a la fecha de inicio y fin
+    inicio.setDate(inicio.getDate() + 1);
+    fin.setDate(fin.getDate() + 1);
+  
     this.resagadasTran = [];
     this.dataExportarExcel.forEach((machine: any) => {      
       const transaccionesFueraDeRango = machine.transacciones.filter((transaccion: any) => {
         const fechaTransaccion = new Date(transaccion.fechaTransaccion);
-        console.warn( '-----------------------------------------------------------------------------------' )
-        console.warn( fechaTransaccion + ' < ' + inicio + ' || ' + fechaTransaccion + ' > ' + fin )
-        console.warn( '-----------------------------------------------------------------------------------' )
         return fechaTransaccion < inicio || fechaTransaccion > fin;
       });
       if (transaccionesFueraDeRango.length > 0) {
-        this.resagadasTran.push(
-          {
-            machine_Sn: machine.machine_Sn,
-            localidad: machine.localidad,
-            transacciones: transaccionesFueraDeRango
-          }
-        );
+        this.resagadasTran.push({
+          machine_Sn: machine.machine_Sn,
+          localidad: machine.localidad,
+          transacciones: transaccionesFueraDeRango
+        });
       }
     });
 
     this.exportToExcelResagadas();
-
   }
 
   
@@ -245,7 +259,7 @@ export class ModeldataComponent implements OnInit {
   exportarToExcelComplete() {
     this.obtenerConsolidado();
     this.exportToExcelConsolidadoGeneral();
-    // this.filtrarTransaccionesFueraDeRango();
+    this.filtrarTransaccionesFueraDeRango();
     let dt: any = new Date();
     this._show_spinner = true;
     setTimeout(() => {
@@ -259,8 +273,20 @@ export class ModeldataComponent implements OnInit {
     this.transaccionesDentroDeRango = [];    
     let di: any = this.exportdateform.controls['dateini'].value;
     let df: any = this.exportdateform.controls['datefin'].value;
+
+    let hi: any = this.exportdateform.controls['horaini'].value;
+    let hf: any = this.exportdateform.controls['horafin'].value;
+
     let inicio  = new Date(di);
     let fin     = new Date(df);
+
+    // Dividir las horas en horas y minutos
+    const [inicioHoras, inicioMinutos] = hi.split(':').map(Number);
+    const [finHoras, finMinutos] = hf.split(':').map(Number);
+
+    // Establecer la hora y minutos en las fechas de inicio y fin
+    inicio.setHours(inicioHoras, inicioMinutos, 0, 0);
+    fin.setHours(finHoras, finMinutos, 0, 0);
 
     // Añadir un día a la fecha de inicio y fin
     inicio.setDate(inicio.getDate() + 1);
@@ -269,6 +295,8 @@ export class ModeldataComponent implements OnInit {
     this.dataExportarExcel.forEach((machine: any) => {
       const transaccionesEnRango = machine.transacciones.filter((transaccion: any) => {
         const fechaTransaccion = new Date(transaccion.fechaTransaccion);
+        console.log( '<<<<<<<<<<<<<<<<<<<<<<Dentro de rango>>>>>>>>>>>>>>>>>>>>>>' );
+        console.log( fechaTransaccion + ' >= ' + inicio + ' && ' + fechaTransaccion + ' <= ' + fin );
         return fechaTransaccion >= inicio && fechaTransaccion <= fin;
       });
       
@@ -282,8 +310,8 @@ export class ModeldataComponent implements OnInit {
     });
 
     this.exportToExcel();
-
 }
+
 
 
 
@@ -416,6 +444,11 @@ export class ModeldataComponent implements OnInit {
     const fin    = new Date(df);
 
     this.transaccionesRecoleccionesSolo();
+
+    console.log('999999999999999999999999999999999999999999999');
+    console.log('Transacciones Dentro de rango');
+    console.log(this.transaccionesDentroDeRango);
+    console.log('999999999999999999999999999999999999999999999');
 
     // Crear un objeto para agrupar las localidades con sus equipos y transacciones
     const localidadesMap: { [key: string]: any[] } = {};
@@ -741,6 +774,12 @@ export class ModeldataComponent implements OnInit {
     // Crear un objeto para agrupar las localidades con sus equipos y transacciones
     const localidadesMap: { [key: string]: any[] } = {};
     // Iterar sobre los datos para agrupar por localidad
+
+    console.log('8888888888888888888888888888888888888888888888888');
+    console.log('Estas son las resagadas!');
+    console.log(this.resagadasTran);
+    console.log('8888888888888888888888888888888888888888888888888');
+
     this.resagadasTran.forEach((item: any) => {
       let localidad = item.localidad;
 
@@ -884,9 +923,9 @@ export class ModeldataComponent implements OnInit {
                      takeWhile(() => this.countTransaction < totalTransacciones),
                      finalize(() => {
                          this.countTransaction = totalTransacciones;
-                         console.log( '/*/*/*/*/*/*/*/*/*/*/*/*/*/*' );
-                         console.log( this.tran );
-                         console.log( '/*/*/*/*/*/*/*/*/*/*/*/*/*/*' );
+                        //  console.log( '/*/*/*/*/*/*/*/*/*/*/*/*/*/*' );
+                        //  console.log( this.tran );
+                        //  console.log( '/*/*/*/*/*/*/*/*/*/*/*/*/*/*' );
                          this.guardarTransaccionesAc(this.tran);
                      })
                  )
