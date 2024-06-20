@@ -727,23 +727,6 @@ export class EquipoComponent implements OnInit {
   }
 
   updateActive(equipo: any){
-    let modelo:any = [];
-    modelo = {
-      id:                   equipo.id,
-      codigoTiendaidFk:     equipo.codigoTiendaidFk,
-      tipo:                 equipo.tipo,
-      marca:                equipo.marca,
-      modelo:               equipo.modelo,
-      serieEquipo:          equipo.serieEquipo,
-      active:               'A',
-      capacidadIni:         equipo.capacidadIni,
-      fechaInstalacion:     equipo.fechaInstalacion,
-      ipEquipo :            equipo.ipEquipo,
-      capacidadAsegurada:   equipo.capacidadAsegurada,
-      capacidadIniSobres:   equipo.capacidadIniSobres,
-      estadoPing:           equipo.estadoPing,
-      tiempoSincronizacion: new Date()
-    }
     Swal.fire({
       title: '¿Desea activar el equipo?',
       text: "Se va a proceder a activar el monitoreo del equipo",
@@ -755,7 +738,7 @@ export class EquipoComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this._show_spinner = true;
-        this.equiposerv.actualizarEquipo(equipo.id, modelo).subscribe({
+        this.equiposerv.activarEquipo(equipo.id).subscribe({
           next: (x) => {
             Toast.fire({ icon: 'success', title: 'Equipo activado' });
           }, error: (e) => {

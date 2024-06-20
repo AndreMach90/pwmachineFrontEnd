@@ -201,6 +201,12 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
 
   public countmin: number = 5000;
   private PingHub(data:any) {
+
+    console.log('--*-*----*-*-*-*-*---**');
+    console.log('PING HUB OBTENIENDO');
+    console.log(data);
+    console.log('--*-*----*-*-*-*-*---**');
+
     data.filter( (element:any) => {
       this.listaEsquipo.filter( (equi:any) => {
         if( element.ip == equi.ipEquipo ) {

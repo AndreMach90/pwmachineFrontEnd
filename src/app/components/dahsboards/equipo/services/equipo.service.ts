@@ -60,6 +60,8 @@ export class EquipoService {
     return this.http.get( this.env.apiurl() + 'Equipo/EquipoNuevo' );
   }
 
-  
+  activarEquipo (id: number) {
+    return this.http.put( this.env.apiurl() + 'Equipo/ActivarEquipo/' + id, id);
+  } 
 
 }

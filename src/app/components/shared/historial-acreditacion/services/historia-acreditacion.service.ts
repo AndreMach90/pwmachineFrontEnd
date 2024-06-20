@@ -31,6 +31,7 @@ export class HistoriaAcreditacionService {
   }
 
   cancelarEquiposAcreditados(nombreArchivo:any) {
+    console.warn(this.env.apiurl() + 'Acreeditacion/BorrarTransacciones/' + nombreArchivo);
     return this.http.delete( this.env.apiurl() + 'Acreeditacion/BorrarTransacciones/' + nombreArchivo );
   }
 
