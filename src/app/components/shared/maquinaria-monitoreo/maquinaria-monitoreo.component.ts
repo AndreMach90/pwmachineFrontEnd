@@ -29,6 +29,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   usuario:any;
   search: any = this.env.apiUrlIcon()+'search.png';
   listalertas: any = [];
+  listaCliente: any;
   contadorPing: number = 0;
   _show_spinner: boolean = false;
   theme: any = {
@@ -38,6 +39,16 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     bgTable: '#F6FAFD',
     hoverTable: '#DFECFF'
   }
+  estadosMonitoreo: any = [
+    { estado: 'Online', color: 'green', count: 0 },
+    { estado: 'Offline', color: 'red', count: 0 }
+  ];
+  selectedCliente: any = 'Todos los clientes';
+  selectedClienteId: any = 'todoCliente';
+  selectedMonitoreo: any = 'Mostrar todo';
+  selectedMonitoreoColor: any = 'White';
+  selectedCount: number = 0;
+
   private urlHub: any = this.env.apiUrlHub();
   private connectionSendPingEquipo: HubConnection;
   private manualTransactionHub: HubConnection;
@@ -51,30 +62,22 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     public  dialog: MatDialog,
     private equiposerv: EquipoService,
     private clienteService: ClientesService){
-    this.connectionSendPingEquipo = new HubConnectionBuilder()
-                  .withUrl(this.urlHub+'PingHubEquipos')
-                  .build();
+    this.connectionSendPingEquipo = new HubConnectionBuilder().withUrl(this.urlHub+'PingHubEquipos').build();
     this.connectionSendPingEquipo.on("SendPingEquipo", message => {
-                  this.PingHub(message); 
-                  this.alertHub(message);});
-    this.manualTransactionHub = new HubConnectionBuilder()
-                  .withUrl(this.urlHub+'manualTransaction')
-                  .build();
+      this.PingHub(message); 
+      this.alertHub(message);});
+    this.manualTransactionHub = new HubConnectionBuilder().withUrl(this.urlHub+'manualTransaction').build();
     this.manualTransactionHub.on("SendTransaccionManual", message => { 
-                  this.MtransHub(message);
-                  this.updateTransManual(message)});
-    this.automaticTransactionHub = new HubConnectionBuilder()
-                  .withUrl(this.urlHub+'autoTransaccion')
-                  .build();
+      this.MtransHub(message);
+      this.updateTransManual(message)});
+    this.automaticTransactionHub = new HubConnectionBuilder().withUrl(this.urlHub+'autoTransaccion').build();
     this.automaticTransactionHub.on("SendTransaccionAuto", message => { 
-                  this.AuTransHub(message); 
-                  this.updateTransAutRec(message)});
-    this.recollectTransactionHub = new HubConnectionBuilder()
-                  .withUrl(this.urlHub+'recoleccionTransaccion')
-                  .build();
+      this.AuTransHub(message); 
+      this.updateTransAutRec(message)});
+    this.recollectTransactionHub = new HubConnectionBuilder().withUrl(this.urlHub+'recoleccionTransaccion').build();
     this.recollectTransactionHub.on("SendTransaccionRecoleccion", message => { 
-                  this.RecoTransHub(message);
-                  this.updateTransAutRec(message)});
+      this.RecoTransHub(message);
+      this.updateTransAutRec(message)});
   }
 
   ngOnInit(): void {
@@ -428,7 +431,6 @@ export class MaquinariaMonitoreoComponent implements OnInit {
           msj = 'A punto de alcanzar límite de piezas del equipo, ' + element.serieEquipo;
           colorbg = 'orange';
           colorfg = 'black';
-          // this.readTextAloud(this.nuevoObjectalerts[this.nuevoObjectalerts.length-1].msj);
         }
         else if ( element.indicadorPorcentajeBilletes > 90 ) {
           element.indicadorColorBarProgressBilletes = "bg-danger text-light";
@@ -436,9 +438,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
           msj  = 'Haz alcanzado el límite de piezas del equipo, ' + element.serieEquipo;
           colorbg = 'orangered';
           colorfg = 'whitesmoke';
-          // this.controlalerts( tipo, msj, 'orangered', 'whitesmoke', element.serieEquipo );
           this.playAudio();
-          // this.readTextAloud(this.nuevoObjectalerts[this.nuevoObjectalerts.length-1].msj);
         }
         if ( element.indicadorPorcentajeTotalMaxAsegurado > 0 && element.indicadorPorcentajeTotalMaxAsegurado < 80 ) {
           element.indicadorColorBarProgressAsegurado = "bg-success text-light";
@@ -449,9 +449,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
           msj  = 'A punto de alcanzar el límite del monto asegurado del equipo, ' + element.serieEquipo;
           colorbg = 'orange';
           colorfg = 'black';
-          // this.controlalerts( tipo, msj, 'orange', 'black', element.serieEquipo );
           this.playAudio();
-          // this.readTextAloud(this.nuevoObjectalerts[this.nuevoObjectalerts.length-1].msj);
         }
         else if ( element.indicadorPorcentajeTotalMaxAsegurado >= 90 ) {
           element.indicadorColorBarProgressAsegurado = "bg-danger text-light";
@@ -459,9 +457,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
           msj  = 'Haz alcanzado el límite del monto asegurado del equipo, ' + element.serieEquipo;
           colorbg = 'orangered';
           colorfg = 'whitesmoke'
-          // this.controlalerts( tipo, msj, 'orangered', 'whitesmoke', element.serieEquipo );
           this.playAudio();
-          // this.readTextAloud(this.nuevoObjectalerts[this.nuevoObjectalerts.length-1].msj);
         }
       }
     })
@@ -506,7 +502,6 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     });
     this.listaDetalleequipoTransa.forEach((detalle:any) => {
       if ( detalle.tipo == 'Deposito' ) {
-
         this.totalBilletesCantidadT += detalle.depositoCant100 + detalle.depositoCant50 + detalle.depositoCant20 +
                                        detalle.depositoCant10  + detalle.depositoCant5  + detalle.depositoCant2  + detalle.depositoCant1;
         this.totalBilletesMontoT    += detalle.depositoMont100 + detalle.depositoMont50 + detalle.depositoMont20 +
@@ -564,19 +559,23 @@ export class MaquinariaMonitoreoComponent implements OnInit {
             return element.active === "A";
           });
           this.listaEsquipo = this.listaEsquipo.map((element: any) => {
-            if (element.provincia === null) {
-              element.provincia = "";
-            }
+            if (element.provincia === null) element.provincia = "";
             return element;
           });
           this.listaEsquipoGhost = this.listaEsquipo;
         },
         error:    (e) => { },
         complete: ()  => {
+          const arrOnline = [];
+          const arrOffline = [];
           this.listaEsquipoGhost.filter( (element:any) => {
             this.obtenerIndicadores(element.serieEquipo);
-          })
-        }
+            if( element.estadoPing == 1 ) arrOnline.push(element);
+            if( element.estadoPing == 0 ) arrOffline.push(element);
+          });
+          this.estadosMonitoreo[0].count = arrOnline.length;
+          this.estadosMonitoreo[1].count = arrOffline.length;
+        }        
       }
     )
   }
@@ -631,28 +630,18 @@ export class MaquinariaMonitoreoComponent implements OnInit {
             }
             else if ( elementEq.indicadorPorcentajeBilletes >= 80 && elementEq.indicadorPorcentajeBilletes <= 90 ) {
               elementEq.indicadorColorBarProgressBilletes = "bg-warning text-dark";
-              //// // //////console.warn(elementEq.indicadorPorcentajeBilletes)
-              // this.playAudio();
-              // this.controlalerts( 'Capacidad de Piezas del equipo', 'A punto de alcanzar el límite de piezas del equipo, ' + elementEq.serieEquipo, 'orange', 'dark', elementEq.serieEquipo );
             }
             else if ( elementEq.indicadorPorcentajeBilletes > 90 ) {
               elementEq.indicadorColorBarProgressBilletes = "bg-danger text-light";
-              // //// // //////console.warn(elementEq.indicadorPorcentajeBilletes)
-              // this.playAudio();
-              // this.controlalerts( 'Capacidad de Piezas del equipo', 'Haz alcanzado el límite de piezas del equipo, ' + elementEq.serieEquipo, 'orangered', 'whitesmoke', elementEq.serieEquipo );
             }
             if ( elementEq.indicadorPorcentajeTotalMaxAsegurado < 80 ) {
               elementEq.indicadorColorBarProgressAsegurado = "bg-success text-light";
             }
             else if ( elementEq.indicadorPorcentajeTotalMaxAsegurado >= 80 && elementEq.indicadorPorcentajeTotalMaxAsegurado < 90 ) {
               elementEq.indicadorColorBarProgressAsegurado = "bg-warning text-dark";
-              // this.playAudio();
-              // this.controlalerts( 'Capacidad de Monto Asegurado', 'A punto de alcanzar el límite de monto asegurado del equipo, ' + elementEq.serieEquipo, 'orange', 'dark', elementEq.serieEquipo );
             }
             else if ( elementEq.indicadorPorcentajeTotalMaxAsegurado >= 90 ) {
               elementEq.indicadorColorBarProgressAsegurado = "bg-danger text-light";
-              // this.playAudio();
-              // this.controlalerts( 'Capacidad de Monto Asegurado', 'Haz alcanzado el límite del monto asegurado del equipo, ' + elementEq.serieEquipo, 'orangered', 'whitesmoke', elementEq.serieEquipo );
             }
           }
         })
@@ -698,19 +687,15 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     if(equipoFind){
       equipoFind.ultimaNoTrans = data[0].transaccionNo
       equipoFind.fechaUltimaTrans = data[0].fechaTransaccion
-      if(data[1][0].tipoTransaccion == "Automático"){
-        equipoFind.tipoTrans = "A"
-      }
-      if(data[1][0].tipoTransaccion == "Recolección"){
-        equipoFind.tipoTrans = "R"
-      }
+      if(data[1][0].tipoTransaccion == "Automático") equipoFind.tipoTrans = "A";
+      if(data[1][0].tipoTransaccion == "Recolección") equipoFind.tipoTrans = "R";
     }
   }
   
   fechaNotif: any;
   alertHub(dataPingHub: any){
     let fecha = new Date();
-    if(this.contadorPing>=400){
+    if(this.contadorPing>=10){
       this.alertTrans();
       this.alertTimeSincro(dataPingHub);
       this.contadorPing = 0;
@@ -758,9 +743,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
           if(alerta){
             let arrayMsj = newMesj.split(" ");
             let validateMsj = arrayMsj.every(palabra => alerta.msj.includes(palabra));
-            if(!validateMsj){
-              alerta.msj = alerta.msj + '\n' +newMesj;
-            }
+            if(!validateMsj) alerta.msj = alerta.msj + '\n' +newMesj;
           }
           let tipo = 'Monitoreo Trans TimeSincro';
           let msj  = newMesj;
@@ -793,32 +776,20 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   }
 
   getColor(color: any){
-    if(color === '#DAEFE6'){
-      return 'GREEN';
-    }
-    if(color === '#FFDAD2'){
-      return 'RED';
-    }
+    if(color === '#DAEFE6') return 'GREEN';
+    if(color === '#FFDAD2') return 'RED';
     return color;
   }
 
   getTipoTrans(tipoTrans: any){
-    if(tipoTrans == 'A'){
-      return 'Automático'
-    }
-    if(tipoTrans == 'M'){
-      return 'Manual'
-    }
-    if(tipoTrans == 'R'){
-      return 'Retiro'
-    }
+    if(tipoTrans == 'A') return 'Automático';
+    if(tipoTrans == 'M') return 'Manual';
+    if(tipoTrans == 'R') return 'Retiro';
     return tipoTrans;
   }
 
-  listaCliente: any;
   getClientes(){
-    this.clienteService.obtenerCliente().subscribe(
-      {
+    this.clienteService.obtenerCliente().subscribe({
         next: (cliente) => {
           this.listaCliente = cliente;
         },
@@ -828,17 +799,44 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     )
   }
 
-  selectedCliente: any = 'Mostrar todo';
-  selectedClienteId: any = 'todoCliente';
-  filterCliente(idCliente: any, nameCliente:any){
+  filterCliente(idCliente: any, nameCliente: any) {
     this.selectedCliente = nameCliente;
     this.selectedClienteId = idCliente;
-    this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) => {
-      return item.idCliente === idCliente;
-    });
-    if(idCliente == 'todoCliente'){
-      this.listaEsquipo = this.listaEsquipoGhost;
-    }
+    this.updateListaEsquipo();
     this.eliminarAllAlerts();
+    if(this.selectedClienteId=='todoCliente'){
+      this.estadosMonitoreo[0].count = this.listaEsquipoGhost.filter((item: any) => item.estadoPing == 1).length;
+      this.estadosMonitoreo[1].count = this.listaEsquipoGhost.filter((item: any) => item.estadoPing == 0).length;
+    }else{
+      this.estadosMonitoreo[0].count = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId && item.estadoPing == 1).length;
+      this.estadosMonitoreo[1].count = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId && item.estadoPing == 0).length;
+    }
+    if (this.selectedMonitoreo == 'Online') this.selectedCount = this.estadosMonitoreo[0].count;
+    if (this.selectedMonitoreo == 'Offline') this.selectedCount = this.estadosMonitoreo[1].count;
+  }
+  
+  filterMonitoreo(estado: any, color: any, count: any) {
+    this.selectedMonitoreo = estado;
+    this.selectedMonitoreoColor = color;
+    this.selectedCount = count;
+    this.updateListaEsquipo();
+  }
+
+  updateListaEsquipo() {
+    if (this.selectedClienteId === 'todoCliente') {
+      if (this.selectedMonitoreo === 'Mostrar todo') {
+        this.listaEsquipo = this.listaEsquipoGhost;
+      } else {
+        let color = this.selectedMonitoreo === 'Online' ? 1 : 0;
+        this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) => item.estadoPing === color);
+      }
+    } else {
+      if (this.selectedMonitoreo === 'Mostrar todo') {
+        this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId);
+      } else {
+        let color = this.selectedMonitoreo === 'Online' ? 1 : 0;
+        this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId && item.estadoPing === color);
+      }
+    }
   }
 }

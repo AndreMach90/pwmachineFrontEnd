@@ -45,27 +45,58 @@
 <div class="w-100 p-4" [style]="'background-color:'+theme.bgTheme+';height: 100vh;'">
     <!-- Header -->
     <div class="d-flex align-items-end justify-content-between pb-3">
-        <div class="dropdown d-flex p-0 m-0">
-            <button type="button" 
-                class="btn-cliente dropdown-toggle" 
-                data-bs-toggle="dropdown" 
-                aria-expanded="false"
-                [style]="'background:'+theme.bgTable+';'">
-                {{selectedCliente}}
-            </button>
-            <ul class="dropdown-menu" [style]="'--bs-dropdown-link-hover-bg:'+theme.hoverTable+';'">
-                <li class="dropdown-item" (click)="filterCliente('todoCliente', 'Mostrar todo')"
-                    [ngClass]="{'active': selectedClienteId === 'todoCliente'}">
-                    <strong>Mostrar todo</strong>
-                </li>
-                <li><hr class="dropdown-divider"></li>
-                <ng-container *ngFor="let cliente of listaCliente">
-                    <li class="dropdown-item" (click)="filterCliente(cliente.codigoCliente, cliente.nombreCliente)"
-                        [ngClass]="{'active': selectedClienteId === cliente.codigoCliente}">
-                        {{cliente.nombreCliente}}
+        <div class="d-flex p-0 m-0">
+            <div class="dropdown d-flex p-0 m-0">
+                <button type="button" 
+                    class="btn-cliente dropdown-toggle" 
+                    data-bs-toggle="dropdown" 
+                    aria-expanded="false"
+                    [style]="'background:'+theme.bgTable+';'">
+                    {{selectedCliente}}
+                </button>
+                <ul class="dropdown-menu" [style]="'--bs-dropdown-link-hover-bg:'+theme.hoverTable+';'">
+                    <li class="dropdown-item" (click)="filterCliente('todoCliente', 'Todos los clientes')"
+                        [ngClass]="{'active': selectedClienteId === 'todoCliente'}">
+                        <strong>Todos los clientes</strong>
                     </li>
-                </ng-container>
-            </ul>
+                    <li><hr class="dropdown-divider"></li>
+                    <ng-container *ngFor="let cliente of listaCliente">
+                        <li class="dropdown-item" (click)="filterCliente(cliente.codigoCliente, cliente.nombreCliente)"
+                            [ngClass]="{'active': selectedClienteId === cliente.codigoCliente}">
+                            {{cliente.nombreCliente}}
+                        </li>
+                    </ng-container>
+                </ul>
+            </div>
+            <div class="dropdown d-flex p-0 m-0">
+                <button type="button" 
+                    class="btn-cliente dropdown-toggle" 
+                    data-bs-toggle="dropdown" 
+                    aria-expanded="false"
+                    [style]="'background:'+theme.bgTable+';margin-left:15px'">
+                    <ng-container *ngIf="selectedMonitoreo!='Mostrar todo'">
+                        <div class="estadoMonitoreo d-inline-flex" [style]="'background:'+selectedMonitoreoColor+';'"></div>
+                    </ng-container>
+                    <span>{{selectedMonitoreo}}</span>
+                    <ng-container *ngIf="selectedMonitoreo!='Mostrar todo'">
+                        <span> ({{selectedCount}})</span>
+                    </ng-container>
+                </button>
+                <ul class="dropdown-menu" [style]="'--bs-dropdown-link-hover-bg:'+theme.hoverTable+';'">
+                    <li class="dropdown-item" (click)="filterMonitoreo('Mostrar todo', 'white', 0)"
+                        [ngClass]="{'active': selectedMonitoreo === 'Mostrar todo'}">
+                        <strong>Mostrar todo</strong>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <ng-container *ngFor="let monitoreo of estadosMonitoreo">
+                        <li class="dropdown-item d-inline-flex" (click)="filterMonitoreo(monitoreo.estado, monitoreo.color, monitoreo.count)"
+                            [ngClass]="{'active': selectedMonitoreo === monitoreo.estado}">
+                            <div class="estadoMonitoreo" [style]="'background:'+monitoreo.color+';'"></div>
+                            <span>{{monitoreo.estado}} ({{monitoreo.count}})</span>
+                        </li>
+                    </ng-container>
+                </ul>
+            </div>
         </div>
         <div class="d-flex p-0 m-0">
             <div class="input-group d-flex shadow-sm align-items-center"
@@ -92,7 +123,6 @@
                 </mat-icon>
             </button>
         </div>
-        
     </div>
     <!-- Body -->
     <div class="tabla table-responsive-lg" [style]="'background:'+theme.bgTable+';'">
