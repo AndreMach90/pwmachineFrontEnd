@@ -707,7 +707,9 @@ export class MaquinariaMonitoreoComponent implements OnInit {
 
   alertTrans(){
     let numHoras = 24;
-    for (let item of this.listaEsquipo) {
+    let equiposNow = [];
+    (this.selectedClienteId == 'todoCliente') ? equiposNow = this.listaEsquipo : equiposNow = this.listaEsquipoGhost.filter((item: any) => {return item.idCliente === this.selectedClienteId});
+    for (let item of equiposNow) {
       let validarhora = this.calcularTiempoDesdeAhora(numHoras,item.fechaUltimaTrans);
       if(validarhora){
         let tipo = 'Monitoreo Trans TimeSincro';
@@ -732,7 +734,9 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     for (let item of dataPingHub) {
       let validarhora = this.calcularTiempoDesdeAhora(numHoras,item.tiempoSincronizacion);
       if(validarhora){
-        equipoFind = this.listaEsquipo.find((itemEquipo:any) =>
+        let equiposNow = [];
+        (this.selectedClienteId == 'todoCliente') ? equiposNow = this.listaEsquipo : equiposNow = this.listaEsquipoGhost.filter((item: any) => {return item.idCliente === this.selectedClienteId});
+        equipoFind = equiposNow.find((itemEquipo:any) =>
           itemEquipo.ipEquipo === item.ip
         );
         if(equipoFind){
