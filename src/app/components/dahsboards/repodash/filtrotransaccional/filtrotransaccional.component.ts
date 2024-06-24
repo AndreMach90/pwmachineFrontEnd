@@ -122,7 +122,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
         });
         this.listaTransaccionesGhost = this.listaTransacciones;
       },
-      error: (e) => { console.error(e); },
+      error: (e) => { // console.error(e); },
       complete: () => {
         this.listaTransaccionesEmitGrafica.emit(this.listaTransacciones.reverse());
         this.sumatoriaTotal();
@@ -144,7 +144,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
         next: (transactab:any) => {
           this.listaTrsansaccionesTablaGhost = transactab;
         },
-        error: (e) => { console.error(e); },
+        error: (e) => { // console.error(e); },
         complete: () => {
           this.sumatoriaNoRecollect = 0;
           this.listaTrsansaccionesTablaGhost.filter((element:any) => {
@@ -253,7 +253,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
         this.listaTransaccionesEmitGrafica.emit(this.listaTransacciones.reverse());
         this.listaTransaccionesEmitTabla.emit(this.listaTrsansaccionesTabla);
         this.modBusqueda.emit( true );
-      }, error: (e) => { console.error(e); }
+      }, error: (e) => { // console.error(e); }
       , complete: () => { this._show_spinner = false; }
     })
     this.sumatoriaTotal();
@@ -346,7 +346,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
         if (column.number === 27) {
           column.width = 20;
           column.eachCell((cell: any) => {
-            ////console.log('Encontrado indice 27');
+            ////// console.log('Encontrado indice 27');
             cell.numFmt = '#,##0.00';
           });
         }

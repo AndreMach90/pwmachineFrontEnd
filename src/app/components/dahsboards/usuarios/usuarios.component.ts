@@ -137,12 +137,12 @@ export class UsuariosComponent implements OnInit {
     switch( this.calwidth ) {
       case true:
         this._width_table = 'tabledata table-responsive w-75 p-2';
-        //////////console.warn(this._width_table);
+        //////////// console.warn(this._width_table);
         this.calwidth = false;
         break;
       case false:        
         this._width_table = 'tabledata table-responsive w-100 p-2';
-        //////////console.warn(this._width_table);
+        //////////// console.warn(this._width_table);
         this.calwidth = true;
         break;
     }
@@ -355,14 +355,14 @@ export class UsuariosComponent implements OnInit {
             Telefono:  this.userForm.controls['telefono']     .value?.replace(/[^0-9.]*/g, ''),
             active: 'A'
           }
-          //////////console.warn( 'modelUsers PORTAL' );
-          //////////console.warn( this.modelUsers );
+          //////////// console.warn( 'modelUsers PORTAL' );
+          //////////// console.warn( this.modelUsers );
           setTimeout(() => {
           this.userservs.guardarUsuariosPortal(this.modelUsers).subscribe({
             next: (x) => {
               Toast.fire({ icon: 'success', title: 'Usuario de Portal guardado con éxito' });
             }, error: (e) => {
-              console.error(e);
+              // console.error(e);
               Toast.fire({ icon: 'error', title: 'No hemos podido guardar el usuario de Portal' });
               this._show_spinner = false;
             }, complete: () => { 
@@ -384,7 +384,7 @@ export class UsuariosComponent implements OnInit {
     switch(this.valor) {
       case 'portal':
         xrol = this.userForm.controls['rol'].value;
-        ////console.warn(xrol);
+        ////// console.warn(xrol);
         this.modelUsers = {
           id:          this.idusermaquina,
           usuario:     this.userForm.controls['usuario'].value,
@@ -403,14 +403,14 @@ export class UsuariosComponent implements OnInit {
           active: 'A'
         }
 
-        ////console.warn( 'modelUsers PORTAL' );
-        ////console.warn( this.modelUsers );
-        ////console.warn( this.modelDatosPersonales );
+        ////// console.warn( 'modelUsers PORTAL' );
+        ////// console.warn( this.modelUsers );
+        ////// console.warn( this.modelDatosPersonales );
         this.userservs.actualizarUsuarioPortal( this.idusermaquina,  this.modelUsers).subscribe({
           next: (x) => {
             Toast.fire({ icon: 'success', title: 'Usuario de Portal actualizado con éxito' });
           }, error: (e) => {
-            console.error(e);
+            // console.error(e);
             Toast.fire({ icon: 'error', title: 'No hemos podido actualizar el usuario de Portal' });
           }, complete: () => {
             // this.userlista.unshift(this.modelUsers);  
@@ -430,11 +430,11 @@ export class UsuariosComponent implements OnInit {
 
     this.userservs.actualizarDatosPersonales(id, model).subscribe({
       next: (x) => {
-        // ////////console.log('SE ACTUALIZAO DATOS PERSONALES');
+        // ////////// console.log('SE ACTUALIZAO DATOS PERSONALES');
         this.obtenerUsuario();
         this.obtenerUsuarioPortalWeb();  
       }, error: (e) => {
-        console.error(e);
+        // console.error(e);
       }
     })
 
@@ -487,7 +487,7 @@ export class UsuariosComponent implements OnInit {
           next: (x) => {
             this.obtenerUsuario();
           }, error: (e) => {
-            console.error(e);
+            // console.error(e);
           }, complete: () => {
             this.limpiar();
           }
@@ -498,7 +498,7 @@ export class UsuariosComponent implements OnInit {
           next: (x) => {
             this.obtenerUsuarioPortalWeb();
           }, error: (e) => {
-            console.error(e);
+            // console.error(e);
           },complete: () => {
             this.limpiar();
           }
@@ -544,7 +544,7 @@ export class UsuariosComponent implements OnInit {
         this.listaUsuariosPortalWebGhost = this.listaUsuariosPortalWeb;
         this._show_spinner = false;
       }, error: (e) => {
-        console.error(e);
+        // console.error(e);
         this._show_spinner = false;
       }
     })
@@ -560,11 +560,11 @@ export class UsuariosComponent implements OnInit {
                     .subscribe({
       next: (cliente) => {
         this.clienteListaGhost = cliente;
-        //////////console.warn(this.clientelista);
+        //////////// console.warn(this.clientelista);
         this._show_spinner = false;
       }, error: (e) => {
         this._show_spinner = false;
-        console.error(e);
+        // console.error(e);
       }, complete: () => {
         this.clienteListaGhost.filter((element:any)=>{
 
@@ -580,7 +580,7 @@ export class UsuariosComponent implements OnInit {
           }
 
           this.clientelista.unshift(arr);
-          //////////console.warn(this.clientelista);
+          //////////// console.warn(this.clientelista);
 
         })
       }
@@ -604,15 +604,15 @@ export class UsuariosComponent implements OnInit {
   rolLista:any = [];
   getDataMaster(cod:string) {
 
-    //////////console.warn('Codigo maestro: ');
-    //////////console.warn(cod);
+    //////////// console.warn('Codigo maestro: ');
+    //////////// console.warn(cod);
 
     this.sharedservs.getDataMaster(cod).subscribe({
       next: (data) => {
         switch(cod) {
         case 'ROL':
           this.rolLista = data;
-          // ////////console.log(this.rolLista);
+          // ////////// console.log(this.rolLista);
           break;
         }
       }

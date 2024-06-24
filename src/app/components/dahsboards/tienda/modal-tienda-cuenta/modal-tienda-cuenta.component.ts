@@ -33,8 +33,8 @@ export class ModalTiendaCuentaComponent implements OnInit {
     this.nombreCliente = this.data.nombreCliente;
     this.obtenerCuentaBancariaCliente();
 
-    console.warn('MIRA ALEJITO');
-    console.warn(this.data);
+    // console.warn('MIRA ALEJITO');
+    // console.warn(this.data);
 
   }
 
@@ -43,19 +43,19 @@ export class ModalTiendaCuentaComponent implements OnInit {
   obtenerCuentaBancariaCliente() {
     this.cuentaslista = [];
     let id: any = this.data.idCLiente;
-    console.log('ESTA ES LA DATA MODAL CLIENTE')
-    console.log(this.data)
-    console.warn(id);
+    // console.log('ESTA ES LA DATA MODAL CLIENTE')
+    // console.log(this.data)
+    // console.warn(id);
     this.clienteserv.obtenerCuentaCliente(id).subscribe({
       next: ( cuentas:any ) => {
-        console.warn('cuentas desde el modal')
-        console.warn(cuentas)
+        // console.warn('cuentas desde el modal')
+        // console.warn(cuentas)
         this.cuentaslista = cuentas.filter((cuenta:any) => {
           return !this.data.res.some((resItem:any) => resItem.idcuentabancaria === cuenta.id); 
         });
         this.cuentasGhost = cuentas;
       }, error:(e) => {
-         console.error(e); 
+         // console.error(e); 
       },
       complete: () => { }
     })
@@ -76,7 +76,7 @@ export class ModalTiendaCuentaComponent implements OnInit {
       cuenta.selected = this.selectAll;
     });
 
-    // ////////console.log(this.selectAll);
+    // ////////// console.log(this.selectAll);
 
   }
 
@@ -85,10 +85,10 @@ export class ModalTiendaCuentaComponent implements OnInit {
       this.tiendaservs.guardarCuentAsigna(arr).subscribe({
         next:(x) =>
         {
-          ////////console.log('cuenta guardada');
+          ////////// console.log('cuenta guardada');
         },
         error: (e) => {
-          console.error(e);
+          // console.error(e);
         }, 
         complete: () => {
           // this.limpiar();
@@ -108,7 +108,7 @@ export class ModalTiendaCuentaComponent implements OnInit {
       case 2:
         if(!this.selectAll) {
           // alert(1)
-          console.table(this.selectedAccounts)
+          // console.table(this.selectedAccounts)
           this.selectedAccounts.filter( (element:any) => {
             
 
@@ -118,7 +118,7 @@ export class ModalTiendaCuentaComponent implements OnInit {
               fcrea:            new Date()
             }
 
-            console.log(arr);
+            // console.log(arr);
 
             this.guardarCuentasBancarias(arr);
           })
@@ -128,7 +128,7 @@ export class ModalTiendaCuentaComponent implements OnInit {
         } 
         else if (this.selectAll){
           // alert(2)
-          console.log(this.cuentaslista)
+          // console.log(this.cuentaslista)
           this.cuentaslista.filter( (element:any) => {
             
             let arr:any = {
@@ -153,17 +153,17 @@ export class ModalTiendaCuentaComponent implements OnInit {
   accountSelected(cuenta:any) {
     this.selectAll = false;
     this.selectedAccounts = this.cuentaslista.filter((c:any) => c.selected);
-    // ////////console.log('Cuentas seleccionadas:', this.selectedAccounts);
+    // ////////// console.log('Cuentas seleccionadas:', this.selectedAccounts);
   }
 
   guardarCuentasBancarias(arr:any []) {
     this.tiendaservs.guardarCuentAsigna(arr).subscribe({
       next:(x) =>
       { 
-        console.log('cuenta guardada');
+        // console.log('cuenta guardada');
       },
       error: (e) => {
-        console.error(e);
+        // console.error(e);
       }, 
       complete: () => {
         // this.limpiar();

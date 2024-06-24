@@ -14,7 +14,7 @@ export class JwtService {
       const decoded = jsonwebtoken.decode(token);
       return decoded;
     } catch (error) {
-      console.error('Error al decodificar el token JWT:', error);
+      // console.error('Error al decodificar el token JWT:', error);
       return null;
     }
   }

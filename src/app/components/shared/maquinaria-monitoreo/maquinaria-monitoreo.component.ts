@@ -108,23 +108,23 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     this.obtenerEquipos(1,'void');
     this.connectionSendPingEquipo.start().then( ()=> {
     }).catch( e => {
-      console.error('ALGO HA PASADO CON PING');
-      console.error(e);
+      // console.error('ALGO HA PASADO CON PING');
+      // console.error(e);
     })
     this.manualTransactionHub.start().then( ()=> {
     }).catch( e => {
-      console.error('ALGO HA PASADO CON MT');
-      console.error(e);
+      // console.error('ALGO HA PASADO CON MT');
+      // console.error(e);
     })
     this.automaticTransactionHub.start().then( ()=> {
     }).catch( e => {
-      console.error('ALGO HA PASADO CON AT');
-      console.error(e);
+      // console.error('ALGO HA PASADO CON AT');
+      // console.error(e);
     })
     this.recollectTransactionHub.start().then( ()=> {
     }).catch( e => {
-      console.error('ALGO HA PASADO CON RT');
-      console.error(e);
+      // console.error('ALGO HA PASADO CON RT');
+      // console.error(e);
     })
   }
 
@@ -320,7 +320,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   flagVoice = false;
   async readTextAloud(textData: string) {
     try {
-      console.log(textData);
+      // console.log(textData);
       if (this.flagVoice == false){
         this.flagVoice = await EasySpeech.init({ maxTimeout: 5000, interval: 250 })
       }
@@ -330,9 +330,9 @@ export class MaquinariaMonitoreoComponent implements OnInit {
           voice: EasySpeech.voices()[1],
         })
       }
-      console.log(EasySpeech.status().status);
+      // console.log(EasySpeech.status().status);
     } catch (error) {
-      console.log('Hubo un error en el speaker: '+error)
+      // console.log('Hubo un error en el speaker: '+error)
     }
   }
 
@@ -367,7 +367,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
           if ('speechSynthesis' in window) {
             this.readTextAloud('Se ha realizado un set collection, del equipo ' + this.machSerie );
           } else {
-            console.error('La API de Web Speech no está disponible en este navegador.');
+            // console.error('La API de Web Speech no está disponible en este navegador.');
           }
           this.totalBilletesCantidadT   = 0;
           this.totalBilletesMontoT      = 0;
@@ -593,7 +593,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       this.listaEsquipoIndicadores = equipo;
       this.listaEsquipoGhostIndicadores = equipo;
     }, error: (e) => {
-      console.error(e);
+      // console.error(e);
     }, complete: () => {
       this._show_spinner = false;
       this.listaEsquipoIndicadores.filter((element:any) => {
@@ -702,7 +702,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       this.fechaNotif = fecha.getTime();
     }
     this.contadorPing++;
-    console.log(this.contadorPing);
+    // console.log(this.contadorPing);
   }
 
   alertTrans(){

@@ -58,7 +58,7 @@ export class ModalLocalidadClienteComponent implements OnInit {
         }, complete: () => {
           this._show_spinner = false;
         }, error:(e) => {
-          console.error(e);
+          // console.error(e);
           this._show_spinner = false;
         }
       })
@@ -75,7 +75,7 @@ export class ModalLocalidadClienteComponent implements OnInit {
         next: (x) => {
           this._show_spinner = false;
         }, error: (e) => {
-          console.error(e)
+          // console.error(e)
           Toast.fire({
             icon: "error",
             title: "Algo ha sucedido al momento de asignar las localidades"

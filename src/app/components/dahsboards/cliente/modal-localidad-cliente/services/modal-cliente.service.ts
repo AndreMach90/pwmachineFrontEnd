@@ -18,7 +18,7 @@ export class ModalClienteService {
   }
 
   obtenerLocalidadesCliente( codcli: any ) {
-    //console.log(this.env.apiurl() + 'ClienteSignaLocalidad/ObtenerLocalidades/' + codcli)
+    //// console.log(this.env.apiurl() + 'ClienteSignaLocalidad/ObtenerLocalidades/' + codcli)
     return this.http.get( this.env.apiurl() + 'ClienteSignaLocalidad/ObtenerLocalidades/' + codcli );
   }
 

@@ -185,8 +185,8 @@ export class EquipoComponent implements OnInit {
     this.usuarioTemporalHub.start()
       .then( ()=> { })
       .catch( e => {
-        console.error('ALGO HA PASADO CON PING');
-        console.error(e);
+        // console.error('ALGO HA PASADO CON PING');
+        // console.error(e);
       })
     this.primary     = this.env.appTheme.colorPrimary;
     this.secondary   = this.env.appTheme.colorSecondary_C;
@@ -198,8 +198,8 @@ export class EquipoComponent implements OnInit {
     this.obtenerIps();
     this.usuarioTemporalHub.start().then( ()=> {       
     }).catch( e => {
-      console.error('ALGO HA PASADO CON PING');
-      console.error(e);
+      // console.error('ALGO HA PASADO CON PING');
+      // console.error(e);
     })
   }
 
@@ -244,7 +244,7 @@ export class EquipoComponent implements OnInit {
       await this.actualizarDatosPersonales(this.idDatosPersonales, this.modelDatosPersonales);
       this.limpiarMqU();
     } catch (e) {
-      console.error(e);
+      // console.error(e);
       Toast.fire({ icon: 'error', title: 'No hemos podido actualizar el usuario' });
     }
     await this.obtenerUsuariosIpMaquina(data);
@@ -268,7 +268,7 @@ export class EquipoComponent implements OnInit {
     this.userservs.actualizarDatosPersonales(id, model).subscribe({
       next: (x) => {
       }, error: (e) => {
-        console.error(e);
+        // console.error(e);
       }, complete: () => { }
     })
   }
@@ -411,7 +411,7 @@ export class EquipoComponent implements OnInit {
         next: (x) => {
           Toast.fire({ icon: 'success', title: 'Equipo actualizado' });
         }, error: (e) => {
-          console.error(e);
+          // console.error(e);
           Toast.fire({ icon: 'error', title: 'No se ha podido actualizar este equipo' });
         }, complete: () => {
           this.obtenerEquipos(1, 'void');
@@ -490,7 +490,7 @@ export class EquipoComponent implements OnInit {
           next: (x) => {
             Toast.fire({ icon: 'success', title: 'Equipo guardado' });
           }, error: (e) => {
-            console.error(e);
+            // console.error(e);
             this._show_spinner = false;
             Toast.fire({ icon: 'error', title: 'No se ha podido guardar este equipo' });
           }, complete: () => {
@@ -513,7 +513,7 @@ export class EquipoComponent implements OnInit {
         this._show_spinner = false;
       }, error: (e) => {
         this._show_spinner = false;
-        console.error(e);
+        // console.error(e);
       }, complete: () => {
         this.clienteListaGhost.filter((element:any)=>{
           let arr: any = {
@@ -617,7 +617,7 @@ export class EquipoComponent implements OnInit {
               'success'
             )
           }, error: (e) => {
-            console.error(e);
+            // console.error(e);
             this._show_spinner = false;
             Swal.fire(
               'Upps!',
@@ -691,7 +691,7 @@ export class EquipoComponent implements OnInit {
       next: (x) => {
         this.listaMarcas = x;
       }, error: (e) => {
-        console.error(e);
+        // console.error(e);
       }, complete: () => {
         this.show_modelos = true;
         setTimeout(() => {
@@ -742,7 +742,7 @@ export class EquipoComponent implements OnInit {
           next: (x) => {
             Toast.fire({ icon: 'success', title: 'Equipo activado' });
           }, error: (e) => {
-            console.error(e);
+            // console.error(e);
             Toast.fire({ icon: 'error', title: 'No se ha podido activar este equipo' });
           }, complete: () => {
             this._show_spinner = false;

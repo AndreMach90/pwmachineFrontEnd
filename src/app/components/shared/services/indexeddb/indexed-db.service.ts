@@ -26,21 +26,21 @@ export class IndexedDbService {
           if (!result) {
             store.add(dato);
           }
-          //////////console.warn(8)
+          //////////// console.warn(8)
         }
       })
 
       transaction.oncomplete = () => {
-        ////////console.log('Datos guardados en IndexedDB.');
+        ////////// console.log('Datos guardados en IndexedDB.');
       };
 
       transaction.onerror = (event:any) => {
-        console.error('Error al guardar datos en IndexedDB: ' + event.target.error);
+        // console.error('Error al guardar datos en IndexedDB: ' + event.target.error);
       };
     };
 
     request.onerror = (event:any) => {
-      console.error('Error al abrir la base de datos: ' + event.target.error);
+      // console.error('Error al abrir la base de datos: ' + event.target.error);
     };
   }
 

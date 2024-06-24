@@ -50,9 +50,9 @@ export class ModalDetalleMaquinaTranComponent implements OnInit {
             }
  
           })
-          //////////console.warn(this.listaDetalleequipoManual);
+          //////////// console.warn(this.listaDetalleequipoManual);
         }, error: (e) => {
-          console.error(e);
+          // console.error(e);
         }, complete: () => {
           // Inicializar las variables
           this.totalBilletesCantidadM = 0;

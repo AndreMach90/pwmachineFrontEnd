@@ -76,19 +76,19 @@ export class ModalDataEquiposComponent implements OnInit {
       fechaFin : this.data.fechaFin
     }
 
-    console.log(this.modelFilterTranEqipos)
+    // console.log(this.modelFilterTranEqipos)
 
     this.equiposerv.obtenerEquipoConteoTran(xi, this.modelFilterTranEqipos).subscribe(
       {
         next: (equipo) => {
           this.listaEsquipoGhost = equipo;
 
-          console.log('Estos son los equipos que traigo por la API');
-          console.log(this.listaEsquipoGhost);
+          // console.log('Estos son los equipos que traigo por la API');
+          // console.log(this.listaEsquipoGhost);
 
         },
         error: (e) => {
-          console.error(e);
+          // console.error(e);
         },
         complete: ()  => {
           /** Si hay codigo cliente */
@@ -104,7 +104,7 @@ export class ModalDataEquiposComponent implements OnInit {
           }  
           /** Si no hay codigo cliente */
           else if (this.data.codigocliente == null) {
-            console.log('No hay codigo cliente!!!!');
+            // console.log('No hay codigo cliente!!!!');
             if (this.data.equiposExistentes == null || this.data.equiposExistentes.length == 0 ) {
               this.listaEsquipo = this.listaEsquipoGhost;
             } else {
@@ -117,8 +117,8 @@ export class ModalDataEquiposComponent implements OnInit {
           this.localidadesEncontradas = [];
           // Recorremos la lista de equipos para crear localidadesEncontradas
           this.listaEsquipo.forEach((element: any) => {
-              console.log('element.localidad')
-              console.log(element.localidad)
+              // console.log('element.localidad')
+              // console.log(element.localidad)
               
               if (element.conteo_A == null || element.conteo_A == undefined) {
                 element.conteo_A = 0;

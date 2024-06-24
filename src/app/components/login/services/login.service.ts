@@ -18,7 +18,7 @@ export class LoginService {
 
   validate() {
     let token: any = sessionStorage.getItem('token');
-    //////////console.warn(token)
+    //////////// console.warn(token)
     if( token == undefined || token == null || token == '' ) {
       this.router.navigate(['login']);
     } else {
