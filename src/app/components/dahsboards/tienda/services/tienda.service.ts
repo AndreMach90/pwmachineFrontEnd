@@ -43,7 +43,7 @@ export class TiendaService {
   }
 
   obtenerCuentasAsignadas(idtienda:any) {
-    // console.log(this.env.apiurl() + 'TiendaCuenta/ObtenerTiendaCuentas/' + idtienda)
+    console.log(this.env.apiurl() + 'TiendaCuenta/ObtenerTiendaCuentas/' + idtienda)
     return this.http.get( this.env.apiurl() + 'TiendaCuenta/ObtenerTiendaCuentas/' + idtienda );
   }
 

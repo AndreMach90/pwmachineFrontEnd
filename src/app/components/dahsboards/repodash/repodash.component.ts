@@ -156,7 +156,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   inicializadorHubs() {
-    //// console.warn( 'PINGHUB CONECTADO!' )
+    //console.warn( 'PINGHUB CONECTADO!' )
     this.connectionSendPingEquipo.start()
     .then( ()=> { })
     .catch( e => {
@@ -165,7 +165,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
         text: "Este error suele ocurrir debido a una interferencia entre el canal hub que transmite datos desde el servidor, específicamente Estado ping del equipo.",
         icon: "error"
       });
-      // console.error('ALGO HA PASADO CON PING:',e);
+      console.error('ALGO HA PASADO CON PING:',e);
     })
     this.manualTransactionHub.start()
     .then( ()=> { })
@@ -175,7 +175,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
         text:  "Este error suele ocurrir debido a una interferencia entre el canal hub que transmite datos desde el servidor, especifícamente Transacciones manuales.",
         icon:  "error"
       });
-      // console.error('ALGO HA PASADO CON MT:',e);
+      console.error('ALGO HA PASADO CON MT:',e);
     })
     this.automaticTransactionHub.start()
     .then( ()=> { })
@@ -185,7 +185,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
         text:  "Este error suele ocurrir debido a una interferencia entre el canal hub que transmite datos desde el servidor, especifícamente Transacciones automáticas.",
         icon:  "error"
       });
-      // console.error('ALGO HA PASADO CON AT:',e);
+      console.error('ALGO HA PASADO CON AT:',e);
     })
     this.recollectTransactionHub.start()
     .then( () => { })
@@ -195,17 +195,17 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
         text:  "Este error suele ocurrir debido a una interferencia entre el canal hub que transmite datos desde el servidor, especifícamente Transacciones de indoles de recolección.",
         icon:  "error"
       });
-      // console.error('ALGO HA PASADO CON RC:',e);
+      console.error('ALGO HA PASADO CON RC:',e);
     })
   }
 
   public countmin: number = 5000;
   private PingHub(data:any) {
 
-    // console.log('--*-*----*-*-*-*-*---**');
-    // console.log('PING HUB OBTENIENDO');
-    // console.log(data);
-    // console.log('--*-*----*-*-*-*-*---**');
+    console.log('--*-*----*-*-*-*-*---**');
+    console.log('PING HUB OBTENIENDO');
+    console.log(data);
+    console.log('--*-*----*-*-*-*-*---**');
 
     data.filter( (element:any) => {
       this.listaEsquipo.filter( (equi:any) => {
@@ -400,7 +400,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
       utterance.lang = 'es-LA';
       synth.speak(utterance);
     } else {
-      // console.error('No se encontró una voz en español disponible.');
+      console.error('No se encontró una voz en español disponible.');
     }
 
   }  
@@ -440,7 +440,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
           if ('speechSynthesis' in window) {
             this.readTextAloud('Se ha realizado un set collection, del equipo ' + this.machSerie );
           } else {
-            // console.error('La API de Web Speech no está disponible en este navegador.');
+            console.error('La API de Web Speech no está disponible en este navegador.');
           }
         }
       }
@@ -465,7 +465,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
         }
         this._show_spinner = false;
       }, error: (e) => {
-        // console.error(e);
+        console.error(e);
         this._show_spinner = false;
       }, complete: () => {
         // Inicializar las variables
@@ -649,10 +649,10 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   listaEsquipo:any = [];
   listaEsquipoGhost:any = [];
   obtenerEquipos( tp:number, ctienda:string ) {
-    // console.log('***********************');
-    // console.log(tp);
-    // console.log(ctienda);
-    // console.log('***********************');
+    console.log('***********************');
+    console.log(tp);
+    console.log(ctienda);
+    console.log('***********************');
     this.equiposerv.obtenerEquipo(tp, ctienda).subscribe(
       {
         next: (equipo) => {
@@ -690,7 +690,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
       // item.nombremarca .toLowerCase().includes(this.filterequip.toLowerCase()) ||
       // item.nombremodelo.toLowerCase().includes(this.filterequip.toLowerCase()) ||
       // item.tipoMaquinaria.toLowerCase().includes(this.filterequip.toLowerCase())
-      // ////// console.log(item)
+      // ////console.log(item)
     )
   }
 
@@ -709,7 +709,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
         text: "Este error suele ocurrir debido a que el servidor no esta respondiendo adecuadamente, entonces no puedrás visualizar los datos indicadores a las transacciones del equipo " + nserie + " que ha decidido monitorear.",
         icon: "error"
       });
-      // console.error(e);
+      console.error(e);
       this._show_spinner = false;
     }, complete: () => {
       this.listaEsquipoIndicadores.filter((element:any) => {
@@ -771,8 +771,8 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   obtenerDetalleEquipos( data:any ) {
-    // console.log('<<<<<<<<data>>>>>>>>')
-    // console.log(data)
+    console.log('<<<<<<<<data>>>>>>>>')
+    console.log(data)
     this._show_spinner = true;
     this.nserie = data.serieEquipo;
     localStorage.setItem('equipoMonitoreando', this.nserie);
@@ -784,8 +784,8 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
       {
       next:(x) => {
         this.primaryLista = x;
-        //// console.warn('ESTO PASA EN MONITOREAR')
-        //// console.warn(this.primaryLista)
+        //console.warn('ESTO PASA EN MONITOREAR')
+        //console.warn(this.primaryLista)
         if ( this.nserie == this.primaryLista[0].machine_Sn ) 
         { 
           this.primaryLista.filter((element:any) => {
@@ -799,7 +799,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
         }
         this._show_spinner = false;
       }, error: (e) => {
-         // console.error(e);
+         console.error(e);
          this._show_spinner = false;
       }, complete: () => {
         // Inicializar las variables
@@ -856,13 +856,13 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
                                 Number( this.totalBilletesMontoM.toFixed(2) ) +
                                 Number( this.totalMonedasMontoT.toFixed(2) )  + 
                                 Number( this.totalBilletesMontoT.toFixed(2) );
-    // console.log(10)
+    console.log(10)
     setTimeout(() => {    
-      // console.log(11)
+      console.log(11)
       let xvalue: any = localStorage.getItem('valor_validador');     
-      // console.log('Estos son los valores que deben coincidir')
-      // console.log( 'Variable local enviada desde el server: ' + xvalue)
-      // console.log('Sumatoria de valores: ' + sumatoriaValidate)
+      console.log('Estos son los valores que deben coincidir')
+      console.log( 'Variable local enviada desde el server: ' + xvalue)
+      console.log('Sumatoria de valores: ' + sumatoriaValidate)
       if( Number(xvalue) !== Number(sumatoriaValidate.toFixed(2)) ) {
         this.colorValidateCuadre = 'red';
       }

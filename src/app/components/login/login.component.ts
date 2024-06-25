@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
       
       let xtoken = sessionStorage.getItem('token');
       if( xtoken == null || xtoken == undefined )  { 
-        ////// console.warn('No hay credenciales') 
+        ////console.warn('No hay credenciales') 
       }
       else if (xtoken != null || xtoken != undefined) {
         this.router.navigate(['dashboard'])
@@ -90,7 +90,7 @@ export class LoginComponent implements OnInit {
             title: 'Te has logeado con éxito'
           })
           var e = error.error;
-          //////////// console.warn(e.text);
+          //////////console.warn(e.text);
           const tokenEn:any = this.ncrypt.encryptWithAsciiSeed(e.text, 5, 10);
           sessionStorage.setItem('token', tokenEn);
           let xuser: any = this.loginForm.controls['email'].value;

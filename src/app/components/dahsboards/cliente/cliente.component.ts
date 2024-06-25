@@ -131,12 +131,12 @@ export class ClienteComponent implements OnInit {
     this.loc.obtenerLocalidadesCliente( codcli ).subscribe({
       next: (x) => {
         this.localidadesGuardadasCliente = x;
-        // console.warn(this.localidadesGuardadasCliente)
+        console.warn(this.localidadesGuardadasCliente)
         this._show_spinner = false;
       }, complete: () => {
         this._show_spinner = false;
       }, error: (e) => {
-        // console.error(e);
+        console.error(e);
         this._show_spinner = false;
       }
     })
@@ -154,11 +154,11 @@ export class ClienteComponent implements OnInit {
         this._show_spinner = false;
         this.localidadesGuardadasCliente.splice(index, 1);
         this.clientelista.filter( (x:any) => {
-          // console.log( x.id )
-          // console.log( idcliente )
+          console.log( x.id )
+          console.log( idcliente )
           if ( x.id == idcliente ) {
-            // console.warn( 'cliente encontrado: '  )
-            // console.warn( x )
+            console.warn( 'cliente encontrado: '  )
+            console.warn( x )
             x.cantidadLocalidades -1
           }
         })
@@ -193,15 +193,15 @@ export class ClienteComponent implements OnInit {
       next: (cliente) => {
         this.clienteListaGhost = cliente;
         // this.clientelista = cliente;
-        // // console.log(this.clienteListaGhost)
+        // console.log(this.clienteListaGhost)
         this._show_spinner = false;
       }, error: (e) => {
         this._show_spinner = false;
-        // console.error(e);
+        console.error(e);
       }, complete: () => {
         this.clienteListaGhost.filter((element:any)=>{
 
-          // console.warn(element)
+          console.warn(element)
 
           let arr: any = {
             "id": element.id,
@@ -217,7 +217,7 @@ export class ClienteComponent implements OnInit {
           }
 
           this.clientelista.unshift(arr);
-          // console.warn(this.clientelista);
+          console.warn(this.clientelista);
         })
       }
     })
@@ -276,7 +276,7 @@ export class ClienteComponent implements OnInit {
           next: (x) => {
             Toast.fire({ icon: 'success', title: 'Cliente gaurdado con éxito' });
           }, error: (e) => {
-            // console.error(e);
+            console.error(e);
             Toast.fire({ icon: 'error', title: 'No se ha podido guardar' });
             this._show_spinner = false;
           }, complete: () => {
@@ -327,30 +327,30 @@ export class ClienteComponent implements OnInit {
   }
 
   obtenerCuentaTransac(data:any) {
-    //// console.log(data)
+    //console.log(data)
     this.clienteserv.obtenerCuentaTransacCant(data.id).subscribe({
       next: (x) => {
-        //// console.warn(x);
+        //console.warn(x);
       }
     })
   }
 
   obtenerCuentaBancariaCliente(id:number) {
-    // console.log('id cliente')
-    // console.log(id)
+    console.log('id cliente')
+    console.log(id)
 
-    // console.log(this.clientelista)
+    console.log(this.clientelista)
 
     this._show_spinner = true;
     this.cuentaslista = [];
     this.clienteserv.obtenerCuentaCliente(id).subscribe({
       next: ( cuentas ) => {
         this.cuentaslista = cuentas;
-        // console.log('Obteniendo');
-        // console.log(this.cuentaslista);
+        console.log('Obteniendo');
+        console.log(this.cuentaslista);
         this._show_spinner = false;
       }, error:(e) => {
-        // console.error(e);
+        console.error(e);
         this._show_spinner = false;
       }
     })
@@ -412,7 +412,7 @@ export class ClienteComponent implements OnInit {
               'success'
             )
           }, error: (e) => {
-            // console.error(e);
+            console.error(e);
             this._show_spinner = false;
             Swal.fire(
               'Upps!',
@@ -489,7 +489,7 @@ export class ClienteComponent implements OnInit {
 
 
     dialogRef.afterClosed().subscribe( result => {      
-      ////////// console.warn(result);
+      ////////console.warn(result);
       this.obtenerCliente();
     });
 
@@ -497,7 +497,7 @@ export class ClienteComponent implements OnInit {
 
   openDialogAsignarLocalidad(data:any): void {
 
-    // console.log(data);
+    console.log(data);
 
     const dialogRef = this.dialog.open( ModalLocalidadClienteComponent, {
       height: 'auto',
@@ -506,7 +506,7 @@ export class ClienteComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe( result => {
-      ////////// console.warn(result);
+      ////////console.warn(result);
       this.obtenerCliente();
     });
 
@@ -523,7 +523,7 @@ export class ClienteComponent implements OnInit {
 
 
     dialogRef.afterClosed().subscribe( result => {      
-      ////////// console.warn(result);
+      ////////console.warn(result);
       this.obtenerCliente();
     });
 

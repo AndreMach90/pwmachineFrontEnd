@@ -161,7 +161,7 @@ export class ModeldataComponent implements OnInit {
   onSubmitDate() {}
 
   submitTransacFilter() {
-    ////// console.log(this.transac.value);
+    ////console.log(this.transac.value);
   }
 
   validateSesion() {
@@ -227,8 +227,25 @@ export class ModeldataComponent implements OnInit {
     
     let di: any = this.exportdateform.controls['dateini'].value;
     let df: any = this.exportdateform.controls['datefin'].value;
-    const inicio = new Date(di);
-    const fin    = new Date(df);
+
+    let hi: any = this.exportdateform.controls['horaini'].value;
+    let hf: any = this.exportdateform.controls['horafin'].value;
+
+    let inicio  = new Date(di);
+    let fin     = new Date(df);
+
+    // Dividir las horas en horas y minutos
+    const [inicioHoras, inicioMinutos] = hi.split(':').map(Number);
+    const [finHoras, finMinutos] = hf.split(':').map(Number);
+
+    // Establecer la hora y minutos en las fechas de inicio y fin
+    inicio.setHours(inicioHoras, inicioMinutos, 0, 0);
+    fin.setHours(finHoras, finMinutos, 0, 0);
+
+    // Añadir un día a la fecha de inicio y fin
+    inicio.setDate(inicio.getDate() + 1);
+    fin.setDate(fin.getDate() + 1);
+
     let maquinas: any =[];
     this.dataExportarExcel.filter( (x:any) => {
       maquinas.push(x.machine_Sn);
@@ -240,15 +257,15 @@ export class ModeldataComponent implements OnInit {
       fechaFin: fin 
     }
 
-    // console.log(this.modelConsolidadoSend);
+    console.log(this.modelConsolidadoSend);
 
     this.consolidado.obtenerConsolidado( this.modelConsolidadoSend ).subscribe({
       next: (x) => {
         this.listaConsolidados = x;
-        // console.log('Despues del settimeout 1000')
-        // console.log(this.listaConsolidados)
+        console.log('Despues del settimeout 1000')
+        console.log(this.listaConsolidados)
       }, error: (e) => {
-        // console.error(e);
+        console.error(e);
       }, complete: () => {
         this.filtrarTransaccionesDentroDeRango()
       }
@@ -295,8 +312,8 @@ export class ModeldataComponent implements OnInit {
     this.dataExportarExcel.forEach((machine: any) => {
       const transaccionesEnRango = machine.transacciones.filter((transaccion: any) => {
         const fechaTransaccion = new Date(transaccion.fechaTransaccion);
-        // console.log( '<<<<<<<<<<<<<<<<<<<<<<Dentro de rango>>>>>>>>>>>>>>>>>>>>>>' );
-        // console.log( fechaTransaccion + ' >= ' + inicio + ' && ' + fechaTransaccion + ' <= ' + fin );
+        console.log( '<<<<<<<<<<<<<<<<<<<<<<Dentro de rango>>>>>>>>>>>>>>>>>>>>>>' );
+        console.log( fechaTransaccion + ' >= ' + inicio + ' && ' + fechaTransaccion + ' <= ' + fin );
         return fechaTransaccion >= inicio && fechaTransaccion <= fin;
       });
       
@@ -431,7 +448,7 @@ export class ModeldataComponent implements OnInit {
       const buf = await workbook.xlsx.writeBuffer(); // Escribir el archivo Excel
       this.downloadExcelFile(buf,`CFI_${fecha.getDate()}${fecha.getMonth()+1}${fecha.getFullYear()}.xlsx`);
     } catch (error) {
-      //// console.log("No se puede crear el archivo Excel: "+error);
+      //console.log("No se puede crear el archivo Excel: "+error);
     }
   }
 
@@ -775,10 +792,10 @@ export class ModeldataComponent implements OnInit {
     const localidadesMap: { [key: string]: any[] } = {};
     // Iterar sobre los datos para agrupar por localidad
 
-    // console.log('8888888888888888888888888888888888888888888888888');
-    // console.log('Estas son las resagadas!');
-    // console.log(this.resagadasTran);
-    // console.log('8888888888888888888888888888888888888888888888888');
+    console.log('8888888888888888888888888888888888888888888888888');
+    console.log('Estas son las resagadas!');
+    console.log(this.resagadasTran);
+    console.log('8888888888888888888888888888888888888888888888888');
 
     this.resagadasTran.forEach((item: any) => {
       let localidad = item.localidad;
@@ -923,9 +940,9 @@ export class ModeldataComponent implements OnInit {
                      takeWhile(() => this.countTransaction < totalTransacciones),
                      finalize(() => {
                          this.countTransaction = totalTransacciones;
-                        //  // console.log( '/*/*/*/*/*/*/*/*/*/*/*/*/*/*' );
-                        //  // console.log( this.tran );
-                        //  // console.log( '/*/*/*/*/*/*/*/*/*/*/*/*/*/*' );
+                        //  console.log( '/*/*/*/*/*/*/*/*/*/*/*/*/*/*' );
+                        //  console.log( this.tran );
+                        //  console.log( '/*/*/*/*/*/*/*/*/*/*/*/*/*/*' );
                          this.guardarTransaccionesAc(this.tran);
                      })
                  )
@@ -948,16 +965,16 @@ export class ModeldataComponent implements OnInit {
     this._show_spinner = true;
     this.conttransaccion = true;
 
-    // console.log('=============================');
-    // console.log(model);
-    // console.log('=============================');
+    console.log('=============================');
+    console.log(model);
+    console.log('=============================');
 
     this.transacciones.GuardarTransaccionesAcreditadas(model).subscribe({
         next: (x) => {
             Toast.fire({ icon: 'success', title: 'Transacciones generadas, en espera de acreditación ', position: 'center' });
         },
         error: (e) => {
-            // console.error(e);
+            console.error(e);
             this._show_spinner = false;
             Toast.fire({ 
                 icon: 'error',
@@ -1162,11 +1179,11 @@ export class ModeldataComponent implements OnInit {
     this.clienteserv.obtenerCliente().subscribe({
       next: (cliente) => {
         this.clienteListaGhost = cliente;
-        // // console.log(this.clienteListaGhost)
+        // console.log(this.clienteListaGhost)
         this._show_spinner = false;
       }, error: (e) => {
         this._show_spinner = false;
-        // console.error(e);
+        console.error(e);
       }, complete: () => {
         this.clienteListaGhost.filter((element:any) => {
 
@@ -1191,7 +1208,7 @@ export class ModeldataComponent implements OnInit {
   obtenerIDCLiente() {
 
     if ( this.exportdateform.controls['codigoClienteidFk'].value == undefined || this.exportdateform.controls['codigoClienteidFk'].value == null ) {
-      ////// console.warn('No hay un id');
+      ////console.warn('No hay un id');
       this.idcliente = this.clientelista[0].id;
     }
     else {
@@ -1353,27 +1370,27 @@ export class ModeldataComponent implements OnInit {
   }
 
   obtenerTransacTabla() {
-    //// console.log(1)
+    //console.log(1)
     let x = 0;
-    //// console.log(2)
+    //console.log(2)
     if (this.exportdateform.controls['acreditada'].value) { 
-      //// console.log(3)
+      //console.log(3)
       x = 2;
     }
     else {
-      //// console.log(4)
+      //console.log(4)
       x = 1;
     }    
     if (this.dataExportarExcel.length > 0) {
-      //// console.log(5)
+      //console.log(5)
       this._show_spinner = true;
       let dini = this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value;
       let dfin = this.exportdateform.controls['datefin'].value + ' ' + this.exportdateform.controls['horafin'].value;
-      //// console.log(6)
+      //console.log(6)
       Promise.all(this.dataExportarExcel.map((element: any) => {
         return new Promise<void>((resolve, reject) => {
-          //// console.log('Entramos')
-          //// console.log(7)
+          //console.log('Entramos')
+          //console.log(7)
           let modelRange:any = {
             "tipo":        x,
             "Machine_Sn":  element.machine_Sn,
@@ -1381,13 +1398,13 @@ export class ModeldataComponent implements OnInit {
             "FechaFin":    dfin
           };          
 
-          // console.log(modelRange)
+          console.log(modelRange)
 
           this.transacciones.filtroTransaccionesRango(modelRange).subscribe({            
             next: (z) => {
-              //// console.warn('/*/*/*//*/*/*/*/*/*/*/*/*');
-              //// console.warn(z);
-              //// console.warn('/*/*/*//*/*/*/*/*/*/*/*/*');
+              //console.warn('/*/*/*//*/*/*/*/*/*/*/*/*');
+              //console.warn(z);
+              //console.warn('/*/*/*//*/*/*/*/*/*/*/*/*');
               element.transacciones = z;
               element.longitud = element.transacciones.length;
               this.obterSaldoTransac(element.nserie);
@@ -1402,7 +1419,7 @@ export class ModeldataComponent implements OnInit {
         // Llamamos a detectaTransaccionesResagadas con las fechas obtenidas fuera del ciclo e
         this.detectaTransaccionesResagadas(dini, dfin, 1);
       }).catch((error) => {
-        // console.error(error);
+        console.error(error);
       }).finally(() => {
         this._show_spinner = false;
         if( this.cantidadResagadas > 0 ) {
@@ -1470,7 +1487,7 @@ export class ModeldataComponent implements OnInit {
           }
           this.sumatoriaTotalTransacciones();  
         }).catch((error) => {
-          // console.error('Ocurrió un error:', error);
+          console.error('Ocurrió un error:', error);
         });  
         break;
     }
@@ -1482,7 +1499,7 @@ export class ModeldataComponent implements OnInit {
     this.transacciones.ObtenerEquiposSaldo(machineSn).subscribe({
       next: (x) => {
         this.modelDataSaldo = x;
-      }, error: (e) => // console.error(e),
+      }, error: (e) => console.error(e),
       complete: () => {
         this.dataExportarExcel.filter( ( j:any ) => {
           this.modelDataSaldo.filter( (saldo: any) => {
@@ -1499,10 +1516,10 @@ export class ModeldataComponent implements OnInit {
   sumatoriaTotalTransacciones() {
     this.cantidadTransacciones  = 0;
     this.sumatoriaTransacciones = 0;
-    // ////// console.log(this.transac.controls['recolecciones'].value)
+    // ////console.log(this.transac.controls['recolecciones'].value)
     switch(this.transac.controls['recolecciones'].value) {
       case false:
-          //// console.table(false);
+          //console.table(false);
           this.dataExportarExcel.filter((element: any) => {
             if( element.transacciones != null || element.transacciones != undefined ) {
               element.transacciones = element.transacciones.filter( (x:any) => x.tipoTransaccion !== 'Recolección'  );
@@ -1517,17 +1534,17 @@ export class ModeldataComponent implements OnInit {
           this.transac.controls['recolecciones'].disable()
           break;
         case true:
-          //// console.table(true);
+          //console.table(true);
           this.dataExportarExcel.filter((element: any) => {
           element.transacciones.filter( (x:any) => {              
-              ////// console.log(element.transacciones.length)
+              ////console.log(element.transacciones.length)
               if( x.total == null || x.total == undefined ) x.total = 0;
               this.cantidadTransacciones += x.total;
           });
-          ////// console.log(element);
+          ////console.log(element);
           this.sumatoriaTransacciones += element.longitud;
           });
-          ////// console.log(this.dataExportarExcel);
+          ////console.log(this.dataExportarExcel);
           this.transac.controls['recolecciones'].disable()
           break;         
 
@@ -1549,7 +1566,7 @@ export class ModeldataComponent implements OnInit {
 
     this.dataExportarExcel.filter( (element:any) => {  
       element.transacciones.filter( (elementTra:any) => {
-        ////// console.warn(elementTra);
+        ////console.warn(elementTra);
         switch( this.colorguia ) {
           case true:
             if( elementTra.tipoTransaccion == "Automático" ) {
@@ -1585,7 +1602,7 @@ export class ModeldataComponent implements OnInit {
           })
           this._show_spinner = false;
         }, error: (e) => {
-          // console.error(e);
+          console.error(e);
           this._show_spinner = false;
         }
       })
@@ -1636,9 +1653,9 @@ export class ModeldataComponent implements OnInit {
       return element;
     });
     } else {
-      // console.error("Ingrese ambas fechas para filtrar.");
+      console.error("Ingrese ambas fechas para filtrar.");
     }
-    ////// console.warn(this.dataExportarExcel);
+    ////console.warn(this.dataExportarExcel);
   }
 
 
@@ -1666,7 +1683,7 @@ export class ModeldataComponent implements OnInit {
   
       this._show_spinner = false;
     } else {
-      // console.error("Ingrese fechas y horas para filtrar.");
+      console.error("Ingrese fechas y horas para filtrar.");
       this._show_spinner = false;
     }
   }
@@ -1693,7 +1710,7 @@ export class ModeldataComponent implements OnInit {
   filtrarPorHoras() {
     const horaInicial:any = this.exportdateform.controls['horaini'].value;
     const horaFinal:any = this.exportdateform.controls['horafin'].value;
-    ////// console.warn(this.exportdateform.controls['ciclo'].value)
+    ////console.warn(this.exportdateform.controls['ciclo'].value)
     switch(this.exportdateform.controls['ciclo'].value) {
       case false:
         this.dataExportarExcel = this.filtrarPorRangoDeHoras(this.dataExportarExcel, horaInicial, horaFinal);

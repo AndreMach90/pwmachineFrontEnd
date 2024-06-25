@@ -36,7 +36,7 @@ export class EquipoService {
   }
 
   obtenerEquipoConteoTran( option:any, model:any [] ) {
-    // console.log(this.env.apiurl() + 'EquiposNoTransaccion/Conteo/'+option, model);
+    console.log(this.env.apiurl() + 'EquiposNoTransaccion/Conteo/'+option, model);
     return this.http.post(this.env.apiurl() + 'EquiposNoTransaccion/Conteo/'+option, model);
   }
 

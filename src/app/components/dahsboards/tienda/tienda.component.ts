@@ -196,7 +196,7 @@ export class TiendaComponent implements OnInit {
             Swal.fire('Deleted!', 'Tienda eliminado', 'success');
           },
           error: (e) => {
-            // console.error(e);
+            console.error(e);
             this._show_spinner = false;
             Swal.fire('Upps!', 'No hemos podido eliminar esta Tienda', 'error');
           },
@@ -346,7 +346,7 @@ export class TiendaComponent implements OnInit {
         idCentroProceso:    null,
         Active:             'A',
       };
-      // console.log(this.modelTienda);
+      console.log(this.modelTienda);
       setTimeout(() => {
         this.tiendaservs.guardarTiendas(this.modelTienda).subscribe({
           next: (x) => {
@@ -394,7 +394,7 @@ export class TiendaComponent implements OnInit {
                   this.tiendaservs.guardarCuentAsigna(arr).subscribe({
                     next: (x) => {},
                     error: (e) => {
-                      // console.error(e);
+                      console.error(e);
                     },
                     complete: () => {
                       tienda.cantidadCuentasAsign++;
@@ -407,7 +407,7 @@ export class TiendaComponent implements OnInit {
         }
       },
       error: (e) => {
-        // console.error(e);
+        console.error(e);
       },
     });
   }
@@ -459,7 +459,7 @@ export class TiendaComponent implements OnInit {
       },
       error: (e) => {
         this._show_spinner = false;
-        // console.error(e);
+        console.error(e);
       },
       complete: () => {
         this.clienteListaGhost.filter((element: any) => {
@@ -509,7 +509,7 @@ export class TiendaComponent implements OnInit {
         this._show_spinner = false;
       },
       error: (e) => {
-        // console.error(e);
+        console.error(e);
         this._show_spinner = false;
       },
     });
@@ -543,7 +543,7 @@ export class TiendaComponent implements OnInit {
         this._show_spinner = false;
       },
       error: (e) => {
-        // console.error(e);
+        console.error(e);
         this._show_spinner = false;
       },
     });
@@ -556,8 +556,8 @@ export class TiendaComponent implements OnInit {
     const xuser: any = sessionStorage.getItem('usuario');
     this.clienteListaGhost.filter((element: any) => {
       if (data.codigoCliente == element.codigoCliente) {
-        // console.log('data entrada');
-        // console.log(element);
+        console.log('data entrada');
+        console.log(element);
         nombreCliente = element.nombreCliente;
         idCLiente = element.codigoCliente;
       }
@@ -596,15 +596,15 @@ export class TiendaComponent implements OnInit {
   }
 
   obtenerCuentasTienda(id: any) {
-    // console.log(id);
+    console.log(id);
     this.listaCuentaTiendasBanc = [];
     this.tiendaservs.obtenerCuentasAsignadas(id).subscribe({
       next: (cuentaTiendaBank) => {
         this.listaCuentaTiendasBanc = cuentaTiendaBank;
-        // console.warn(this.listaCuentaTiendasBanc);
+        console.warn(this.listaCuentaTiendasBanc);
       },
       error: (e) => {
-        // console.error(e);
+        console.error(e);
       },
       complete: () => {
         if (this.editcatch) {
@@ -635,7 +635,7 @@ export class TiendaComponent implements OnInit {
             Swal.fire('Deleted!', 'Cuenta asignada, eliminada', 'success');
           },
           error: (e) => {
-            // console.error(e);
+            console.error(e);
             this._show_spinner = false;
             Swal.fire('Upps!', 'No hemos podido eliminar esta cuenta', 'error');
           },

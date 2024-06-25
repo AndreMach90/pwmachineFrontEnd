@@ -94,7 +94,7 @@ export class ModalTransaccionesComponent implements OnInit {
         this.listaTransacciones = tran;
         this.listaTransaccionesGhost = tran;
       }, error: (e) => {
-        // console.error(e);
+        console.error(e);
       }, complete: () => {
         this.sumatoriaTotal();
       }

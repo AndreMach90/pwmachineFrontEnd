@@ -76,7 +76,7 @@ export class UsuariosTemporalesMaquinaComponent implements OnInit {
         next: (x) => {
           this.listaUsuariosTemporales = x;
           this.listaUsuariosTemporalesGhost = x;
-        }, error: (e) => { // console.error(e); }
+        }, error: (e) => { console.error(e); }
       }
     )
   }
@@ -128,9 +128,9 @@ export class UsuariosTemporalesMaquinaComponent implements OnInit {
       cuentasIdFk:   observacion,
       observacion:   actividad
     }
-    // console.log('==================================')
-    // console.log(this.modelUsers)
-    // console.log('==================================')
+    console.log('==================================')
+    console.log(this.modelUsers)
+    console.log('==================================')
     this._create_show   =  false;
     this._show_spinner = true;
     setTimeout(() => {
@@ -138,7 +138,7 @@ export class UsuariosTemporalesMaquinaComponent implements OnInit {
         next: (x) => {
           Toast.fire({ icon: 'success', title: 'Usuario temporal guardado con éxito' });
         }, error: (e) => {
-          // console.error(e);
+          console.error(e);
           this._show_spinner = false;
           Toast.fire({ icon: 'error', title: 'No hemos podido guardar el usuario temporal' });
         },complete: () => {
@@ -158,7 +158,7 @@ export class UsuariosTemporalesMaquinaComponent implements OnInit {
   eliminarUsuarioTemporal(id:number) {
     this.eqipserv.eliminarUsuarioTemporal(id).subscribe({
       next: (x) => { }, 
-      error: (e) => { // console.error(e); },
+      error: (e) => { console.error(e); },
       complete: () => {
         this.obtenerUsuariosTemporales();
       }

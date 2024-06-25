@@ -62,7 +62,7 @@ export class MonitoreoEquiposComponent implements OnInit {
                 //   .withUrl(this.urlHub+'PingHubEquipos')
                 //   .build();
                 // this.connectionSendPingEquipo.on("SendPingEquipo", message => {
-                //   // ////////////// console.warn(message)  
+                //   // ////////////console.warn(message)  
                 //   // this.PingHub(message)
                 // });
 
@@ -71,12 +71,12 @@ export class MonitoreoEquiposComponent implements OnInit {
 
   ngOnInit(): void {
     this.obtenerTiendas();
-    ////////////// console.warn(this.urlHub)
+    ////////////console.warn(this.urlHub)
   //   this.connectionSendPingEquipo.start().then( ()=> {
-  //     ////////////// console.warn('Conexion fue establecida con el canal de ping del equipo');
+  //     ////////////console.warn('Conexion fue establecida con el canal de ping del equipo');
   //   }).catch( e => {
-  //     //// console.error('ALGO HA PASADO');
-  //     //// console.error(e);
+  //     //console.error('ALGO HA PASADO');
+  //     //console.error(e);
   //   })
   // }
   }
@@ -86,8 +86,8 @@ export class MonitoreoEquiposComponent implements OnInit {
       next: (tienda) => {
         this.tiendaListaGhost = tienda;
         this.tiendalista = tienda;
-        // ////////////// console.warn('TIENDA');
-        ////////////// console.warn(this.tiendalista);
+        // ////////////console.warn('TIENDA');
+        ////////////console.warn(this.tiendalista);
       }
     })
   }
@@ -117,15 +117,15 @@ seleccionarTienda(codigoTienda: string) {
     } else if ( this.porcentaje > 30 && this.porcentaje <= 49 ) {
       // //alertthis.porcentaje)
       this.colorBarProgressBilletes = 'progress-bar bg-success text-light';
-      ////////////// console.warn(this.colorBarProgressBilletes)
+      ////////////console.warn(this.colorBarProgressBilletes)
     } else if ( this.porcentaje > 49 && this.porcentaje <= 90 ) {
       // //alertthis.porcentaje)
       this.colorBarProgressBilletes = 'progress-bar bg-warning text-dark';
-      ////////////// console.warn(this.colorBarProgressBilletes)
+      ////////////console.warn(this.colorBarProgressBilletes)
     } else if ( this.porcentaje > 90 ) {
       // //alertthis.porcentaje)
       this.colorBarProgressBilletes = 'progress-bar bg-danger text-light';
-      ////////////// console.warn(this.colorBarProgressBilletes);
+      ////////////console.warn(this.colorBarProgressBilletes);
       
       if( this.countPorcentajealert == 1) {
         this.countPorcentajealert = this.countPorcentajealert - 1;
@@ -155,19 +155,19 @@ seleccionarTienda(codigoTienda: string) {
     if ( this.porcentajeAs <= 30 ) {
       // //alertthis.porcentajeAs)
       this.colorBarProgressBilletesAs = 'progress-bar bg-success text-light';
-      ////////////// console.warn(this.colorBarProgressBilletesAs)
+      ////////////console.warn(this.colorBarProgressBilletesAs)
     } else if ( this.porcentajeAs > 30 && this.porcentajeAs <= 49 ) {
       // //alertthis.porcentajeAs)
       this.colorBarProgressBilletesAs = 'progress-bar bg-success text-light';
-      ////////////// console.warn(this.colorBarProgressBilletesAs)
+      ////////////console.warn(this.colorBarProgressBilletesAs)
     } else if ( this.porcentajeAs > 49 && this.porcentajeAs <= 90 ) {
       // //alertthis.porcentajeAs)
       this.colorBarProgressBilletesAs = 'progress-bar bg-warning text-dark';
-      ////////////// console.warn(this.colorBarProgressBilletesAs)
+      ////////////console.warn(this.colorBarProgressBilletesAs)
     } else if ( this.porcentajeAs > 90 ) {
       // //alertthis.porcentaje)
       this.colorBarProgressBilletesAs = 'progress-bar bg-danger text-light';
-      ////////////// console.warn(this.colorBarProgressBilletesAs)
+      ////////////console.warn(this.colorBarProgressBilletesAs)
       
       if( this.countPorcentajealertAs == 1) {
         this.countPorcentajealertAs = this.countPorcentajealertAs - 1;
@@ -214,7 +214,7 @@ seleccionarTienda(codigoTienda: string) {
         this.listaEsquipoGhost = equipo;
         this._show_spinner = false;
       }, error: (e) => {
-        // console.error(e);
+        console.error(e);
         this._show_spinner = false;
       }, complete: () => {
         this.listaEsquipo.filter((element:any) => {
@@ -243,7 +243,7 @@ seleccionarTienda(codigoTienda: string) {
 
     dialogRef.afterClosed().subscribe( result => {
 
-      // ////////////// console.warn( result );
+      // ////////////console.warn( result );
       // this.obtenerCrono(result.anio, result.mes);
 
     });
@@ -260,7 +260,7 @@ seleccionarTienda(codigoTienda: string) {
 
     dialogRef.afterClosed().subscribe( result => {
 
-      // ////////////// console.warn( result );
+      // ////////////console.warn( result );
       // this.obtenerCrono(result.anio, result.mes);
 
     });
@@ -283,9 +283,9 @@ seleccionarTienda(codigoTienda: string) {
 
     this.monitoreo.guardarErroralerts(this.modelError).subscribe({
       next: (x) => {
-        ////////////// console.warn('alerta de erro gurdada con éxito')
+        ////////////console.warn('alerta de erro gurdada con éxito')
       }, error: (e) => {
-        //// console.error(e);
+        //console.error(e);
       }
     })
 

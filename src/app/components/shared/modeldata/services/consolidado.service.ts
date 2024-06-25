@@ -11,7 +11,12 @@ export class ConsolidadoService {
   constructor( private env: Environments, private http: HttpClient ) { }
 
   obtenerConsolidado( model:any) {
-    // console.warn(this.env.apiurl() + 'FiltroFechas/Consolidado')
+    console.warn('-*-*-*-*--*-*--**-*-*-*-*-**-*-*-*-*-*-*-*-*-*-*-*')
+    console.warn('-*-*-*-*--*-*--**-*-*-*-*-**-*-*-*-*-*-*-*-*-*-*-*')
+    console.warn(this.env.apiurl() + 'FiltroFechas/Consolidado')
+    console.warn(model)
+    console.warn('-*-*-*-*--*-*--**-*-*-*-*-**-*-*-*-*-*-*-*-*-*-*-*')
+    console.warn('-*-*-*-*--*-*--**-*-*-*-*-**-*-*-*-*-*-*-*-*-*-*-*')
     return this.http.post( this.env.apiurl() + 'FiltroFechas/Consolidado', model );
   }
 

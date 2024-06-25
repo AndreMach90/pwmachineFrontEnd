@@ -123,7 +123,7 @@ export class CollectiongraphComponent implements OnInit, OnChanges {
       utterance.lang = 'es-LA';
       synth.speak(utterance);
     } else {
-      // console.error('No se encontró una voz en español disponible.');
+      console.error('No se encontró una voz en español disponible.');
     }
   }
 
@@ -240,7 +240,7 @@ export class CollectiongraphComponent implements OnInit, OnChanges {
         this.listaGraf;
       },
       error: (e) => {
-        // console.error(e);
+        console.error(e);
         this._show_spinner = false;
       },
       complete: () => {

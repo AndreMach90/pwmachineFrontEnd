@@ -82,12 +82,12 @@ export class HistorialAcreditacionComponent implements OnInit {
     this.hcred.obtenerEquiposAcreditados( data.nombreArchivo ).subscribe({
       next: (x) => {
         this.dataExportarExcel = x;
-        // console.log('/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*')
-        // console.log('this.dataExportarExcel')
-        // console.log(data.nombreArchivo)
-        // console.log('________________________________')
-        // console.log(this.dataExportarExcel)
-        // console.log('/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*')
+        console.log('/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*')
+        console.log('this.dataExportarExcel')
+        console.log(data.nombreArchivo)
+        console.log('________________________________')
+        console.log(this.dataExportarExcel)
+        console.log('/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*')
       }, complete: () => {
         this.obtenerTransaccionesEquipos(data.nombreArchivo);
       }
@@ -156,13 +156,13 @@ export class HistorialAcreditacionComponent implements OnInit {
             return 0;
           });
         });  
-        // ////// console.log('==========================');
-        // ////// console.log(this.dataExportarExcel);
-        // ////// console.log('==========================');
+        // ////console.log('==========================');
+        // ////console.log(this.dataExportarExcel);
+        // ////console.log('==========================');
       }, complete: () => {
         this.exportarExcel(nombreArchivo);
       }, error: (e) => {
-        // console.error(e);
+        console.error(e);
       }
     });
   }
@@ -186,7 +186,7 @@ export class HistorialAcreditacionComponent implements OnInit {
           }, error: (e) => {
             Toast.fire({ icon: 'error', title: 'Algo ha ocurrido, y no se ha podido actualizar.' });
             this._show_spinner = false;
-            // console.error(e);
+            console.error(e);
           }, complete: () => {
             this.listaAcreditadas.splice(i,1);
             this._show_spinner = false;
@@ -479,7 +479,7 @@ export class HistorialAcreditacionComponent implements OnInit {
               Toast.fire({ icon: 'success', title: 'Proceso de acreditación cancelado.', position: 'center' });
             },error: (e) => {
               Toast.fire({ icon: 'error', title: 'Algo ha ocurrido, y no se ha podido eliminar.' });
-              // console.error(e);
+              console.error(e);
             }, complete: () => {
               this.listaAcreditadas.splice(i,1);
             }
@@ -512,20 +512,20 @@ export class HistorialAcreditacionComponent implements OnInit {
         FechaFin: fechaFin.toISOString() // Convierte la fecha a formato ISO (opcional)
       };
 
-      //// console.log('this.modelConsult');
-      //// console.log(this.modelConsult);
+      //console.log('this.modelConsult');
+      //console.log(this.modelConsult);
   
       // Realiza la consulta con la nueva fecha
       this.hcred.obtenerAcreditadasTran(this.modelConsult).subscribe({
         next: (x) => {
-          ////// console.log(x);
+          ////console.log(x);
           this.listaAcreditadasOk = x;
-          //// console.log(this.listaAcreditadasOk);
+          //console.log(this.listaAcreditadasOk);
         }
       });
     } else {
       // La fecha es nula, manejar este caso según tus requisitos
-      // console.error("La fecha de 'datefin' es nula.");
+      console.error("La fecha de 'datefin' es nula.");
     }
   }
   
