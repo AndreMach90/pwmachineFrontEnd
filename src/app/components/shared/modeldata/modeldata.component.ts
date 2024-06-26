@@ -220,58 +220,63 @@ export class ModeldataComponent implements OnInit {
     this.exportToExcelResagadas();
   }
 
-  
-  modelConsolidadoSend: any = [];
-  listaConsolidados: any = [];
-  obtenerConsolidado() {
-    
-    let di: any = this.exportdateform.controls['dateini'].value;
-    let df: any = this.exportdateform.controls['datefin'].value;
 
-    let hi: any = this.exportdateform.controls['horaini'].value;
-    let hf: any = this.exportdateform.controls['horafin'].value;
+modelConsolidadoSend: any = [];
+listaConsolidados: any = [];
+obtenerConsolidado() {
+  let di: any = this.exportdateform.controls['dateini'].value;
+  let df: any = this.exportdateform.controls['datefin'].value;
 
-    let inicio  = new Date(di);
-    let fin     = new Date(df);
+  let hi: any = this.exportdateform.controls['horaini'].value;
+  let hf: any = this.exportdateform.controls['horafin'].value;
 
-    // Dividir las horas en horas y minutos
-    const [inicioHoras, inicioMinutos] = hi.split(':').map(Number);
-    const [finHoras, finMinutos] = hf.split(':').map(Number);
+  let inicio = new Date(di);
+  let fin = new Date(df);
 
-    // Establecer la hora y minutos en las fechas de inicio y fin
-    inicio.setHours(inicioHoras, inicioMinutos, 0, 0);
-    fin.setHours(finHoras, finMinutos, 0, 0);
+  // Dividir las horas en horas y minutos
+  const [inicioHoras, inicioMinutos] = hi.split(':').map(Number);
+  const [finHoras, finMinutos] = hf.split(':').map(Number);
 
-    // Añadir un día a la fecha de inicio y fin
-    inicio.setDate(inicio.getDate() + 1);
-    fin.setDate(fin.getDate() + 1);
+  // Establecer la hora y minutos en las fechas de inicio y fin
+  inicio.setHours(inicioHoras, inicioMinutos, 0, 0);
+  fin.setHours(finHoras, finMinutos, 0, 0);
 
-    let maquinas: any =[];
-    this.dataExportarExcel.filter( (x:any) => {
-      maquinas.push(x.machine_Sn);
-    })
-    
-    this.modelConsolidadoSend = {
-      equipos: maquinas,
-      fechaIni: inicio,
-      fechaFin: fin 
+  // Convertir las fechas a UTC
+  const inicioUTC = new Date(Date.UTC(inicio.getFullYear(), inicio.getMonth(), inicio.getDate(), inicio.getHours(), inicio.getMinutes()));
+  const finUTC = new Date(Date.UTC(fin.getFullYear(), fin.getMonth(), fin.getDate(), fin.getHours(), fin.getMinutes()));
+
+  // Añadir un día a la fecha de inicio y fin en UTC
+  inicioUTC.setUTCDate(inicioUTC.getUTCDate() + 1);
+  finUTC.setUTCDate(finUTC.getUTCDate() + 1);
+
+  let maquinas: any = [];
+  this.dataExportarExcel.filter((x: any) => {
+    maquinas.push(x.machine_Sn);
+  });
+
+  this.modelConsolidadoSend = {
+    equipos: maquinas,
+    fechaIni: inicioUTC.toISOString(),
+    fechaFin: finUTC.toISOString()
+  };
+
+  console.log(this.modelConsolidadoSend);
+
+  this.consolidado.obtenerConsolidado(this.modelConsolidadoSend).subscribe({
+    next: (x) => {
+      this.listaConsolidados = x;
+      console.log('Despues del settimeout 1000');
+      console.log(this.listaConsolidados);
+    },
+    error: (e) => {
+      console.error(e);
+    },
+    complete: () => {
+      this.filtrarTransaccionesDentroDeRango();
     }
+  });
+}
 
-    console.log(this.modelConsolidadoSend);
-
-    this.consolidado.obtenerConsolidado( this.modelConsolidadoSend ).subscribe({
-      next: (x) => {
-        this.listaConsolidados = x;
-        console.log('Despues del settimeout 1000')
-        console.log(this.listaConsolidados)
-      }, error: (e) => {
-        console.error(e);
-      }, complete: () => {
-        this.filtrarTransaccionesDentroDeRango()
-      }
-    })
-
-  }
 
   exportarToExcelComplete() {
     this.obtenerConsolidado();
@@ -545,8 +550,7 @@ export class ModeldataComponent implements OnInit {
         if (item.transacciones) {
           item.transacciones.forEach((transaccion: any) => {            
             // Formatear la fecha para mostrar solo 'YYYY-MM-DD'
-            const fechaTransaccion = transaccion.fechaTransaccion.split('T')[0];
-  
+            const fechaTransaccion = transaccion.fechaTransaccion.split('T')[0];  
             const row = transaccionesSheet.addRow(
               [
                 fechaTransaccion, 
@@ -787,16 +791,11 @@ export class ModeldataComponent implements OnInit {
   
 
   async exportToExcelResagadas(): Promise<void> {
-    // this.transaccionesRecoleccionesSolo();
+
     // Crear un objeto para agrupar las localidades con sus equipos y transacciones
     const localidadesMap: { [key: string]: any[] } = {};
+
     // Iterar sobre los datos para agrupar por localidad
-
-    console.log('8888888888888888888888888888888888888888888888888');
-    console.log('Estas son las resagadas!');
-    console.log(this.resagadasTran);
-    console.log('8888888888888888888888888888888888888888888888888');
-
     this.resagadasTran.forEach((item: any) => {
       let localidad = item.localidad;
 

@@ -16,8 +16,7 @@ export class Environments {
     // apingRok: any = 'https://853e7b938358.ngrok.app';
     // apingRok: any = 'https://sfiback.azurewebsites.net';
 
-
-    version: string = 'V.1.0.1.8';
+    version: string = 'V.1.0.1.9';
     es:      number = 5;
     hash:    number = 10
     encode:  number = 99
