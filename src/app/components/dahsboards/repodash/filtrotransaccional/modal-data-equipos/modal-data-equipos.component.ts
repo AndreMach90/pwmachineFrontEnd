@@ -82,10 +82,8 @@ export class ModalDataEquiposComponent implements OnInit {
       {
         next: (equipo) => {
           this.listaEsquipoGhost = equipo;
-
-          console.log('Estos son los equipos que traigo por la API');
-          console.log(this.listaEsquipoGhost);
-
+          // console.log('Estos son los equipos que traigo por la API');
+          // console.log(this.listaEsquipoGhost);
         },
         error: (e) => {
           console.error(e);
@@ -167,9 +165,30 @@ export class ModalDataEquiposComponent implements OnInit {
       }
     )
   }
-  
+
+  selectAllAll(event:any) {
+    const checked = event.target.checked;
+    if (checked) {      
+      this.localidadesEncontradas.filter((localidad:any) => {
+        localidad.equiposTrans.forEach((equipo: any, index: number) => {
+          let checkbox = document.getElementById(equipo.localidad.toString().trim() + '-' + index) as HTMLInputElement;
+          checkbox.checked = true;
+          this.addToSelectedEquipos(equipo);
+        });
+      });
+    }else {
+      this.localidadesEncontradas.filter((localidad:any) => {
+        localidad.equiposTrans.forEach((equipo: any, index: number) => {
+          let checkbox = document.getElementById(equipo.localidad.toString().trim() + '-' + index) as HTMLInputElement;
+          checkbox.checked = false;
+          this.removeFromSelectedEquipos(equipo);
+        });
+      });
+    }
+  }
+   
   // Función para seleccionar/deseleccionar todos los equipos
-  selectedEquipos: any[] = []; // Variable para almacenar los equipos seleccionados
+  selectedEquipos: any[] = [];
   selectAll(event: any, localidad: any) {
     const checked = event.target.checked;
     if (checked) {

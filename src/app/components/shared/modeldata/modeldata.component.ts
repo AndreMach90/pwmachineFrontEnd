@@ -103,6 +103,10 @@ export class ModeldataComponent implements OnInit {
   dis_exp_excel:                 boolean = true;
   conttransaccion:               boolean = false;
 
+  public filterTransaccForm = new FormGroup({
+    filterTransacc: new FormControl('')
+  })
+
   public exportdateform = new FormGroup({
     dateini:              new FormControl(''),
     datefin:              new FormControl(''),
@@ -188,7 +192,7 @@ export class ModeldataComponent implements OnInit {
     let hf: any = this.exportdateform.controls['horafin'].value;
 
     let inicio = new Date(di);
-    let fin = new Date(df);
+    let fin    = new Date(df);
 
     // Dividir las horas en horas y minutos
     const [inicioHoras, inicioMinutos] = hi.split(':').map(Number);
@@ -1078,7 +1082,7 @@ obtenerConsolidado() {
     return this.val;
 
   }
-
+  maquinasEscogidasDialogGhost: any = [];
   openDataEquiposDialog() {
 
     let arr: any = [];
@@ -1117,11 +1121,13 @@ obtenerConsolidado() {
 
         if( this.maquinasEscogidasDialog.length == 0 ) {
           this.maquinasEscogidasDialog = result;
+          this.maquinasEscogidasDialogGhost = result;
         }
 
         else {
           result.filter( (equipos: any) => {
             this.maquinasEscogidasDialog.push(equipos);
+            this.maquinasEscogidasDialogGhost.push(equipos);
           })
         }
 
@@ -1129,6 +1135,14 @@ obtenerConsolidado() {
           this.dataExportarExcel     .push(element);
           this.dataExportarExcelGhost.push(element);
         });
+
+        this.maquinasEscogidasDialogGhost.filter( ( element:any ) => {
+          this.dataExportarExcel     .push(element);
+          this.dataExportarExcelGhost.push(element);
+        });
+
+        console.warn('this.dataExportarExcel')
+        console.warn(this.dataExportarExcel)
 
       }
       else {
@@ -1140,6 +1154,29 @@ obtenerConsolidado() {
 
     });
 
+  }
+
+  filterTransaccos() {
+    let filtertTrans: any = this.filterTransaccForm.controls['filterTransacc'].value;
+    this.maquinasEscogidasDialog = this.maquinasEscogidasDialogGhost.filter( (item:any) => 
+      item.machine_Sn             .toLowerCase().includes(filtertTrans.toLowerCase()) ||
+      item.localidad              .toLowerCase().includes(filtertTrans.toLowerCase()) 
+    )
+
+    let arrlongitud: any = [];
+    this.cantidadTransacciones  = 0;
+    this.sumatoriaTransacciones = 0;
+    this.maquinasEscogidasDialog.filter( (element:any) => {      
+      if( element.transacciones != null || element.transacciones != undefined ) {
+        element.transacciones = element.transacciones.filter( (x:any) => x.tipoTransaccion !== 'Recolección'  );
+        element.longitud = element.transacciones.length;
+        element.transacciones.filter((y:any) => {
+          if( y.total == null || y.total == undefined ) y.total = 0;
+          this.cantidadTransacciones += y.total;
+        })
+        this.sumatoriaTransacciones += element.longitud;
+      }
+    })
   }
 
   eliminarObjetosDuplicados() {
@@ -1349,9 +1386,9 @@ obtenerConsolidado() {
     this.validExportExcel        = true;
     this.conttransaccion         = false;
     this.porcentaje              = 0;
-    this.maquinasEscogidasDialog = [];
     this.dataExportarExcel       = [];
     this.maquinasEscogidasDialog = [];
+    this.maquinasEscogidasDialogGhost = [];
     this.dataExportarExcelGhost  = [];
     this.sumatoriaTransacciones  = 0;
     this.exportdateform.controls['acreditada'].enable();

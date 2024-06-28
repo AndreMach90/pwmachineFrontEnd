@@ -23,6 +23,12 @@
   </div>
   <div>
   <div>
+      <div class="d-flex align-items-center">
+        <span class="m-1">
+          <input type="checkbox" (change)="selectAllAll($event)">
+        </span>
+        <span class="m-1"> Seleccionar todo </span>
+      </div>
       <div *ngFor="let local of localidadesEncontradas; let i = index;">
         <div [class]="local.bgloc + ' rounded-1 p-2 shadow-sm m-1 w-75 d-flex justify-content-between'">
           <strong>{{ i + 1 }}.- {{ local.loc }}</strong>
@@ -34,7 +40,8 @@
         <table class="table table-striped table-bordered table-responsive-lg shadow-sm table-dark">
           <thead class="bg-dark text-light">
               <th>
-                <input type="checkbox" (change)="selectAll($event, local)">
+                <input type="checkbox" 
+                       (change)="selectAll($event, local)">
               </th>
               <th title="Nombre de Equipo">
                 N. Equipo
@@ -90,8 +97,7 @@
       </div>
     </div>
   </div>
-
-</div  >
+  </div>
   <div class="mt-2" style="background-color: whitesmoke;" >
     <small class="text-secondary" >Número total de transacciones visualizando:</small>
     <div>
