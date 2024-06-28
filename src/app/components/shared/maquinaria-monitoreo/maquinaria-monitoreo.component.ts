@@ -702,7 +702,6 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       this.fechaNotif = fecha.getTime();
     }
     this.contadorPing++;
-    console.log(this.contadorPing);
   }
 
   alertTrans(){

@@ -1,4 +1,3 @@
-
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ClientesService } from '../../dahsboards/cliente/services/clientes.service';
@@ -8,20 +7,15 @@ import { TransaccionesTiendaService } from '../../dahsboards/monitoreo-equipos/m
 import { MatDialog } from '@angular/material/dialog';
 import { Environments } from '../../environments/environments';
 import { ModalDataEquiposComponent } from '../../dahsboards/repodash/filtrotransaccional/modal-data-equipos/modal-data-equipos.component';
-import { MenuItem, MessageService } from 'primeng/api';
-import { Observable, elementAt, forkJoin, interval } from 'rxjs';
+import { MenuItem } from 'primeng/api';
+import { interval } from 'rxjs';
 import { Router } from '@angular/router';
 import { takeWhile, finalize } from 'rxjs/operators';
 import * as ExcelJS from 'exceljs';
 import Swal from 'sweetalert2'
-import { HistoriaAcreditacionService } from '../historial-acreditacion/services/historia-acreditacion.service';
-import { EncryptService } from '../services/encrypt.service';
-import { SharedService } from '../services/shared.service';
-
 import { ConsolidadoService } from './services/consolidado.service';
 
 const Toast = Swal.mixin({
-  
   toast: true,
   position: 'top-end',
   showConfirmButton: false,
@@ -31,9 +25,7 @@ const Toast = Swal.mixin({
     toast.addEventListener('mouseenter', Swal.stopTimer);
     toast.addEventListener('mouseleave', Swal.resumeTimer);
   }
-
 })
-
 
 @Component({
   selector: 'app-modeldata',
@@ -42,9 +34,7 @@ const Toast = Swal.mixin({
 })
 
 export class ModeldataComponent implements OnInit {
-
   @Output() moduleChange: EventEmitter<any> = new EventEmitter<any>();
-
   @ViewChild('dateini') dateini: ElementRef | undefined;
   @ViewChild('datefin') datefin: ElementRef | undefined;
   @ViewChild('horaini') horaini: ElementRef | undefined;
@@ -117,25 +107,18 @@ export class ModeldataComponent implements OnInit {
   })
 
   constructor( private formBuilder: FormBuilder,
-    private reouter:       Router,
-    private tokenGen:      SharedService,
-    private acreditacion:  HistoriaAcreditacionService,
     private clienteserv:   ClientesService,
     private tiendaservs:   TiendaService,
-    private monitoreo:     MonitoreoService,
     public  router:        Router,
     private transacciones: TransaccionesTiendaService,
     private consolidado:   ConsolidadoService,
     public  dialog:        MatDialog,
-    private ncrypt:        EncryptService,
     private env:           Environments ) {
-
       this.transac = this.formBuilder.group({
         manualTransactions:    true,
         automaticTransactions: true,
         recolecciones:         false
       });
-
     }
 
   ngOnInit(): void {
@@ -145,7 +128,6 @@ export class ModeldataComponent implements OnInit {
   }
 
   visibleDataTable() {
-
     switch (this.exportdateform.controls['spriv'].value) {
       case true:
         this.reportVisible = false;
@@ -154,12 +136,9 @@ export class ModeldataComponent implements OnInit {
         this.reportVisible = true;
         break;
     }
-
   }
-
   onSubmitHora() {}
   onSubmitDate() {}
-
   submitTransacFilter() {
     ////console.log(this.transac.value);
   }
@@ -177,27 +156,21 @@ export class ModeldataComponent implements OnInit {
     if( xtoken == undefined || xtoken == null || xtoken == '' ) this.router.navigate(['login']);
   }
 
-
   filtrarTransaccionesFueraDeRango(): void {
     /** Tomamos las fechas para concatenarla para más después */
     let di: any = this.exportdateform.controls['dateini'].value;
     let df: any = this.exportdateform.controls['datefin'].value;
-    
     /** Tomamos la hora para concatenarla para más después */
     let hi: any = this.exportdateform.controls['horaini'].value;
     let hf: any = this.exportdateform.controls['horafin'].value;
-
     let inicio = new Date(di);
     let fin = new Date(df);
-
     // Dividir las horas en horas y minutos
     const [inicioHoras, inicioMinutos] = hi.split(':').map(Number);
     const [finHoras, finMinutos] = hf.split(':').map(Number);
-
     // Establecems la hora y minutos en las fechas de inicio y fin
     inicio.setHours(inicioHoras, inicioMinutos, 0, 0);
     fin.setHours(finHoras, finMinutos, 0, 0);
-
     // Añadir un día a la fecha de inicio y fin
     inicio.setDate(inicio.getDate() + 1);
     fin.setDate(fin.getDate() + 1);
@@ -216,7 +189,6 @@ export class ModeldataComponent implements OnInit {
         });
       }
     });
-
     this.exportToExcelResagadas();
   }
 
@@ -260,16 +232,12 @@ obtenerConsolidado() {
     fechaFin: finUTC.toISOString()
   };
 
-  console.log(this.modelConsolidadoSend);
-
   this.consolidado.obtenerConsolidado(this.modelConsolidadoSend).subscribe({
     next: (x) => {
       this.listaConsolidados = x;
-      console.log('Despues del settimeout 1000');
-      console.log(this.listaConsolidados);
     },
     error: (e) => {
-      console.error(e);
+      // console.error(e);
     },
     complete: () => {
       this.filtrarTransaccionesDentroDeRango();
@@ -317,11 +285,10 @@ obtenerConsolidado() {
     this.dataExportarExcel.forEach((machine: any) => {
       const transaccionesEnRango = machine.transacciones.filter((transaccion: any) => {
         const fechaTransaccion = new Date(transaccion.fechaTransaccion);
-        console.log( '<<<<<<<<<<<<<<<<<<<<<<Dentro de rango>>>>>>>>>>>>>>>>>>>>>>' );
-        console.log( fechaTransaccion + ' >= ' + inicio + ' && ' + fechaTransaccion + ' <= ' + fin );
+        // console.log( '<<<<<<<<<<<<<<<<<<<<<<Dentro de rango>>>>>>>>>>>>>>>>>>>>>>' );
+        // console.log( fechaTransaccion + ' >= ' + inicio + ' && ' + fechaTransaccion + ' <= ' + fin );
         return fechaTransaccion >= inicio && fechaTransaccion <= fin;
       });
-      
       if (transaccionesEnRango.length > 0) {        
         this.transaccionesDentroDeRango.push({
           machine_Sn: machine.machine_Sn,
@@ -330,50 +297,25 @@ obtenerConsolidado() {
         });
       }
     });
-
     this.exportToExcel();
 }
 
-
-
-
   async exportToExcelConsolidadoGeneral(): Promise<void> {
     try {
-      const fecha = new Date();
-      const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet('Base'); //Agregar una nueva hoja al libro
+      const fecha         = new Date();
+      const workbook      = new ExcelJS.Workbook();
+      const worksheet     = workbook.addWorksheet('Base'); //Agregar una nueva hoja al libro
+      const dateIniString = this.exportdateform.controls['dateini'].value;
+      const horaIniString = this.exportdateform.controls['horaini'].value;
+      let dateIni:        any;
+      let horaIni:        any;
 
       // Agregar encabezados de columnas para transacciones
       const headerRow = worksheet.addRow([
-        'Localidad',
-        'Fecha',
-        'Hora',
-        'Cliente',
-        'Tienda',
-        'N. Trans.',
-        'N. Serie Equipo',
-        'Usuario',
-        'Establecimiento',
-        'Actividad',
-        'Cod. Establ.',
-        'Nom. Banco',
-        'T. Cuenta',
-        'Cta. Bancaria',
-        '$1',
-        '$2',
-        '$5',
-        '$10',
-        '$20',
-        '$50',
-        '$100',
-        '$0.01',
-        '$0.05',
-        '$0.10',
-        '$0.25',
-        '$0.50',
-        '$1.00',
-        'Total',
-        'T. T.',
+        'Localidad', 'Fecha', 'Hora', 'Cliente', 'Tienda', 'N. Trans.', 'N. Serie Equipo',
+        'Usuario', 'Establecimiento', 'Actividad', 'Cod. Establ.', 'Nom. Banco', 'T. Cuenta',
+        'Cta. Bancaria', '$1', '$2', '$5', '$10', '$20', '$50', '$100', '$0.01', '$0.05', '$0.10',
+        '$0.25', '$0.50', '$1.00', 'Total', 'T. T.'
       ]);
 
       // Aplicar estilos al encabezado
@@ -391,10 +333,10 @@ obtenerConsolidado() {
 
       // Ancho de las celdas
       worksheet.getColumn(1).width = 20; //Localidad
-      worksheet.getColumn(2).width = 12; //Fecha
+      worksheet.getColumn(2).width = 25; //Fecha
       worksheet.getColumn(4).width = 27; //Cliente
       worksheet.getColumn(5).width = 30; //Tienda
-      worksheet.getColumn(6).width = 13; //N. Trans.
+      worksheet.getColumn(6).width = 15; //N. Trans.
       worksheet.getColumn(9).width = 31; //Establecimiento
       worksheet.getColumn(11).width = 12; //Cod. Establ.
       worksheet.getColumn(12).width = 20; //Nom. Banco
@@ -404,25 +346,28 @@ obtenerConsolidado() {
 
       this.dataExportarExcel.sort((a: any, b: any) => {
         const localidadComparison = a.localidad.localeCompare(b.localidad);
-        if (localidadComparison !== 0) {
-          return localidadComparison;
-        } else {
-          return a.machine_Sn.localeCompare(b.machine_Sn);
-        }
+        if (localidadComparison !== 0) return localidadComparison;
+        return a.machine_Sn.localeCompare(b.machine_Sn);
       });
-      // this.dataExportarExcel.sort((a: any, b: any) => a.machine_Sn.localeCompare(b.machine_Sn));
+      
+      (dateIniString != null) ? dateIni = new Date(dateIniString): dateIni = new Date();
+      (horaIniString != null) ? horaIni = horaIniString.split(':'): horaIni = new Date().getHours();
+      dateIni.setHours(parseInt(horaIni[0], 10), parseInt(horaIni[1], 10), 0, 0);
+      dateIni.setDate(dateIni.getDate() + 1);
 
       this.dataExportarExcel.forEach((item: any) => {
         // Iterar sobre las transacciones del equipo
         if (item.transacciones) {
           item.transacciones.forEach((transaccion: any) => {
-            worksheet.addRow([
+            let transaccionFechaHora = new Date(transaccion.fechaTransaccion);
+            // Data
+            let row = worksheet.addRow([
               item.localidad,
-              transaccion.fechaTransaccion.split("T")[0],
+              transaccion.fechaTransaccion,
               transaccion.hora,
               transaccion.nombreCliente,
               transaccion.nombreTienda,
-              transaccion.transaccion_No,
+              item.machine_Sn + '-' +transaccion.transaccion_No,
               item.machine_Sn,
               transaccion.usuarios_idFk,
               transaccion.establecimiento,
@@ -447,6 +392,15 @@ obtenerConsolidado() {
               transaccion.total,
               transaccion.tipoTransaccion,
             ]);
+            if (transaccionFechaHora < dateIni) {
+              row.eachCell((cell) => {
+                cell.fill = {
+                  type: 'pattern',
+                  pattern: 'solid',
+                  fgColor: { argb: 'FEFFA8' },
+                };
+              });
+            }
           });
         }
       });
@@ -466,11 +420,6 @@ obtenerConsolidado() {
     const fin    = new Date(df);
 
     this.transaccionesRecoleccionesSolo();
-
-    // console.log('999999999999999999999999999999999999999999999');
-    // console.log('Transacciones Dentro de rango');
-    // console.log(this.transaccionesDentroDeRango);
-    // console.log('999999999999999999999999999999999999999999999');
 
     // Crear un objeto para agrupar las localidades con sus equipos y transacciones
     const localidadesMap: { [key: string]: any[] } = {};
@@ -500,37 +449,12 @@ obtenerConsolidado() {
   
       // Agregar encabezados de columnas para transacciones
       const transaccionesHeaderRow = transaccionesSheet.addRow([
-        'Fecha Transacción',
-        'Hora',
-        'Equipo',
-        'Nombre Cliente',
-        'Nombre Tienda',
-        'Transacción No',
-        'N. Serie',
-        'Usuario',
-        'Establecimiento',
-        'Actividad',
-        'Cod. Establecimiento',
-        'Nombre del banco',
-        'T. Cuenta',
-        'Numero cuenta',
-        '$1.00',
-        '$2.00',
-        '$5.00',
-        '$10.00',
-        '$20.00',
-        '$50.00',
-        '$100.00',
-        '$0.01',
-        '$0.05',
-        '$0.10',
-        '$0.25',
-        '$0.50',
-        '$0.100',
-        'Total',
-        'Tipo Transaccion'
+        'Localidad', 'Fecha', 'Hora', 'Cliente', 'Tienda', 'N. Trans.', 'N. Serie Equipo',
+        'Usuario', 'Establecimiento', 'Actividad', 'Cod. Establ.', 'Nom. Banco', 'T. Cuenta',
+        'Cta. Bancaria', '$1', '$2', '$5', '$10', '$20', '$50', '$100', '$0.01', '$0.05', '$0.10',
+        '$0.25', '$0.50', '$1.00', 'Total', 'T. T.'
       ]);
-  
+
       // Aplicar estilos al encabezado
       transaccionesHeaderRow.eachCell((cell) => {
         cell.fill = {
@@ -549,20 +473,17 @@ obtenerConsolidado() {
       items.forEach((item: any) => {
         if (item.transacciones) {
           item.transacciones.forEach((transaccion: any) => {            
-            // Formatear la fecha para mostrar solo 'YYYY-MM-DD'
-            const fechaTransaccion = transaccion.fechaTransaccion.split('T')[0];  
-            const row = transaccionesSheet.addRow(
-              [
-                fechaTransaccion, 
+            const row = transaccionesSheet.addRow([
+                item.localidad,
+                transaccion.fechaTransaccion,
                 transaccion.hora,
-                transaccion.machine_Sn,
                 transaccion.nombreCliente,
                 transaccion.nombreTienda,
-                transaccion.transaccion_No,
+                transaccion.machine_Sn + '-' +transaccion.transaccion_No,
                 transaccion.machine_Sn,
                 transaccion.usuarios_idFk,
                 transaccion.establecimiento,
-                transaccion.codigoEstablecimiento,
+                transaccion.observacion,
                 transaccion.codigoEstablecimiento,
                 transaccion.nombanco,
                 transaccion.tipoCuenta,
@@ -581,12 +502,9 @@ obtenerConsolidado() {
                 transaccion.manual_Deposito_Coin_50,
                 transaccion.manual_Deposito_Coin_100,
                 transaccion.total,
-                transaccion.tipoTransaccion,
+                transaccion.tipoTransaccion
               ]
             );
-  
-            // Aplicar formato de fecha a la celda de fecha
-            row.getCell(1).numFmt = 'yyyy-mm-dd';
           });
         }
       });
@@ -687,9 +605,7 @@ obtenerConsolidado() {
                 }
               }
             });
-            
             totalGeneral += currentTotal; // Añadir el total de la tienda al total general
-      
             // Resetear el nombre de la tienda y la suma total
             currentTotal = 0;
           }
@@ -765,17 +681,14 @@ obtenerConsolidado() {
             }
           }
         });
-  
       } else {
         // Si no hay datos de consolidados, agregar un mensaje
         consolidadosSheet.addRow(['No hay datos consolidados para esta localidad.']);
       }
-
       const buffer = await workbook.xlsx.writeBuffer();
       // Descargar el archivo Excel con el nombre de la localidad
       this.downloadExcelFile(buffer, `transacciones_${localidad}.xlsx`);
-      }
-    
+    }
   }
 
   private downloadExcelFile(buffer: any, fileName: string): void {
@@ -789,16 +702,13 @@ obtenerConsolidado() {
     downloadLink.remove();
   }
   
-
   async exportToExcelResagadas(): Promise<void> {
-
     // Crear un objeto para agrupar las localidades con sus equipos y transacciones
     const localidadesMap: { [key: string]: any[] } = {};
 
     // Iterar sobre los datos para agrupar por localidad
     this.resagadasTran.forEach((item: any) => {
       let localidad = item.localidad;
-
       if (!localidadesMap[localidad]) {
         localidadesMap[localidad] = [];
       }
@@ -812,35 +722,10 @@ obtenerConsolidado() {
   
       // Agregar encabezados de columnas para transacciones
       const headerRow = worksheet.addRow([
-        'Fecha Transacción',
-        'Hora',
-        'Equipo',
-        'Nombre Cliente',
-        'Nombre Tienda',
-        'Transacción No',
-        'N. Serie',
-        'Usuario',
-        'Establecimiento',
-        'Actividad',
-        'Cod. Establecimiento',
-        'Nombre del banco',
-        'T. Cuenta',
-        'Numero cuenta',
-        '$1.00',
-        '$2.00',
-        '$5.00',
-        '$10.00',
-        '$20.00',
-        '$50.00',
-        '$100.00',
-        '$0.01',
-        '$0.05',
-        '$0.10',
-        '$0.25',
-        '$0.50',
-        '$0.100',
-        'Total',
-        'Tipo Transaccion'
+        'Localidad', 'Fecha', 'Hora', 'Cliente', 'Tienda', 'N. Trans.', 'N. Serie Equipo',
+        'Usuario', 'Establecimiento', 'Actividad', 'Cod. Establ.', 'Nom. Banco', 'T. Cuenta',
+        'Cta. Bancaria', '$1', '$2', '$5', '$10', '$20', '$50', '$100', '$0.01', '$0.05', '$0.10',
+        '$0.25', '$0.50', '$1.00', 'Total', 'T. T.'
       ]);
 
       // Aplicar estilos al encabezado
@@ -859,25 +744,20 @@ obtenerConsolidado() {
   
       // Iterar sobre los equipos dentro de la localidad
       items.forEach((item: any) => {
-  
         // Iterar sobre las transacciones del equipo
         if (item.transacciones) {
           item.transacciones.forEach((transaccion: any) => {
-            
-            // Formatear la fecha para mostrar solo 'YYYY-MM-DD'
-            const fechaTransaccion = transaccion.fechaTransaccion.split('T')[0];
-  
             const row = worksheet.addRow([
-              fechaTransaccion,
+              item.localidad,
+              transaccion.fechaTransaccion,
               transaccion.hora,
-              transaccion.machine_Sn,
               transaccion.nombreCliente,
               transaccion.nombreTienda,
-              transaccion.transaccion_No,
+              transaccion.machine_Sn + '-' +transaccion.transaccion_No,
               transaccion.machine_Sn,
               transaccion.usuarios_idFk,
               transaccion.establecimiento,
-              transaccion.codigoEstablecimiento,
+              transaccion.observacion,
               transaccion.codigoEstablecimiento,
               transaccion.nombanco,
               transaccion.tipoCuenta,
@@ -939,9 +819,6 @@ obtenerConsolidado() {
                      takeWhile(() => this.countTransaction < totalTransacciones),
                      finalize(() => {
                          this.countTransaction = totalTransacciones;
-                        //  console.log( '/*/*/*/*/*/*/*/*/*/*/*/*/*/*' );
-                        //  console.log( this.tran );
-                        //  console.log( '/*/*/*/*/*/*/*/*/*/*/*/*/*/*' );
                          this.guardarTransaccionesAc(this.tran);
                      })
                  )
@@ -963,17 +840,15 @@ obtenerConsolidado() {
   guardarTransaccionesAc(model: any[]) {
     this._show_spinner = true;
     this.conttransaccion = true;
-
-    console.log('=============================');
-    console.log(model);
-    console.log('=============================');
-
+    // console.log('=============================');
+    // console.log(model);
+    // console.log('=============================');
     this.transacciones.GuardarTransaccionesAcreditadas(model).subscribe({
         next: (x) => {
             Toast.fire({ icon: 'success', title: 'Transacciones generadas, en espera de acreditación ', position: 'center' });
         },
         error: (e) => {
-            console.error(e);
+            // console.error(e);
             this._show_spinner = false;
             Toast.fire({ 
                 icon: 'error',
@@ -1008,38 +883,28 @@ obtenerConsolidado() {
         });
         this.dateini!.nativeElement.value = datefinValue;
       }
-
       this.validateDataExistDate();
-
     }
   }
 
-
   validateTime() {
-
     const dateiniValue = this.dateini?.nativeElement.value;
     const datefinValue = this.datefin?.nativeElement.value;
     const horainiValue = this.horaini?.nativeElement.value;
     const horafinValue = this.horafin?.nativeElement.value;
-
     if ( dateiniValue == datefinValue ) {
-
       if( horainiValue > horafinValue ) {
         Swal.fire({
-          // title: "Es en serio?",
           text: "La hora inicial no puede ser mayor a la hora final.",
           icon: "question"
         });
       } else if ( datefinValue < dateiniValue ) {
         Swal.fire({
-          // title: "Es en serio?",
           text: "La hora final no puede ser menor a la hora inicial.",
           icon: "question"
         });
       }
-
     }
-
   }
 
   eliminarEquiposDeReporteria(equipos:any, i:any) {    
@@ -1052,13 +917,11 @@ obtenerConsolidado() {
       equipos.transacciones.filter( (tran:any) => {
         this.totalSubstract += tran.total;
       })
-
       this.cantidadTransacciones = this.cantidadTransacciones - this.totalSubstract;
     }
     if( this.maquinasEscogidasDialog.length == 0 ) {
       this.limpiar();
     }
-
   }
 
   getHeaderRow(): string[] {    
@@ -1068,19 +931,15 @@ obtenerConsolidado() {
 
   val:number = 0;
   acredit(): number {
-
     if(this.exportdateform.controls['acreditada'].value == true) {
       this.val = 1
     } else {
       this.val = 2
     }
-
     return this.val;
-
   }
 
   openDataEquiposDialog() {
-
     let arr: any = [];
     if( this.dataExportarExcel ) {
       arr = {
@@ -1110,36 +969,28 @@ obtenerConsolidado() {
 
     dialogRef.afterClosed().subscribe( (result:any) => {      
       if( result ) {
-        
         this.exportdateform.controls['acreditada'].disable();
         this._cancel_button    = true;
         this.disbutton_obtener = true;
 
         if( this.maquinasEscogidasDialog.length == 0 ) {
           this.maquinasEscogidasDialog = result;
-        }
-
-        else {
+        } else {
           result.filter( (equipos: any) => {
             this.maquinasEscogidasDialog.push(equipos);
           })
         }
-
         this.maquinasEscogidasDialog.filter( ( element:any ) => {
           this.dataExportarExcel     .push(element);
           this.dataExportarExcelGhost.push(element);
         });
-
       }
       else {
         this._show_spinner = false;
       }
-
       this.obtenerTransacTabla();
       this.visibleDataTable();
-
     });
-
   }
 
   eliminarObjetosDuplicados() {
@@ -1152,18 +1003,13 @@ obtenerConsolidado() {
     }, []);
     const uniqueObjects2 = this.dataExportarExcelGhost.reduce((unique:any, currentObject:any) => {
       const exists = unique.some((obj:any) => obj.nserie === currentObject.nserie);
-
       if (!exists) {
         unique.push(currentObject);
       }
-
       return unique;
-
     }, []);
-
     this.dataExportarExcel      = uniqueObjects;
     this.dataExportarExcelGhost = uniqueObjects2;
-
   }
 
   validateDataExistDate() {
@@ -1182,7 +1028,7 @@ obtenerConsolidado() {
         this._show_spinner = false;
       }, error: (e) => {
         this._show_spinner = false;
-        console.error(e);
+        // console.error(e);
       }, complete: () => {
         this.clienteListaGhost.filter((element:any) => {
 
@@ -1196,16 +1042,13 @@ obtenerConsolidado() {
             "emailcontacto": element.emailcontacto,
             "nombrecontacto": element.nombrecontacto
           }
-
           this.clientelista.unshift(arr);
-
         })
       }
     })
   }
 
   obtenerIDCLiente() {
-
     if ( this.exportdateform.controls['codigoClienteidFk'].value == undefined || this.exportdateform.controls['codigoClienteidFk'].value == null ) {
       ////console.warn('No hay un id');
       this.idcliente = this.clientelista[0].id;
@@ -1213,7 +1056,6 @@ obtenerConsolidado() {
     else {
       this.idcliente = this.exportdateform.controls['codigoClienteidFk'].value;
     }
-
   }
 
   obtenerTiendas() {    
@@ -1337,12 +1179,8 @@ obtenerConsolidado() {
         });
         break;
     }
-
     this.sumatoriaTotalTransacciones();
-
   }
-
-
 
   limpiar() {
     this.countTransaction        = 0;
@@ -1369,41 +1207,27 @@ obtenerConsolidado() {
   }
 
   obtenerTransacTabla() {
-    //console.log(1)
     let x = 0;
-    //console.log(2)
     if (this.exportdateform.controls['acreditada'].value) { 
-      //console.log(3)
       x = 2;
     }
     else {
-      //console.log(4)
       x = 1;
     }    
     if (this.dataExportarExcel.length > 0) {
-      //console.log(5)
       this._show_spinner = true;
       let dini = this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value;
       let dfin = this.exportdateform.controls['datefin'].value + ' ' + this.exportdateform.controls['horafin'].value;
-      //console.log(6)
       Promise.all(this.dataExportarExcel.map((element: any) => {
         return new Promise<void>((resolve, reject) => {
-          //console.log('Entramos')
-          //console.log(7)
           let modelRange:any = {
             "tipo":        x,
             "Machine_Sn":  element.machine_Sn,
             "FechaInicio": dini,
             "FechaFin":    dfin
           };          
-
-          console.log(modelRange)
-
           this.transacciones.filtroTransaccionesRango(modelRange).subscribe({            
             next: (z) => {
-              //console.warn('/*/*/*//*/*/*/*/*/*/*/*/*');
-              //console.warn(z);
-              //console.warn('/*/*/*//*/*/*/*/*/*/*/*/*');
               element.transacciones = z;
               element.longitud = element.transacciones.length;
               this.obterSaldoTransac(element.nserie);
@@ -1415,10 +1239,9 @@ obtenerConsolidado() {
           });          
         });
       })).then(() => {
-        // Llamamos a detectaTransaccionesResagadas con las fechas obtenidas fuera del ciclo e
         this.detectaTransaccionesResagadas(dini, dfin, 1);
       }).catch((error) => {
-        console.error(error);
+        // console.error(error);
       }).finally(() => {
         this._show_spinner = false;
         if( this.cantidadResagadas > 0 ) {
@@ -1443,10 +1266,6 @@ obtenerConsolidado() {
   }
 
   detectaTransaccionesResagadas(dateIni: any, dateFin: any, type: number) {
-
-    // alert('Si tiene resagadas detectadas');
-
-
     this.cantidadResagadas = 0;
     switch (type) {
       case 1:
@@ -1463,7 +1282,6 @@ obtenerConsolidado() {
         const filterAndRemove = () => {
           return new Promise<void>((resolve, reject) => {
             this.dataExportarExcel.forEach((x: any, index: number) => {
-
               if ( x.transacciones != undefined && x.transacciones != null ) {
                 x.transacciones = x.transacciones.filter( ( tran: any ) => {
                   return tran.fechaTransaccion.toString().split('T')[0] === fechaINI || tran.fechaTransaccion.toString().split('T')[0] === fechaFIN;
@@ -1486,13 +1304,11 @@ obtenerConsolidado() {
           }
           this.sumatoriaTotalTransacciones();  
         }).catch((error) => {
-          console.error('Ocurrió un error:', error);
+          // console.error('Ocurrió un error:', error);
         });  
         break;
     }
   }
-  
-
   modelDataSaldo: any = [];
   obterSaldoTransac( machineSn:any ) {
     this.transacciones.ObtenerEquiposSaldo(machineSn).subscribe({
@@ -1515,10 +1331,8 @@ obtenerConsolidado() {
   sumatoriaTotalTransacciones() {
     this.cantidadTransacciones  = 0;
     this.sumatoriaTransacciones = 0;
-    // ////console.log(this.transac.controls['recolecciones'].value)
     switch(this.transac.controls['recolecciones'].value) {
       case false:
-          //console.table(false);
           this.dataExportarExcel.filter((element: any) => {
             if( element.transacciones != null || element.transacciones != undefined ) {
               element.transacciones = element.transacciones.filter( (x:any) => x.tipoTransaccion !== 'Recolección'  );
@@ -1533,17 +1347,13 @@ obtenerConsolidado() {
           this.transac.controls['recolecciones'].disable()
           break;
         case true:
-          //console.table(true);
           this.dataExportarExcel.filter((element: any) => {
-          element.transacciones.filter( (x:any) => {              
-              ////console.log(element.transacciones.length)
+          element.transacciones.filter( (x:any) => { 
               if( x.total == null || x.total == undefined ) x.total = 0;
               this.cantidadTransacciones += x.total;
           });
-          ////console.log(element);
           this.sumatoriaTransacciones += element.longitud;
           });
-          ////console.log(this.dataExportarExcel);
           this.transac.controls['recolecciones'].disable()
           break;         
 
@@ -1556,16 +1366,12 @@ obtenerConsolidado() {
       this.exportdateform.controls['horaini'].disable();
       this.exportdateform.controls['horafin'].disable();
       this.exportdateform.controls['codigoClienteidFk'].disable();
-      
     }
-
   }
   
   changeColorsTransac() {
-
     this.dataExportarExcel.filter( (element:any) => {  
       element.transacciones.filter( (elementTra:any) => {
-        ////console.warn(elementTra);
         switch( this.colorguia ) {
           case true:
             if( elementTra.tipoTransaccion == "Automático" ) {
@@ -1582,10 +1388,8 @@ obtenerConsolidado() {
             elementTra.color = 'whitesmoke !important;';
             break;
         }
-        
       })
     })
-
   }
 
   respladoDataTran() {
@@ -1601,7 +1405,7 @@ obtenerConsolidado() {
           })
           this._show_spinner = false;
         }, error: (e) => {
-          console.error(e);
+          // console.error(e);
           this._show_spinner = false;
         }
       })
@@ -1611,14 +1415,11 @@ obtenerConsolidado() {
   validarRangoFechas() {
     let valorFechaInicial = this.exportdateform.controls['dateini'].value;
     let valorFechaFinal = this.exportdateform.controls['datefin'].value;
-  
     if (valorFechaInicial && valorFechaFinal) {
       let fechaInicial = new Date(valorFechaInicial);
       let fechaFinal = new Date(valorFechaFinal);
-  
       // Calcula la diferencia en días
       let diferencia = Math.floor((fechaFinal.getTime() - fechaInicial.getTime()) / (1000 * 60 * 60 * 24));
-  
       if (diferencia == 1) {
         // //alert'Existe un día de rango');
         this.mostrarCiclo = true;
@@ -1652,7 +1453,7 @@ obtenerConsolidado() {
       return element;
     });
     } else {
-      console.error("Ingrese ambas fechas para filtrar.");
+      // console.error("Ingrese ambas fechas para filtrar.");
     }
     ////console.warn(this.dataExportarExcel);
   }
@@ -1682,7 +1483,7 @@ obtenerConsolidado() {
   
       this._show_spinner = false;
     } else {
-      console.error("Ingrese fechas y horas para filtrar.");
+      // console.error("Ingrese fechas y horas para filtrar.");
       this._show_spinner = false;
     }
   }
