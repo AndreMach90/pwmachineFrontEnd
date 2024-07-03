@@ -33,16 +33,17 @@
         <div *ngIf="true"
           class="animate_animated animate_backInLeft p-2 bg-light rounded-2">
           <div class="mb-3 w-100">
-            <label for="nombreTienda" class="form-label text-secondary">
-              Nombre de tienda: <span class="text-danger">*</span>
+            <label for="nombreTienda"
+                   class="form-label text-secondary">
+                   Nombre de tienda: 
+                   <span class="text-danger">*</span>
             </label>
             <input type="text"
-              class="form-control"
-              formControlName="nombreTienda"
-              #nombreTienda
-              id="nombreTienda"
-              placeholder="Tienda Carlitos..."
-            />
+                   class="form-control"
+                   formControlName="nombreTienda"
+                   #nombreTienda
+                   id="nombreTienda"
+                   placeholder="Tienda Carlitos..."/>
           </div>
           <div class="mb-3 w-100">
             <label for="RUC" class="form-label text-secondary">
@@ -104,29 +105,31 @@
           <div class="mb-3 col-3 w-100">
             <label for="codProv" class="form-label">Localidad: <span class="text-danger">*</span></label>
             <select id="codProv"
-              class="inpForms form-select w-100"
-              formControlName="codProv"
-              #codProv
-              aria-label="">
-              <option *ngFor="let tipo of localidadesGuardadasCliente"
-                [value]="tipo.codigo">
-                {{ tipo.nombre }}
-              </option>
+                    class="inpForms form-select w-100"
+                    formControlName="codProv"
+                    #codProv
+                    aria-label="">
+                    <option *ngFor="let tipo of localidadesGuardadasCliente"
+                      [value]="tipo.codigo">
+                      {{ tipo.nombre }}
+                    </option>
             </select>
           </div>
           <div class="d-flex flex-wrap justify-content-between">
             <div class="floating-button">
               <button type="button"
-                class="btn btn-danger btn-sm"
-                *ngIf="_cancel_button"
-                (click)="limpiar()">
-                <div class="icono" [style]="'background-image: url( ' + cancel + ' )'"></div>
+                      class="btn btn-danger btn-sm"
+                      *ngIf="_cancel_button"
+                      (click)="limpiar()">
+                      <div class="icono" [style]="'background-image: url( ' + cancel + ' )'"></div>
               </button>
               <button type="submit"
-                class="d-flex align-items-center btn btn-sm btn-primary"
-                *ngIf="_create_show">
-                <div class="icono" [style]="'background-image: url( ' + crear + ' )'"></div>
-                <div>{{ _action_butto }} Tienda</div>
+                      class="d-flex align-items-center btn btn-sm btn-primary"
+                      *ngIf="_create_show">
+                      <div class="icono"
+                           [style]="'background-image: url( ' + crear + ' )'">
+                      </div>
+                      <div>{{ _action_butto }} Tienda</div>
               </button>
             </div>
           </div>

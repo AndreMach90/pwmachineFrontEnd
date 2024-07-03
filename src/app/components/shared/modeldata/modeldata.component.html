@@ -16,7 +16,7 @@
         <span class="text-primary">
             <div class="d-flex justify-content-end align-items-center">
                 <div class="formcontent d-flex">
-                    <div class="d-flex">
+                    <!-- <div class="d-flex">
                         <div class="m-1">
                             <input type="checkbox"
                                    class="form-check-input"
@@ -26,7 +26,7 @@
                                        <span> Filtrar por cliente </span>
                                    </label>
                         </div>
-                    </div>
+                    </div> -->
                     <div *ngIf="_transaction_show">
                         <form [formGroup]="transac"
                               (ngSubmit)="submitTransacFilter()">
@@ -79,7 +79,7 @@
             <div class="d-flex align-items-end justify-content-between">
                 <div class="d-flex align-items-end">
                 <div class="d-flex flex-column animate__animated animate__fadeIn p-2"
-                     *ngIf="checktiendas">
+                     *ngIf="true">
                      <label for="codigoClienteidFk"
                             class="form-label">
                             <span class="text-primary">
@@ -307,7 +307,7 @@
                 </th>
             </tr>
         </thead>
-            <tbody>
+        <tbody>
             <tr *ngFor="let transaccion of equipo.transacciones; let i = index">
                 <td style="background-color: #444444; color: yellow;" *ngIf="indices_show">{{i+1}}</td>
                 <td [style]="'background: ' + transaccion.color">
@@ -393,7 +393,7 @@
                     <strong> {{ transaccion.tipoTransaccion | slice:0:1 }} </strong>
                 </td>
             </tr>
-            </tbody>
+        </tbody>
         </table>
     </div>
 </div>

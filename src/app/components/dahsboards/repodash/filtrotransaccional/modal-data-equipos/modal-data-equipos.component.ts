@@ -40,28 +40,28 @@ export class ModalDataEquiposComponent implements OnInit {
     this.result = this.data.equiposExistentes;
   }
 
-  totalResagadasAutomaticas: number = 0;
-  totalResagadasManuales:    number = 0;
+  totalRezagadasAutomaticas: number = 0;
+  totalRezagadasManuales:    number = 0;
   totalManuales:    number = 0;
   totalAutomaticas: number = 0;
   SumatotalTransac: number = 0;
   SumatotalTransacResag: number = 0;
-  sumatoriaResagadasTransac( objeto:any ) {
+  sumatoriaRezagadasTransac( objeto:any ) {
 
-    this.totalResagadasAutomaticas = 0;
-    this.totalResagadasManuales    = 0;
+    this.totalRezagadasAutomaticas = 0;
+    this.totalRezagadasManuales    = 0;
     this.totalManuales = 0;
     this.totalAutomaticas = 0;
 
     objeto.filter( ( x:any ) => { 
-      this.totalResagadasAutomaticas += x.conteo_AR;
-      this.totalResagadasManuales    += x.conteo_MR;
+      this.totalRezagadasAutomaticas += x.conteo_AR;
+      this.totalRezagadasManuales    += x.conteo_MR;
       this.totalManuales             += x.conteo_M;
       this.totalAutomaticas          += x.conteo_A;
     })
 
     this.SumatotalTransac      = this.totalManuales + this.totalAutomaticas;
-    this.SumatotalTransacResag = this.totalResagadasAutomaticas + this.totalResagadasManuales;
+    this.SumatotalTransacResag = this.totalRezagadasAutomaticas + this.totalRezagadasManuales;
 
   }
 
@@ -160,7 +160,7 @@ export class ModalDataEquiposComponent implements OnInit {
               this.localidadesEncontradas[localidadIndex !== -1 ? localidadIndex : this.localidadesEncontradas.length - 1].equiposTrans.push(element);
               this.localidadesEncontradasGhost[localidadIndex !== -1 ? localidadIndex : this.localidadesEncontradasGhost.length - 1].equiposTrans.push(element);
           });
-          this.sumatoriaResagadasTransac(this.listaEsquipo);
+          this.sumatoriaRezagadasTransac(this.listaEsquipo);
         }
       }
     )
@@ -235,7 +235,7 @@ export class ModalDataEquiposComponent implements OnInit {
         this.equiposSeleccionados = this.listaEsquipo.map((equipo: any) => {
           if ( equipo.conteo_M > 0 || equipo.conteo_A > 0 || equipo.conteo_AR > 0 || equipo.conteo_MR > 0 ) {
             equipo.checkTran = true;
-            return { nserie: equipo.machine_Sn, ipequipo: equipo.ipEquipo, transaccionesResagadas: equipo.transaccionesResagados };
+            return { nserie: equipo.machine_Sn, ipequipo: equipo.ipEquipo, transaccionesRezagadas: equipo.transaccionesResagados };
           } else if ( equipo.conteo_M == 0 && equipo.conteo_A == 0 && equipo.conteo_AR == 0 && equipo.conteo_MR == 0 ) {
             equipo.checkTran = false;
             return null;
@@ -264,7 +264,7 @@ export class ModalDataEquiposComponent implements OnInit {
           this.equiposSeleccionados.push({
             nserie: equipo.machine_Sn,
             ipequipo: equipo.ipEquipo,
-            transaccionesResagadas: equipo.transaccionesResagados
+            transaccionesRezagadas: equipo.transaccionesResagados
           });
         }
       } else {

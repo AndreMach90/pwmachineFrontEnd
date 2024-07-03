@@ -85,14 +85,14 @@ export class TiendaComponent implements OnInit {
 
   public tiendaForm = new FormGroup({
     codigoClienteidFk: new FormControl(''),
-    cuentaBanco: new FormControl(''),
-    nombreTienda: new FormControl(''),
-    telefono: new FormControl(''),
-    direccion: new FormControl(''),
-    nombreAdmin: new FormControl(''),
-    telfAdmin: new FormControl(''),
-    emailAdmin: new FormControl(''),
-    codProv: new FormControl(''),
+    cuentaBanco:       new FormControl(''),
+    nombreTienda:      new FormControl(''),
+    telefono:          new FormControl(''),
+    direccion:         new FormControl(''),
+    nombreAdmin:       new FormControl(''),
+    telfAdmin:         new FormControl(''),
+    emailAdmin:        new FormControl(''),
+    codProv:           new FormControl('')
   });
 
   public filtertienForm = new FormGroup({
@@ -250,15 +250,24 @@ export class TiendaComponent implements OnInit {
         icon: 'warning',
         title: 'No puedes enviar el campo teléfono de tienda vacío',
       });
+      else if (
+        this.tiendaForm.controls['codProv'].value == undefined ||
+        this.tiendaForm.controls['codProv'].value == null ||
+        this.tiendaForm.controls['codProv'].value == ''
+      )
+      Toast.fire({
+        icon: 'warning',
+        title: 'No puedes enviar el campo localidad de tienda vacío',
+        });
     else if (
       this.tiendaForm.controls['direccion'].value == undefined ||
       this.tiendaForm.controls['direccion'].value == null ||
       this.tiendaForm.controls['nombreTienda'].value == ''
     )
-      Toast.fire({
-        icon: 'warning',
-        title: 'No puedes enviar el campo direcció de tienda vacío',
-      });
+    Toast.fire({
+      icon: 'warning',
+      title: 'No puedes enviar el campo direcció de tienda vacío',
+    });
     else {
       this._show_spinner = true;
       this.modelTienda = {
@@ -321,15 +330,26 @@ export class TiendaComponent implements OnInit {
         title: 'No puedes enviar el campo teléfono de tienda vacío',
       });
     else if (
+      this.tiendaForm.controls['codProv'].value == undefined ||
+      this.tiendaForm.controls['codProv'].value == null ||
+      this.tiendaForm.controls['codProv'].value == ''
+    )
+      Toast.fire({
+        icon: 'warning',
+        title: 'No puedes enviar el campo localidad de tienda vacío',
+      });
+      
+    else if (
       this.tiendaForm.controls['direccion'].value == undefined ||
       this.tiendaForm.controls['direccion'].value == null ||
       this.tiendaForm.controls['nombreTienda'].value == ''
     )
-      Toast.fire({
-        icon: 'warning',
-        title: 'No puedes enviar el campo direcció de tienda vacío',
-      });
+    Toast.fire({
+      icon: 'warning',
+      title: 'No puedes enviar el campo direcció de tienda vacío',
+    });
     else {
+
       this._show_spinner = true;
       this._create_show = false;
       this.modelTienda = {
@@ -346,7 +366,9 @@ export class TiendaComponent implements OnInit {
         idCentroProceso:    null,
         Active:             'A',
       };
+      
       console.log(this.modelTienda);
+
       setTimeout(() => {
         this.tiendaservs.guardarTiendas(this.modelTienda).subscribe({
           next: (x) => {
@@ -532,8 +554,9 @@ export class TiendaComponent implements OnInit {
   }
 
   obtenerLocalidad() {
-
+    this.localidadesGuardadasCliente = [];
     let id: any = this.tiendaForm.controls['codigoClienteidFk'].value;
+    this.tiendaForm.controls['codProv'].setValue(null);
     this._show_spinner = true;
     this.loc.obtenerLocalidadesCliente(id).subscribe({
       next: (x) => {

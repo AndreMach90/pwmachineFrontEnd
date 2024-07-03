@@ -176,7 +176,7 @@ export class HistorialAcreditacionComponent implements OnInit {
       confirmButtonColor: "#3085d6",
       cancelButtonColor:  "#d33",
       confirmButtonText:  "Sí, acreditar",
-      cancelButtonText:   "No a creditar todabía"
+      cancelButtonText:   "No acreditar"
     }).then((result) => {
       if (result.isConfirmed) {
         this._show_spinner = true;
