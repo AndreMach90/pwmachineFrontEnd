@@ -315,7 +315,7 @@ obtenerConsolidado( type: number ) {
     let dt: any = new Date();
     this._show_spinner = true;
     setTimeout(() => {
-      this.transPush(`transacciones_acreditadas_${dt.getDay()}_${dt.getMonth()}_${dt.getFullYear()}_${dt.getHours()}_${dt.getMinutes()}.xlsx`);
+      this.transPush(`CFI_${dt.getDate()}${dt.getMonth()+1}${dt.getFullYear()}.xlsx`);
       this._show_spinner = false;
     }, 2000);
   }
@@ -368,129 +368,6 @@ obtenerConsolidado( type: number ) {
 
   }
 
-  /*
-  async exportToExcelConsolidadoGeneral(): Promise<void> {
-
-    try {
-      const fecha = new Date();
-      const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet('Base'); //Agregar una nueva hoja al libro
-
-      // Agregar encabezados de columnas para transacciones
-      const headerRow = worksheet.addRow([
-        'Localidad',
-        'Fecha',
-        'Hora',
-        'Cliente',
-        'Tienda',
-        'N. Trans.',
-        'N. Serie Equipo',
-        'Usuario',
-        'Establecimiento',
-        'Actividad',
-        'Cod. Establ.',
-        'Nom. Banco',
-        'T. Cuenta',
-        'Cta. Bancaria',
-        '$1',
-        '$2',
-        '$5',
-        '$10',
-        '$20',
-        '$50',
-        '$100',
-        '$0.01',
-        '$0.05',
-        '$0.10',
-        '$0.25',
-        '$0.50',
-        '$1.00',
-        'Total',
-        'T. T.'
-      ]);
-
-      // Aplicar estilos al encabezado
-      headerRow.eachCell((cell) => {
-        cell.fill = {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: { argb: '2929AB' },
-        };
-        cell.font = {
-          color: { argb: 'FFFFFFFF' },
-          bold: true,
-        };
-      });
-
-      // Ancho de las celdas
-      worksheet.getColumn(1) .width = 20;
-      worksheet.getColumn(2) .width = 12;
-      worksheet.getColumn(4) .width = 27;
-      worksheet.getColumn(5) .width = 30;
-      worksheet.getColumn(6) .width = 13;
-      worksheet.getColumn(9) .width = 31;
-      worksheet.getColumn(11).width = 12;
-      worksheet.getColumn(12).width = 20;
-      worksheet.getColumn(14).width = 16;
-      worksheet.getColumn(28).width = 12;
-      worksheet.getColumn(29).width = 13;
-
-      this.dataExportarExcel.sort((a: any, b: any) => {
-        const localidadComparison = a.localidad.localeCompare(b.localidad);
-        if (localidadComparison !== 0) {
-          return localidadComparison;
-        } else {
-          return a.machine_Sn.localeCompare(b.machine_Sn);
-        }
-      });
-      // this.dataExportarExcel.sort((a: any, b: any) => a.machine_Sn.localeCompare(b.machine_Sn));
-
-      this.dataExportarExcel.forEach((item: any) => {
-        // Iterar sobre las transacciones del equipo
-        if (item.transacciones) {
-          item.transacciones.forEach((transaccion: any) => {
-            worksheet.addRow([
-              item.localidad,
-              transaccion.fechaTransaccion.split("T")[0],
-              transaccion.hora,
-              transaccion.nombreCliente,
-              transaccion.nombreTienda,
-              transaccion.transaccion_No,
-              item.machine_Sn,
-              transaccion.usuarios_idFk,
-              transaccion.establecimiento,
-              transaccion.observacion,
-              transaccion.codigoEstablecimiento,
-              transaccion.nombanco,
-              transaccion.tipoCuenta,
-              transaccion.numerocuenta,
-              transaccion.deposito_Bill_1,
-              transaccion.deposito_Bill_2,
-              transaccion.deposito_Bill_5,
-              transaccion.deposito_Bill_10,
-              transaccion.deposito_Bill_20,
-              transaccion.deposito_Bill_50,
-              transaccion.deposito_Bill_100,
-              transaccion.manual_Deposito_Coin_1,
-              transaccion.manual_Deposito_Coin_5,
-              transaccion.manual_Deposito_Coin_10,
-              transaccion.manual_Deposito_Coin_25,
-              transaccion.manual_Deposito_Coin_50,
-              transaccion.manual_Deposito_Coin_100,
-              transaccion.total,
-              transaccion.tipoTransaccion,
-            ]);
-          });
-        }
-      });
-      const buf = await workbook.xlsx.writeBuffer(); // Escribir el archivo Excel
-      this.downloadExcelFile(buf,`CFI_${fecha.getDate()}${fecha.getMonth()+1}${fecha.getFullYear()}.xlsx`);
-    } catch (error) {
-      //console.log("No se puede crear el archivo Excel: "+error);
-    }
-  }
-  */
-
   async exportToExcelConsolidadoGeneral(): Promise<void> {
     try {
       const fecha         = new Date();
@@ -520,6 +397,7 @@ obtenerConsolidado( type: number ) {
           color: { argb: 'FFFFFFFF' }, // Letras blancas
           bold: true,
         };
+        cell.alignment = { vertical: 'middle', horizontal: 'center' };
       });
 
       // Ancho de las celdas
@@ -1108,7 +986,7 @@ async exportToExcelRezagadas(): Promise<void> {
      // Crear la hoja para los consolidados
      const consolidadosSheet = workbook.addWorksheet('Consolidado Rezagadas');
      // Añadir título
-     const titleRow = consolidadosSheet.addRow(['DETALLE DE ACREDITACIONES Rezagadas FORTICASH']);
+     const titleRow = consolidadosSheet.addRow(['DETALLE DE ACREDITACIONES REZAGADAS FORTICASH']);
      titleRow.font = { bold: true, size: 17 };
      titleRow.alignment = { vertical: 'middle', horizontal: 'center' };
      consolidadosSheet.mergeCells('A1:G1');
@@ -1316,6 +1194,12 @@ async exportToExcelRezagadas(): Promise<void> {
              totalTransacciones = this.tran.length;
          });
        
+         console.log('////////////////////////////////');
+         console.log('////////////////////////////////');
+         console.log(this.tran);
+         console.log('////////////////////////////////');
+         console.log('////////////////////////////////');
+
          // Paso 2: Ejecutar el primer bloque paso a paso usando RxJS
          if (totalTransacciones > 0) {
              interval(5) // Emitir un valor cada 5 milisegundos

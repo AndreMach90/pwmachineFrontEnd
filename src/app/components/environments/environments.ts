@@ -12,14 +12,18 @@ export class Environments {
         
     // apingRok: any = 'http://181.188.224.4:5208';
     // apingRok: any = 'http://192.168.100.12:9095';
-    apingRok: any = 'http://192.168.55.173:9095';
+    apingRok: any = 'http://192.168.55.96:9095';
     // apingRok: any = 'https://853e7b938358.ngrok.app';
     // apingRok: any = 'https://sfiback.azurewebsites.net';
+    
+    // apingRok:    any = 'http://186.3.206.163:5001';
 
-    version: string = 'V.1.0.1.9';
+    // FORTIUS INVITADO
+    // apingRok:    any = 'http://192.168.101.71:5001';
+    version: string = 'V.1.0.2';
     es:      number = 5;
-    hash:    number = 10
-    encode:  number = 99
+    hash:    number = 10;
+    encode:  number = 99;
 
     apiurl(): string {
         const  env:string = this.apingRok+'/api/';

@@ -232,7 +232,7 @@ export class HistorialAcreditacionComponent implements OnInit {
     const worksheet = workbook.addWorksheet('TodasTransacciones');
     this.dataExportarExcel.forEach( (equipo: any) => {
       const headers = this.getHeaderRow();
-      const numericColumns = [ 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 ];
+      const numericColumns = [ 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26];
 
     // Agrega encabezados de columna solo si es la primera iteración
     if ( this.dataExportarExcel.indexOf(equipo) === 0 ) {
@@ -354,58 +354,25 @@ export class HistorialAcreditacionComponent implements OnInit {
           };
         }
 
-        const saldoRow = worksheet.addRow(
-          [datenow, timenow, clientes,tiendas,'   ***   ',
-           equipos,usuario,establecimiento,actividad,codestablecimiento,
-           '    ','    ','    ', '',
-           '', '', '', '', '', '',
-           '','','','','',
-           '', equipo.saldo, 'saldo']);
-
-           for (let col = 1; col <= 27; col++) {
-            saldoRow.getCell( col ).fill = {
-                  type: 'pattern',
-                  pattern: 'solid',
-                  fgColor: { argb: 'EFFFDC' },
-              };
-              saldoRow.getCell(col).border = {
-                top:    {
-                          style: 'thin',
-                          color: { argb: '000000' }
-                        },
-                left:   {
-                          style: 'thin',
-                          color: { argb: '000000' }
-                        },
-                bottom: {
-                          style: 'thin',
-                          color: { argb: '000000' }
-                        },
-                right:  { 
-                          style: 'thin',
-                          color: { argb: '000000' }
-                        },
-              };
-            }
 
       }
 
 
     });
   
-    worksheet.columns.forEach((column: any) => {
-        if (numericColumns.includes(column.number - 1)) {
-          column.eachCell((cell: any) => {
-            cell.numFmt = '#,##0';
-        });
-        if (column.number === 26) {
-          column.width = 20;
-          column.eachCell((cell: any) => {
-            cell.numFmt = '#,##0.00';
-          });
-        }
-      }
-      });
+    // worksheet.columns.forEach((column: any) => {
+    //     if (numericColumns.includes(column.number - 1)) {
+    //       column.eachCell((cell: any) => {
+    //         cell.numFmt = '#,##0';
+    //     });
+    //     if (column.number === 26) {
+    //       column.width = 20;
+    //       column.eachCell((cell: any) => {
+    //         cell.numFmt = '#,#0.00';
+    //       });
+    //     }
+    //   }
+    //   });
   
       const titleRow = worksheet.getRow(1);
       titleRow.getCell(1).font = { 

@@ -27,7 +27,7 @@
                                    </label>
                         </div>
                     </div> -->
-                    <div *ngIf="_transaction_show">
+                    <!-- <div *ngIf="_transaction_show">
                         <form [formGroup]="transac"
                               (ngSubmit)="submitTransacFilter()">
                               <div class="d-flex">
@@ -53,7 +53,7 @@
                                   </div>
                               </div>
                         </form>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </span>
@@ -123,15 +123,22 @@
                                class="form-control"
                                formControlName="dateini"
                                #dateini
+                               (change)="validateExistDate()"
+                               (keyup)="validateExistDate()"
                                id="dateini">
                      </div>
-                    <div class="d-flex flex-column p-2">
-                        <label for="Nombre_Cliente"
-                               class="form-label text-secondary">
-                               Fecha final:
-                        </label>
-                        <input type="date" class="form-control" formControlName="datefin" #datefin (change)="validateExistDate()" id="datefin">
-                    </div>
+                     <div class="d-flex flex-column p-2">
+                         <label for="Nombre_Cliente"
+                                class="form-label text-secondary">
+                                Fecha final:
+                         </label>
+                         <input type="date" class="form-control"
+                                formControlName="datefin"
+                                #datefin
+                                (keyup)="validateExistDate()"
+                                (change)="validateExistDate()"
+                                id="datefin">
+                     </div>
                     </div>
                     <div class="d-flex align-items-end" *ngIf="_transaction_show">
                        <div class="d-flex flex-column  p-2">
@@ -160,8 +167,10 @@
                         <div class=" rounded-pill d-flex shadow-sm align-items-center"
                              style="background-color: rgb(226, 226, 226); height: 37px; margin-bottom: 10px;
                                     border: solid 1px rgb(195, 195, 195);">
-                                    <label for="acreditada" class="p-1" title="Transacciones por acreditar">
-                                        Trans. por acreditadar
+                                    <label for="acreditada"
+                                           class="p-1"
+                                           title="Transacciones por acreditar">
+                                           Trans. por acreditadar
                                     </label>
                                     <div class="p-1">
                                         <input type="checkbox"
@@ -171,13 +180,13 @@
                                                #acreditada
                                                id="acreditada">
                                     </div>
-                        </div>
+                        </div>                        
                         <div class="p-2 d-flex align-items-end">
                             <button type="button"
                                     class="btn btn-outline-dark"
-                                    
                                     (click)="openDataEquiposDialog()"
-                                    style="height: 37px;" title="Obtener transacciones de equipos seleccionados">
+                                    style="height: 37px;"
+                                    title="Obtener transacciones de equipos seleccionados">
                                     Obtener
                             </button>
                         </div>
