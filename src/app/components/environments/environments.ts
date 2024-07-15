@@ -7,16 +7,22 @@ import { EncryptService } from "../shared/services/encrypt.service";
 })
 
 export class Environments {
+    /** ======================================================= */
+    
+    /**
+     * CONTROL DE ERRORES
+     */
+
+    E_404:  any = 'Error al ingresar';
+    E_0:    any = 'Hay inconvenientes al establecer conexión con el servidor';
+    E_500:  any = 'Problemas en consulta de datos';
+
+    /** ======================================================= */
 
     constructor( private encrypt: EncryptService ) { }
         
-    // apingRok: any = 'http://181.188.224.4:5208';
-    // apingRok: any = 'http://192.168.100.12:9095';
     apingRok: any = 'http://192.168.55.96:9095';
-    // apingRok: any = 'https://853e7b938358.ngrok.app';
     // apingRok: any = 'https://sfiback.azurewebsites.net';
-    
-    // apingRok:    any = 'http://186.3.206.163:5001';
 
     // FORTIUS INVITADO
     // apingRok:    any = 'http://192.168.101.71:5001';

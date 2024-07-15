@@ -185,24 +185,20 @@ export class ClienteComponent implements OnInit {
 
   clienteListaGhost: any = [];
   obtenerCliente() {
-    this.clientelista = [];
+
+    this.clientelista      = [];
     this.clienteListaGhost = [];
-    this._show_spinner = true;
-    this.clienteserv.obtenerCliente()
-                    .subscribe({
+    this._show_spinner     = true;
+    this.clienteserv.obtenerCliente().subscribe({
       next: (cliente) => {
         this.clienteListaGhost = cliente;
-        // this.clientelista = cliente;
-        // console.log(this.clienteListaGhost)
         this._show_spinner = false;
       }, error: (e) => {
         this._show_spinner = false;
         console.error(e);
       }, complete: () => {
-        this.clienteListaGhost.filter((element:any)=>{
 
-          console.warn(element)
-
+        this.clienteListaGhost.filter( (element:any) => {
           let arr: any = {
             "id": element.id,
             "codigoCliente": element.codigoCliente,
@@ -212,13 +208,14 @@ export class ClienteComponent implements OnInit {
             "telefcontacto": element.telefcontacto,
             "emailcontacto": element.emailcontacto,
             "nombrecontacto": element.nombrecontacto,
-            "cantidadCuntasBancarias": element.cantidadCuntasBancarias,
+            "cantidadCuntasBancarias": element.cantidadCuentasBancarias,
             "cantidadLocalidades": element.cantidadLocalidades
           }
 
           this.clientelista.unshift(arr);
-          console.warn(this.clientelista);
+
         })
+
       }
     })
   }
@@ -326,21 +323,7 @@ export class ClienteComponent implements OnInit {
     }
   }
 
-  obtenerCuentaTransac(data:any) {
-    //console.log(data)
-    this.clienteserv.obtenerCuentaTransacCant(data.id).subscribe({
-      next: (x) => {
-        //console.warn(x);
-      }
-    })
-  }
-
   obtenerCuentaBancariaCliente(id:number) {
-    console.log('id cliente')
-    console.log(id)
-
-    console.log(this.clientelista)
-
     this._show_spinner = true;
     this.cuentaslista = [];
     this.clienteserv.obtenerCuentaCliente(id).subscribe({
@@ -488,8 +471,7 @@ export class ClienteComponent implements OnInit {
     });
 
 
-    dialogRef.afterClosed().subscribe( result => {      
-      ////////console.warn(result);
+    dialogRef.afterClosed().subscribe( result => {
       this.obtenerCliente();
     });
 
@@ -506,7 +488,6 @@ export class ClienteComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe( result => {
-      ////////console.warn(result);
       this.obtenerCliente();
     });
 

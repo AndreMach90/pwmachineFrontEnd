@@ -181,19 +181,20 @@
                 <div class="d-flex">
                   <div style="width: 30px; height: 30px"
                        (click)="openDialogUsuariosAsignados(usuarios)"
-                       class="btn btn-warning btn-sm d-flex justify-content-center align-items-center p-1">
+                       class="btn btn-warning btn-sm d-flex justify-content-center align-items-center p-1 shadow-sm">
                     <span matBadgeColor="warn"
                           [matBadge]="usuarios.cantidadCuntasBancarias"
-                          matBadgePosition="before">
-                      <strong> o </strong>
-                    </span>
+                          matBadgePosition="before"
+                          class="d-flex align-items-center">
+                          <mat-icon>account_balance</mat-icon>
+                        </span>
                   </div>
                   <div *ngIf="permisonUsers"
-                       class="btn btn-primary btn-sm d-flex justify-content-center align-items-center p-1"
+                       class="btn btn-primary btn-sm d-flex justify-content-center align-items-center p-1 shadow-sm"
                        style="width: 30px; height: 30px"
                        (click)="obtenerCuentaBancariaCliente(usuarios.id); openDialogCrearCuentaBancaria(usuarios, 'C')">
-                       <span class="">
-                         <strong>+</strong>
+                       <span class="d-flex align-items-center">
+                          <mat-icon>add</mat-icon>
                        </span>
                   </div>
                 </div>
