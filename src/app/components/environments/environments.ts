@@ -12,7 +12,7 @@ export class Environments {
         
     // apingRok: any = 'http://181.188.224.4:5208';
     // apingRok: any = 'http://192.168.100.12:9095';
-    apingRok: any = 'http://192.168.55.96:9095';
+    apingRok: any = 'http://192.168.55.96:9096';
     // apingRok: any = 'https://853e7b938358.ngrok.app';
     // apingRok: any = 'https://sfiback.azurewebsites.net';
     

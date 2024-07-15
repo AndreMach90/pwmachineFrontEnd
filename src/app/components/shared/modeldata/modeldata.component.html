@@ -13,50 +13,6 @@
         <span>
             <h1> Configuración de exportación de datos: </h1>
         </span>
-        <span class="text-primary">
-            <div class="d-flex justify-content-end align-items-center">
-                <div class="formcontent d-flex">
-                    <!-- <div class="d-flex">
-                        <div class="m-1">
-                            <input type="checkbox"
-                                   class="form-check-input"
-                                   id="clientecheck"
-                                   (change)="checktiendas = !checktiendas; choicetiendas = false; checkFiltrarCliente(checktiendas)"/>
-                                   <label for="clientecheck">
-                                       <span> Filtrar por cliente </span>
-                                   </label>
-                        </div>
-                    </div> -->
-                    <!-- <div *ngIf="_transaction_show">
-                        <form [formGroup]="transac"
-                              (ngSubmit)="submitTransacFilter()">
-                              <div class="d-flex">
-                                  <div class="m-1">
-                                    <input type="checkbox"
-                                           class="form-check-input"
-                                           id="manualTransactions"
-                                           formControlName="manualTransactions"
-                                           (change)="transaccionesManuealesSolo()"
-                                           />
-                                    <label for="manualTransactions">
-                                        <span>Transacciones Manuales</span>
-                                    </label>
-                                  </div>
-                                  <div class="m-1">
-                                      <input type="checkbox" class="form-check-input"
-                                             id="automaticTransactions"
-                                             (change)="transaccionesAutomaticasSolo()"
-                                             formControlName="automaticTransactions"/>
-                                             <label for="automaticTransactions">
-                                                 <span>Transacciones Automáticas</span>
-                                             </label>
-                                  </div>
-                              </div>
-                        </form>
-                    </div> -->
-                </div>
-            </div>
-        </span>
     </div>
     <hr>
     <div class="d-flex flex-column" style="overflow-y: auto; max-height: 800px;" >
@@ -137,7 +93,10 @@
                                 #datefin
                                 (keyup)="validateExistDate()"
                                 (change)="validateExistDate()"
-                                id="datefin">
+                                id="datefin"/>
+                        <small class="text-secondary">
+                            <strong>{{ dias_estimados }}</strong>
+                        </small>
                      </div>
                     </div>
                     <div class="d-flex align-items-end" *ngIf="_transaction_show">

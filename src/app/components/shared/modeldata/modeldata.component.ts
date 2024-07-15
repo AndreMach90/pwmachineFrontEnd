@@ -1,27 +1,21 @@
-
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ClientesService } from '../../dahsboards/cliente/services/clientes.service';
 import { TiendaService } from '../../dahsboards/tienda/services/tienda.service';
-import { MonitoreoService } from '../../dahsboards/monitoreo-equipos/services/monitoreo.service';
 import { TransaccionesTiendaService } from '../../dahsboards/monitoreo-equipos/modal/services/transacciones-tienda.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Environments } from '../../environments/environments';
 import { ModalDataEquiposComponent } from '../../dahsboards/repodash/filtrotransaccional/modal-data-equipos/modal-data-equipos.component';
-import { MenuItem, MessageService } from 'primeng/api';
-import { Observable, elementAt, forkJoin, interval } from 'rxjs';
+import { MenuItem } from 'primeng/api';
+import { interval } from 'rxjs';
 import { Router } from '@angular/router';
 import { takeWhile, finalize } from 'rxjs/operators';
 import * as ExcelJS from 'exceljs';
 import Swal from 'sweetalert2'
-import { HistoriaAcreditacionService } from '../historial-acreditacion/services/historia-acreditacion.service';
-import { EncryptService } from '../services/encrypt.service';
-import { SharedService } from '../services/shared.service';
-
+import { format } from 'date-fns';
 import { ConsolidadoService } from './services/consolidado.service';
 
 const Toast = Swal.mixin({
-  
   toast: true,
   position: 'top-end',
   showConfirmButton: false,
@@ -31,9 +25,7 @@ const Toast = Swal.mixin({
     toast.addEventListener('mouseenter', Swal.stopTimer);
     toast.addEventListener('mouseleave', Swal.resumeTimer);
   }
-
 })
-
 
 @Component({
   selector: 'app-modeldata',
@@ -42,9 +34,7 @@ const Toast = Swal.mixin({
 })
 
 export class ModeldataComponent implements OnInit {
-
   @Output() moduleChange: EventEmitter<any> = new EventEmitter<any>();
-
   @ViewChild('dateini') dateini: ElementRef | undefined;
   @ViewChild('datefin') datefin: ElementRef | undefined;
   @ViewChild('horaini') horaini: ElementRef | undefined;
@@ -121,25 +111,18 @@ export class ModeldataComponent implements OnInit {
   })
 
   constructor( private formBuilder: FormBuilder,
-    private reouter:       Router,
-    private tokenGen:      SharedService,
-    private acreditacion:  HistoriaAcreditacionService,
     private clienteserv:   ClientesService,
     private tiendaservs:   TiendaService,
-    private monitoreo:     MonitoreoService,
     public  router:        Router,
     private transacciones: TransaccionesTiendaService,
     private consolidado:   ConsolidadoService,
     public  dialog:        MatDialog,
-    private ncrypt:        EncryptService,
     private env:           Environments ) {
-
       this.transac = this.formBuilder.group({
         manualTransactions:    true,
         automaticTransactions: true,
         recolecciones:         false
       });
-
     }
 
   ngOnInit(): void {
@@ -149,7 +132,6 @@ export class ModeldataComponent implements OnInit {
   }
 
   visibleDataTable() {
-
     switch (this.exportdateform.controls['spriv'].value) {
       case true:
         this.reportVisible = false;
@@ -158,7 +140,6 @@ export class ModeldataComponent implements OnInit {
         this.reportVisible = true;
         break;
     }
-
   }
 
   onSubmitHora() {}
@@ -170,9 +151,7 @@ export class ModeldataComponent implements OnInit {
 
   validateSesion() {
     let xtoken:any = sessionStorage.getItem('token');
-    if (xtoken == null || xtoken == undefined || xtoken == '') {
-      this.router.navigate(['login']);
-    }
+    if (xtoken == null || xtoken == undefined || xtoken == '') this.router.navigate(['login']);
   }
 
   closeSession() {
@@ -183,12 +162,9 @@ export class ModeldataComponent implements OnInit {
 
 
   filtrarTransaccionesFueraDeRango(): void {
-
-    /** Tomamos las fechas para concatenarla para más después */
+    // Tomamos las fechas para concatenarla para más después
     let di: any = this.exportdateform.controls['dateini'].value;
     let df: any = this.exportdateform.controls['datefin'].value;
-    
-    /** Tomamos la hora para concatenarla para más después */
     let hi: any = this.exportdateform.controls['horaini'].value;
     let hf: any = this.exportdateform.controls['horafin'].value;
 
@@ -221,92 +197,68 @@ export class ModeldataComponent implements OnInit {
         });
       }
     });
-
     this.exportToExcelRezagadas();
-
   }
 
 
-modelConsolidadoSend: any = [];
-listaConsolidados: any = [];
-listaConsolidadosRezagadas: any = [];
-obtenerConsolidado( type: number ) {
-  let di: any = this.exportdateform.controls['dateini'].value;
-  let df: any = this.exportdateform.controls['datefin'].value;
+  modelConsolidadoSend: any = [];
+  listaConsolidados: any = [];
+  listaConsolidadosRezagadas: any = [];
+  obtenerConsolidado( type: number ) {
+    let di: any = this.exportdateform.controls['dateini'].value;
+    let df: any = this.exportdateform.controls['datefin'].value;
 
-  let hi: any = this.exportdateform.controls['horaini'].value;
-  let hf: any = this.exportdateform.controls['horafin'].value;
+    let hi: any = this.exportdateform.controls['horaini'].value;
+    let hf: any = this.exportdateform.controls['horafin'].value;
 
-  let inicio = new Date(di);
-  let fin = new Date(df);
+    let inicio = new Date(di);
+    let fin = new Date(df);
 
-  // Dividir las horas en horas y minutos
-  const [inicioHoras, inicioMinutos] = hi.split(':').map(Number);
-  const [finHoras, finMinutos] = hf.split(':').map(Number);
+    // Dividir las horas en horas y minutos
+    const [inicioHoras, inicioMinutos] = hi.split(':').map(Number);
+    const [finHoras, finMinutos] = hf.split(':').map(Number);
 
-  // Establecer la hora y minutos en las fechas de inicio y fin
-  inicio.setHours(inicioHoras, inicioMinutos, 0, 0);
-  fin.setHours(finHoras, finMinutos, 0, 0);
+    // Establecer la hora y minutos en las fechas de inicio y fin
+    inicio.setHours(inicioHoras, inicioMinutos, 0, 0);
+    fin.setHours(finHoras, finMinutos, 0, 0);
 
-  // Convertir las fechas a UTC
-  const inicioUTC = new Date(Date.UTC(inicio.getFullYear(), inicio.getMonth(), inicio.getDate(), inicio.getHours(), inicio.getMinutes()));
-  const finUTC = new Date(Date.UTC(fin.getFullYear(), fin.getMonth(), fin.getDate(), fin.getHours(), fin.getMinutes()));
+    // Convertir las fechas a UTC
+    const inicioUTC = new Date(Date.UTC(inicio.getFullYear(), inicio.getMonth(), inicio.getDate(), inicio.getHours(), inicio.getMinutes()));
+    const finUTC = new Date(Date.UTC(fin.getFullYear(), fin.getMonth(), fin.getDate(), fin.getHours(), fin.getMinutes()));
 
-  // Añadir un día a la fecha de inicio y fin en UTC
-  inicioUTC.setUTCDate(inicioUTC.getUTCDate() + 1);
-  finUTC.setUTCDate(finUTC.getUTCDate() + 1);
+    // Añadir un día a la fecha de inicio y fin en UTC
+    inicioUTC.setUTCDate(inicioUTC.getUTCDate() + 1);
+    finUTC.setUTCDate(finUTC.getUTCDate() + 1);
 
-  let maquinas: any = [];
-  this.dataExportarExcel.filter((x: any) => {
-    maquinas.push(x.machine_Sn);
-  });
+    let maquinas: any = [];
+    this.dataExportarExcel.filter((x: any) => {
+      maquinas.push(x.machine_Sn);
+    });
 
-  this.modelConsolidadoSend = {
-    equipos: maquinas,
-    fechaIni: inicioUTC.toISOString(),
-    fechaFin: finUTC.toISOString(),
-    tipo: type
-  };
+    this.modelConsolidadoSend = {
+      equipos: maquinas,
+      fechaIni: inicioUTC.toISOString(),
+      fechaFin: finUTC.toISOString(),
+      tipo: type
+    };
 
-  console.log(this.modelConsolidadoSend);
-
-  switch( type ) {
-    case 1:
-      this.consolidado.obtenerConsolidado(this.modelConsolidadoSend).subscribe({
-        next: (x) => {
-          this.listaConsolidados = x;
-          console.log('Despues del settimeout 1000');
-          console.log(this.listaConsolidados);
-        },
-        error: (e) => {
-          console.error(e);
-        },
-        complete: () => {
-          this.filtrarTransaccionesDentroDeRango();
-        }
-      });
-      break;
-    case 2:
-      this.consolidado.obtenerConsolidado(this.modelConsolidadoSend).subscribe({
-        next: (x) => {
-          this.listaConsolidadosRezagadas = x;
-          console.log('Despues del settimeout 1000');
-          console.log('Consolidado resagados');
-          console.log(this.listaConsolidadosRezagadas);
-        },
-        error: (e) => {
-          console.error(e);
-        },
-        complete: () => {
-          // this.filtrarTransaccionesDentroDeRango();
-          this.filtrarTransaccionesFueraDeRango();
-        }
-      });
-      break;
+    switch( type ) {
+      case 1:
+        this.consolidado.obtenerConsolidado(this.modelConsolidadoSend).subscribe({
+          next: (x) => this.listaConsolidados = x,
+          error: (e) => console.log(e),
+          complete: () => this.filtrarTransaccionesDentroDeRango(),
+        });
+        break;
+      case 2:
+        this.consolidado.obtenerConsolidado(this.modelConsolidadoSend).subscribe({
+          next: (x) => this.listaConsolidadosRezagadas = x,
+          error: (e) => console.log(e),
+          complete: () => this.filtrarTransaccionesFueraDeRango(),
+        });
+        break;
+    }
   }
-  
-}
-
 
   exportarToExcelComplete() {
     this.obtenerConsolidado(1);
@@ -320,9 +272,7 @@ obtenerConsolidado( type: number ) {
     }, 2000);
   }
 
-
   filtrarTransaccionesDentroDeRango(): void {
-    
     this.transaccionesDentroDeRango = [];
     let di: any = this.exportdateform.controls['dateini'].value;
     let df: any = this.exportdateform.controls['datefin'].value;
@@ -346,28 +296,59 @@ obtenerConsolidado( type: number ) {
     fin.setDate(fin.getDate() + 1);
 
     this.dataExportarExcel.forEach((machine: any) => {
-
       const transaccionesEnRango = machine.transacciones.filter( (transaccion: any) => {
         const fechaTransaccion = new Date(transaccion.fechaTransaccion);
         return fechaTransaccion >= inicio && fechaTransaccion <= fin;
       });
-      
       if ( transaccionesEnRango.length > 0 ) {
-        this.transaccionesDentroDeRango.push(
-          {
+        this.transaccionesDentroDeRango.push({
             machine_Sn: machine.machine_Sn,
             localidad: machine.localidad,
             transacciones: transaccionesEnRango
           }
         );
       }
-
     });
-
     this.exportToExcel();
-
   }
 
+  numericColumns: any = [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28];
+  headerExcel: any = ['Localidad', 'Fecha', 'Hora', 'Cliente', 'Tienda', 'N. Trans.', 'N. Serie Equipo',
+    'Usuario', 'Establecimiento', 'Actividad', 'Cod. Establ.', 'Nom. Banco', 'T. Cuenta',
+    'Cta. Bancaria', '$1', '$2', '$5', '$10', '$20', '$50', '$100', '$0.01', '$0.05', '$0.10',
+    '$0.25', '$0.50', '$1.00', 'Total', 'T. T.'];
+  bodyExcel = (item: any, transaccion: any) => {
+    return [ item.localidad,
+      format(new Date(transaccion.fechaTransaccion), 'dd-MM-yyyy'),
+      transaccion.hora,
+      transaccion.nombreCliente,
+      transaccion.nombreTienda,
+      transaccion.machine_Sn + '-' +transaccion.transaccion_No,
+      transaccion.machine_Sn,
+      transaccion.usuarios_idFk,
+      transaccion.establecimiento,
+      transaccion.observacion,
+      transaccion.codigoEstablecimiento,
+      transaccion.nombanco,
+      transaccion.tipoCuenta,
+      transaccion.numerocuenta,
+      +transaccion.deposito_Bill_1,
+      +transaccion.deposito_Bill_2,
+      +transaccion.deposito_Bill_5,
+      +transaccion.deposito_Bill_10,
+      +transaccion.deposito_Bill_20,
+      +transaccion.deposito_Bill_50,
+      +transaccion.deposito_Bill_100,
+      +transaccion.manual_Deposito_Coin_1,
+      +transaccion.manual_Deposito_Coin_5,
+      +transaccion.manual_Deposito_Coin_10,
+      +transaccion.manual_Deposito_Coin_25,
+      +transaccion.manual_Deposito_Coin_50,
+      +transaccion.manual_Deposito_Coin_100,
+      +transaccion.total,
+      transaccion.tipoTransaccion
+    ]
+  }
   async exportToExcelConsolidadoGeneral(): Promise<void> {
     try {
       const fecha         = new Date();
@@ -377,14 +358,10 @@ obtenerConsolidado( type: number ) {
       const horaIniString = this.exportdateform.controls['horaini'].value;
       let dateIni:        any;
       let horaIni:        any;
+      let formatNumber:  any;
 
       // Agregar encabezados de columnas para transacciones
-      const headerRow = worksheet.addRow([
-        'Localidad', 'Fecha', 'Hora', 'Cliente', 'Tienda', 'N. Trans.', 'N. Serie Equipo',
-        'Usuario', 'Establecimiento', 'Actividad', 'Cod. Establ.', 'Nom. Banco', 'T. Cuenta',
-        'Cta. Bancaria', '$1', '$2', '$5', '$10', '$20', '$50', '$100', '$0.01', '$0.05', '$0.10',
-        '$0.25', '$0.50', '$1.00', 'Total', 'T. T.'
-      ]);
+      const headerRow = worksheet.addRow(this.headerExcel);
 
       // Aplicar estilos al encabezado
       headerRow.eachCell((cell) => {
@@ -402,7 +379,7 @@ obtenerConsolidado( type: number ) {
 
       // Ancho de las celdas
       worksheet.getColumn(1).width = 20; //Localidad
-      worksheet.getColumn(2).width = 25; //Fecha
+      worksheet.getColumn(2).width = 12; //Fecha
       worksheet.getColumn(4).width = 27; //Cliente
       worksheet.getColumn(5).width = 30; //Tienda
       worksheet.getColumn(6).width = 15; //N. Trans.
@@ -425,43 +402,15 @@ obtenerConsolidado( type: number ) {
       dateIni.setDate(dateIni.getDate() + 1);
 
       this.dataExportarExcel.forEach((item: any) => {
-        // Iterar sobre las transacciones del equipo
-        if (item.transacciones) {
+        if (item.transacciones) { // Iterar sobre las transacciones del equipo
           item.transacciones.forEach((transaccion: any) => {
-            let transaccionFechaHora = new Date(transaccion.fechaTransaccion);
             // Data
-            let row = worksheet.addRow([
-              item.localidad,
-              transaccion.fechaTransaccion,
-              transaccion.hora,
-              transaccion.nombreCliente,
-              transaccion.nombreTienda,
-              item.machine_Sn + '-' +transaccion.transaccion_No,
-              item.machine_Sn,
-              transaccion.usuarios_idFk,
-              transaccion.establecimiento,
-              transaccion.observacion,
-              transaccion.codigoEstablecimiento,
-              transaccion.nombanco,
-              transaccion.tipoCuenta,
-              transaccion.numerocuenta,
-              transaccion.deposito_Bill_1,
-              transaccion.deposito_Bill_2,
-              transaccion.deposito_Bill_5,
-              transaccion.deposito_Bill_10,
-              transaccion.deposito_Bill_20,
-              transaccion.deposito_Bill_50,
-              transaccion.deposito_Bill_100,
-              transaccion.manual_Deposito_Coin_1,
-              transaccion.manual_Deposito_Coin_5,
-              transaccion.manual_Deposito_Coin_10,
-              transaccion.manual_Deposito_Coin_25,
-              transaccion.manual_Deposito_Coin_50,
-              transaccion.manual_Deposito_Coin_100,
-              transaccion.total,
-              transaccion.tipoTransaccion,
-            ]);
-            if (transaccionFechaHora < dateIni) {
+            let row = worksheet.addRow(this.bodyExcel(item, transaccion));
+            this.numericColumns.forEach((colIndex: any) => {
+              formatNumber = (colIndex === 28) ? '#,##0.00' : '#,##0';
+              row.getCell(colIndex).numFmt = formatNumber;
+            });
+            if (new Date(transaccion.fechaTransaccion) < dateIni) {
               row.eachCell((cell) => {
                 cell.fill = {
                   type: 'pattern',
@@ -488,6 +437,7 @@ obtenerConsolidado( type: number ) {
     let hf: any = this.exportdateform.controls['horafin'].value;
     const inicio = new Date(di);
     const fin    = new Date(df);
+    let formatNumber:  any;
 
     this.transaccionesRecoleccionesSolo();
 
@@ -518,15 +468,7 @@ obtenerConsolidado( type: number ) {
       const transaccionesSheet = workbook.addWorksheet(`Base ${localidad}`);
 
       // Agregar encabezados de columnas para transacciones
-      const transaccionesHeaderRow = transaccionesSheet.addRow([
-        'Localidad', 'Fecha', 'Hora', 'Cliente',
-        'Tienda', 'N. Trans.', 'N. Serie Equipo',
-        'Usuario', 'Establecimiento', 'Actividad',
-        'Cod. Establ.', 'Nom. Banco', 'T. Cuenta',
-        'Cta. Bancaria', '$1', '$2', '$5', '$10',
-        '$20', '$50', '$100', '$0.01', '$0.05', '$0.10',
-        '$0.25', '$0.50', '$1.00', 'Total', 'T. T.'
-      ]);
+      const transaccionesHeaderRow = transaccionesSheet.addRow(this.headerExcel);
 
       // Aplicar estilos al encabezado
       transaccionesHeaderRow.eachCell((cell) => {
@@ -546,38 +488,11 @@ obtenerConsolidado( type: number ) {
       items.forEach((item: any) => {
         if (item.transacciones) {
           item.transacciones.forEach((transaccion: any) => {            
-            const row = transaccionesSheet.addRow([
-                item.localidad,
-                transaccion.fechaTransaccion,
-                transaccion.hora,
-                transaccion.nombreCliente,
-                transaccion.nombreTienda,
-                transaccion.machine_Sn + '-' +transaccion.transaccion_No,
-                transaccion.machine_Sn,
-                transaccion.usuarios_idFk,
-                transaccion.establecimiento,
-                transaccion.observacion,
-                transaccion.codigoEstablecimiento,
-                transaccion.nombanco,
-                transaccion.tipoCuenta,
-                transaccion.numerocuenta,
-                transaccion.deposito_Bill_1,
-                transaccion.deposito_Bill_2,
-                transaccion.deposito_Bill_5,
-                transaccion.deposito_Bill_10,
-                transaccion.deposito_Bill_20,
-                transaccion.deposito_Bill_50,
-                transaccion.deposito_Bill_100,
-                transaccion.manual_Deposito_Coin_1,
-                transaccion.manual_Deposito_Coin_5,
-                transaccion.manual_Deposito_Coin_10,
-                transaccion.manual_Deposito_Coin_25,
-                transaccion.manual_Deposito_Coin_50,
-                transaccion.manual_Deposito_Coin_100,
-                transaccion.total,
-                transaccion.tipoTransaccion
-              ]
-            );
+            let row = transaccionesSheet.addRow(this.bodyExcel(item,transaccion));
+            this.numericColumns.forEach((colIndex: any) => {
+              formatNumber = (colIndex === 28) ? '#,##0.00' : '#,##0';
+              row.getCell(colIndex).numFmt = formatNumber;
+            });
           });
         }
       });
@@ -774,10 +689,28 @@ obtenerConsolidado( type: number ) {
     window.URL.revokeObjectURL(url);
     downloadLink.remove();
   }
-  
-  /*
-  async exportToExcelRezagadas(): Promise<void> {
 
+  formatDate(date: Date): string {
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses son de 0 a 11, por lo que se le suma 1
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${month}-${day}-${year}`;
+  }
+
+  async exportToExcelRezagadas(): Promise<void> {
+    // Esperar a que se complete la obtención del consolidado
+    let di: any = this.exportdateform.controls['dateini'].value;
+    let df: any = this.exportdateform.controls['dateini'].value;
+    let hi: any = this.exportdateform.controls['horaini'].value;
+    let formatNumber:  any;
+
+    const inicio = new Date(di);
+    inicio.setDate(inicio.getDate() - 4); // Modifica el objeto 'inicio' restándole 4 días
+    const formattedInicio = this.formatDate(inicio);
+
+    const fin = new Date(df);
+    fin.setDate(fin.getDate() + 1);
+    const formattedfin = this.formatDate(fin);
     // Crear un objeto para agrupar las localidades con sus equipos y transacciones
     const localidadesMap: { [key: string]: any[] } = {};
 
@@ -789,22 +722,25 @@ obtenerConsolidado( type: number ) {
       }
       localidadesMap[localidad].push(item);
     });
+
+    // Agrupar los consolidados por localidad
+    const consolidadosMap: { [key: string]: any[] } = {};
+    this.listaConsolidadosRezagadas.forEach((item: any) => {
+      const localidad = item.localidad;
+      if (!consolidadosMap[localidad]) {
+        consolidadosMap[localidad] = [];
+      }
+      consolidadosMap[localidad].push(item);
+    });
+
   
     // Iterar sobre las localidades para crear un archivo por cada una
     for (const [localidad, items] of Object.entries(localidadesMap)) {
       const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet('Transacciones');
+      const worksheet = workbook.addWorksheet(`Transacciones Rezagadas de ${localidad}`);
   
       // Agregar encabezados de columnas para transacciones
-      const headerRow = worksheet.addRow([
-        'Localidad', 'Fecha', 'Hora', 'Cliente',
-        'Tienda', 'N. Trans.', 'N. Serie Equipo',
-        'Usuario', 'Establecimiento', 'Actividad',
-        'Cod. Establ.', 'Nom. Banco', 'T. Cuenta',
-        'Cta. Bancaria', '$1', '$2', '$5', '$10',
-        '$20', '$50', '$100', '$0.01', '$0.05', '$0.10',
-        '$0.25', '$0.50', '$1.00', 'Total', 'T. T.'
-      ]);
+      const headerRow = worksheet.addRow(this.headerExcel);
 
       // Aplicar estilos al encabezado
       headerRow.eachCell((cell) => {
@@ -825,476 +761,306 @@ obtenerConsolidado( type: number ) {
         // Iterar sobre las transacciones del equipo
         if (item.transacciones) {
           item.transacciones.forEach((transaccion: any) => {
-            const row = worksheet.addRow([
-              item.localidad,
-              transaccion.fechaTransaccion,
-              transaccion.hora,
-              transaccion.nombreCliente,
-              transaccion.nombreTienda,
-              transaccion.machine_Sn + '-' +transaccion.transaccion_No,
-              transaccion.machine_Sn,
-              transaccion.usuarios_idFk,
-              transaccion.establecimiento,
-              transaccion.observacion,
-              transaccion.codigoEstablecimiento,
-              transaccion.nombanco,
-              transaccion.tipoCuenta,
-              transaccion.numerocuenta,
-              transaccion.deposito_Bill_1,
-              transaccion.deposito_Bill_2,
-              transaccion.deposito_Bill_5,
-              transaccion.deposito_Bill_10,
-              transaccion.deposito_Bill_20,
-              transaccion.deposito_Bill_50,
-              transaccion.deposito_Bill_100,
-              transaccion.manual_Deposito_Coin_1,
-              transaccion.manual_Deposito_Coin_5,
-              transaccion.manual_Deposito_Coin_10,
-              transaccion.manual_Deposito_Coin_25,
-              transaccion.manual_Deposito_Coin_50,
-              transaccion.manual_Deposito_Coin_100,
-              transaccion.total,
-              transaccion.tipoTransaccion
-            ]);
+            let row = worksheet.addRow(this.bodyExcel(item,transaccion));
+            this.numericColumns.forEach((colIndex: any) => {
+              formatNumber = (colIndex === 28) ? '#,##0.00' : '#,##0';
+              row.getCell(colIndex).numFmt = formatNumber;
+            });
           });
         }
       });
   
-      // Escribir el archivo Excel
+      // Crear la hoja para los consolidados
+      const consolidadosSheet = workbook.addWorksheet('Consolidado Rezagadas');
+      // Añadir título
+      const titleRow = consolidadosSheet.addRow(['DETALLE DE ACREDITACIONES REZAGADAS FORTICASH']);
+      titleRow.font = { bold: true, size: 17 };
+      titleRow.alignment = { vertical: 'middle', horizontal: 'center' };
+      consolidadosSheet.mergeCells('A1:G1');
+      titleRow.getCell(1).fill = {
+          type:    'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFD3D3D3' },
+      };
+
+      consolidadosSheet.addRow([]);// Fila de separación
+
+      // Fecha "Desde"
+      const desdeRow = consolidadosSheet.addRow(['Desde:', formattedInicio]);
+      desdeRow.getCell(1).font = { bold: true };
+      desdeRow.getCell(1).alignment = { vertical: 'middle', horizontal: 'left' };
+
+      // Fecha "Hasta"
+      const hastaRow = consolidadosSheet.addRow(['Hasta:', formattedfin]);
+      hastaRow.getCell(1).font = { bold: true };
+      hastaRow.getCell(1).alignment = { vertical: 'middle', horizontal: 'left' };
+
+      // Hora "Desde y Hasta"
+      const CorteRow = consolidadosSheet.addRow(['Corte:', '00:01 - ' + hi]);
+      CorteRow.getCell(1).font = { bold: true };
+      CorteRow.getCell(1).alignment = { vertical: 'middle', horizontal: 'left' };
+
+      consolidadosSheet.addRow([]);// Fila de separación
+
+      const localidadRow = consolidadosSheet.addRow(['Localidad:', localidad.toUpperCase()]);
+      localidadRow.getCell(1).font = { bold: true };
+      localidadRow.getCell(1).alignment = { vertical: 'middle', horizontal: 'left' };
+
+      consolidadosSheet.addRow([]);// Fila de separación
+
+      // Verificar si hay datos de consolidados para la localidad actual
+      if (consolidadosMap[localidad]) {
+        const consolidadosHeaders = ['Tienda', 'N. Serie Equipo', 'Establecimiento', 'Cta. Bancaria', 'Código Establecimiento', 'Actividad', 'Total'];
+        const consolidadosHeaderRow = consolidadosSheet.addRow(consolidadosHeaders);
+        // Establecer el ancho de las columnas 'A', 'B' y 'C'
+        consolidadosSheet.getColumn('A').width = 40;
+        consolidadosSheet.getColumn('B').width = 25;
+        consolidadosSheet.getColumn('C').width = 25;
+        consolidadosSheet.getColumn('D').width = 25;
+        consolidadosSheet.getColumn('E').width = 25;
+        consolidadosSheet.getColumn('G').width = 18;
+        // Aplicar estilos al encabezado
+        consolidadosHeaderRow.eachCell((cell) => {
+          cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: '6F6F6C' }, // Fondo gris oscuro
+          };
+          cell.font = {
+            color: { argb: 'FFFFFF' }, // Letras blancas
+            bold: true,
+          };
+          cell.alignment = {
+            vertical: 'middle',
+            horizontal: 'center'
+          };
+        });
+
+        let currentTienda = '';
+        let currentTotal = 0;
+        let totalGeneral = 0;
+
+        // Agregar filas de datos
+        consolidadosMap[localidad].forEach((item: any, index: number, array: any[]) => {
+          if (item.nombreTienda !== currentTienda && currentTienda !== '') {
+            // Añadir la fila de total para la tienda anterior
+            const totalRow = consolidadosSheet.addRow(['', '', '', '', '', '', currentTotal]);
+            consolidadosSheet.mergeCells(`A${totalRow.number}:F${totalRow.number}`);
+            totalRow.getCell('A').value = `Total de ${currentTienda}`;
+            totalRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+              if (colNumber >= 1 && colNumber <= 7) {
+                cell.fill = {
+                  type: 'pattern',
+                  pattern: 'solid',
+                  fgColor: { argb: 'FFFFD700' }, // Fondo amarillo
+                };
+                if (colNumber === 1) {
+                  cell.font = { bold: true };
+                  cell.alignment = { horizontal: 'left' }; // Alineación a la izquierda
+                }
+                if (colNumber === 7) {
+                  cell.alignment = { horizontal: 'right' };
+                }
+              }
+            });
+            totalGeneral += currentTotal;
+            currentTotal = 0;
+          }
+
+          currentTienda = item.nombreTienda;
+          currentTotal += item.total;
+        
+          const rowValues = [
+            item.nombreTienda,
+            item.machine_Sn,
+            item.establecimiento,
+            item.numerocuenta,
+            item.codigoEstablecimiento,
+            item.observacion,
+            item.total
+          ];
+
+          const row = consolidadosSheet.addRow(rowValues);
+
+          // Aplicar estilo a la primera columna
+          row.getCell(1).fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'E8E8E8' }, // Fondo gris claro
+          };
+
+          row.getCell(1).font = {
+            color: { argb: '3E3E3E' }, // Letras blancas
+          };
+
+          // Si es el último elemento, añadir la fila de total también
+          if (index === array.length - 1) {
+            const totalRow = consolidadosSheet.addRow(['', '', '', '', '', '', currentTotal]);
+            consolidadosSheet.mergeCells(`A${totalRow.number}:F${totalRow.number}`);
+            totalRow.getCell('A').value = `Total de ${currentTienda}`;
+            totalRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+              if (colNumber >= 1 && colNumber <= 7) {
+                cell.fill = {
+                  type: 'pattern',
+                  pattern: 'solid',
+                  fgColor: { argb: 'FFFFD700' }, // Fondo amarillo
+                };
+                if (colNumber === 1) {
+                  cell.font = { bold: true };
+                  cell.alignment = { horizontal: 'left' }; // Alineación a la izquierda
+                }
+                if (colNumber === 7) {
+                  cell.alignment = { horizontal: 'right' };
+                }
+              }
+            });
+            totalGeneral += currentTotal; // Añadir el total de la tienda al total general
+          }
+        });
+
+        // Añadir la fila de total general
+        const totalGeneralRow = consolidadosSheet.addRow([ '', '', '', '', '', '', totalGeneral ]);
+        consolidadosSheet.mergeCells(`A${totalGeneralRow.number}:F${totalGeneralRow.number}`);
+        totalGeneralRow.getCell('A').value = 'Total General:';
+        totalGeneralRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+          if (colNumber >= 1 && colNumber <= 7) {
+            cell.fill = {
+              type: 'pattern',
+              pattern: 'solid',
+              fgColor: { argb: 'FFADD8E6' }, // Fondo celeste
+            };
+            if (colNumber === 1) {
+              cell.font = { bold: true };
+              cell.alignment = { horizontal: 'left' }; // Alineación a la izquierda
+            }
+            if (colNumber === 7) {
+              cell.alignment = { horizontal: 'right' };
+            }
+          }
+        });
+      } else {
+        consolidadosSheet.addRow(['No hay datos consolidados para esta localidad.']);
+      }
       const buffer = await workbook.xlsx.writeBuffer();
-
-      // Descargar el archivo Excel con el nombre de la localidad
       this.downloadExcelFile(buffer, `Rezagadas_transacciones_${localidad}.xlsx`);
-
     }
   }
-*/
-
-formatDate(date: Date): string {
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses son de 0 a 11, por lo que se le suma 1
-  const day = String(date.getDate()).padStart(2, '0');
-  const year = date.getFullYear();
-  return `${month}-${day}-${year}`;
-}
-
-async exportToExcelRezagadas(): Promise<void> {
-  // Esperar a que se complete la obtención del consolidado
-  let di: any = this.exportdateform.controls['dateini'].value;
-  let df: any = this.exportdateform.controls['dateini'].value;
-  let hi: any = this.exportdateform.controls['horaini'].value;
-
-  const inicio = new Date(di);
-  inicio.setDate(inicio.getDate() - 4); // Modifica el objeto 'inicio' restándole 4 días
-  const formattedInicio = this.formatDate(inicio);
-
-  const fin = new Date(df);
-  fin.setDate(fin.getDate() + 1);
-  const formattedfin = this.formatDate(fin);
-   // Crear un objeto para agrupar las localidades con sus equipos y transacciones
-   const localidadesMap: { [key: string]: any[] } = {};
-
-   // Iterar sobre los datos para agrupar por localidad
-   this.RezagadasTran.forEach((item: any) => {
-     let localidad = item.localidad;
-     if (!localidadesMap[localidad]) {
-       localidadesMap[localidad] = [];
-     }
-     localidadesMap[localidad].push(item);
-   });
-
-// Agrupar los consolidados por localidad
-   const consolidadosMap: { [key: string]: any[] } = {};
-   this.listaConsolidadosRezagadas.forEach((item: any) => {
-     const localidad = item.localidad;
-     if (!consolidadosMap[localidad]) {
-       consolidadosMap[localidad] = [];
-     }
-     consolidadosMap[localidad].push(item);
-   });
-
- 
-   // Iterar sobre las localidades para crear un archivo por cada una
-   for (const [localidad, items] of Object.entries(localidadesMap)) {
-     const workbook = new ExcelJS.Workbook();
-     const worksheet = workbook.addWorksheet(`Transacciones Rezagadas de ${localidad}`);
- 
-     // Agregar encabezados de columnas para transacciones
-     const headerRow = worksheet.addRow([
-       'Localidad', 'Fecha', 'Hora', 'Cliente',
-       'Tienda', 'N. Trans.', 'N. Serie Equipo',
-       'Usuario', 'Establecimiento', 'Actividad',
-       'Cod. Establ.', 'Nom. Banco', 'T. Cuenta',
-       'Cta. Bancaria', '$1', '$2', '$5', '$10',
-       '$20', '$50', '$100', '$0.01', '$0.05', '$0.10',
-       '$0.25', '$0.50', '$1.00', 'Total', 'T. T.'
-     ]);
-
-     // Aplicar estilos al encabezado
-     headerRow.eachCell((cell) => {
-       cell.fill = {
-         type: 'pattern',
-         pattern: 'solid',
-         fgColor: { argb: 'E1CC55' }, // Fondo azul
-       };
-       cell.font = {
-         color: { argb: '46422C' }, // Letras negras no tanto es como gris
-         bold: true,
-       };
-       cell.alignment = { vertical: 'middle', horizontal: 'center' };
-     });
- 
-     // Iterar sobre los equipos dentro de la localidad
-     items.forEach((item: any) => {
-       // Iterar sobre las transacciones del equipo
-       if (item.transacciones) {
-         item.transacciones.forEach((transaccion: any) => {
-           const row = worksheet.addRow([
-             item.localidad,
-             transaccion.fechaTransaccion,
-             transaccion.hora,
-             transaccion.nombreCliente,
-             transaccion.nombreTienda,
-             transaccion.machine_Sn + '-' +transaccion.transaccion_No,
-             transaccion.machine_Sn,
-             transaccion.usuarios_idFk,
-             transaccion.establecimiento,
-             transaccion.observacion,
-             transaccion.codigoEstablecimiento,
-             transaccion.nombanco,
-             transaccion.tipoCuenta,
-             transaccion.numerocuenta,
-             transaccion.deposito_Bill_1,
-             transaccion.deposito_Bill_2,
-             transaccion.deposito_Bill_5,
-             transaccion.deposito_Bill_10,
-             transaccion.deposito_Bill_20,
-             transaccion.deposito_Bill_50,
-             transaccion.deposito_Bill_100,
-             transaccion.manual_Deposito_Coin_1,
-             transaccion.manual_Deposito_Coin_5,
-             transaccion.manual_Deposito_Coin_10,
-             transaccion.manual_Deposito_Coin_25,
-             transaccion.manual_Deposito_Coin_50,
-             transaccion.manual_Deposito_Coin_100,
-             transaccion.total,
-             transaccion.tipoTransaccion
-           ]);
-         });
-       }
-     });
- 
-     // Crear la hoja para los consolidados
-     const consolidadosSheet = workbook.addWorksheet('Consolidado Rezagadas');
-     // Añadir título
-     const titleRow = consolidadosSheet.addRow(['DETALLE DE ACREDITACIONES REZAGADAS FORTICASH']);
-     titleRow.font = { bold: true, size: 17 };
-     titleRow.alignment = { vertical: 'middle', horizontal: 'center' };
-     consolidadosSheet.mergeCells('A1:G1');
-     titleRow.getCell(1).fill = {
-         type:    'pattern',
-         pattern: 'solid',
-         fgColor: { argb: 'FFD3D3D3' },
-     };
-
-           // Fila de separación
-     consolidadosSheet.addRow([]);
-
-     // Fecha "Desde"
-     const desdeRow = consolidadosSheet.addRow(['Desde:', formattedInicio]);
-     desdeRow.getCell(1).font = { bold: true };
-     desdeRow.getCell(1).alignment = { vertical: 'middle', horizontal: 'left' };
-
-     // Fecha "Hasta"
-     const hastaRow = consolidadosSheet.addRow(['Hasta:', formattedfin]);
-     hastaRow.getCell(1).font = { bold: true };
-     hastaRow.getCell(1).alignment = { vertical: 'middle', horizontal: 'left' };
-
-     // Hora "Desde y Hasta"
-     const CorteRow = consolidadosSheet.addRow(['Corte:', '00:01 - ' + hi]);
-     CorteRow.getCell(1).font = { bold: true };
-     CorteRow.getCell(1).alignment = { vertical: 'middle', horizontal: 'left' };
-
-     // Fila de separación
-     consolidadosSheet.addRow([]);
-
-     const localidadRow = consolidadosSheet.addRow(['Localidad:', localidad.toUpperCase()]);
-     localidadRow.getCell(1).font = { bold: true };
-     localidadRow.getCell(1).alignment = { vertical: 'middle', horizontal: 'left' };
-
-     // Fila de separación
-     consolidadosSheet.addRow([]);
-
-           // Verificar si hay datos de consolidados para la localidad actual
-     if (consolidadosMap[localidad]) {
-       const consolidadosHeaders = ['Tienda', 'N. Serie Equipo', 'Establecimiento', 'Cta. Bancaria', 'Código Establecimiento', 'Actividad', 'Total'];
-       const consolidadosHeaderRow = consolidadosSheet.addRow(consolidadosHeaders);
-       // Establecer el ancho de las columnas 'A', 'B' y 'C'
-       consolidadosSheet.getColumn('A').width = 40;
-       consolidadosSheet.getColumn('B').width = 25;
-       consolidadosSheet.getColumn('C').width = 25;
-       consolidadosSheet.getColumn('D').width = 25;
-       consolidadosSheet.getColumn('E').width = 25;
-       consolidadosSheet.getColumn('G').width = 18;
-       // Aplicar estilos al encabezado
-       consolidadosHeaderRow.eachCell((cell) => {
-         cell.fill = {
-           type: 'pattern',
-           pattern: 'solid',
-           fgColor: { argb: '6F6F6C' }, // Fondo gris oscuro
-         };
-         cell.font = {
-           color: { argb: 'FFFFFF' }, // Letras blancas
-           bold: true,
-         };
-         cell.alignment = {
-           vertical: 'middle',
-           horizontal: 'center'
-         };
-       });
-
-       let currentTienda = '';
-       let currentTotal = 0;
-       let totalGeneral = 0;
-
-       // Agregar filas de datos
-       consolidadosMap[localidad].forEach((item: any, index: number, array: any[]) => {
-         if (item.nombreTienda !== currentTienda && currentTienda !== '') {
-           // Añadir la fila de total para la tienda anterior
-           const totalRow = consolidadosSheet.addRow(['', '', '', '', '', '', currentTotal]);
-           consolidadosSheet.mergeCells(`A${totalRow.number}:F${totalRow.number}`);
-           totalRow.getCell('A').value = `Total de ${currentTienda}`;
-           totalRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-             if (colNumber >= 1 && colNumber <= 7) {
-               cell.fill = {
-                 type: 'pattern',
-                 pattern: 'solid',
-                 fgColor: { argb: 'FFFFD700' }, // Fondo amarillo
-               };
-               if (colNumber === 1) {
-                 cell.font = { bold: true };
-                 cell.alignment = { horizontal: 'left' }; // Alineación a la izquierda
-               }
-               if (colNumber === 7) {
-                 cell.alignment = { horizontal: 'right' };
-               }
-             }
-           });
-           totalGeneral += currentTotal; // Añadir el total de la tienda al total general
-           // Resetear el nombre de la tienda y la suma total
-           currentTotal = 0;
-         }
-
-   currentTienda = item.nombreTienda;
-         currentTotal += item.total;
-       
-         const rowValues = [
-           item.nombreTienda,
-           item.machine_Sn,
-           item.establecimiento,
-           item.numerocuenta,
-           item.codigoEstablecimiento,
-           item.observacion,
-           item.total
-         ];
-
-         const row = consolidadosSheet.addRow(rowValues);
-
-         // Aplicar estilo a la primera columna
-         row.getCell(1).fill = {
-           type: 'pattern',
-           pattern: 'solid',
-           fgColor: { argb: 'E8E8E8' }, // Fondo gris claro
-         };
-
-         row.getCell(1).font = {
-           color: { argb: '3E3E3E' }, // Letras blancas
-         };
-
-         // Si es el último elemento, añadir la fila de total también
-         if (index === array.length - 1) {
-           const totalRow = consolidadosSheet.addRow(['', '', '', '', '', '', currentTotal]);
-           consolidadosSheet.mergeCells(`A${totalRow.number}:F${totalRow.number}`);
-           totalRow.getCell('A').value = `Total de ${currentTienda}`;
-           totalRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-             if (colNumber >= 1 && colNumber <= 7) {
-               cell.fill = {
-                 type: 'pattern',
-                 pattern: 'solid',
-                 fgColor: { argb: 'FFFFD700' }, // Fondo amarillo
-               };
-               if (colNumber === 1) {
-                 cell.font = { bold: true };
-                 cell.alignment = { horizontal: 'left' }; // Alineación a la izquierda
-               }
-               if (colNumber === 7) {
-                 cell.alignment = { horizontal: 'right' };
-               }
-             }
-           });
-           totalGeneral += currentTotal; // Añadir el total de la tienda al total general
-         }
-       });
-
-// Añadir la fila de total general
-       const totalGeneralRow = consolidadosSheet.addRow([ '', '', '', '', '', '', totalGeneral ]);
-       consolidadosSheet.mergeCells(`A${totalGeneralRow.number}:F${totalGeneralRow.number}`);
-       totalGeneralRow.getCell('A').value = 'Total General:';
-       totalGeneralRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-         if (colNumber >= 1 && colNumber <= 7) {
-           cell.fill = {
-             type: 'pattern',
-             pattern: 'solid',
-             fgColor: { argb: 'FFADD8E6' }, // Fondo celeste
-           };
-           if (colNumber === 1) {
-             cell.font = { bold: true };
-             cell.alignment = { horizontal: 'left' }; // Alineación a la izquierda
-           }
-           if (colNumber === 7) {
-             cell.alignment = { horizontal: 'right' };
-           }
-         }
-       });
-     } else {
-       // Si no hay datos de consolidados, agregar un mensaje
-       consolidadosSheet.addRow(['No hay datos consolidados para esta localidad.']);
-     }
-
-    /*===================================================================================*/
-
-     // Escribir el archivo Excel
-     const buffer = await workbook.xlsx.writeBuffer();
-
-     // Descargar el archivo Excel con el nombre de la localidad
-     this.downloadExcelFile(buffer, `Rezagadas_transacciones_${localidad}.xlsx`);
-
-   }
- }
 
   transPush(nombreArchivo: any) {
-     if (this.exportdateform.controls['acreditada'].value) {
-         let xtoken: any = sessionStorage.getItem('usuario');
-         let totalTransacciones = 0;   
-         this.tran = []; 
-         // Asegúrate de inicializar el array tran
-         // Paso 1: Recopilar transacciones en this.tran
-         this.dataExportarExcel.forEach((element: any) => {
-             element.transacciones.filter((transaccion: any) => {
-                 const arr = {
-                     noTransaction:    transaccion.transaccion_No,
-                     machineSn:        transaccion.machine_Sn, // Corregido a machineSn
-                     fechaTransaction: transaccion.fechaTransaccion,
-                     fechaIni:         this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value,
-                     fechaFin:         this.exportdateform.controls['datefin'].value + ' ' + this.exportdateform.controls['horafin'].value,
-                     nombreArchivo:    nombreArchivo,
-                     usuarioRegistro:  xtoken,
-                 };
-                 this.tran.push(arr);
-             });
-             totalTransacciones = this.tran.length;
-         });
-       
-         console.log('////////////////////////////////');
-         console.log('////////////////////////////////');
-         console.log(this.tran);
-         console.log('////////////////////////////////');
-         console.log('////////////////////////////////');
-
-         // Paso 2: Ejecutar el primer bloque paso a paso usando RxJS
-         if (totalTransacciones > 0) {
-             interval(5) // Emitir un valor cada 5 milisegundos
-                 .pipe(
-                     takeWhile(() => this.countTransaction < totalTransacciones),
-                     finalize(() => {
-                         this.countTransaction = totalTransacciones;
-                        //  console.log( '/*/*/*/*/*/*/*/*/*/*/*/*/*/*' );
-                        //  console.log( this.tran );
-                        //  console.log( '/*/*/*/*/*/*/*/*/*/*/*/*/*/*' );
-                         this.guardarTransaccionesAc(this.tran);
-                     })
-                 )
-                 .subscribe(() => {
-                     this.countTransaction++;
-                     this.porcentaje = ( this.countTransaction / totalTransacciones ) * 100;
-                     if( this.porcentaje == 100 ) {
-                         this._show_spinner = true;
-                         setTimeout(() => {   
-                             this._show_spinner = false;
-                             this.moduleChange.emit(true);
-                         }, 2000);
-                     }
-                 });
-         }
-     }
+    if (this.exportdateform.controls['acreditada'].value) {
+      let xtoken: any = sessionStorage.getItem('usuario');
+      let totalTransacciones = 0;   
+      this.tran = []; 
+      this.dataExportarExcel.forEach((element: any) => {
+        element.transacciones.filter((transaccion: any) => {
+          const arr = {
+            noTransaction:    transaccion.transaccion_No,
+            machineSn:        transaccion.machine_Sn,
+            fechaTransaction: transaccion.fechaTransaccion,
+            fechaIni:         this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value,
+            fechaFin:         this.exportdateform.controls['datefin'].value + ' ' + this.exportdateform.controls['horafin'].value,
+            nombreArchivo:    nombreArchivo,
+            usuarioRegistro:  xtoken,
+          };
+          this.tran.push(arr);
+        });
+        totalTransacciones = this.tran.length;
+      });
+      if (totalTransacciones > 0) {
+        interval(5).pipe(
+          takeWhile(() => this.countTransaction < totalTransacciones),
+          finalize(() => {
+            this.countTransaction = totalTransacciones;
+            this.guardarTransaccionesAc(this.tran);
+          })
+        ).subscribe(() => {
+          this.countTransaction++;
+          this.porcentaje = ( this.countTransaction / totalTransacciones ) * 100;
+          if( this.porcentaje == 100 ) {
+            this._show_spinner = true;
+            setTimeout(() => {   
+              this._show_spinner = false;
+              this.moduleChange.emit(true);
+            }, 2000);
+          }
+        });
+      }
+    }
   }
 
   guardarTransaccionesAc(model: any[]) {
     this._show_spinner = true;
     this.conttransaccion = true;
-
-    console.log('=============================');
-    console.log(model);
-    console.log('=============================');
-
     this.transacciones.GuardarTransaccionesAcreditadas(model).subscribe({
-        next: (x) => {
-            Toast.fire({ icon: 'success', title: 'Transacciones generadas, en espera de acreditación ', position: 'center' });
-        },
-        error: (e) => {
-            console.error(e);
-            this._show_spinner = false;
-            Toast.fire({ 
-                icon: 'error',
-                title: 'Algo ha pasado, no hemos podido generar la acreditación'
-            });
-        },
-        complete: () => {
-            this._show_spinner = false;
-            this.conttransaccion = false;
-            this.limpiar();
-        },
+      next: (x) => {
+        Toast.fire({ icon: 'success', title: 'Transacciones generadas, en espera de acreditación ', position: 'center' });
+      },
+      error: (e) => {
+        this._show_spinner = false;
+        Toast.fire({ 
+          icon: 'error',
+          title: 'Algo ha pasado, no hemos podido generar la acreditación'
+        });
+      },
+      complete: () => {
+        this._show_spinner = false;
+        this.conttransaccion = false;
+        this.limpiar();
+      },
     });
   }
 
+  dias_estimados:     string = '';
+  disButton:          boolean = true;
+  diasEncontrar:      number  = 31;
   validateExistDate() {
-    const dateiniValue = this.dateini?.nativeElement.value;
-    const datefinValue = this.datefin?.nativeElement.value;
-
-    if (dateiniValue && datefinValue) {
-      if (dateiniValue > datefinValue) {
-        Swal.fire({
-          // title: "Es en serio?",
-          text: "La fecha inicial no puede ser mayor a la fecha final.",
-          icon: "question"
-        });
-        this.datefin!.nativeElement.value = dateiniValue;
-      } else if (datefinValue < dateiniValue) {
-        
-        Swal.fire({
-          // title: "Es en serio?",
-          text: "La fecha final no puede ser menor a la fecha inicial.",
-          icon: "question"
-        });
-
-        this.dateini!.nativeElement.value = datefinValue;
-
+    // const dateiniValue = this.dateini?.nativeElement.value;
+    // const datefinValue = this.datefin?.nativeElement.value;
+    // if (dateiniValue && datefinValue) {
+    //   if (dateiniValue > datefinValue) {
+    //     Swal.fire({
+    //       // title: "Es en serio?",
+    //       text: "La fecha inicial no puede ser mayor a la fecha final.",
+    //       icon: "question"
+    //     });
+    //     this.datefin!.nativeElement.value = dateiniValue;
+    //   } else if (datefinValue < dateiniValue) {
+    //     Swal.fire({
+    //       // title: "Es en serio?",
+    //       text: "La fecha final no puede ser menor a la fecha inicial.",
+    //       icon: "question"
+    //     });
+    //     this.dateini!.nativeElement.value = datefinValue;
+    //   }
+    //   this.validateDataExistDate();
+    // }
+    let startDate: any = this.dateini?.nativeElement.value;
+    let endDate: any = this.datefin?.nativeElement.value;
+    const fechaInicio = new Date(startDate);
+    const fechaFin = new Date(endDate);
+    if (fechaFin < fechaInicio) {
+      this.dias_estimados = 'La fecha final no puede ser menor a la fecha inicial';
+      this.disButton = true;
+      setInterval(()=>this.dias_estimados='', 2000);
+    } else {
+      const diferenciaEnDias = Math.abs( (fechaFin.getTime() - fechaInicio.getTime() ) / (1000 * 60 * 60 * 24));
+      if ( diferenciaEnDias > this.diasEncontrar ) {
+        this.dias_estimados = 'El rango de fechas no puede ser mayor a un mes';
+        this.disButton = true;
+      } else {
+        this.dias_estimados = `Diferencia: ${((diferenciaEnDias) ? diferenciaEnDias : '-')} días`;
+        if (startDate && endDate) this.validateDataExistDate();
+        this.disButton = false;
       }
-
-      this.validateDataExistDate();
-
     }
   }
 
-
   validateTime() {
-
     const dateiniValue = this.dateini?.nativeElement.value;
     const datefinValue = this.datefin?.nativeElement.value;
     const horainiValue = this.horaini?.nativeElement.value;
     const horafinValue = this.horafin?.nativeElement.value;
-
     if ( dateiniValue == datefinValue ) {
-
       if( horainiValue > horafinValue ) {
         Swal.fire({
           // title: "Es en serio?",
@@ -1308,13 +1074,10 @@ async exportToExcelRezagadas(): Promise<void> {
           icon: "question"
         });
       }
-
     }
-
   }
 
   eliminarEquiposDeReporteria(equipos:any, i:any) {
-
     this.maquinasEscogidasDialog.splice(i, 1);
     this.totalSubstract = 0;
     this.sumatoriaTransacciones = this.sumatoriaTransacciones - equipos.longitud;
@@ -1326,10 +1089,7 @@ async exportToExcelRezagadas(): Promise<void> {
       })
       this.cantidadTransacciones = this.cantidadTransacciones - this.totalSubstract;
     }
-    if( this.maquinasEscogidasDialog.length == 0 ) {
-      this.limpiar();
-    }
-
+    if( this.maquinasEscogidasDialog.length == 0 ) this.limpiar();
   }
 
   getHeaderRow(): string[] {
@@ -1339,20 +1099,12 @@ async exportToExcelRezagadas(): Promise<void> {
 
   val:number = 0;
   acredit(): number {
-
-    if(this.exportdateform.controls['acreditada'].value == true) {
-      this.val = 1
-    } else {
-      this.val = 2
-    }
-
+    this.val = (this.exportdateform.controls['acreditada'].value == true) ? 1 : 2;
     return this.val;
-
   }
 
   maquinasEscogidasDialogGhost: any = [];
   openDataEquiposDialog() {
-
     let arr: any = [];
     if( this.dataExportarExcel ) {
       arr = {
@@ -1382,72 +1134,50 @@ async exportToExcelRezagadas(): Promise<void> {
 
     dialogRef.afterClosed().subscribe( (result:any) => {      
       if( result ) {
-        
         this.exportdateform.controls['acreditada'].disable();
         this._cancel_button    = true;
         this.disbutton_obtener = true;
-
         if( this.maquinasEscogidasDialog.length == 0 ) {
           this.maquinasEscogidasDialog = result;
           this.maquinasEscogidasDialogGhost = result;
-        }
-
-        else {
+        } else {
           result.filter( (equipos: any) => {
             this.maquinasEscogidasDialog.push(equipos);
             this.maquinasEscogidasDialogGhost.push(equipos);
           })
         }
-
         this.maquinasEscogidasDialog.filter( ( element:any ) => {
           this.dataExportarExcel     .push(element);
           this.dataExportarExcelGhost.push(element);
         });
-
-        console.warn('this.dataExportarExcel')
-        console.warn(this.dataExportarExcel)
-
-      }
-      else {
+      } else {
         this._show_spinner = false;
       }
-
       this.obtenerTransacTabla();
       this.visibleDataTable();
-
     });
-
   }
 
   filterTransaccos() {
-    
     let filtertTrans: any = this.filterTransaccForm.controls['filterTransacc'].value;
     this.maquinasEscogidasDialog = this.maquinasEscogidasDialogGhost.filter( (item:any) => 
       item.machine_Sn             .toLowerCase().includes(filtertTrans.toLowerCase()) ||
       item.localidad              .toLowerCase().includes(filtertTrans.toLowerCase()) 
     )
-
     let arrlongitud: any        = [];
     this.cantidadTransacciones  = 0;
     this.sumatoriaTransacciones = 0;
-
     this.maquinasEscogidasDialog.filter( (element:any) => {
-      
       if( element.transacciones != null || element.transacciones != undefined ) {
-        
         element.transacciones = element.transacciones.filter( (x:any) => x.tipoTransaccion !== 'Recolección'  );
         element.longitud = element.transacciones.length;
         element.transacciones.filter( (y:any) => {
           if( y.total == null || y.total == undefined ) y.total = 0;
           this.cantidadTransacciones += y.total;
         })
-
         this.sumatoriaTransacciones += element.longitud;
-
       }
-
     })
-
   }
 
   eliminarObjetosDuplicados() {
@@ -1460,18 +1190,13 @@ async exportToExcelRezagadas(): Promise<void> {
     }, []);
     const uniqueObjects2 = this.dataExportarExcelGhost.reduce((unique:any, currentObject:any) => {
       const exists = unique.some((obj:any) => obj.nserie === currentObject.nserie);
-
       if (!exists) {
         unique.push(currentObject);
       }
-
       return unique;
-
     }, []);
-
     this.dataExportarExcel      = uniqueObjects;
     this.dataExportarExcelGhost = uniqueObjects2;
-
   }
 
   validateDataExistDate() {
@@ -1486,14 +1211,12 @@ async exportToExcelRezagadas(): Promise<void> {
     this.clienteserv.obtenerCliente().subscribe({
       next: (cliente) => {
         this.clienteListaGhost = cliente;
-        // console.log(this.clienteListaGhost)
         this._show_spinner = false;
       }, error: (e) => {
         this._show_spinner = false;
-        console.error(e);
+        console.log(e)
       }, complete: () => {
         this.clienteListaGhost.filter((element:any) => {
-
           let arr: any = {
             "id": element.id,
             "codigoCliente": element.codigoCliente,
@@ -1504,24 +1227,15 @@ async exportToExcelRezagadas(): Promise<void> {
             "emailcontacto": element.emailcontacto,
             "nombrecontacto": element.nombrecontacto
           }
-
           this.clientelista.unshift(arr);
-
         })
       }
     })
   }
 
   obtenerIDCLiente() {
-
-    if ( this.exportdateform.controls['codigoClienteidFk'].value == undefined || this.exportdateform.controls['codigoClienteidFk'].value == null ) {
-      ////console.warn('No hay un id');
-      this.idcliente = this.clientelista[0].id;
-    }
-    else {
-      this.idcliente = this.exportdateform.controls['codigoClienteidFk'].value;
-    }
-
+    this.idcliente = ( this.exportdateform.controls['codigoClienteidFk'].value == undefined || this.exportdateform.controls['codigoClienteidFk'].value == null ) ?
+      this.clientelista[0].id : this.exportdateform.controls['codigoClienteidFk'].value;
   }
 
   obtenerTiendas() {    
@@ -1531,11 +1245,9 @@ async exportToExcelRezagadas(): Promise<void> {
       next: (tienda) => {
         this.tiendaListaGhost = tienda;
       }, complete: () => {
-          this.obtenerIDCLiente();
-          this.tiendaListaGhost.filter( (element:any) => {
-            if( element.codigoClienteidFk == this.idcliente ) {
-              this.tiendalista.push(element);
-            }
+        this.obtenerIDCLiente();
+        this.tiendaListaGhost.filter( (element:any) => {
+          if( element.codigoClienteidFk == this.idcliente ) this.tiendalista.push(element);
           })
         }
       }
@@ -1544,23 +1256,22 @@ async exportToExcelRezagadas(): Promise<void> {
 
   menuAction() {
     this.items = [{
-        label: 'Opciones',
-        items: [{
-                label: 'Índices guía',
-                // icon: 'pi pi-refresh',
-                command: () => {
-                  this.indices_show = !this.indices_show;
-                }
-            },
-            {
-                label: 'Colores por transacciones',
-                  // icon: 'pi pi-times',
-                  command: () => {
-                  this.colorguia = !this.colorguia;
-                  this.changeColorsTransac();
-                }
-            }
-        ]}
+      label: 'Opciones',
+      items: [
+        {
+          label: 'Índices guía',
+          // icon: 'pi pi-refresh',
+          command: () => this.indices_show = !this.indices_show,
+        },
+        {
+          label: 'Colores por transacciones',
+          // icon: 'pi pi-times',
+          command: () => {
+          this.colorguia = !this.colorguia;
+          this.changeColorsTransac();
+          }
+        }
+      ]}
     ];
   }
 
@@ -1645,9 +1356,7 @@ async exportToExcelRezagadas(): Promise<void> {
         });
         break;
     }
-
     this.sumatoriaTotalTransacciones();
-
   }
 
   limpiar() {
@@ -1675,67 +1384,42 @@ async exportToExcelRezagadas(): Promise<void> {
   }
 
   obtenerTransacTabla() {
-    //console.log(1)
     let x = 0;
-    //console.log(2)
-    if (this.exportdateform.controls['acreditada'].value) { 
-      //console.log(3)
-      x = 2;
-    }
-    else {
-      //console.log(4)
-      x = 1;
-    }    
+    x = (this.exportdateform.controls['acreditada'].value) ? 2 : 1;  
     if (this.dataExportarExcel.length > 0) {
-      //console.log(5)
       this._show_spinner = true;
       let dini = this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value;
       let dfin = this.exportdateform.controls['datefin'].value + ' ' + this.exportdateform.controls['horafin'].value;
-      //console.log(6)
       Promise.all(this.dataExportarExcel.map((element: any) => {
         return new Promise<void>((resolve, reject) => {
-          //console.log('Entramos')
-          //console.log(7)
           let modelRange:any = {
             "tipo":        x,
             "Machine_Sn":  element.machine_Sn,
             "FechaInicio": dini,
             "FechaFin":    dfin
           };          
-
-          console.log(modelRange)
-
           this.transacciones.filtroTransaccionesRango(modelRange).subscribe({            
             next: (z) => {
-              //console.warn('/*/*/*//*/*/*/*/*/*/*/*/*');
-              //console.warn(z);
-              //console.warn('/*/*/*//*/*/*/*/*/*/*/*/*');
               element.transacciones = z;
               element.longitud = element.transacciones.length;
               this.obterSaldoTransac(element.nserie);
               resolve();
             },            
-            error: (e) => {
-              reject(e);
-            }
+            error: (e) => reject(e),
           });          
         });
       })).then(() => {
-        // Llamamos a detectaTransaccionesRezagadas con las fechas obtenidas fuera del ciclo e
         this.detectaTransaccionesRezagadas(dini, dfin, 1);
-      }).catch((error) => {
-        console.error(error);
-      }).finally(() => {
+      }).catch((error) => console.error(error))
+      .finally(() => {
         this._show_spinner = false;
         if( this.cantidadRezagadas > 0 ) {
           Swal.fire({
             title: "Tienes "+ this.cantidadRezagadas + " transacciones Rezagadas, ¿deseas agregar a la data para su preacreditación, para ser exportada a excel?",
             showDenyButton: true,
-            // showCancelButton: true,
             confirmButtonText: "Sí, guardar",
             denyButtonText: `No`
           }).then((result) => {
-            /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
               Swal.fire("Estas transacciones han sido agregadas", "", "success");
             } else if (result.isDenied) {
@@ -1749,10 +1433,6 @@ async exportToExcelRezagadas(): Promise<void> {
   }
 
   detectaTransaccionesRezagadas(dateIni: any, dateFin: any, type: number) {
-
-    // alert('Si tiene Rezagadas detectadas');
-
-
     this.cantidadRezagadas = 0;
     switch (type) {
       case 1:
@@ -1765,16 +1445,13 @@ async exportToExcelRezagadas(): Promise<void> {
         let fechaINI: any = dateIni.toString().split(' ')[0];
         let fechaFIN: any = dateFin.toString().split(' ')[0];
         let indexH:   any = null;
-        // Creamos una función que devuelve una promesa
         const filterAndRemove = () => {
           return new Promise<void>((resolve, reject) => {
             this.dataExportarExcel.forEach((x: any, index: number) => {
-
               if ( x.transacciones != undefined && x.transacciones != null ) {
                 x.transacciones = x.transacciones.filter( ( tran: any ) => {
                   return tran.fechaTransaccion.toString().split('T')[0] === fechaINI || tran.fechaTransaccion.toString().split('T')[0] === fechaFIN;
                 });
-                // Actualizar el campo longitud después de filtrar las transacciones
                 x.longitud = x.transacciones.length;
                 if (x.longitud === 0) {
                   indexH = index;
@@ -1783,7 +1460,7 @@ async exportToExcelRezagadas(): Promise<void> {
                 x.Rezagadas = 0;
               }
             });
-              resolve();
+            resolve();
           });
         };
         filterAndRemove().then(() => {
@@ -1798,7 +1475,6 @@ async exportToExcelRezagadas(): Promise<void> {
     }
   }
   
-
   modelDataSaldo: any = [];
   obterSaldoTransac( machineSn:any ) {
     this.transacciones.ObtenerEquiposSaldo(machineSn).subscribe({
@@ -1821,38 +1497,30 @@ async exportToExcelRezagadas(): Promise<void> {
   sumatoriaTotalTransacciones() {
     this.cantidadTransacciones  = 0;
     this.sumatoriaTransacciones = 0;
-    // ////console.log(this.transac.controls['recolecciones'].value)
     switch(this.transac.controls['recolecciones'].value) {
       case false:
-          //console.table(false);
-          this.dataExportarExcel.filter((element: any) => {
-            if( element.transacciones != null || element.transacciones != undefined ) {
-              element.transacciones = element.transacciones.filter( (x:any) => x.tipoTransaccion !== 'Recolección'  );
-              element.longitud = element.transacciones.length;
-              element.transacciones.filter((y:any) => {
-                if( y.total == null || y.total == undefined ) y.total = 0;
+        this.dataExportarExcel.filter((element: any) => {
+          if( element.transacciones != null || element.transacciones != undefined ) {
+            element.transacciones = element.transacciones.filter( (x:any) => x.tipoTransaccion !== 'Recolección'  );
+            element.longitud = element.transacciones.length;
+            element.transacciones.filter((y:any) => {
+              if( y.total == null || y.total == undefined ) y.total = 0;
                 this.cantidadTransacciones += y.total;
-              })
-              this.sumatoriaTransacciones += element.longitud;
-            }
-          });
-          this.transac.controls['recolecciones'].disable()
-          break;
-        case true:
-          //console.table(true);
-          this.dataExportarExcel.filter((element: any) => {
+            })
+            this.sumatoriaTransacciones += element.longitud;
+          }});
+        this.transac.controls['recolecciones'].disable()
+        break;
+      case true:
+        this.dataExportarExcel.filter((element: any) => {
           element.transacciones.filter( (x:any) => {              
-              ////console.log(element.transacciones.length)
-              if( x.total == null || x.total == undefined ) x.total = 0;
-              this.cantidadTransacciones += x.total;
+          if( x.total == null || x.total == undefined ) x.total = 0;
+            this.cantidadTransacciones += x.total;
           });
-          ////console.log(element);
           this.sumatoriaTransacciones += element.longitud;
           });
-          ////console.log(this.dataExportarExcel);
           this.transac.controls['recolecciones'].disable()
-          break;         
-
+        break;
       }
 
     if( this.sumatoriaTransacciones > 0 ) {
@@ -1862,16 +1530,12 @@ async exportToExcelRezagadas(): Promise<void> {
       this.exportdateform.controls['horaini'].disable();
       this.exportdateform.controls['horafin'].disable();
       this.exportdateform.controls['codigoClienteidFk'].disable();
-      
     }
-
   }
   
   changeColorsTransac() {
-
     this.dataExportarExcel.filter( (element:any) => {  
       element.transacciones.filter( (elementTra:any) => {
-        ////console.warn(elementTra);
         switch( this.colorguia ) {
           case true:
             if( elementTra.tipoTransaccion == "Automático" ) {
@@ -1888,10 +1552,8 @@ async exportToExcelRezagadas(): Promise<void> {
             elementTra.color = 'whitesmoke !important;';
             break;
         }
-        
       })
     })
-
   }
 
   respladoDataTran() {
@@ -1907,8 +1569,8 @@ async exportToExcelRezagadas(): Promise<void> {
           })
           this._show_spinner = false;
         }, error: (e) => {
-          console.error(e);
           this._show_spinner = false;
+          console.log(console.log(e));
         }
       })
     })
@@ -1917,18 +1579,11 @@ async exportToExcelRezagadas(): Promise<void> {
   validarRangoFechas() {
     let valorFechaInicial = this.exportdateform.controls['dateini'].value;
     let valorFechaFinal = this.exportdateform.controls['datefin'].value;
-  
     if (valorFechaInicial && valorFechaFinal) {
       let fechaInicial = new Date(valorFechaInicial);
       let fechaFinal = new Date(valorFechaFinal);
-  
-      // Calcula la diferencia en días
       let diferencia = Math.floor((fechaFinal.getTime() - fechaInicial.getTime()) / (1000 * 60 * 60 * 24));
-  
-      if (diferencia == 1) {
-        // //alert'Existe un día de rango');
-        this.mostrarCiclo = true;
-      }
+      if (diferencia == 1) this.mostrarCiclo = true;
     }
   }
 
@@ -1960,32 +1615,25 @@ async exportToExcelRezagadas(): Promise<void> {
     } else {
       console.error("Ingrese ambas fechas para filtrar.");
     }
-    ////console.warn(this.dataExportarExcel);
   }
-
 
   filtrarPorRangoDeFechasYHoras() {
     this._show_spinner = true;
-  
     const fechaInicial = this.exportdateform.controls['dateini'].value;
     const fechaFinal = this.exportdateform.controls['datefin'].value;
-  
     const horaInicial = this.exportdateform.controls['horaini'].value;
     const horaFinal = this.exportdateform.controls['horafin'].value;
-  
     if (fechaInicial && fechaFinal && horaInicial && horaFinal) {
       this.dataExportarExcel = this.dataExportarExcel.map((element: any) => {
         element.transacciones = element.transacciones.filter((transaccion: any) => {
           const fechaTransaccion = new Date(transaccion.fechaTransaccion + 'T' + transaccion.hora).toISOString();
           const fechaIni = new Date(fechaInicial + 'T' + horaInicial).toISOString();
           const fechaFin = new Date(fechaFinal + 'T' + horaFinal).toISOString();
-  
           return fechaTransaccion >= fechaIni && fechaTransaccion <= fechaFin;
         });
         element.longitud = element.transacciones.length;
         return element;
       });
-  
       this._show_spinner = false;
     } else {
       console.error("Ingrese fechas y horas para filtrar.");
@@ -1995,27 +1643,25 @@ async exportToExcelRezagadas(): Promise<void> {
 
   filtrarPorRangoDeHoras(data: any, horaInicial: string, horaFinal: string): any {
     return data.map((element: any) => {
-        element.transacciones = element.transacciones.filter((transaccion: any) => {
-            const horaTransaccion = transaccion.hora;
-            // Verificar si la hora de la transacción está en el rango especificado
-            return this.estaEnRangoDeHoras(horaTransaccion, horaInicial, horaFinal);
-        });
-        element.longitud = element.transacciones.length;
-        return element;
+      element.transacciones = element.transacciones.filter((transaccion: any) => {
+        const horaTransaccion = transaccion.hora;
+        return this.estaEnRangoDeHoras(horaTransaccion, horaInicial, horaFinal);
+      });
+      element.longitud = element.transacciones.length;
+      return element;
     });
   }
 
   estaEnRangoDeHoras(hora: string, horaInicial: string, horaFinal: string): boolean {
-      const horaTransaccion  =  new Date(`1970-01-01T${hora}`);
-      const horaInicio       =  new Date(`1970-01-01T${horaInicial}`);
-      const horaFin          =  new Date(`1970-01-01T${horaFinal}`);
-      return horaTransaccion >= horaInicio && horaTransaccion <= horaFin;
+    const horaTransaccion  =  new Date(`1970-01-01T${hora}`);
+    const horaInicio       =  new Date(`1970-01-01T${horaInicial}`);
+    const horaFin          =  new Date(`1970-01-01T${horaFinal}`);
+    return horaTransaccion >= horaInicio && horaTransaccion <= horaFin;
   }
   
   filtrarPorHoras() {
     const horaInicial:any = this.exportdateform.controls['horaini'].value;
     const horaFinal:any = this.exportdateform.controls['horafin'].value;
-    ////console.warn(this.exportdateform.controls['ciclo'].value)
     switch(this.exportdateform.controls['ciclo'].value) {
       case false:
         this.dataExportarExcel = this.filtrarPorRangoDeHoras(this.dataExportarExcel, horaInicial, horaFinal);
@@ -2027,8 +1673,6 @@ async exportToExcelRezagadas(): Promise<void> {
   }
 
   checkFiltrarCliente(checktienda: boolean){
-    if(!checktienda){
-      this.exportdateform.controls['codigoClienteidFk'].setValue(null);
-    }
+    if(!checktienda) this.exportdateform.controls['codigoClienteidFk'].setValue(null);
   }
 }
