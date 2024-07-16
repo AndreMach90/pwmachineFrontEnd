@@ -1013,46 +1013,45 @@ export class ModeldataComponent implements OnInit {
   dias_estimados:     string = '';
   disButton:          boolean = true;
   diasEncontrar:      number  = 31;
-  validateExistDate() {
-    // const dateiniValue = this.dateini?.nativeElement.value;
-    // const datefinValue = this.datefin?.nativeElement.value;
-    // if (dateiniValue && datefinValue) {
-    //   if (dateiniValue > datefinValue) {
-    //     Swal.fire({
-    //       // title: "Es en serio?",
-    //       text: "La fecha inicial no puede ser mayor a la fecha final.",
-    //       icon: "question"
-    //     });
-    //     this.datefin!.nativeElement.value = dateiniValue;
-    //   } else if (datefinValue < dateiniValue) {
-    //     Swal.fire({
-    //       // title: "Es en serio?",
-    //       text: "La fecha final no puede ser menor a la fecha inicial.",
-    //       icon: "question"
-    //     });
-    //     this.dateini!.nativeElement.value = datefinValue;
-    //   }
-    //   this.validateDataExistDate();
-    // }
-    let startDate: any = this.dateini?.nativeElement.value;
-    let endDate: any = this.datefin?.nativeElement.value;
-    const fechaInicio = new Date(startDate);
-    const fechaFin = new Date(endDate);
-    if (fechaFin < fechaInicio) {
-      this.dias_estimados = 'La fecha final no puede ser menor a la fecha inicial';
-      this.disButton = true;
-      setInterval(()=>this.dias_estimados='', 2000);
-    } else {
-      const diferenciaEnDias = Math.abs( (fechaFin.getTime() - fechaInicio.getTime() ) / (1000 * 60 * 60 * 24));
-      if ( diferenciaEnDias > this.diasEncontrar ) {
-        this.dias_estimados = 'El rango de fechas no puede ser mayor a un mes';
-        this.disButton = true;
-      } else {
-        this.dias_estimados = `Diferencia: ${((diferenciaEnDias) ? diferenciaEnDias : '-')} días`;
-        if (startDate && endDate) this.validateDataExistDate();
-        this.disButton = false;
+  validateDateIni() {
+    this.validateDateRange(this.dateini?.nativeElement.value, this.datefin?.nativeElement.value, 'start');
+  }
+  validateDatefin() {
+    this.validateDateRange(this.dateini?.nativeElement.value, this.datefin?.nativeElement.value, 'end');
+  }
+  validateDateRange(startValue: string, endValue: string, changed: 'start' | 'end') {
+    if (startValue && endValue) {
+      const fechaInicio = new Date(startValue);
+      const fechaFin = new Date(endValue);
+      const diferenciaEnDias = Math.abs((fechaFin.getTime() - fechaInicio.getTime()) / (1000 * 60 * 60 * 24));
+      if (diferenciaEnDias > this.diasEncontrar) {
+        Swal.fire({
+          text: "El rango de fechas no puede ser mayor a un mes!",
+          icon: "info"
+        });
+        if (changed === 'start') {
+          this.datefin!.nativeElement.value = this.calculateMaxEndDate(fechaInicio);
+        } else {
+          this.dateini!.nativeElement.value = this.calculateMinIniDate(fechaFin);
+        }
       }
+      if (this.dateini!.nativeElement.value > this.datefin!.nativeElement.value) {
+        Swal.fire({
+          text: "La fecha inicial no puede ser mayor a la fecha final!",
+          icon: "info"
+        });
+        this.datefin!.nativeElement.value = this.dateini!.nativeElement.value;
+      }
+      this._transaction_show = true;
     }
+  }
+  calculateMaxEndDate(startDate: Date): string {
+    startDate.setDate(startDate.getDate() + this.diasEncontrar);
+    return startDate.toISOString().split('T')[0];
+  }
+  calculateMinIniDate(endDate: Date): string {
+    endDate.setDate(endDate.getDate() - this.diasEncontrar);
+    return endDate.toISOString().split('T')[0];
   }
 
   validateTime() {
@@ -1063,18 +1062,17 @@ export class ModeldataComponent implements OnInit {
     if ( dateiniValue == datefinValue ) {
       if( horainiValue > horafinValue ) {
         Swal.fire({
-          // title: "Es en serio?",
           text: "La hora inicial no puede ser mayor a la hora final.",
-          icon: "question"
+          icon: "info"
         });
       } else if ( datefinValue < dateiniValue ) {
         Swal.fire({
-          // title: "Es en serio?",
           text: "La hora final no puede ser menor a la hora inicial.",
-          icon: "question"
+          icon: "info"
         });
       }
     }
+    if (horainiValue && horafinValue) this.disButton = false;
   }
 
   eliminarEquiposDeReporteria(equipos:any, i:any) {
@@ -1197,12 +1195,6 @@ export class ModeldataComponent implements OnInit {
     }, []);
     this.dataExportarExcel      = uniqueObjects;
     this.dataExportarExcelGhost = uniqueObjects2;
-  }
-
-  validateDataExistDate() {
-    if( this.exportdateform.controls['datefin'].value != undefined || this.exportdateform.controls['datefin'].value != null || this.exportdateform.controls['datefin'].value != '') {
-      this._transaction_show = true;
-    }
   }
   
   obtenerCliente() {

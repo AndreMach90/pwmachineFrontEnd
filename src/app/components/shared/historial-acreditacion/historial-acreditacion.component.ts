@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { HistoriaAcreditacionService } from './services/historia-acreditacion.service';
 import { Environments } from '../../environments/environments';
 import * as ExcelJS from 'exceljs';
 import Swal from 'sweetalert2'
 import { TransaccionesTiendaService } from '../../dahsboards/monitoreo-equipos/modal/services/transacciones-tienda.service';
 import { FormControl, FormGroup } from '@angular/forms';
-import { SharedService } from '../services/shared.service';
 
 const Toast = Swal.mixin({
   toast: true,
@@ -26,7 +25,6 @@ const Toast = Swal.mixin({
 })
 
 export class HistorialAcreditacionComponent implements OnInit {
-
   listaAcreditadas:        any = [];
   _show_spinner:           boolean = false;
   fechaIni:                any;
@@ -41,13 +39,13 @@ export class HistorialAcreditacionComponent implements OnInit {
   configblack:             any  = this.env.apiUrlIcon() + 'configblack.png';
   menuicon:                any  = this.env.apiUrlIcon() + 'menu.png';
   descargar:               any  = this.env.apiUrlIcon() + 'descargar.png';
-
   dataExportarExcel:       any     = [];
   _transaction_show:       boolean = false;
   modelConsult:            any     = [];
   listaAcreditadasOk:      any     = [];
-
   transaccionesModel:      any      = [];
+  @ViewChild('dateini') dateini: ElementRef | undefined;
+  @ViewChild('datefin') datefin: ElementRef | undefined;
 
   public exportdateform = new FormGroup({
     dateini:              new FormControl(),
@@ -82,12 +80,6 @@ export class HistorialAcreditacionComponent implements OnInit {
     this.hcred.obtenerEquiposAcreditados( data.nombreArchivo ).subscribe({
       next: (x) => {
         this.dataExportarExcel = x;
-        console.log('/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*')
-        console.log('this.dataExportarExcel')
-        console.log(data.nombreArchivo)
-        console.log('________________________________')
-        console.log(this.dataExportarExcel)
-        console.log('/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*')
       }, complete: () => {
         this.obtenerTransaccionesEquipos(data.nombreArchivo);
       }
@@ -97,10 +89,8 @@ export class HistorialAcreditacionComponent implements OnInit {
   obtenerTransaccionesEquipos(nombreArchivo: any) {
     this.transacciones.obtenerTransaccionesTienda(nombreArchivo, 1).subscribe({
       next: (y: any) => {
-  
         this.dataExportarExcel.forEach((element: any) => {
           element.transacciones = []; // Reinicia el array de transacciones
-  
           y.filter((elementTra: any) => {
             let arr = {
               "F.Transacciones":       new Date(elementTra.fechaTransaccion),
@@ -145,20 +135,15 @@ export class HistorialAcreditacionComponent implements OnInit {
               element.transacciones.push(arr);
             }
           });
-  
           // Ordena las transacciones por element.machineSn
           element.transacciones.sort((a: any, b: any) => {
             const snA = a['N. Serie'];
             const snB = b['N. Serie'];
-  
             if (snA < snB) return -1;
             if (snA > snB) return 1;
             return 0;
           });
         });  
-        // ////console.log('==========================');
-        // ////console.log(this.dataExportarExcel);
-        // ////console.log('==========================');
       }, complete: () => {
         this.exportarExcel(nombreArchivo);
       }, error: (e) => {
@@ -315,10 +300,9 @@ export class HistorialAcreditacionComponent implements OnInit {
           $025               += x["T$0.25"];
           $050               += x["T$0.50"];
           $0100              += x["$0.100"];
-        } 
-        );
+        });
 
-        /** Aquí cree la fila de saldos */
+        // Aquí cree la fila de saldos
         const totalRow = worksheet.addRow(
           [datenow, timenow, clientes,tiendas,'   ***   ',
            equipos,usuario,establecimiento, actividad,codestablecimiento,
@@ -335,52 +319,32 @@ export class HistorialAcreditacionComponent implements OnInit {
               fgColor: { argb: 'F0F0F0' },
           };
           totalRow.getCell(col).border = {
-            top:    {
-                      style: 'thin',
-                      color: { argb: '000000' }
-                    },
-            left:   {
-                      style: 'thin',
-                      color: { argb: '000000' }
-                    },
-            bottom: { 
-                      style: 'thin',
-                      color: { argb: '000000' }
-                    },
-            right:  { 
-                      style: 'thin',
-                      color: { argb: '000000' }
-                    },
+            top:  {
+                  style: 'thin',
+                  color: { argb: '000000' }
+                  },
+            left: {
+                  style: 'thin',
+                  color: { argb: '000000' }
+                  },
+            bottom:{ 
+                  style: 'thin',
+                  color: { argb: '000000' }
+                  },
+            right:{ 
+                  style: 'thin',
+                  color: { argb: '000000' }
+                  },
           };
         }
-
-
       }
-
-
     });
-  
-    // worksheet.columns.forEach((column: any) => {
-    //     if (numericColumns.includes(column.number - 1)) {
-    //       column.eachCell((cell: any) => {
-    //         cell.numFmt = '#,##0';
-    //     });
-    //     if (column.number === 26) {
-    //       column.width = 20;
-    //       column.eachCell((cell: any) => {
-    //         cell.numFmt = '#,#0.00';
-    //       });
-    //     }
-    //   }
-    //   });
-  
       const titleRow = worksheet.getRow(1);
       titleRow.getCell(1).font = { 
         bold: true, 
         size: 17, 
         color: { argb: '8F8F8F' }
       };
-  
       const headerRow = worksheet.getRow(2);
       headerRow.eachCell((cell) => {
         cell.fill = {
@@ -409,19 +373,18 @@ export class HistorialAcreditacionComponent implements OnInit {
       });
     });
 
-      workbook.xlsx.writeBuffer().then((buffer) => {
-        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = nombreArchivo;
-        a.click();
-        window.URL.revokeObjectURL(url);
-        setTimeout(() => {
-          this.dataExportarExcel = [];
-        }, 1000);
-      });
-
+    workbook.xlsx.writeBuffer().then((buffer) => {
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = nombreArchivo;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      setTimeout(() => {
+        this.dataExportarExcel = [];
+      }, 1000);
+    });
   }
 
   getHeaderRow(): string[] {    
@@ -456,45 +419,68 @@ export class HistorialAcreditacionComponent implements OnInit {
     });    
   }
 
-  validateDataExistDate() {
-    if( this.exportdateform.controls['datefin'].value != undefined || this.exportdateform.controls['datefin'].value != null || this.exportdateform.controls['datefin'].value != '') {
+  dias_estimados:     string = '';
+  disButton:          boolean = true;
+  diasEncontrar:      number  = 31;
+  validateDateIni() {
+    this.validateDateRange(this.dateini?.nativeElement.value, this.datefin?.nativeElement.value, 'start');
+  }
+  validateDatefin() {
+    this.validateDateRange(this.dateini?.nativeElement.value, this.datefin?.nativeElement.value, 'end');
+  }
+  validateDateRange(startValue: string, endValue: string, changed: 'start' | 'end') {
+    if (startValue && endValue) {
+      const fechaInicio = new Date(startValue);
+      const fechaFin = new Date(endValue);
+      const diferenciaEnDias = Math.abs((fechaFin.getTime() - fechaInicio.getTime()) / (1000 * 60 * 60 * 24));
+      if (diferenciaEnDias > this.diasEncontrar) {
+        Swal.fire({
+          text: "El rango de fechas no puede ser mayor a un mes!",
+          icon: "info"
+        });
+        if (changed === 'start') {
+          this.datefin!.nativeElement.value = this.calculateMaxEndDate(fechaInicio);
+        } else {
+          this.dateini!.nativeElement.value = this.calculateMinIniDate(fechaFin);
+        }
+      }
+      if (this.dateini!.nativeElement.value > this.datefin!.nativeElement.value) {
+        Swal.fire({
+          text: "La fecha inicial no puede ser mayor a la fecha final!",
+          icon: "info"
+        });
+        this.datefin!.nativeElement.value = this.dateini!.nativeElement.value;
+      }
       this._transaction_show = true;
+      this.disButton = false;
     }
+  }
+  calculateMaxEndDate(startDate: Date): string {
+    startDate.setDate(startDate.getDate() + this.diasEncontrar);
+    return startDate.toISOString().split('T')[0];
+  }
+  calculateMinIniDate(endDate: Date): string {
+    endDate.setDate(endDate.getDate() - this.diasEncontrar);
+    return endDate.toISOString().split('T')[0];
   }
 
   onSubmitDate() {
-    // Obtén la fecha de this.exportdateform.controls['datefin'].value
     const fechaFinValue = this.exportdateform.controls['datefin'].value;
-  
     if (fechaFinValue) {
-      // La fecha no es nula, procede a la manipulación de la fecha
       const fechaFin = new Date(fechaFinValue);
-  
-      // Suma un día a la fecha
       fechaFin.setDate(fechaFin.getDate() + 1);
-  
-      // Actualiza this.modelConsult con la nueva fecha
       this.modelConsult = {
         FechaIni: this.exportdateform.controls['dateini'].value,
-        FechaFin: fechaFin.toISOString() // Convierte la fecha a formato ISO (opcional)
+        FechaFin: fechaFin.toISOString()
       };
-
-      //console.log('this.modelConsult');
-      //console.log(this.modelConsult);
-  
       // Realiza la consulta con la nueva fecha
       this.hcred.obtenerAcreditadasTran(this.modelConsult).subscribe({
         next: (x) => {
-          ////console.log(x);
           this.listaAcreditadasOk = x;
-          //console.log(this.listaAcreditadasOk);
         }
       });
     } else {
-      // La fecha es nula, manejar este caso según tus requisitos
       console.error("La fecha de 'datefin' es nula.");
     }
   }
-  
-
 }

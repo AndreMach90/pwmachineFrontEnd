@@ -107,6 +107,8 @@
                                class="form-control"
                                formControlName="dateini"
                                #dateini
+                               (change)="validateDateIni()"
+                               (keyup)="validateDateIni()"
                                id="dateini">
                      </div>
                     <div class="d-flex flex-column p-2">
@@ -118,7 +120,8 @@
                                class="form-control"
                                formControlName="datefin"
                                #datefin
-                               (change)="validateDataExistDate()"
+                               (keyup)="validateDatefin()"
+                               (change)="validateDatefin()"
                                id="datefin">
                     </div>
                     <div class="p-2" >
@@ -126,6 +129,7 @@
                                 data-bs-toggle="collapse"
                                 data-bs-target="#collapseTwo"
                                 aria-expanded="false"
+                                [disabled]="disButton"
                                 aria-controls="collapseTwo">Buscar</button>
                     </div>
             </div>
@@ -194,11 +198,6 @@
                    </div>
                </p-overlayPanel>
            </td>
-           <!-- <td>
-               <div class="desbtn p-1" title="Descargar Excel" (click)="obtenerTransacTabla(acredit)">
-                   <div [style]="'background-image: url( '+descargar+' )'" class="iconodes"></div>
-               </div>
-           </td> -->
        </tr>
    </tbody>
 </table>

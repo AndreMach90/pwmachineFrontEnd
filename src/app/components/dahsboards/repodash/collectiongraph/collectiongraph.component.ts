@@ -228,25 +228,25 @@ export class CollectiongraphComponent implements OnInit, OnChanges {
     });
   }
 
-  obtenerGraficos(serie: string) {
-    this.listaGraf = [];
-    this.listaGrafGhost = [];
-    this._show_spinner = true;
-    this.graf.obtenerGraficaCollection(serie).subscribe({
-      next: (xgraf: any) => {
-        this.listaGrafGhost = xgraf;
-        this.listaGraf = xgraf;
-        this.listaGrafGhost;
-        this.listaGraf;
-      },
-      error: (e) => {
-        console.error(e);
-        this._show_spinner = false;
-      },
-      complete: () => {
-        this.collectionGraph();
-        this._show_spinner = false;
-      },
-    });
-  }
+  // obtenerGraficos(serie: string) {
+  //   this.listaGraf = [];
+  //   this.listaGrafGhost = [];
+  //   this._show_spinner = true;
+  //   this.graf.obtenerGraficaCollection(serie).subscribe({
+  //     next: (xgraf: any) => {
+  //       this.listaGrafGhost = xgraf;
+  //       this.listaGraf = xgraf;
+  //       this.listaGrafGhost;
+  //       this.listaGraf;
+  //     },
+  //     error: (e) => {
+  //       console.error(e);
+  //       this._show_spinner = false;
+  //     },
+  //     complete: () => {
+  //       this.collectionGraph();
+  //       this._show_spinner = false;
+  //     },
+  //   });
+  // }
 }

@@ -784,8 +784,8 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
       {
       next:(x) => {
         this.primaryLista = x;
-        //console.warn('ESTO PASA EN MONITOREAR')
-        //console.warn(this.primaryLista)
+        console.warn('ESTO PASA EN MONITOREAR')
+        console.warn(this.primaryLista)
         if ( this.nserie == this.primaryLista[0].machine_Sn ) 
         { 
           this.primaryLista.filter((element:any) => {

@@ -8,10 +8,8 @@ import { Environments } from 'src/app/components/environments/environments';
 export class GraficasService {
 
   constructor( private env: Environments, private http: HttpClient ) { }
-
+  /// Checkear
   obtenerGraficaCollection(nserie:string) {
     return this.http.get( this.env.apiurl() + 'Grafico/ObtenerEquipo/' + nserie );
   }
-
-
 }
