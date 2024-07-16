@@ -9,19 +9,20 @@ export class TiendaService {
 
   constructor( private env: Environments, private http: HttpClient ) { }
 
-  guardarTiendas( model:any[] ) {
-    
+  guardarTiendas( model:any[] ) {    
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.env.TokenJWT()}`,
       'Content-Type': 'application/json'
     });
-
     return this.http.post(this.env.apiurl() + 'tiendas/GuardarTienda', model, { headers });
-
   }
 
   obtenerTiendas() {
-    return this.http.get(this.env.apiurl() + 'tiendas/ObtenerTiendasCompletas');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get(this.env.apiurl() + 'tiendas/ObtenerTiendasCompletas', {headers});
   }
 
   editarTiendas( model:any ) {
@@ -29,26 +30,39 @@ export class TiendaService {
       'Authorization': `Bearer ${this.env.TokenJWT()}`,
       'Content-Type': 'application/json'
     });
-
-    return this.http.put( this.env.apiurl() + 'tiendas/ActualizarTienda', model, {headers} );
-    
+    return this.http.put( this.env.apiurl() + 'tiendas/ActualizarTienda', model, {headers} );    
   }
 
   eliminarTiendas(id:number) {
-    return this.http.delete( this.env.apiurl() + 'tiendas/BorrarTienda/' + id );
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.delete( this.env.apiurl() + 'tiendas/BorrarTienda/' + id, {headers} );
   }
 
   guardarCuentAsigna( model: any [] ) {
-    return this.http.post( this.env.apiurl() + 'CuentAsigna/GuardarCuentAsigna', model );
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.post( this.env.apiurl() + 'CuentAsigna/GuardarCuentAsigna', model, {headers} );
   }
 
   obtenerCuentasAsignadas(idtienda:any) {
-    console.log(this.env.apiurl() + 'TiendaCuenta/ObtenerTiendaCuentas/' + idtienda)
-    return this.http.get( this.env.apiurl() + 'TiendaCuenta/ObtenerTiendaCuentas/' + idtienda );
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get( this.env.apiurl() + 'TiendaCuenta/ObtenerTiendaCuentas/' + idtienda, {headers} );
   }
 
   eliminarCuentasAsignadas(id:number) {
-    return this.http.delete( this.env.apiurl() + 'TiendaCuenta/BorrarCuentaTienda/' + id );
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.delete( this.env.apiurl() + 'TiendaCuenta/BorrarCuentaTienda/' + id, {headers} );
   }
 
 

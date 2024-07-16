@@ -53,12 +53,13 @@ export class LoginComponent implements OnInit {
       this.secondary = this.env.appTheme.colorSecondary_C;
       
       let xtoken = sessionStorage.getItem('token');
-      if( xtoken == null || xtoken == undefined )  { 
-        ////console.warn('No hay credenciales') 
+      if( xtoken == null || xtoken == undefined ) {
+        this.router.navigate(['login']);
       }
+      
       else if (xtoken != null || xtoken != undefined) {
-        this.router.navigate(['dashboard'])
-      };
+        this.router.navigate(['dashboard']);
+      }
 
   }
 
@@ -66,45 +67,60 @@ export class LoginComponent implements OnInit {
     this.logins();
   }
 
-
   loginModel:any = [];
   logins() {
     
     this.loginModel = {
-      "Usuario":  this.loginForm.controls['email'].value,
+      "Usuario":  this.loginForm.controls['email']      .value,
       "Password": this.loginForm.controls['contrasenia'].value
     }
-    
+
     this._show_spinner = true;
     this.log.login(this.loginModel).subscribe({
-      next: (x) => {
+      next: (x:any) => {
+        console.warn(x.token);
+
+        const tokenEn:any = this.ncrypt.encryptWithAsciiSeed(x.token, 5, 10);
+        sessionStorage.setItem('token', tokenEn);
+        let xuser: any = this.loginForm.controls['email'].value;
+        sessionStorage.setItem('usuario', xuser);
+        this.router.navigate(['dashboard']);
         Toast.fire({
           icon: 'success',
           title: 'Te has logeado con éxito'
         })
         this._show_spinner = false;
       }, error: (error) => {
-        if ( error.status == 200 ) { 
-          Toast.fire({
-            icon: 'success',
-            title: 'Te has logeado con éxito'
-          })
-          var e = error.error;
-          //////////console.warn(e.text);
-          const tokenEn:any = this.ncrypt.encryptWithAsciiSeed(e.text, 5, 10);
-          sessionStorage.setItem('token', tokenEn);
-          let xuser: any = this.loginForm.controls['email'].value;
-          sessionStorage.setItem('usuario', xuser);
-          this.router.navigate(['dashboard']);
-        } else if ( error.status != 200 ) {
-          Toast.fire({
-            icon: 'error',
-            title: 'Algo ha pasado'
-          })
-        }   
+        console.error(error);
+
+        if( error.status == 404 ) {
+
+          Swal.fire({
+            icon: "error",
+            title: this.env.E_404,
+            text: error.error.message,
+          });
+
+        } else if ( error.status == 0 ) {
+
+          Swal.fire({
+            icon: "error",
+            title: this.env.E_0,
+            text: error.error.message,
+          });
+
+        } else if ( error.status == 500 ) {
+
+          Swal.fire({
+            icon: "error",
+            title: this.env.E_500,
+            text: error.error.message,
+          });
+
+        }
+
+        this.router.navigate(['login']);
         this._show_spinner = false;     
-      }, complete: () => {
-          this.router.navigate(['dashboard']);
       }
     })
 

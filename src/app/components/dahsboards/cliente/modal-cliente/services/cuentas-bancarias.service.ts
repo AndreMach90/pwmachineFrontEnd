@@ -19,7 +19,11 @@ export class CuentasBancariasService {
   }
 
   eliminarCuentaBancaria( id:number ) {
-    return this.http.delete( this.env.apiurl() + 'Cuenta/BorrarCuenta/' + id );
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.delete( this.env.apiurl() + 'Cuenta/BorrarCuenta/' + id, {headers} );
   }
 
   editarCuentaBancaria(model:any []) {

@@ -27,21 +27,45 @@ export class ClientesService {
   }
 
   obtenerCliente() {    
-    return this.http.get( this.env.apiurl()+'Cliente/obtenerCliente');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get( this.env.apiurl()+'Cliente/obtenerCliente', {headers});
   }
 
-  obtenerCuentaCliente(id:number) {    
-    console.log(this.env.apiurl()+'Cliente/ObtenerCuentaCliente/'+id)
-    return this.http.get( this.env.apiurl()+'Cliente/ObtenerCuentaCliente/'+id);
+  ObtenerClienteSelect() {    
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get( this.env.apiurl()+'Cliente/ObtenerClienteSelect', {headers});
+  }
+
+  obtenerCuentaCliente(id:number) {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get( this.env.apiurl()+'Cliente/ObtenerCuentaCliente/'+id, {headers});
   }
 
   obtenerCuentaTransacCant(id:number) {    
-    return this.http.get( this.env.apiurl()+'Cuenta/NTransacciones/'+id);
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    console.warn(this.env.apiurl()+'Cuenta/NTransacciones/'+id)
+    return this.http.get( this.env.apiurl()+'Cuenta/NTransacciones/'+id, {headers});
   }
 
 
   eliminarCliente( codigoCliente:string ) {
-    return this.http.delete( this.env.apiurl() + 'Cliente/BorrarCliente/' + codigoCliente );
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.delete( this.env.apiurl() + 'Cliente/BorrarCliente/' + codigoCliente, {headers} );
   }
 
 }
