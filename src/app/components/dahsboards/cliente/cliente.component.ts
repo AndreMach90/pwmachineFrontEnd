@@ -49,6 +49,9 @@ export class ClienteComponent implements OnInit {
   cancel: any = this.env.apiUrlIcon()+'cancel.png';
   add: any = this.env.apiUrlIcon()+'add.png';
   search: any = this.env.apiUrlIcon()+'search.png';
+  localidadesGuardadasCliente: any = [];
+  codigoCliente:any;
+  idlciente:any;
 
   tiendaListaGhost:any = [];
   filterequip:any =[];
@@ -109,13 +112,13 @@ export class ClienteComponent implements OnInit {
 
   }
 
-  constructor( private env: Environments,
-               public dialog: MatDialog,
-               private loc: ModalClienteService,
-               private clienteserv: ClientesService,
+  constructor( private env:                  Environments,
+               public  dialog:               MatDialog,
+               private loc:                  ModalClienteService,
+               private clienteserv:          ClientesService,
                private controlInputsService: ControlinputsService,
-               private sharedservs: ServicesSharedService, 
-               private ctabancarias: CuentasBancariasService ) {}
+               private sharedservs:          ServicesSharedService, 
+               private ctabancarias:         CuentasBancariasService ) {}
  
                validateInputText(data:any) {
                 this.controlInputsService.validateAndCleanInput(data);
@@ -125,7 +128,6 @@ export class ClienteComponent implements OnInit {
                 this.controlInputsService.validateAndCleanNumberInput(data);
               }
   
-  localidadesGuardadasCliente: any = [];
   obtenerLocalidad( codcli:any ) {
     this._show_spinner = true;
     this.loc.obtenerLocalidadesCliente( codcli ).subscribe({
@@ -312,6 +314,7 @@ export class ClienteComponent implements OnInit {
           Toast.fire({ icon: 'success', title: 'Cliente actualizado con éxito' });
           this._show_spinner = false;
         }, error: (e) => {
+          console.error(e)
           Toast.fire({ icon: 'error', title: 'Algo ha pasado' });
           this._show_spinner = false;
         }, complete: () => {
@@ -352,11 +355,8 @@ export class ClienteComponent implements OnInit {
         this.cuentaslista.splice(i, 1);
       }
     })
+  }  
 
-  }
-  
-  codigoCliente:any;
-  idlciente:any;
   catchData(data:any) {
     this.calwidth = true;
     this.widthAutom();
@@ -390,7 +390,7 @@ export class ClienteComponent implements OnInit {
           next: (x) => {
             this._show_spinner = false;
             Swal.fire (
-              'Deleted!',
+              'Eliminado!',
               'Cliente eliminado',
               'success'
             )

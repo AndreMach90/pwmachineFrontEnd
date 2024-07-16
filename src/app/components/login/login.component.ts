@@ -78,6 +78,8 @@ export class LoginComponent implements OnInit {
     this._show_spinner = true;
     this.log.login(this.loginModel).subscribe({
       next: (x:any) => {
+        console.warn(x.token);
+
         const tokenEn:any = this.ncrypt.encryptWithAsciiSeed(x.token, 5, 10);
         sessionStorage.setItem('token', tokenEn);
         let xuser: any = this.loginForm.controls['email'].value;

@@ -193,7 +193,7 @@ export class TiendaComponent implements OnInit {
         this.tiendaservs.eliminarTiendas(data.id).subscribe({
           next: (x) => {
             this._show_spinner = false;
-            Swal.fire('Deleted!', 'Tienda eliminado', 'success');
+            Swal.fire('Eliminado!', 'Tienda eliminado', 'success');
           },
           error: (e) => {
             console.error(e);
@@ -474,7 +474,7 @@ export class TiendaComponent implements OnInit {
   obtenerCliente() {
     this.clientelista = [];
     this._show_spinner = true;
-    this.clienteserv.obtenerCliente().subscribe({
+    this.clienteserv.ObtenerClienteSelect().subscribe({
       next: (cliente) => {
         this.clienteListaGhost = cliente;
         this._show_spinner = false;
@@ -527,6 +527,8 @@ export class TiendaComponent implements OnInit {
     this.obtenerLocalidad();
     this.clienteserv.obtenerCuentaCliente(id).subscribe({
       next: (cuentas) => {
+        console.log('cuentas bancarias')
+        console.log(cuentas)
         this.cuentaslista = cuentas;
         this._show_spinner = false;
       },
@@ -619,16 +621,14 @@ export class TiendaComponent implements OnInit {
   }
 
   obtenerCuentasTienda(id: any) {
-    console.log(id);
+    
     this.listaCuentaTiendasBanc = [];
     this.tiendaservs.obtenerCuentasAsignadas(id).subscribe({
       next: (cuentaTiendaBank) => {
         this.listaCuentaTiendasBanc = cuentaTiendaBank;
         console.warn(this.listaCuentaTiendasBanc);
       },
-      error: (e) => {
-        console.error(e);
-      },
+      error: (e) => console.error(e),
       complete: () => {
         if (this.editcatch) {
           this.listaCuentaTiendasBanc.filter((element: any) => {
@@ -638,6 +638,7 @@ export class TiendaComponent implements OnInit {
         }
       },
     });
+
   }
 
   eliminarCuentaTienda(data: any, id: number) {
@@ -655,7 +656,7 @@ export class TiendaComponent implements OnInit {
         this.tiendaservs.eliminarCuentasAsignadas(data.id).subscribe({
           next: (x) => {
             this._show_spinner = false;
-            Swal.fire('Deleted!', 'Cuenta asignada, eliminada', 'success');
+            Swal.fire('Eliminado!', 'Cuenta asignada, eliminada', 'success');
           },
           error: (e) => {
             console.error(e);

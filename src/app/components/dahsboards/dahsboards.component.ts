@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Environments } from '../environments/environments';
 import jwt_decode from 'jwt-decode';
 import { EncryptService } from '../shared/services/encrypt.service';
-
+import Swal from 'sweetalert2'
 @Component({
   selector: 'app-dahsboards',
   templateUrl: './dahsboards.component.html',
@@ -46,43 +46,40 @@ export class DahsboardsComponent implements OnInit {
   usuario: any;
   monitor: boolean = false;
 
+  horaCierre: any;
+
   ngOnInit(): void {
     this.validateSesion();
     let xuser: any = sessionStorage.getItem('usuario');
     this.usuario = xuser;
     let xtoken: any = sessionStorage.getItem('token');
-    const xtokenDecript: any = this.ncrypt.decryptWithAsciiSeed(
-      xtoken,
-      this.env.es,
-      this.env.hash
-    );
+    const xtokenDecript: any = this.ncrypt.decryptWithAsciiSeed(xtoken, this.env.es, this.env.hash);
+
     if (xtokenDecript != null || xtokenDecript != undefined) {
       var decoded: any = jwt_decode(xtokenDecript);
       this.sub = decoded['sub'];
-      this.nameidentifier =
-        decoded[
-          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
-        ];
-      this.name =
-        decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
-      this.role =
-        decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-      this.authorizationdecision =
-        decoded[
-          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/authorizationdecision'
-        ];
+      this.nameidentifier = decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+      this.name = decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
+      this.role = decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+      this.authorizationdecision = decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/authorizationdecision'];
       this.exp = decoded['exp'];
       this.iss = decoded['iss'];
       this.aud = decoded['aud'];
-      const rolEncrypt: any = this.ncrypt.encryptWithAsciiSeed(
-        this.role,
-        this.env.es,
-        this.env.hash
-      );
+
+      console.warn('=====================================');
+      console.warn('this.exp');
+      console.warn(this.exp);
+      this.horaCierre = this.convertTimestampToReadableDate(this.exp);
+      console.warn('Fecha y hora legible:', this.horaCierre);
+      console.warn('=====================================');
+
+      const rolEncrypt: any = this.ncrypt.encryptWithAsciiSeed(this.role, this.env.es, this.env.hash);
       sessionStorage.setItem('PR', rolEncrypt);
       if (this.role == 'R003') {
         this.router.navigate(['moneq']);
       }
+
+      this.startSessionTimer(this.exp);
     }
 
     this.primary = this.env.appTheme.colorPrimary;
@@ -97,12 +94,54 @@ export class DahsboardsComponent implements OnInit {
     let arrmodulo = { nombre: xmodulo };
     this.recibirModulo(arrmodulo);
   }
+  
+  convertTimestampToReadableDate(timestamp: number): string {
+    // Convertir el timestamp a milisegundos
+    const date = new Date(timestamp * 1000);
+
+    // Formatear la fecha a una cadena legible
+    const readableDate = date.toLocaleString();
+
+    return readableDate;
+  }
+
+  /** TOKEN NO TOCAR */
+  startSessionTimer(exp: number): void {
+    const currentTime = Math.floor(Date.now() / 1000); // Obtener el tiempo actual en segundos
+    const timeUntilExpiration = exp - currentTime;
+    const twoMinutesInSeconds = 2 * 60;
+
+    if (timeUntilExpiration > 0) {
+      if (timeUntilExpiration > twoMinutesInSeconds) {
+        setTimeout(() => {
+          const minutesLeft = Math.floor((exp - Math.floor(Date.now() / 1000)) / 60);
+          Swal.fire({
+            title: "Sesión por expirar.",
+            text: `Por motivos de seguridad su sesión está por expirar en ${minutesLeft} minutos`,
+            footer: 'Puedes volver a iniciar sesión para generar un token de sesión nuevo.',
+            icon: "warning"
+          });
+          setTimeout(() => {
+            this.closeSession();
+          }, twoMinutesInSeconds * 1000); // Esperar los dos minutos restantes
+        }, (timeUntilExpiration - twoMinutesInSeconds) * 1000); // Esperar hasta que queden dos minutos
+      } else {
+        setTimeout(() => {
+          this.closeSession();
+        }, timeUntilExpiration * 1000); // Convertir a milisegundos
+      }
+    } else {
+      this.closeSession(); // Expiró el token, cerrar la sesión inmediatamente
+    }
+  }
 
   validateSesion() {
+
     let xtoken: any = sessionStorage.getItem('token');
     if (xtoken == null || xtoken == undefined || xtoken == '') {
       this.router.navigate(['login']);
     }
+
   }
 
   closeSession() {

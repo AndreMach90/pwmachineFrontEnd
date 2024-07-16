@@ -34,6 +34,14 @@ export class ClientesService {
     return this.http.get( this.env.apiurl()+'Cliente/obtenerCliente', {headers});
   }
 
+  ObtenerClienteSelect() {    
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get( this.env.apiurl()+'Cliente/ObtenerClienteSelect', {headers});
+  }
+
   obtenerCuentaCliente(id:number) {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.env.TokenJWT()}`,
