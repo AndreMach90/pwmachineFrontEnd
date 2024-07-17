@@ -112,33 +112,35 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
 
   private urlHub: any = this.env.apiUrlHub();
   private connectionSendPingEquipo: HubConnection;
-  private manualTransactionHub: HubConnection;
-  private automaticTransactionHub: HubConnection;
-  private recollectTransactionHub: HubConnection;
+  private manualTransactionHub:     HubConnection;
+  private automaticTransactionHub:  HubConnection;
+  private recollectTransactionHub:  HubConnection;
 
   public filterequipForm = new FormGroup({
     filterequip:   new FormControl('')
   })
   
-  constructor( private env: Environments,
-               private monitoreo: MonitoreoService,
-               public  dialog: MatDialog,
+  constructor( private env:        Environments,
+               private monitoreo:  MonitoreoService,
+               public  dialog:     MatDialog,
                private equiposerv: EquipoService,
-  ){
+  ) {
     // Ping Hub esta funcion establece la conexión con el Estado ping del equipo, mediante el canal 'PingHubEquipos' [#001]
     this.connectionSendPingEquipo = new HubConnectionBuilder().withUrl(this.urlHub+'PingHubEquipos').build();
     this.connectionSendPingEquipo.on("SendPingEquipo", message => {
       this.PingHub(message);
     });
-    // Transacción Manual esta función
+    // Transacciones Manuales
     this.manualTransactionHub = new HubConnectionBuilder().withUrl(this.urlHub+'manualTransaction').build();
     this.manualTransactionHub.on("SendTransaccionManual", message => {
       this.MtransHub(message);
     });
+    // Transacciones Automáticas
     this.automaticTransactionHub = new HubConnectionBuilder().withUrl(this.urlHub+'autoTransaccion').build();
     this.automaticTransactionHub.on("SendTransaccionAuto", message => {
       this.AuTransHub(message);
     });
+    // Transacciones Recolección
     this.recollectTransactionHub = new HubConnectionBuilder().withUrl(this.urlHub+'recoleccionTransaccion').build();
     this.recollectTransactionHub.on("SendTransaccionRecoleccion", message => {
       this.RecoTransHub(message);
@@ -202,10 +204,10 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   public countmin: number = 5000;
   private PingHub(data:any) {
 
-    console.log('--*-*----*-*-*-*-*---**');
-    console.log('PING HUB OBTENIENDO');
-    console.log(data);
-    console.log('--*-*----*-*-*-*-*---**');
+    // console.log('--*-*----*-*-*-*-*---**');
+    // console.log('PING HUB OBTENIENDO');
+    // console.log(data);
+    // console.log('--*-*----*-*-*-*-*---**');
 
     data.filter( (element:any) => {
       this.listaEsquipo.filter( (equi:any) => {
