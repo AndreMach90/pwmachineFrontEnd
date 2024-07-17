@@ -276,7 +276,7 @@
                             <td>{{ equipos.nombremarca }}</td>
                             <td>{{ equipos.nombremodelo }}</td>
                             <ng-container *ngIf="equipos.active == 'A'; else EquipoDesactivadoModelo">
-                                <td *ngIf="permisonUsers">
+                                <td *ngIf="permisonUsers" class="d-flex justify-content-center">
                                     <div class="btn btn-warning btn-sm m-1"
                                         [matBadge]="equipos.capacidadUsuariosTemporales"
                                         matBadgePosition="before"

@@ -12,11 +12,19 @@ export class EquipoService {
                private http: HttpClient ) { }
 
   obtenerModelo( codtipomaq: any, codmarca: any ) {
-    return this.http.get( this.env.apiurl() + 'MarcaModeloEquipo/ObtenerModelo/' + codtipomaq + '/' + codmarca );
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get( this.env.apiurl() + 'MarcaModeloEquipo/ObtenerModelo/' + codtipomaq + '/' + codmarca, { headers } );
   }
 
   obtenerMarca( codtipomaq:string ) {
-    return this.http.get( this.env.apiurl() + 'MarcaModeloEquipo/ObtenerMarca/' + codtipomaq );
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get( this.env.apiurl() + 'MarcaModeloEquipo/ObtenerMarca/' + codtipomaq, { headers } );
   }
 
   guardarEquipo(model: any []) {
@@ -28,40 +36,75 @@ export class EquipoService {
   }
 
   actualizarEquipo( id:number, model:any [] ) {
-    return this.http.put(this.env.apiurl() + 'Equipo/ActualizarEquipo/' + id, model);
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.put(this.env.apiurl() + 'Equipo/ActualizarEquipo/' + id, model, { headers });
   }
 
   obtenerEquipo( tp:number, ctienda:string ) {
-    return this.http.get(this.env.apiurl() + 'Equipo/ObtenerEquipo/'+ tp + '/' + ctienda);
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get(this.env.apiurl() + 'Equipo/ObtenerEquipo/'+ tp + '/' + ctienda, { headers });
   }
 
   obtenerEquipoConteoTran( option:any, model:any [] ) {
-    console.log(this.env.apiurl() + 'EquiposNoTransaccion/Conteo/'+option, model);
-    return this.http.post(this.env.apiurl() + 'EquiposNoTransaccion/Conteo/'+option, model);
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.post(this.env.apiurl() + 'EquiposNoTransaccion/Conteo/'+option, model, { headers });
   }
 
   eliminarEquipos(id:number) {
-    return this.http.delete(this.env.apiurl() + 'Equipo/BorrarEquipo/'+id);
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.delete(this.env.apiurl() + 'Equipo/BorrarEquipo/'+id, { headers });
   }
 
   obtenerUsuariosTemporales(ip:string) {
-    return this.http.get( this.env.apiurl() + 'UsuarioTemporal/Usuario/'+ip )
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get( this.env.apiurl() + 'UsuarioTemporal/Usuario/'+ip, { headers } )
   }
 
   obtenerUsuariosIp(ip:string) {
-    return this.http.get( this.env.apiurl() + 'Usuario/ObtenerUsuarioIP/'+ip )
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get( this.env.apiurl() + 'Usuario/ObtenerUsuarioIP/'+ip, { headers } )
   }
 
   eliminarUsuarioTemporal(id:number) {
-    return this.http.get( this.env.apiurl() + 'UsuarioTemporal/UsuarioDelete/' + id );
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get( this.env.apiurl() + 'UsuarioTemporal/UsuarioDelete/' + id, { headers } );
   } 
 
   obtenerIPEquipos() {
-    return this.http.get( this.env.apiurl() + 'Equipo/EquipoNuevo' );
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get( this.env.apiurl() + 'Equipo/EquipoNuevo', { headers } );
   }
 
   activarEquipo (id: number) {
-    return this.http.put( this.env.apiurl() + 'Equipo/ActivarEquipo/' + id, id);
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.put( this.env.apiurl() + 'Equipo/ActivarEquipo/' + id, id, { headers });
   } 
 
 }
