@@ -6,12 +6,26 @@
     </div>
 </div>
 
-<div class="d-flex p-3 w-100 h-100  d-flex justify-content-around align-items-center flex-wrap">
+<div class="p-lg-4">
 
-    <div class="boxMenu shadow-sm"></div>
-    <div class="boxMenu shadow-sm"></div>
-    <div class="boxMenu shadow-sm"></div>
-    <div class="boxMenu shadow-sm"></div>
+    <span class="text-light" >Menú de acciones:</span>
+
+</div>
+
+<div class="d-flex p-3 w-100   d-flex justify-content-start align-items-center flex-wrap">
+
+    <div *ngFor="let homeMenu of listaHomeMenu"  [style]=" 'width: ' + homeMenu.width "
+         class="boxMenu flex-column m-1" (click)="estadointerfazEmit(homeMenu.tipo)">
+        <div class=" d-flex justify-content-center" style="width: 100%; height: 40px;" >
+            <mat-icon style="font-size: 45pt; width: 70px; height: 80px;" >{{homeMenu.icon}}</mat-icon>
+        </div>
+        <div style="height: 25px;"></div>
+        <div class="w-100 d-flex justify-content-center animate__animated animate__fadeInUp">
+            <h1> 
+                <span> {{ homeMenu.tipo | uppercase }}</span> <span class="text-secondary" *ngIf="homeMenu.cantidad > 0" > ( {{homeMenu.cantidad}} ) </span>
+            </h1>
+        </div>
+    </div>
 
 </div>
 

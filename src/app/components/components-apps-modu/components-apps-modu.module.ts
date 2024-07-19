@@ -172,6 +172,7 @@ import { ModeldataComponent } from '../shared/modeldata/modeldata.component';
 import { HistorialAcreditacionComponent } from '../shared/historial-acreditacion/historial-acreditacion.component';
 import { ModalLocalidadClienteComponent } from '../dahsboards/cliente/modal-localidad-cliente/modal-localidad-cliente.component';
 import { ObtenerLocalidadClienteComponent } from '../dahsboards/cliente/modal-localidad-cliente/obtener-localidad-cliente/obtener-localidad-cliente.component';
+import { MonitorearEquipoComponent } from '../dahsboards/monitorear-equipo/monitorear-equipo.component';
 
 @NgModule({
   declarations: [
@@ -202,7 +203,7 @@ import { ObtenerLocalidadClienteComponent } from '../dahsboards/cliente/modal-lo
     HistorialAcreditacionComponent,
     ModalLocalidadClienteComponent,
     ObtenerLocalidadClienteComponent,
-    
+    MonitorearEquipoComponent
   ],
   imports: [
     NgxTimepickerModule,

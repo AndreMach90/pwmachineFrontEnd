@@ -6,6 +6,7 @@ import { MonitoreoService } from '../monitoreo-equipos/services/monitoreo.servic
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import Swal from 'sweetalert2'
 import { FormControl, FormGroup } from '@angular/forms';
+import { SharedService } from '../../shared/services/shared.service';
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
@@ -25,6 +26,9 @@ const Toast = Swal.mixin({
 })
 
 export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
+
+  @Output() estadointerfaz: EventEmitter<any> = new EventEmitter();
+
   EmitAutoTransHub: any = [];
   EmitAutomaticPiezasCantidadTransactionHub:any;
   // Cantidad de la transaccion en monedas INICO
@@ -34,10 +38,12 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   manualDepositoCoin25:         number = 0;
   manualDepositoCoin50:         number = 0;
   manualDepositoCoin100:        number = 0;
+  
   // Cantidad de la transaccion en monedas FIN
   sumatoriasTotalCoinHub:       number = 0;
   sumatoriasTotalManualHub:     number = 0;
   sumatoriasTotalMontoCoinHub:  number = 0;
+
   // Cantidad de la transaccion INICIO
   billete1:                     number = 0;
   billete2:                     number = 0;
@@ -47,6 +53,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   billete50:                    number = 0;
   billete100:                   number = 0;
   sumatoriasTotalHub:           number = 0;
+  
   // Cantidad de la transaccion FIN
   // Monto de dinero en la maquina INICIO
   montoBillete1:                number = 0;
@@ -57,6 +64,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   montoBillete50:               number = 0;
   montoBillete100:              number = 0;
   montoSumatoriasTotalHub:      number = 0;
+  
   // Monto de dinero en la maquina FIN
   numeroTransa: any;
   machSerie:    any;
@@ -124,6 +132,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
                private monitoreo:  MonitoreoService,
                public  dialog:     MatDialog,
                private equiposerv: EquipoService,
+               private shar:       SharedService
   ) {
     // Ping Hub esta funcion establece la conexión con el Estado ping del equipo, mediante el canal 'PingHubEquipos' [#001]
     this.connectionSendPingEquipo = new HubConnectionBuilder().withUrl(this.urlHub+'PingHubEquipos').build();
@@ -153,8 +162,9 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.obtenerEquipos(1,'void');
-    this.inicializadorHubs();
+    // this.obtenerEquipos(1,'void');
+    // this.inicializadorHubs();
+    this.obtenerIndicadoresHomeMenu();
   }
 
   inicializadorHubs() {
@@ -235,6 +245,11 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     })
   }
 
+  estadointerfazEmit(tipo:string) {
+    var x = tipo.trim();
+    this.estadointerfaz.emit(x);
+  }
+
   calculoPrimaryLista( objectArray:any, type:string ) {
     this.primaryLista = objectArray;    
     switch(type) {
@@ -253,6 +268,8 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
         }
       }
     })
+
+
 
     this.listaDetalleequipoManual.forEach((detalle:any) => {
       if( detalle.tipo == 'Manual') {
@@ -404,8 +421,50 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     } else {
       console.error('No se encontró una voz en español disponible.');
     }
-
   }  
+
+  listaHomeMenu: any = [];
+  obtenerIndicadoresHomeMenu() {
+    this.shar.getIndicadoresHome().subscribe({
+      next: (x) => {
+        console.log('BOTONES HOME');
+        console.log(x);
+        this.listaHomeMenu = x;
+      },
+      error: (e) => {
+        console.error(e);
+      },
+      complete: () => {
+        const arr: any = [
+          { 'tipo': 'monitorear equipo', 'icon': 'timeline', 'width': '480px !important' },
+          { 'tipo': 'Monitoreo de equipos general', 'icon': 'precision_manufacturing', 'width': '650px !important' },
+          { 'tipo': 'Reporte de datos', 'icon': 'article', 'width': '450px !important' }
+        ];
+
+        const iconMap: any = {
+          'clientes': 'face',
+          'tiendas': 'storefront',
+          'equipos': 'point_of_sale',
+          'usuarios': 'supervised_user_circle'
+        };
+
+        this.listaHomeMenu.forEach((x: any) => {
+          if (iconMap[x.tipo]) {
+            x.icon = iconMap[x.tipo];
+            x.width = '300px'
+          }
+        });
+
+        this.listaHomeMenu = this.listaHomeMenu.concat(arr);
+      }
+    });
+  }
+
+  changeSingleApp() {
+
+
+
+  }
 
   eliminarAlerta( i:number ) {
     this.listAlertas.splice(i, 1);
@@ -687,12 +746,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   filterEquipos() {
     let filterequip: any = this.filterequipForm.controls['filterequip'].value;
     this.listaEsquipo = this.listaEsquipoGhost.filter((item:any) =>
-    item.serieEquipo .toLowerCase().includes(filterequip.toLowerCase()) 
-      // item.nombreTienda.toLowerCase().includes(this.filterequip.toLowerCase()) ||
-      // item.nombremarca .toLowerCase().includes(this.filterequip.toLowerCase()) ||
-      // item.nombremodelo.toLowerCase().includes(this.filterequip.toLowerCase()) ||
-      // item.tipoMaquinaria.toLowerCase().includes(this.filterequip.toLowerCase())
-      // ////console.log(item)
+    item.serieEquipo .toLowerCase().includes(filterequip.toLowerCase())
     )
   }
 

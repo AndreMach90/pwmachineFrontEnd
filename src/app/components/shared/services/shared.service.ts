@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Environments } from '../../environments/environments';
 
@@ -22,7 +22,19 @@ export class SharedService {
   }
 
   getDataMaster(master: any) {
-    return this.http.get( this.env.apiurl() + 'DataMaster/GetDataMaster/' + master );
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get( this.env.apiurl() + 'DataMaster/GetDataMaster/' + master, {headers} );
+  }
+
+  getIndicadoresHome() {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get( this.env.apiurl() + 'Indicadores/ObtenerIndicadoresHome', {headers} );
   }
 
 

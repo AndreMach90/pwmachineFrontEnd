@@ -1,0 +1,80 @@
+<div class="spinner-overlay" *ngIf="_show_spinner">
+    <div class="spinner-container">
+      <span class="loader"></span>
+    </div>
+</div>
+
+<div class="dashworks p-2 rounded-3 d-flex w-100 mb-1"  
+     [ngStyle]="{ 'background-color': 'white', 'height': '60px' }">
+     <form [formGroup]="tiendaForm" class="d-flex" >
+        <div class="d-flex">
+          <label for="codigoClienteidFk" class="form-label m-0 d-flex align-items-center" style="width: 250px;">
+            <span class="text-secondary fs-6">Escoge el Cliente</span>
+            <span class="text-danger">*</span>
+          </label>
+          <select id="codigoClienteidFk"
+            class="inpForms form-select w-100"
+            formControlName="codigoClienteidFk"
+            #codigoClienteidFk
+            (change)="obtenerEquipos();"
+            aria-label="">
+            <option *ngFor="let cliente of clientelista"
+              [value]="cliente.codigoCliente">
+              {{ cliente.nombreCliente | titlecase }}
+            </option>
+          </select>
+        </div>
+        &nbsp;&nbsp;
+        <div class="ml-3">
+            <button class="btn btn-warning d-flex justify-content-center align-items-center shadow-sm animate__animated animate__fadeInLeft"
+                    (click)="op.toggle($event);" 
+                    *ngIf="showEquipos">
+                    <mat-icon>precision_manufacturing</mat-icon>
+                    <span>Equipos</span>&nbsp;&nbsp;<span><strong> {{listaEquipo.length}} </strong></span>
+            </button>
+            <p-overlayPanel #op >
+                <div class="mb-2 d-flex w-100">
+                    
+                      <input type="text"
+                             class="w-100 shadow-sm form-control rounded-pill"
+                             fxFlex="auto"
+                             formControlName="filterEquipo"
+                             #filterEquipo
+                             id="filterEquipo"
+                             (keyup)="filterEquipos()"
+                             placeholder="Búsqueda de equipos registrados..."/>
+                    
+                  </div>
+                <div class="overlay-custom w-100">
+                    <div *ngFor="let eq of listaEquipo; let i = index"
+                        class="boxequip  d-flex justify-content-betweens align-items-center w-100">
+                        <div class="m-1 d-flex flex-column w-100">
+                            <span>
+                                <strong> {{ eq.serieEquipo }} </strong>
+                            </span>
+                            <small class="text-secondary" style="font-size: 9pt;">
+                                <strong> {{ eq.nombreTienda | uppercase }} </strong>
+                            </small>
+                        </div>
+                        &nbsp;
+                        &nbsp;
+                        &nbsp;
+                        <div>
+                            <button mat-mini-fab color="primary" >
+                                <mat-icon>visibility</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </p-overlayPanel>
+              
+        </div>
+     </form>
+</div>
+
+<div class="dashworks p-2 rounded-3 d-flex w-100 h-75" 
+     [ngStyle]="{ 'background-color': 'white' }">
+     
+         
+
+</div>

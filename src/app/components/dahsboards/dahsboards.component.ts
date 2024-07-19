@@ -21,6 +21,7 @@ export class DahsboardsComponent implements OnInit {
   show_clientes: boolean = false;
   show_equipo: boolean = false;
   show_home: boolean = true;
+  show_monitorear_equipo: boolean = false;
   constructor(
     private ncrypt: EncryptService,
     private log: LoginService,
@@ -144,6 +145,63 @@ export class DahsboardsComponent implements OnInit {
 
   }
 
+  recibirDataButtonHome(event:any) {
+    console.log(event)
+    switch (event) {
+      case 'usuarios':
+        this.show_home              = false;
+        this.show_usuarios          = true;
+        this.show_tiendas           = false;
+        this.show_clientes          = false;
+        this.show_equipo            = false;
+        this.show_monit_equip       = false;
+        this.show_monitorear_equipo = false;
+        break;
+      case 'tiendas':
+        this.show_home              = false;
+        this.show_usuarios          = false;
+        this.show_tiendas           = true;
+        this.show_clientes          = false;
+        this.show_equipo            = false;
+        this.show_monit_equip       = false;
+        this.show_monitorear_equipo = false;
+        break;
+      case 'clientes':
+        this.show_home              = false;
+        this.show_usuarios          = false;
+        this.show_tiendas           = false;
+        this.show_clientes          = true;
+        this.show_equipo            = false;
+        this.show_monit_equip       = false;
+        this.show_monitorear_equipo = false;
+        break;
+      case 'equipos':
+        this.show_home              = false;
+        this.show_usuarios          = false;
+        this.show_tiendas           = false;
+        this.show_clientes          = false;
+        this.show_equipo            = true;
+        this.show_monit_equip       = false;
+        this.show_monitorear_equipo = false;
+        break;
+      case 'monitorear equipo':
+        this.show_home              = false;
+        this.show_usuarios          = false;
+        this.show_tiendas           = false;
+        this.show_clientes          = false;
+        this.show_equipo            = false;
+        this.show_monit_equip       = false;
+        this.show_monitorear_equipo = true;
+        break;
+      case 'Monitoreo de equipos general':
+        this.router.navigate(['moneq']);
+        break;
+      case 'Reporte de datos':
+        this.router.navigate(['datexport']);
+        break;
+    }
+  }
+
   closeSession() {
     sessionStorage.removeItem('token');
     let xtoken: any = sessionStorage.getItem('token');
@@ -181,51 +239,51 @@ export class DahsboardsComponent implements OnInit {
     this.iconmodulo = this.moduloEmitter.icono;
     switch (this.moduloEmitter.nombre) {
       case 'Home':
-        this.show_home = true;
-        this.show_usuarios = false;
-        this.show_tiendas = false;
-        this.show_clientes = false;
-        this.show_equipo = false;
+        this.show_home        = true;
+        this.show_usuarios    = false;
+        this.show_tiendas     = false;
+        this.show_clientes    = false;
+        this.show_equipo      = false;
         this.show_monit_equip = false;
         break;
       case 'Usuarios':
-        this.show_home = false;
-        this.show_usuarios = true;
-        this.show_tiendas = false;
-        this.show_clientes = false;
-        this.show_equipo = false;
+        this.show_home        = false;
+        this.show_usuarios    = true;
+        this.show_tiendas     = false;
+        this.show_clientes    = false;
+        this.show_equipo      = false;
         this.show_monit_equip = false;
         break;
       case 'Tienda':
-        this.show_home = false;
-        this.show_usuarios = false;
-        this.show_tiendas = true;
-        this.show_clientes = false;
-        this.show_equipo = false;
+        this.show_home        = false;
+        this.show_usuarios    = false;
+        this.show_tiendas     = true;
+        this.show_clientes    = false;
+        this.show_equipo      = false;
         this.show_monit_equip = false;
         break;
       case 'Cliente':
-        this.show_home = false;
-        this.show_usuarios = false;
-        this.show_tiendas = false;
-        this.show_clientes = true;
-        this.show_equipo = false;
+        this.show_home        = false;
+        this.show_usuarios    = false;
+        this.show_tiendas     = false;
+        this.show_clientes    = true;
+        this.show_equipo      = false;
         this.show_monit_equip = false;
         break;
       case 'Equipo':
-        this.show_home = false;
-        this.show_usuarios = false;
-        this.show_tiendas = false;
-        this.show_clientes = false;
-        this.show_equipo = true;
+        this.show_home        = false;
+        this.show_usuarios    = false;
+        this.show_tiendas     = false;
+        this.show_clientes    = false;
+        this.show_equipo      = true;
         this.show_monit_equip = false;
         break;
       case 'Monitoreo de Equipos':
-        this.show_home = false;
-        this.show_usuarios = false;
-        this.show_tiendas = false;
-        this.show_clientes = false;
-        this.show_equipo = false;
+        this.show_home        = false;
+        this.show_usuarios    = false;
+        this.show_tiendas     = false;
+        this.show_clientes    = false;
+        this.show_equipo      = false;
         this.show_monit_equip = true;
         break;
     }

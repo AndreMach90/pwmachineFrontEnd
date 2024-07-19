@@ -55,14 +55,7 @@ export class NavsideWorksComponent implements OnInit {
       icon_module: 'group',
       permison: 1,
       state: 1,
-    },
-    // {
-    //   nombre_module: 'Monitoreo de Equipos',
-    //   description_module: 'Monitorea los estados de los equipos adquiridos por tienda ',
-    //   icon_module: this.env.apiUrlIcon()+'cmachine.png',
-    //   permison: 1,
-    //   state: 1
-    // },
+    }
   ];
 
   constructor(
