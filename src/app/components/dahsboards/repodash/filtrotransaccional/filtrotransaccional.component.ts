@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Environments } from 'src/app/components/environments/environments';
 import { TransaccionesTiendaService } from '../../monitoreo-equipos/modal/services/transacciones-tienda.service';
-import { ServicesSharedService } from 'src/app/components/shared/services-shared/services-shared.service';
 import * as ExcelJS from 'exceljs';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalConfigExcelComponent } from './modal-config-excel/modal-config-excel.component';
@@ -100,13 +99,15 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
   
   ngOnChanges(changes: SimpleChanges): void {
     if(changes) {
-      this.obtenerTransac(this.listenNserie);
-      this.obtenerTransacTabla(this.listenNserie);
+      if (this.listenNserie){
+        this.obtenerTransac(this.listenNserie);
+        this.obtenerTransacTabla(this.listenNserie);
+      }
       this.dis_execel_export = false;
     }
   }
 
-  /** Obtiene la data de las Transacciones para la Gráfica transaccional */
+  // Obtiene la data de las Transacciones para la Gráfica transaccional
   obtenerTransac(id: any) {
     this.transacciones.obtenerTransaccionesTienda(id, 2).subscribe({
       next: (tran:any) => {
@@ -136,7 +137,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
     });
   }
 
-  /** Obtiene la data de las Transacciones para la Tabla transaccional */
+  // Obtiene la data de las Transacciones para la Tabla transaccional
   obtenerTransacTabla(id:any) {
     this.listaTrsansaccionesTablaGhost= [];
     this.listaTrsansaccionesTabla = [];
@@ -160,8 +161,8 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
             this.listaTrsansaccionesTabla.push(element);
           })
           this.monitoreoServs.obtenerValorUnico(id).subscribe( (x:any) => {
-            if ( x[0].total == null || x[0].total == undefined ) localStorage.setItem('valor_validador', (0).toString());
-              localStorage.setItem('valor_validador', x[0].total.toFixed(2).toString());
+            if ( x.total == null || x.total == undefined ) localStorage.setItem('valor_validador', (0).toString());
+              localStorage.setItem('valor_validador', x.total.toFixed(2).toString());
             }
           );
           this.listaTransaccionesEmitTabla.emit(this.listaTrsansaccionesTabla);
@@ -171,12 +172,12 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
     );
   }
 
-  /** Navega hacia la nueva vista */
+  // Navega hacia la nueva vista
   navigateDatexport() {
     this.router.navigate(['datexport']);
   }
   
-  /** Filtro de transacciones tanto para la gráfica como para la tabla de transacciones */
+  // Filtro de transacciones tanto para la gráfica como para la tabla de transacciones
   filterTransaccos() {
     let filtertTrans: any = this.filterTransaccForm.controls['filterTransacc'].value;
     this.listaTransacciones = this.listaTransaccionesGhost.filter( (item:any) => 
@@ -288,8 +289,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
       });
       data.push(rowData);
     });
-      
-    const numericColumnsIni = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ];
+    
     const numericColumns    = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,26];
     const titleRow = worksheet.addRow(['Transacciones del equipo: ' + this.listenNserie + ' - ' + new Date().toLocaleDateString()]);
     titleRow.getCell(1).font = { bold: true, size: 17, color: { argb: "8F8F8F" } };
@@ -346,7 +346,6 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
         if (column.number === 27) {
           column.width = 20;
           column.eachCell((cell: any) => {
-            ////console.log('Encontrado indice 27');
             cell.numFmt = '#,##0.00';
           });
         }

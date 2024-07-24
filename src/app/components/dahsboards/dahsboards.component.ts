@@ -13,7 +13,7 @@ import Swal from 'sweetalert2'
 
 export class DahsboardsComponent implements OnInit {
   @Output() estadointerfaz: any = new EventEmitter();
-  modimagen: any = this.env.apiUrlIcon() + 'modulos.png';
+  // modimagen: any = this.env.apiUrlIcon() + 'modulos.png';
   moduloEmitter: any;
   width_menu: any = '250px';
   show_usuarios: boolean = false;

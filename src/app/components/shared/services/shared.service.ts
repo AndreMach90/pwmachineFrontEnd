@@ -7,7 +7,6 @@ import { Environments } from '../../environments/environments';
   providedIn: 'root'
 })
 export class SharedService {
-
   constructor( private http: HttpClient, private env: Environments ) { }
 
   generateRandomString = (num: any) => {
@@ -20,10 +19,8 @@ export class SharedService {
 
     return result1;
   }
-
+  //Posible API no utilizada
   getDataMaster(master: any) {
     return this.http.get( this.env.apiurl() + 'DataMaster/GetDataMaster/' + master );
   }
-
-
 }

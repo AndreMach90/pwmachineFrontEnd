@@ -12,7 +12,6 @@ import { FormControl, FormGroup } from '@angular/forms';
 })
 
 export class ModalDataEquiposComponent implements OnInit {
-  
   localidadesEncontradas:   any     = [];
   listaEsquipo:             any     = [];
   listaEsquipoGhost:        any     = [];
@@ -28,8 +27,7 @@ export class ModalDataEquiposComponent implements OnInit {
                private equiposerv: EquipoService,
                @Inject(MAT_DIALOG_DATA) public data: any,
                private env: Environments,
-               public dialogRef: MatDialogRef<ModeldataComponent>
-              ) {}
+               public dialogRef: MatDialogRef<ModeldataComponent>) {}
 
   public equipoCliForm = new FormGroup({
     filterEqui:   new FormControl('')
@@ -46,28 +44,24 @@ export class ModalDataEquiposComponent implements OnInit {
   totalAutomaticas: number = 0;
   SumatotalTransac: number = 0;
   SumatotalTransacResag: number = 0;
-  sumatoriaRezagadasTransac( objeto:any ) {
 
+  sumatoriaRezagadasTransac( objeto:any ) {
     this.totalRezagadasAutomaticas = 0;
     this.totalRezagadasManuales    = 0;
     this.totalManuales = 0;
     this.totalAutomaticas = 0;
-
     objeto.filter( ( x:any ) => { 
       this.totalRezagadasAutomaticas += x.conteo_AR;
       this.totalRezagadasManuales    += x.conteo_MR;
       this.totalManuales             += x.conteo_M;
       this.totalAutomaticas          += x.conteo_A;
     })
-
     this.SumatotalTransac      = this.totalManuales + this.totalAutomaticas;
     this.SumatotalTransacResag = this.totalRezagadasAutomaticas + this.totalRezagadasManuales;
-
   }
 
   localidadesEncontradasGhost: any = [];
   obtenerEquiposTran() {
-
     let xi: number = 0;
     if ( this.data.acreditado == 1 ) xi = 2
     else xi = 1
@@ -75,21 +69,15 @@ export class ModalDataEquiposComponent implements OnInit {
       fechaIni : this.data.fecchaIni,
       fechaFin : this.data.fechaFin
     }
-
-    console.log(this.modelFilterTranEqipos)
-
     this.equiposerv.obtenerEquipoConteoTran(xi, this.modelFilterTranEqipos).subscribe(
       {
         next: (equipo) => {
           this.listaEsquipoGhost = equipo;
-          // console.log('Estos son los equipos que traigo por la API');
-          // console.log(this.listaEsquipoGhost);
         },
         error: (e) => {
           console.error(e);
         },
         complete: ()  => {
-          /** Si hay codigo cliente */
           if (this.data.codigocliente !== null) {
             if (this.data.equiposExistentes == null || this.data.equiposExistentes.length == 0 ) {
               this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => x.idCliente2 == this.data.codigocliente );
@@ -99,10 +87,7 @@ export class ModalDataEquiposComponent implements OnInit {
                 return !this.result.some((element:any) => element.machine_Sn === x.machine_Sn);
               });
             }
-          }  
-          /** Si no hay codigo cliente */
-          else if (this.data.codigocliente == null) {
-            console.log('No hay codigo cliente!!!!');
+          } else if (this.data.codigocliente == null) {
             if (this.data.equiposExistentes == null || this.data.equiposExistentes.length == 0 ) {
               this.listaEsquipo = this.listaEsquipoGhost;
             } else {
@@ -111,52 +96,31 @@ export class ModalDataEquiposComponent implements OnInit {
               });
             }
           }
-
           this.localidadesEncontradas = [];
-          // Recorremos la lista de equipos para crear localidadesEncontradas
           this.listaEsquipo.forEach((element: any) => {
-              console.log('element.localidad')
-              console.log(element.localidad)
-              
-              if (element.conteo_A == null || element.conteo_A == undefined) {
-                element.conteo_A = 0;
-              }
-              if (element.conteo_M == null || element.conteo_M == undefined) {
-                element.conteo_M = 0;
-              }
-              if (element.conteo_R == null || element.conteo_R == undefined) {
-                element.conteo_R = 0;
-              }
-              if (element.conteo_AR == null || element.conteo_AR == undefined) {
-                element.conteo_AR = 0;
-              }
-              if (element.conteo_MR == null || element.conteo_MR == undefined) {
-                element.conteo_MR = 0;
-              }
+              if (element.conteo_A == null || element.conteo_A == undefined) element.conteo_A = 0;
+              if (element.conteo_M == null || element.conteo_M == undefined) element.conteo_M = 0;
+              if (element.conteo_R == null || element.conteo_R == undefined) element.conteo_R = 0;
+              if (element.conteo_AR == null || element.conteo_AR == undefined) element.conteo_AR = 0;
+              if (element.conteo_MR == null || element.conteo_MR == undefined) element.conteo_MR = 0;
               if (element.localidad == null || element.localidad == undefined) {
                 element.localidad = 'No asignado';
-                element.bgloc = 'bg-secondary text-light '
-                element.localidad = element.localidad.toString().trim()
+                element.bgloc = 'bg-secondary text-light ';
+                element.localidad = element.localidad.toString().trim();
                 }
                 if (element.localidad != null || element.localidad != undefined) {
-                  element.bgloc = 'bg-primary text-light'
-                  element.localidad = element.localidad.toString().trim()
+                  element.bgloc = 'bg-primary text-light';
+                  element.localidad = element.localidad.toString().trim();
               }
-              if (element.nombreTienda == null || element.nombreTienda == undefined) {
-                element.nombreTienda = 'No asignado';
-              }
-              // Verificamos si la localidad ya existe en localidadesEncontradas
+              if (element.nombreTienda == null || element.nombreTienda == undefined) element.nombreTienda = 'No asignado';
               let localidadIndex = this.localidadesEncontradas.findIndex((x: any) => x.loc === element.localidad);
               let localidadIndex2 = this.localidadesEncontradasGhost.findIndex((x: any) => x.loc === element.localidad);
               if (localidadIndex === -1) {
-                // Si no existe, la agregamos junto con sus propiedades
                 this.localidadesEncontradas.push({ loc: element.localidad, bgloc: element.bgloc, equiposTrans: [] });
               }
               if (localidadIndex2 === -1) {
-                // Si no existe, la agregamos junto con sus propiedades
                 this.localidadesEncontradasGhost.push({ loc: element.localidad, bgloc: element.bgloc, equiposTrans: [] });
               }
-              // Luego, siempre agregamos los equipos a la matriz equiposTrans correspondiente
               this.localidadesEncontradas[localidadIndex !== -1 ? localidadIndex : this.localidadesEncontradas.length - 1].equiposTrans.push(element);
               this.localidadesEncontradasGhost[localidadIndex !== -1 ? localidadIndex : this.localidadesEncontradasGhost.length - 1].equiposTrans.push(element);
           });
@@ -176,7 +140,7 @@ export class ModalDataEquiposComponent implements OnInit {
           this.addToSelectedEquipos(equipo);
         });
       });
-    }else {
+    } else {
       this.localidadesEncontradas.filter((localidad:any) => {
         localidad.equiposTrans.forEach((equipo: any, index: number) => {
           let checkbox = document.getElementById(equipo.localidad.toString().trim() + '-' + index) as HTMLInputElement;
@@ -220,11 +184,7 @@ export class ModalDataEquiposComponent implements OnInit {
 
   selectedEquiposControl = new FormControl(false);
   toggleSelection(equipo: any, localidad: any) {
-    if (this.selectedEquiposControl.value) {
-      this.addToSelectedEquipos(equipo);
-    } else {
-      this.removeFromSelectedEquipos(equipo);
-    }
+    (this.selectedEquiposControl.value) ? this.addToSelectedEquipos(equipo) : this.removeFromSelectedEquipos(equipo);
   }
 
   seleccionarTodosEquipos(event: any) {
@@ -276,12 +236,10 @@ export class ModalDataEquiposComponent implements OnInit {
   }  
 
   filterEquipo () {
-    
     let filterEqui: any = this.equipoCliForm.controls['filterEqui'].value;
     this.localidadesEncontradas = this.localidadesEncontradasGhost.filter((localidad:any) =>
       localidad.loc.toLowerCase().includes(filterEqui.toLowerCase())
     );
-    
     this.localidadesEncontradas = this.localidadesEncontradasGhost.map((localidad:any) => {
       const filteredEquipos = localidad.equiposTrans.filter((equipo:any) =>
         equipo.machine_Sn.toLowerCase().includes(filterEqui.toLowerCase())
@@ -297,5 +255,4 @@ export class ModalDataEquiposComponent implements OnInit {
   closeDialog() {
     this.dialogRef.close(this.equiposSeleccionados);
   }
-
 }

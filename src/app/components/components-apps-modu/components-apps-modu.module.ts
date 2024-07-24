@@ -201,8 +201,7 @@ import { ObtenerLocalidadClienteComponent } from '../dahsboards/cliente/modal-lo
     ModeldataComponent,
     HistorialAcreditacionComponent,
     ModalLocalidadClienteComponent,
-    ObtenerLocalidadClienteComponent,
-    
+    ObtenerLocalidadClienteComponent, 
   ],
   imports: [
     NgxTimepickerModule,

@@ -182,23 +182,9 @@ export class EquipoComponent implements OnInit {
     this.obtenerTiendas();
     this.getDataMaster('MQT');
     this.obtenerIps();
-    this.usuarioTemporalHub.start()
-      .then( ()=> { })
+    this.usuarioTemporalHub.start().then( ()=> { })
       .catch( e => {
-        console.error('ALGO HA PASADO CON PING');
-        console.error(e);
-      })
-    this.primary     = this.env.appTheme.colorPrimary;
-    this.secondary   = this.env.appTheme.colorSecondary_C;
-    this.secondary_a = this.env.appTheme.colorSecondary_A;
-    this.secondary_b = this.env.appTheme.colorSecondary_B;
-    this.obtenerEquipos(1, 'void');
-    this.obtenerTiendas();
-    this.getDataMaster('MQT');
-    this.obtenerIps();
-    this.usuarioTemporalHub.start().then( ()=> {       
-    }).catch( e => {
-      console.error('ALGO HA PASADO CON PING');
+      console.error('ALGO HA PASADO CON USUARIO TEMPORAL');
       console.error(e);
     })
   }
@@ -308,6 +294,8 @@ export class EquipoComponent implements OnInit {
   obtenerTiendas() {
     this.tiendaservs.obtenerTiendas().subscribe({
       next: (tienda) => {
+        console.log('Esto trae las tiendas');
+        console.log(tienda);
         this.tiendaListaGhost = tienda;
       }
     })
@@ -509,6 +497,8 @@ export class EquipoComponent implements OnInit {
     this._show_spinner = true;
     this.clienteserv.obtenerCliente().subscribe({
       next: (cliente) => {
+        console.log('Esto trae los clientes');
+        console.log(cliente);
         this.clienteListaGhost = cliente;
         this._show_spinner = false;
       }, error: (e) => {
@@ -534,10 +524,19 @@ export class EquipoComponent implements OnInit {
 
   obtenerEquipos( tp:number, ctienda:string ) {
     this.equiposerv.obtenerEquipo(tp, ctienda).subscribe({
-      next: (equipo) => {
-        this.listaEsquipo = equipo;
+      next: (equipo: any) => {
+        this.listaEsquipo = equipo.map((eq: any) => ({
+          ...eq,
+          serieEquipo: eq.serieEquipo ?? '',
+          nombreTienda: eq.nombreTienda ?? '',
+          nombremarca: eq.nombremarca ?? '',
+          nombremodelo: eq.nombremodelo ?? '',
+          tipoMaquinaria: eq.tipoMaquinaria ?? ''
+        }));
+        console.log('Esto trae los equipos');
+        console.log(equipo);
         if(this.isActive){
-          this.listaEsquipoGhost = equipo;
+          this.listaEsquipoGhost = this.listaEsquipo;
         }else{
           this.listaEsquipo = this.listaEsquipo.filter((element: any) => {
             return element.active === "A";
@@ -636,6 +635,8 @@ export class EquipoComponent implements OnInit {
   obtenerIps() {
     this.equiposerv.obtenerIPEquipos().subscribe({
       next: (x) => {
+        console.log('Esto trae las IP');
+        console.log(x);
         this.listaIps = x;
       }
     })
@@ -714,6 +715,8 @@ export class EquipoComponent implements OnInit {
   getDataMaster(cod:string) {
     this.sharedservs.getDataMaster(cod).subscribe({
       next: (data) => {
+        console.log('Esto trae los DataMaster');
+        console.log(data);
         switch(cod) {
         case 'MQT':
           this.listaCompleta = data;

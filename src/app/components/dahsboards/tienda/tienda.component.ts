@@ -390,15 +390,11 @@ export class TiendaComponent implements OnInit {
     }
   }
 
-  selectTienda() {
-    this.tiendalista.filter((element: any) => {});
-  }
-
   obtenerTiendas(type: number) {
     this.tiendaservs.obtenerTiendas().subscribe({
       next: (tienda) => {
-        this.tiendaListaGhost = tienda;
         this.tiendalista = tienda;
+        this.tiendaListaGhost = tienda;
       },
       complete: () => {
         switch (type) {
@@ -415,9 +411,7 @@ export class TiendaComponent implements OnInit {
                   };
                   this.tiendaservs.guardarCuentAsigna(arr).subscribe({
                     next: (x) => {},
-                    error: (e) => {
-                      console.error(e);
-                    },
+                    error: (e) => console.error(e),
                     complete: () => {
                       tienda.cantidadCuentasAsign++;
                       this.limpiar();
@@ -506,15 +500,11 @@ export class TiendaComponent implements OnInit {
     this.tiendalista = this.tiendaListaGhost.filter(
       (item: any) =>
         item.nombreTienda.toLowerCase().includes(filtertien.toLowerCase()) ||
-        // item.nombreProvincia.toLowerCase().includes(filtertien.toLowerCase()) ||
-        item.nombreAdmin.toLowerCase().includes(filtertien.toLowerCase()) ||
         item.nombreCliente.toLowerCase().includes(filtertien.toLowerCase())
     );
     this.tiendalista = this.tiendaListaGhost.filter(
       (item: any) =>
         item.nombreTienda.toLowerCase().includes(filtertien.toLowerCase()) ||
-        // item.nombreProvincia.toLowerCase().includes(filtertien.toLowerCase()) ||
-        item.nombreAdmin.toLowerCase().includes(filtertien.toLowerCase()) ||
         item.nombreCliente.toLowerCase().includes(filtertien.toLowerCase())
     );
   }
@@ -527,8 +517,6 @@ export class TiendaComponent implements OnInit {
     this.obtenerLocalidad();
     this.clienteserv.obtenerCuentaCliente(id).subscribe({
       next: (cuentas) => {
-        console.log('cuentas bancarias')
-        console.log(cuentas)
         this.cuentaslista = cuentas;
         this._show_spinner = false;
       },
@@ -621,12 +609,10 @@ export class TiendaComponent implements OnInit {
   }
 
   obtenerCuentasTienda(id: any) {
-    
     this.listaCuentaTiendasBanc = [];
     this.tiendaservs.obtenerCuentasAsignadas(id).subscribe({
       next: (cuentaTiendaBank) => {
         this.listaCuentaTiendasBanc = cuentaTiendaBank;
-        console.warn(this.listaCuentaTiendasBanc);
       },
       error: (e) => console.error(e),
       complete: () => {
@@ -638,7 +624,6 @@ export class TiendaComponent implements OnInit {
         }
       },
     });
-
   }
 
   eliminarCuentaTienda(data: any, id: number) {
@@ -659,7 +644,6 @@ export class TiendaComponent implements OnInit {
             Swal.fire('Eliminado!', 'Cuenta asignada, eliminada', 'success');
           },
           error: (e) => {
-            console.error(e);
             this._show_spinner = false;
             Swal.fire('Upps!', 'No hemos podido eliminar esta cuenta', 'error');
           },
