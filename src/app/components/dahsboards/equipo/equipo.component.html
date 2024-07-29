@@ -14,7 +14,6 @@
             </div>
             <hr>
             <form [formGroup]="equiposForm"
-                class="mb-2"
                 (ngSubmit)="onSubmit()">
                 <label for="codigoClienteidFk" class="form-label">
                     <span class="text-primary" > 
@@ -23,7 +22,7 @@
                     <span class="text-danger">*</span>
                 </label>
                 <select class="inpForms form-select w-100"
-                        (change)="validateTiendas('Crear')"
+                        (change)="validateTiendas()"
                         formControlName="codigoClienteidFk"
                         #codigoClienteidFk
                         id="codigoClienteidFk">

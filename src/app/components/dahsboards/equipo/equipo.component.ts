@@ -326,29 +326,45 @@ export class EquipoComponent implements OnInit {
     }
   }
 
-  validateTiendas(action: any) {
-    let codigoCliente;
-    if (typeof(action)==='string') codigoCliente = this.equiposForm.controls['codigoClienteidFk'].value;
-    if (typeof(action)==='number') codigoCliente = action;
-    console.log(action);
-    if (codigoCliente){
+  validateTiendas() {
+    const codigoCliente = this.equiposForm.controls['codigoClienteidFk'].value;
+    if (codigoCliente) {
       this.tiendaservs.obtenerTiendaFiltroCliente(codigoCliente).subscribe({
         next: (tiendas) => {
-          console.log("Tienda Select");
-          console.log(tiendas);
+          console.log("Tiendas obtenidas:", tiendas);
           this.tiendalista = tiendas;
-        }, error: (e) => {
+        },
+        error: (e) => {
           console.error(e);
-        }, complete: () => {
-          console.log(action);
-          if (typeof(action)==='string') this.equiposForm.controls['codigoTiendaidFk'].setValue(this.tiendalista[0].id);
-          if (typeof(action)==='number') {
-            
-            this.equiposForm.controls['codigoTiendaidFk'].setValue(action.toString());
+        },
+        complete: () => {
+          if (this.tiendalista.length > 0) {
+            this.equiposForm.controls['codigoTiendaidFk'].setValue(this.tiendalista[0].id);
           }
         },
       });
     }
+      // let codigoCliente;
+      // if (typeof(action)==='string') codigoCliente = this.equiposForm.controls['codigoClienteidFk'].value;
+      // if (typeof(action)==='number') codigoCliente = action;
+      // console.log(action);
+      // if (codigoCliente){
+      //   this.tiendaservs.obtenerTiendaFiltroCliente(codigoCliente).subscribe({
+      //     next: (tiendas) => {
+      //       console.log("Tienda Select");
+      //       console.log(tiendas);
+      //       this.tiendalista = tiendas;
+      //     }, error: (e) => {
+      //       console.error(e);
+      //     }, complete: () => {
+      //       console.log(action);
+      //       if (typeof(action)==='string') this.equiposForm.controls['codigoTiendaidFk'].setValue(this.tiendalista[0].id);
+      //       if (typeof(action)==='number') {
+      //         this.equiposForm.controls['codigoTiendaidFk'].setValue(action.toString());
+      //       }
+      //     },
+      //   });
+      // }
     // let tienda: any;
     // this.tiendalista = [];
     // this.tiendaListaGhost.filter( (tienda:any) =>{
@@ -585,8 +601,7 @@ export class EquipoComponent implements OnInit {
   }
 
   catchData(data:any) {
-    console.log("Esto es editar");
-    console.log(data);
+    console.log("Modo Edición:", data);
     this.widthAutom();
     this.equiposForm.controls['ipmaquina'].disable();// Deshabilita el ip maquina para la edicion
     this.idCliente = data.idCliente;                 // Guarda el id cliente
@@ -594,11 +609,10 @@ export class EquipoComponent implements OnInit {
     this.modelo = data.modelo.toString().trim();     // Guarda el modelo
     this.idEquipo = data.id;                         // Guarda el id equipo
     this.equiposForm.controls['codigoClienteidFk'].setValue(this.idCliente.toString()); // Asigna el cliente por medio de su id
-    console.log(data.codigoTiendaidFk);
-    this.validateTiendas(data.codigoTiendaidFk);
-    // setTimeout(() => {                          // llama a las atiendas
-    //   this.equiposForm.controls['codigoTiendaidFk'].setValue(data.codigoTiendaidFk); // Asigna la tienda por medio de su id
-    // }, 1000);
+    this.validateTiendas(); 
+    setTimeout(() => {                          // llama a tiendas
+      this.equiposForm.controls['codigoTiendaidFk'].setValue(data.codigoTiendaidFk); // Asigna la tienda por medio de su id
+    }, 1000);
     for ( let x = 0; x < 2; x++  ) {
       this.equiposForm.controls['tipomaq'].setValue(data.tipo);  // Asigna el tipo de maquina
       this.equiposForm.controls['nomMarc'].setValue(this.marca); // Asigna la marca
