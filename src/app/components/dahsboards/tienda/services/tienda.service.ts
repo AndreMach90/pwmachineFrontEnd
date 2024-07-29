@@ -44,6 +44,7 @@ export class TiendaService {
     return this.http.delete( this.env.apiurl() + 'TiendaCuenta/BorrarCuentaTienda/' + id, { headers: this.headers });
   }
 
-
-
+  obtenerTiendaFiltroCliente(id: any) {
+    return this.http.get( this.env.apiurl() + 'tiendas/ObtenerTiendaFiltroCliente/' + id, { headers: this.headers });
+  }
 }

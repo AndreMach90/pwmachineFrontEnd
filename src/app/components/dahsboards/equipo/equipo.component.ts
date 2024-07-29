@@ -42,6 +42,8 @@ export class EquipoComponent implements OnInit {
   listaUsuariosMaquinaGhost: any = [];
   equiposlista:              any = [];
   tiendalista:               any = [];
+  selectedClientId:          any = [];
+
   modelUsers:                any = [];
   modeloEquipos:             any = [];
   clienteListaGhost:         any = [];
@@ -112,13 +114,13 @@ export class EquipoComponent implements OnInit {
   _width_table:   string = 'tabledata table-responsive w-100 p-2';
 
   constructor( private env: Environments,
-               private clienteserv: ClientesService,
-               private tiendaservs: TiendaService,
-               public dialog: MatDialog,
-               private controlInputsService: ControlinputsService,
-               private equiposerv: EquipoService,
-               private userservs: UsuariosService,
-               private sharedservs: ServicesSharedService) {
+    private clienteserv: ClientesService,
+    private tiendaservs: TiendaService,
+    public dialog: MatDialog,
+    private controlInputsService: ControlinputsService,
+    private equiposerv: EquipoService,
+    private userservs: UsuariosService,
+    private sharedservs: ServicesSharedService) {
     this.usuarioTemporalHub = new HubConnectionBuilder()
       .withUrl(this.urlHub+'usuarioTemporal')
       .build();
@@ -164,7 +166,8 @@ export class EquipoComponent implements OnInit {
   })
 
   ngOnInit(): void {
-    this.obtenerCliente();
+    this.getClientSelect();
+    // this.obtenerCliente();
     let x:any = this.sharedservs.validateRol();
     switch( x ) {
       case 1:
@@ -179,7 +182,7 @@ export class EquipoComponent implements OnInit {
     this.secondary_a = this.env.appTheme.colorSecondary_A;
     this.secondary_b = this.env.appTheme.colorSecondary_B;
     this.obtenerEquipos(1, 'void');
-    this.obtenerTiendas();
+    // this.obtenerTiendas();
     this.getDataMaster('MQT');
     this.obtenerIps();
     this.usuarioTemporalHub.start().then( ()=> { })
@@ -291,15 +294,15 @@ export class EquipoComponent implements OnInit {
     this.controlInputsService.validateAndCleanNumberInput(data);
   }
 
-  obtenerTiendas() {
-    this.tiendaservs.obtenerTiendas().subscribe({
-      next: (tienda) => {
-        console.log('Esto trae las tiendas');
-        console.log(tienda);
-        this.tiendaListaGhost = tienda;
-      }
-    })
-  }
+  // obtenerTiendas() {
+  //   this.tiendaservs.obtenerTiendas().subscribe({
+  //     next: (tienda) => {
+  //       console.log('Esto trae las tiendas');
+  //       console.log(tienda);
+  //       this.tiendaListaGhost = tienda;
+  //     }
+  //   })
+  // }
 
   filterUsuariosMaquinaria() {
     let filter: any = this.filterUserEquiposForm.controls['filterusermaq'].value;
@@ -323,33 +326,57 @@ export class EquipoComponent implements OnInit {
     }
   }
 
-  validateTiendas() {
-    this.tiendalista = [];
-    this.tiendaListaGhost.filter( (tienda:any) =>{
-      if( tienda.codigoClienteidFk == this.equiposForm.controls['codigoClienteidFk'].value ) {
-        let arr = {
-            "cantidadMaquinaria": tienda.cantidadMaquinaria,
-            "nombreCliente":      tienda.nombreCliente,
-            "ruc":                tienda.ruc,
-            "telefono":           tienda.telefono,
-            "nombreAdmin":        tienda.nombreAdmin,
-            "telfAdmin":          tienda.telfAdmin,
-            "direccion":          tienda.direccion,
-            "nombreProvincia":    tienda.nombreProvincia,
-            "id":                 tienda.id,
-            "codigoTienda":       tienda.codigoTienda,
-            "codigoClienteidFk":  tienda.codigoClienteidFk,
-            "nombreTienda":       tienda.nombreTienda,
-            "emailAdmin":         tienda.emailAdmin,
-            "codProv":            tienda.codProv,
-            "idCentroProceso":    tienda.idCentroProceso,
-            "fecreate":           tienda.fecreate,
-            "active":             tienda.active
-        }
-        this.tiendalista.push(arr);
-      }
-    })
-    this.equiposForm.controls['codigoTiendaidFk'].setValue(this.tiendalista[0].id);
+  validateTiendas(action: any) {
+    let codigoCliente;
+    if (typeof(action)==='string') codigoCliente = this.equiposForm.controls['codigoClienteidFk'].value;
+    if (typeof(action)==='number') codigoCliente = action;
+    console.log(action);
+    if (codigoCliente){
+      this.tiendaservs.obtenerTiendaFiltroCliente(codigoCliente).subscribe({
+        next: (tiendas) => {
+          console.log("Tienda Select");
+          console.log(tiendas);
+          this.tiendalista = tiendas;
+        }, error: (e) => {
+          console.error(e);
+        }, complete: () => {
+          console.log(action);
+          if (typeof(action)==='string') this.equiposForm.controls['codigoTiendaidFk'].setValue(this.tiendalista[0].id);
+          if (typeof(action)==='number') {
+            
+            this.equiposForm.controls['codigoTiendaidFk'].setValue(action.toString());
+          }
+        },
+      });
+    }
+    // let tienda: any;
+    // this.tiendalista = [];
+    // this.tiendaListaGhost.filter( (tienda:any) =>{
+    //   if( tienda.codigoClienteidFk == this.equiposForm.controls['codigoClienteidFk'].value ) {
+    //     let arr = {
+    //         "cantidadMaquinaria": tienda.cantidadMaquinaria,
+    //         "nombreCliente":      tienda.nombreCliente,
+    //         "ruc":                tienda.ruc,
+    //         "telefono":           tienda.telefono,
+    //         "nombreAdmin":        tienda.nombreAdmin,
+    //         "telfAdmin":          tienda.telfAdmin,
+    //         "direccion":          tienda.direccion,
+    //         "nombreProvincia":    tienda.nombreProvincia,
+    //         "id":                 tienda.id,
+    //         "codigoTienda":       tienda.codigoTienda,
+    //         "codigoClienteidFk":  tienda.codigoClienteidFk,
+    //         "nombreTienda":       tienda.nombreTienda,
+    //         "emailAdmin":         tienda.emailAdmin,
+    //         "codProv":            tienda.codProv,
+    //         "idCentroProceso":    tienda.idCentroProceso,
+    //         "fecreate":           tienda.fecreate,
+    //         "active":             tienda.active
+    //     }
+    //     this.tiendalista.push(arr);
+    //   }
+    // })
+    // tienda = this.tiendalista.filter((tienda: any) => tienda)
+    // this.equiposForm.controls['codigoTiendaidFk'].setValue(this.tiendalista[0].id);
   }
 
   editarEquipos() {
@@ -395,6 +422,8 @@ export class EquipoComponent implements OnInit {
           tiempoSincronizacion: new Date()
         }
       }
+      console.log(this.idEquipo);
+      console.log(this.modeloEquipos);
       this.equiposerv.actualizarEquipo(this.idEquipo, this.modeloEquipos).subscribe({
         next: (x) => {
           Toast.fire({ icon: 'success', title: 'Equipo actualizado' });
@@ -474,6 +503,7 @@ export class EquipoComponent implements OnInit {
         tiempoSincronizacion: tiempoSincronizacion
       }
       setTimeout(() => {
+      console.log(this.modeloEquipos);
       this.equiposerv.guardarEquipo(this.modeloEquipos).subscribe({
           next: (x) => {
             Toast.fire({ icon: 'success', title: 'Equipo guardado' });
@@ -492,35 +522,35 @@ export class EquipoComponent implements OnInit {
     }
   }
 
-  obtenerCliente() {
-    this.clientelista = [];
-    this._show_spinner = true;
-    this.clienteserv.obtenerCliente().subscribe({
-      next: (cliente) => {
-        console.log('Esto trae los clientes');
-        console.log(cliente);
-        this.clienteListaGhost = cliente;
-        this._show_spinner = false;
-      }, error: (e) => {
-        this._show_spinner = false;
-        console.error(e);
-      }, complete: () => {
-        this.clienteListaGhost.filter((element:any)=>{
-          let arr: any = {
-            "id":             element.id,
-            "codigoCliente":  element.codigoCliente,
-            "nombreCliente":  element.nombreCliente,
-            "ruc":            element.ruc,
-            "direccion":      element.direccion,
-            "telefcontacto":  element.telefcontacto,
-            "emailcontacto":  element.emailcontacto,
-            "nombrecontacto": element.nombrecontacto
-          }
-          this.clientelista.unshift(arr);
-        })
-      }
-    })
-  }
+  // obtenerCliente() {
+  //   this.clientelista = [];
+  //   this._show_spinner = true;
+  //   this.clienteserv.obtenerCliente().subscribe({
+  //     next: (cliente) => {
+  //       console.log('Esto trae los clientes');
+  //       console.log(cliente);
+  //       this.clienteListaGhost = cliente;
+  //       this._show_spinner = false;
+  //     }, error: (e) => {
+  //       this._show_spinner = false;
+  //       console.error(e);
+  //     }, complete: () => {
+  //       this.clienteListaGhost.filter((element:any)=>{
+  //         let arr: any = {
+  //           "id":             element.id,
+  //           "codigoCliente":  element.codigoCliente,
+  //           "nombreCliente":  element.nombreCliente,
+  //           "ruc":            element.ruc,
+  //           "direccion":      element.direccion,
+  //           "telefcontacto":  element.telefcontacto,
+  //           "emailcontacto":  element.emailcontacto,
+  //           "nombrecontacto": element.nombrecontacto
+  //         }
+  //         this.clientelista.unshift(arr);
+  //       })
+  //     }
+  //   })
+  // }
 
   obtenerEquipos( tp:number, ctienda:string ) {
     this.equiposerv.obtenerEquipo(tp, ctienda).subscribe({
@@ -555,6 +585,8 @@ export class EquipoComponent implements OnInit {
   }
 
   catchData(data:any) {
+    console.log("Esto es editar");
+    console.log(data);
     this.widthAutom();
     this.equiposForm.controls['ipmaquina'].disable();// Deshabilita el ip maquina para la edicion
     this.idCliente = data.idCliente;                 // Guarda el id cliente
@@ -562,8 +594,11 @@ export class EquipoComponent implements OnInit {
     this.modelo = data.modelo.toString().trim();     // Guarda el modelo
     this.idEquipo = data.id;                         // Guarda el id equipo
     this.equiposForm.controls['codigoClienteidFk'].setValue(this.idCliente.toString()); // Asigna el cliente por medio de su id
-    this.validateTiendas();                          // llama a las atiendas
-    this.equiposForm.controls['codigoTiendaidFk'].setValue(data.codigoTiendaidFk); // Asigna la tienda por medio de su id
+    console.log(data.codigoTiendaidFk);
+    this.validateTiendas(data.codigoTiendaidFk);
+    // setTimeout(() => {                          // llama a las atiendas
+    //   this.equiposForm.controls['codigoTiendaidFk'].setValue(data.codigoTiendaidFk); // Asigna la tienda por medio de su id
+    // }, 1000);
     for ( let x = 0; x < 2; x++  ) {
       this.equiposForm.controls['tipomaq'].setValue(data.tipo);  // Asigna el tipo de maquina
       this.equiposForm.controls['nomMarc'].setValue(this.marca); // Asigna la marca
@@ -761,5 +796,29 @@ export class EquipoComponent implements OnInit {
   machineDesactive(){
     this.isActive = !this.isActive;
     this.obtenerEquipos(1,'void');
+  }
+
+  getClientSelect() {
+    this.clienteserv.ObtenerClienteSelect().subscribe({
+      next: (clientes) => {
+        console.log("Clientes Select");
+        console.log(clientes);
+        this.clientelista = clientes;
+      }, error: (e) => {
+        console.error(e);
+      }
+    });
+  }
+
+  getTiendaSelect(id: any){
+    this.tiendaservs.obtenerTiendaFiltroCliente(id).subscribe({
+      next: (tiendas) => {
+        console.log("Tienda Select");
+        console.log(tiendas);
+        this.tiendalista = tiendas;
+      }, error: (e) => {
+        console.error(e);
+      }
+    });
   }
 }

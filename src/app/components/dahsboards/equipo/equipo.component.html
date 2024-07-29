@@ -23,13 +23,13 @@
                     <span class="text-danger">*</span>
                 </label>
                 <select class="inpForms form-select w-100"
-                        (change)="validateTiendas()"
+                        (change)="validateTiendas('Crear')"
                         formControlName="codigoClienteidFk"
                         #codigoClienteidFk
                         id="codigoClienteidFk">
                         <option *ngFor="let cliente of clientelista"
                                 [value]="cliente.codigoCliente">
-                                {{ cliente.nombreCliente | titlecase }} - {{ cliente.ruc }}
+                                {{ cliente.nombreCliente | titlecase }}
                         </option>
                 </select>
                 <div class="mb-3">
@@ -37,7 +37,7 @@
                         <span class="text-primary" > Escoge la Tienda </span>
                         <span class="text-danger">*</span>
                     </label>
-                    <select class="inpForms form-select   w-100"
+                    <select class="inpForms form-select w-100"
                             formControlName="codigoTiendaidFk" #codigoTiendaidFk id="codigoTiendaidFk" 
                             aria-label="">
                             <option *ngFor="let tiendas of tiendalista"
