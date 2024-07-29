@@ -22,7 +22,11 @@
         <div style="height: 25px;"></div>
         <div class="w-100 d-flex justify-content-center animate__animated animate__fadeInUp">
             <h1> 
-                <span> {{ homeMenu.tipo | uppercase }}</span> <span class="text-secondary" *ngIf="homeMenu.cantidad > 0" > ( {{homeMenu.cantidad}} ) </span>
+                <span> {{ homeMenu.tipo | uppercase }}</span> 
+                <span class="text-secondary" 
+                      *ngIf="homeMenu.cantidad > 0">
+                       ( {{homeMenu.cantidad}} )
+                </span>
             </h1>
         </div>
     </div>

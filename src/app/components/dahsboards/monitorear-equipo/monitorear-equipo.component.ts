@@ -133,6 +133,7 @@ export class MonitorearEquipoComponent implements OnInit {
   xloader: boolean = false;
   error: boolean = false;
   obtenerDetalleEquipos( data:any ) {
+    alert('DATA');
     console.log('<<<<<<<<data>>>>>>>>')
     console.log(data)
     this._show_spinner = true;

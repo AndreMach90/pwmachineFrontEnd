@@ -28,6 +28,7 @@ const Toast = Swal.mixin({
 export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Output() estadointerfaz: EventEmitter<any> = new EventEmitter();
+  
 
   EmitAutoTransHub: any = [];
   EmitAutomaticPiezasCantidadTransactionHub:any;
