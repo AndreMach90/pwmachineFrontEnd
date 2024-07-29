@@ -31,19 +31,18 @@
                  <div class="d-flex">
                      <div [style]="'background-image: url(' +iconmodulo+ ')'" class="icono animate__animated animate__bounceIn" ></div>
                      <span class="text-light"  >
-                         <h1 class="m-0" >&nbsp; <span> {{namemodulo}} </span> </h1>                    
+                         <h1 class="m-0" >&nbsp; <span> {{namemodulo}} </span> </h1>
                      </span>
                  </div>
              </div>
         </div>
         <div class="apps-controllers" [style]="'height: ' + height_app+';'" >
-            <app-repodash [estadow]="estadow" (estadointerfaz)="recibirDataButtonHome($event)" *ngIf="show_home"    ></app-repodash>
+            <app-repodash [estadow]="estadow" (estadointerfaz)="recibirDataButtonHome($event)" *ngIf="show_home"></app-repodash>
             <app-usuarios *ngIf="show_usuarios"></app-usuarios>
             <app-tienda   *ngIf="show_tiendas" ></app-tienda>
             <app-cliente  *ngIf="show_clientes"></app-cliente>
             <app-equipo   *ngIf="show_equipo"  ></app-equipo>
-            <app-monitorear-equipo *ngIf="show_monitorear_equipo" ></app-monitorear-equipo>
-            <!-- <app-monitoreo-equipos *ngIf="show_monit_equip"></app-monitoreo-equipos> -->
+            <app-monitorear-equipo *ngIf="show_monitorear_equipo"  ></app-monitorear-equipo>
         </div>
     </div>
 </div>

@@ -100,7 +100,6 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   nserie:any;
   primaryLista:any =[];
   
-  @Output() nserieEmit: EventEmitter<string> = new EventEmitter<string>();
   
   height_box: string = '82vh';
   height: string ='86.5vh';  
@@ -642,6 +641,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
       this.cambiarHeight();
     }
   }
+  
   transaccionesDataGrafica: any = [];
   arr:any = [];
   recibirTransaccionesGrafica(transaccionesGrafica: any) {

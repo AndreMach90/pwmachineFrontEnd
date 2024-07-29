@@ -100,6 +100,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
   
   ngOnChanges(changes: SimpleChanges): void {
     if(changes) {
+      // alert('cambiando')
       this.obtenerTransac(this.listenNserie);
       this.obtenerTransacTabla(this.listenNserie);
       this.dis_execel_export = false;
@@ -111,6 +112,9 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
     this.transacciones.obtenerTransaccionesTienda(id, 2).subscribe({
       next: (tran:any) => {
         this.listaTransacciones      = tran;
+        alert('OBTENIENDO TRANSACCIONES EN EL COMPONENTE FILTROTRANSACCIONAL')
+        console.warn(this.listaTransacciones)
+
         this.listaTransacciones = this.listaTransacciones.map((element: any) => {
           if (element.tipoCuenta === null) {
             element.tipoCuenta = "";
@@ -124,7 +128,7 @@ export class FiltrotransaccionalComponent implements OnInit, OnChanges {
       },
       error: (e) => { console.error(e); },
       complete: () => {
-        this.listaTransaccionesEmitGrafica.emit(this.listaTransacciones.reverse());
+        this.listaTransaccionesEmitGrafica.emit(this.listaTransacciones.reverse()); 
         this.sumatoriaTotal();
         if(this.listaTransacciones.length !== 0){
           if( this.listaTransacciones[0].nombreCliente == undefined || this.listaTransacciones[0].nombreCliente == null ) this.listaTransacciones[0].nombreCliente = '';
