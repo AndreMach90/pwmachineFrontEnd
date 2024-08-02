@@ -30,6 +30,26 @@
     font-size: 18pt;
 }
 
-// .mat-mdc-tab-group, .mat-mdc-tab-group-stretch-tabs, .mat-mdc-tab-header, .mat-mdc-tab {
+.box_menu_head {
+    cursor: pointer;
+    color: whitesmoke;
+    border: groove 1px gray;
+    border-radius: 5px;
+    box-shadow:    5px 5px 5px rgba(0, 0, 0, 0.5);
+    padding:       5px;
+    background-color: rgba(11, 11, 11, 0.151);
+    transition: ease all 0.5s;
+    width: 40px;
+    height: 40px;
+}
 
-// }
+.box_menu_head:hover {
+    transition: ease all 0.5s;
+    color: whitesmoke;
+    border-radius: 100%;
+    transform: scale(0.9);
+    color: orange;
+    box-shadow:    0px 0px 0px rgba(0, 0, 0, 0.5);
+    padding:       5px;
+    background-color: rgba(11, 11, 11, 0.151);
+}

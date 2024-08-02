@@ -29,7 +29,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Output() estadointerfaz: EventEmitter<any> = new EventEmitter();
   
-
+  nuevoObjectAlerts: any[] = [];
   EmitAutoTransHub: any = [];
   EmitAutomaticPiezasCantidadTransactionHub:any;
   // Cantidad de la transaccion en monedas INICO
@@ -197,7 +197,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
         text:  "Este error suele ocurrir debido a una interferencia entre el canal hub que transmite datos desde el servidor, especifícamente Transacciones automáticas.",
         icon:  "error"
       });
-      console.error('ALGO HA PASADO CON AT:',e);
+      console.error('ALGO HA PASADO CON AT: ',e);
     })
     this.recollectTransactionHub.start()
     .then( () => { })
@@ -382,7 +382,6 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     })
   }
 
-  nuevoObjectAlerts: any[] = [];
   controlAlerts(tipo: string, msj: string, colorbg: string, colorfg: string, nserie: string) {
     let arr: any = {
       tipo:    tipo,
@@ -436,8 +435,8 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
       },
       complete: () => {
         const arr: any = [
-          { 'tipo': 'monitorear equipo', 'icon': 'timeline', 'width': '480px !important' },
-          { 'tipo': 'Monitoreo de equipos general', 'icon': 'precision_manufacturing', 'width': '650px !important' },
+          { 'tipo': 'Monitorear transaccional', 'icon': 'timeline', 'width': '480px !important' },
+          { 'tipo': 'Monitoreo de equipos', 'icon': 'precision_manufacturing', 'width': '550px !important' },
           { 'tipo': 'Reporte de datos', 'icon': 'article', 'width': '450px !important' }
         ];
 
@@ -458,12 +457,6 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
         this.listaHomeMenu = this.listaHomeMenu.concat(arr);
       }
     });
-  }
-
-  changeSingleApp() {
-
-
-
   }
 
   eliminarAlerta( i:number ) {
