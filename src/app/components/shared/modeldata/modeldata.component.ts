@@ -1373,7 +1373,7 @@ async exportToExcelRezagadas(): Promise<void> {
         equiposExistentes: null
       }
     }
-
+    console.log(arr);
     const dialogRef = this.dialog.open( ModalDataEquiposComponent, {
       height: '100%',
       width:  '60%',
@@ -1803,6 +1803,7 @@ async exportToExcelRezagadas(): Promise<void> {
   obterSaldoTransac( machineSn:any ) {
     this.transacciones.ObtenerEquiposSaldo(machineSn).subscribe({
       next: (x) => {
+        console.log("Obtener totales",x);
         this.modelDataSaldo = x;
       }, error: (e) => console.error(e),
       complete: () => {

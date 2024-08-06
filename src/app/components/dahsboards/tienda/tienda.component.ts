@@ -393,6 +393,7 @@ export class TiendaComponent implements OnInit {
   obtenerTiendas(type: number) {
     this.tiendaservs.obtenerTiendas().subscribe({
       next: (tienda) => {
+        console.log(tienda);
         this.tiendalista = tienda;
         this.tiendaListaGhost = tienda;
       },
@@ -470,6 +471,7 @@ export class TiendaComponent implements OnInit {
     this._show_spinner = true;
     this.clienteserv.ObtenerClienteSelect().subscribe({
       next: (cliente) => {
+        console.log(cliente);
         this.clienteListaGhost = cliente;
         this._show_spinner = false;
       },
@@ -550,6 +552,7 @@ export class TiendaComponent implements OnInit {
     this._show_spinner = true;
     this.loc.obtenerLocalidadesCliente(id).subscribe({
       next: (x) => {
+        console.log(x);
         this.localidadesGuardadasCliente = x;
       },
       complete: () => {

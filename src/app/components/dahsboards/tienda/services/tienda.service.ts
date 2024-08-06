@@ -47,4 +47,8 @@ export class TiendaService {
   obtenerTiendaFiltroCliente(id: any) {
     return this.http.get( this.env.apiurl() + 'tiendas/ObtenerTiendaFiltroCliente/' + id, { headers: this.headers });
   }
+
+  obtenerCuadre(machineSn: any) {
+    return this.http.get( this.env.apiurl() + 'EquiposNoTransaccion/Cuadre/' + machineSn, { headers: this.headers } );
+  }
 }

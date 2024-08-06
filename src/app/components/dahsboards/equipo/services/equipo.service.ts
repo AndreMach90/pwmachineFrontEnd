@@ -21,6 +21,8 @@ export class EquipoService {
   }
 
   obtenerMarca( codtipomaq:string ) {
+    console.log(codtipomaq);
+    
     return this.http.get( this.env.apiurl() + 'MarcaModeloEquipo/ObtenerMarca/' + codtipomaq, { headers: this.headers } );
   }
 
@@ -32,8 +34,16 @@ export class EquipoService {
     return this.http.put(this.env.apiurl() + 'Equipo/ActualizarEquipo/' + id, model, { headers: this.headers });
   }
 
-  obtenerEquipo( tp:number, ctienda:string ) {
-    return this.http.get(this.env.apiurl() + 'Equipo/ObtenerEquipo/'+ tp + '/' + ctienda, { headers: this.headers });
+  obtenerEquipo() {
+    return this.http.get(this.env.apiurl() + 'Equipo/ObtenerEquipo', { headers: this.headers });
+  }
+
+  obtenerEquipoMoneq() {
+    return this.http.get(this.env.apiurl() + 'Equipo/ObtenerEquipoMoneq', { headers: this.headers });
+  }
+
+  obtenerTotalesMoneq(machine_sn: any) {
+    return this.http.get(this.env.apiurl() + 'Equipo/ObtenerTotalesMoneq/' + machine_sn, { headers: this.headers });
   }
 
   obtenerEquipoConteoTran( option:any, model:any [] ) {
@@ -49,6 +59,7 @@ export class EquipoService {
   }
 
   obtenerUsuariosIp(ip:string) {
+    console.log(ip);
     return this.http.get( this.env.apiurl() + 'Usuario/ObtenerUsuarioIP/'+ip, { headers: this.headers })
   }
 

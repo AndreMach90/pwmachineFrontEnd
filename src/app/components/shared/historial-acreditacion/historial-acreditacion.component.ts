@@ -196,14 +196,14 @@ export class HistorialAcreditacionComponent implements OnInit {
     });
   }
 
-  modelDataSaldo: any = [];
-  obterSaldoTransac( machineSn:any ) {    
-    this.transacciones.ObtenerEquiposSaldo(machineSn).subscribe({
-      next: (x) => {
-        this.modelDataSaldo = x;
-      }
-    })
-  }
+  // modelDataSaldo: any = [];
+  // obterSaldoTransac( machineSn:any ) {    
+  //   this.transacciones.ObtenerEquiposSaldo(machineSn).subscribe({
+  //     next: (x) => {
+  //       this.modelDataSaldo = x;
+  //     }
+  //   })
+  // }
 
   exportarExcel( nombreArchivo:any ): void {
     const workbook = new ExcelJS.Workbook();

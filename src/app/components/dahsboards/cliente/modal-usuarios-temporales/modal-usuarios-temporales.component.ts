@@ -70,7 +70,7 @@ export class ModalUsuariosTemporalesComponent implements OnInit {
         next: ( cuentas ) => {  
           this.cuentaslista = cuentas;
           this._show_spinner = false;
-  
+          console.log(cuentas);
         }, error:(e) => {
           console.error(e);
           this._show_spinner = false;

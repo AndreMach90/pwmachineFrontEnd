@@ -50,13 +50,11 @@ export class EquipoComponent implements OnInit {
   clientelista:              any = [];
   listaEsquipo:              any = [];
   listaEsquipoGhost:         any = [];
-  listaStorageMonitoreo:     any = [];
   arrIp:                     any = [];
   listaIps:                  any = [];
   listaMarcas:               any = [];
   listaModelos:              any = [];
   tipomaqlista:              any = [];
-  listaCompleta:             any = [];
   
   idusermaquina:        any;
   nombreUserMaquina:    any;
@@ -125,6 +123,7 @@ export class EquipoComponent implements OnInit {
       .withUrl(this.urlHub+'usuarioTemporal')
       .build();
     this.usuarioTemporalHub.on("SendUsuarioTemporal", message => {
+      console.log("Usuarios temporal",message);
       this.ObtenerUsuarioTemporalHub(message);
     });
   }
@@ -167,7 +166,6 @@ export class EquipoComponent implements OnInit {
 
   ngOnInit(): void {
     this.getClientSelect();
-    // this.obtenerCliente();
     let x:any = this.sharedservs.validateRol();
     switch( x ) {
       case 1:
@@ -181,15 +179,11 @@ export class EquipoComponent implements OnInit {
     this.secondary   = this.env.appTheme.colorSecondary_C;
     this.secondary_a = this.env.appTheme.colorSecondary_A;
     this.secondary_b = this.env.appTheme.colorSecondary_B;
-    this.obtenerEquipos(1, 'void');
-    // this.obtenerTiendas();
-    this.getDataMaster('MQT');
+    this.obtenerEquipos();
+    this.getDataMaster();
     this.obtenerIps();
-    this.usuarioTemporalHub.start().then( ()=> { })
-      .catch( e => {
-      console.error('ALGO HA PASADO CON USUARIO TEMPORAL');
-      console.error(e);
-    })
+    this.usuarioTemporalHub.start().then(()=>{})
+      .catch( e => console.error('Algo ha pasado con el usuario temporal...', e))
   }
 
   catchDataUserMaq(data:any) {
@@ -214,7 +208,7 @@ export class EquipoComponent implements OnInit {
       Contrasenia:  '',
       IpMachine:    this.ipMachine,   
       tiendasidFk:  this.codigoTiendaidFk,
-      active: 'A',
+      active:       'A',
       cuentasIdFk:  this.cuentasIdFk,
       observacion:  this.observacion
     }
@@ -233,7 +227,6 @@ export class EquipoComponent implements OnInit {
       await this.actualizarDatosPersonales(this.idDatosPersonales, this.modelDatosPersonales);
       this.limpiarMqU();
     } catch (e) {
-      console.error(e);
       Toast.fire({ icon: 'error', title: 'No hemos podido actualizar el usuario' });
     }
     await this.obtenerUsuariosIpMaquina(data);
@@ -255,10 +248,9 @@ export class EquipoComponent implements OnInit {
 
   actualizarDatosPersonales(id:number, model:any []) { 
     this.userservs.actualizarDatosPersonales(id, model).subscribe({
-      next: (x) => {
-      }, error: (e) => {
-        console.error(e);
-      }, complete: () => { }
+      next: (x) => {}, 
+      error: (e) => {console.error(e)}, 
+      complete: () => {}
     })
   }
 
@@ -267,9 +259,11 @@ export class EquipoComponent implements OnInit {
     this.codigoTiendaidFk = data.codigoTiendaidFk;
     this.equiposerv.obtenerUsuariosIp(data.ipEquipo).subscribe({
       next: (x) => {
+        console.log("Estos son los usuarios",x);
         this.listaUsuariosMaquina = x;
         this.listaUsuariosMaquinaGhost = x;
-      } 
+      }, 
+      error: (e) => console.error(e)
     })
   }
 
@@ -294,16 +288,6 @@ export class EquipoComponent implements OnInit {
     this.controlInputsService.validateAndCleanNumberInput(data);
   }
 
-  // obtenerTiendas() {
-  //   this.tiendaservs.obtenerTiendas().subscribe({
-  //     next: (tienda) => {
-  //       console.log('Esto trae las tiendas');
-  //       console.log(tienda);
-  //       this.tiendaListaGhost = tienda;
-  //     }
-  //   })
-  // }
-
   filterUsuariosMaquinaria() {
     let filter: any = this.filterUserEquiposForm.controls['filterusermaq'].value;
     this.listaUsuariosMaquina = this.listaUsuariosMaquinaGhost.filter((item:any) => 
@@ -316,83 +300,8 @@ export class EquipoComponent implements OnInit {
   }
 
   onSubmit() {
-    switch(this._action_butto) {
-      case 'Crear':
-        this.guardarEquipos();
-        break;
-      case 'Editar':
-        this.editarEquipos()
-        break
-    }
-  }
-
-  validateTiendas() {
-    const codigoCliente = this.equiposForm.controls['codigoClienteidFk'].value;
-    if (codigoCliente) {
-      this.tiendaservs.obtenerTiendaFiltroCliente(codigoCliente).subscribe({
-        next: (tiendas) => {
-          console.log("Tiendas obtenidas:", tiendas);
-          this.tiendalista = tiendas;
-        },
-        error: (e) => {
-          console.error(e);
-        },
-        complete: () => {
-          if (this.tiendalista.length > 0) {
-            this.equiposForm.controls['codigoTiendaidFk'].setValue(this.tiendalista[0].id);
-          }
-        },
-      });
-    }
-      // let codigoCliente;
-      // if (typeof(action)==='string') codigoCliente = this.equiposForm.controls['codigoClienteidFk'].value;
-      // if (typeof(action)==='number') codigoCliente = action;
-      // console.log(action);
-      // if (codigoCliente){
-      //   this.tiendaservs.obtenerTiendaFiltroCliente(codigoCliente).subscribe({
-      //     next: (tiendas) => {
-      //       console.log("Tienda Select");
-      //       console.log(tiendas);
-      //       this.tiendalista = tiendas;
-      //     }, error: (e) => {
-      //       console.error(e);
-      //     }, complete: () => {
-      //       console.log(action);
-      //       if (typeof(action)==='string') this.equiposForm.controls['codigoTiendaidFk'].setValue(this.tiendalista[0].id);
-      //       if (typeof(action)==='number') {
-      //         this.equiposForm.controls['codigoTiendaidFk'].setValue(action.toString());
-      //       }
-      //     },
-      //   });
-      // }
-    // let tienda: any;
-    // this.tiendalista = [];
-    // this.tiendaListaGhost.filter( (tienda:any) =>{
-    //   if( tienda.codigoClienteidFk == this.equiposForm.controls['codigoClienteidFk'].value ) {
-    //     let arr = {
-    //         "cantidadMaquinaria": tienda.cantidadMaquinaria,
-    //         "nombreCliente":      tienda.nombreCliente,
-    //         "ruc":                tienda.ruc,
-    //         "telefono":           tienda.telefono,
-    //         "nombreAdmin":        tienda.nombreAdmin,
-    //         "telfAdmin":          tienda.telfAdmin,
-    //         "direccion":          tienda.direccion,
-    //         "nombreProvincia":    tienda.nombreProvincia,
-    //         "id":                 tienda.id,
-    //         "codigoTienda":       tienda.codigoTienda,
-    //         "codigoClienteidFk":  tienda.codigoClienteidFk,
-    //         "nombreTienda":       tienda.nombreTienda,
-    //         "emailAdmin":         tienda.emailAdmin,
-    //         "codProv":            tienda.codProv,
-    //         "idCentroProceso":    tienda.idCentroProceso,
-    //         "fecreate":           tienda.fecreate,
-    //         "active":             tienda.active
-    //     }
-    //     this.tiendalista.push(arr);
-    //   }
-    // })
-    // tienda = this.tiendalista.filter((tienda: any) => tienda)
-    // this.equiposForm.controls['codigoTiendaidFk'].setValue(this.tiendalista[0].id);
+    if (this._action_butto === 'Crear') this.guardarEquipos();
+    if (this._action_butto === 'Editar') this.editarEquipos();
   }
 
   editarEquipos() {
@@ -415,7 +324,7 @@ export class EquipoComponent implements OnInit {
           fechaInstalacion:   this.equiposForm.controls['fechaInstalacion'].value,
           ipEquipo :          this.a[0],
           capacidadAsegurada: this.equiposForm.controls['capacidadAsegurada'].value?.toString().replace(/[^0-9.]*/g, ''),
-          capacidadIniSobres: this.equiposForm.controls['capacidadIniSobres'].value?.toString().replace(/[^0-9.]*/g, ''),
+          capacidadIniSobres: 5,
           estadoPing: 0,
           tiempoSincronizacion: new Date()
         }  
@@ -433,21 +342,16 @@ export class EquipoComponent implements OnInit {
           fechaInstalacion:   this.equiposForm.controls['fechaInstalacion'].value,
           ipEquipo :          this.ipeditar,
           capacidadAsegurada: this.equiposForm.controls['capacidadAsegurada'].value?.toString().replace(/[^0-9.]*/g, ''),
-          capacidadIniSobres: this.equiposForm.controls['capacidadIniSobres'].value?.toString().replace(/[^0-9.]*/g, ''),
+          capacidadIniSobres: 5,
           estadoPing:         0,
           tiempoSincronizacion: new Date()
         }
       }
-      console.log(this.idEquipo);
-      console.log(this.modeloEquipos);
       this.equiposerv.actualizarEquipo(this.idEquipo, this.modeloEquipos).subscribe({
-        next: (x) => {
-          Toast.fire({ icon: 'success', title: 'Equipo actualizado' });
-        }, error: (e) => {
-          console.error(e);
-          Toast.fire({ icon: 'error', title: 'No se ha podido actualizar este equipo' });
-        }, complete: () => {
-          this.obtenerEquipos(1, 'void');
+        next: (x) => Toast.fire({ icon: 'success', title: 'Equipo actualizado' }),
+        error: (e) => Toast.fire({ icon: 'error', title: 'No se ha podido actualizar este equipo' }), 
+        complete: () => {
+          this.obtenerEquipos();
           this.obtenerIps();
           this.limpiar();
         }
@@ -485,10 +389,7 @@ export class EquipoComponent implements OnInit {
       width:  '80%',
       data: arr,
     });
-    dialogRef.afterClosed().subscribe( result => {
-        this.obtenerEquipos(1, 'void');
-      }
-    );
+    dialogRef.afterClosed().subscribe( result => this.obtenerEquipos());
   }
 
   guardarEquipos() {
@@ -514,73 +415,33 @@ export class EquipoComponent implements OnInit {
         fechaInstalacion:   this.equiposForm.controls['fechaInstalacion'].value,
         ipEquipo:           this.a[0],
         capacidadAsegurada: this.equiposForm.controls['capacidadAsegurada'].value?.toString().replace(/[^0-9.]*/g, ''),
-        capacidadIniSobres: this.equiposForm.controls['capacidadIniSobres'].value?.toString().replace(/[^0-9.]*/g, ''),
+        capacidadIniSobres: 5,
         estadoPing:         0,
         tiempoSincronizacion: tiempoSincronizacion
       }
       setTimeout(() => {
-      console.log(this.modeloEquipos);
-      this.equiposerv.guardarEquipo(this.modeloEquipos).subscribe({
-          next: (x) => {
-            Toast.fire({ icon: 'success', title: 'Equipo guardado' });
-          }, error: (e) => {
-            console.error(e);
-            this._show_spinner = false;
-            Toast.fire({ icon: 'error', title: 'No se ha podido guardar este equipo' });
-          }, complete: () => {
-            this._show_spinner = false;
-            this.obtenerEquipos(1, 'void');
-            this.obtenerIps();
-            this.limpiar();
+        this.equiposerv.guardarEquipo(this.modeloEquipos).subscribe({
+            next: (x) => Toast.fire({ icon: 'success', title: 'Equipo guardado' }), 
+            error: (e) => {
+              this._show_spinner = false;
+              Toast.fire({ icon: 'error', title: 'No se ha podido guardar este equipo' });
+            }, 
+            complete: () => {
+              this._show_spinner = false;
+              this.obtenerEquipos();
+              this.obtenerIps();
+              this.limpiar();
+            }
           }
-        }
-      )}, 1000);
+        )
+      }, 1000);
     }
   }
 
-  // obtenerCliente() {
-  //   this.clientelista = [];
-  //   this._show_spinner = true;
-  //   this.clienteserv.obtenerCliente().subscribe({
-  //     next: (cliente) => {
-  //       console.log('Esto trae los clientes');
-  //       console.log(cliente);
-  //       this.clienteListaGhost = cliente;
-  //       this._show_spinner = false;
-  //     }, error: (e) => {
-  //       this._show_spinner = false;
-  //       console.error(e);
-  //     }, complete: () => {
-  //       this.clienteListaGhost.filter((element:any)=>{
-  //         let arr: any = {
-  //           "id":             element.id,
-  //           "codigoCliente":  element.codigoCliente,
-  //           "nombreCliente":  element.nombreCliente,
-  //           "ruc":            element.ruc,
-  //           "direccion":      element.direccion,
-  //           "telefcontacto":  element.telefcontacto,
-  //           "emailcontacto":  element.emailcontacto,
-  //           "nombrecontacto": element.nombrecontacto
-  //         }
-  //         this.clientelista.unshift(arr);
-  //       })
-  //     }
-  //   })
-  // }
-
-  obtenerEquipos( tp:number, ctienda:string ) {
-    this.equiposerv.obtenerEquipo(tp, ctienda).subscribe({
+  obtenerEquipos() {
+    this.equiposerv.obtenerEquipo().subscribe({
       next: (equipo: any) => {
-        this.listaEsquipo = equipo.map((eq: any) => ({
-          ...eq,
-          serieEquipo: eq.serieEquipo ?? '',
-          nombreTienda: eq.nombreTienda ?? '',
-          nombremarca: eq.nombremarca ?? '',
-          nombremodelo: eq.nombremodelo ?? '',
-          tipoMaquinaria: eq.tipoMaquinaria ?? ''
-        }));
-        console.log('Esto trae los equipos');
-        console.log(equipo);
+        this.listaEsquipo = equipo;
         if(this.isActive){
           this.listaEsquipoGhost = this.listaEsquipo;
         }else{
@@ -589,37 +450,28 @@ export class EquipoComponent implements OnInit {
           });
           this.listaEsquipoGhost = this.listaEsquipo;
         }
-        this.listaEsquipo.filter( (element:any) => {
-          let arr = {
-            ip: element.ipEquipo,
-            ping: element.estadoPing
-          }
-          this.listaStorageMonitoreo.push(arr);
-        })
       }
     })
   }
 
   catchData(data:any) {
-    console.log("Modo Edición:", data);
     this.widthAutom();
+    this.idEquipo = data.id;
     this.equiposForm.controls['ipmaquina'].disable();// Deshabilita el ip maquina para la edicion
-    this.idCliente = data.idCliente;                 // Guarda el id cliente
-    this.marca = data.marca.toString().trim();       // Guarda la marca
-    this.modelo = data.modelo.toString().trim();     // Guarda el modelo
-    this.idEquipo = data.id;                         // Guarda el id equipo
-    this.equiposForm.controls['codigoClienteidFk'].setValue(this.idCliente.toString()); // Asigna el cliente por medio de su id
-    this.validateTiendas(); 
-    setTimeout(() => {                          // llama a tiendas
-      this.equiposForm.controls['codigoTiendaidFk'].setValue(data.codigoTiendaidFk); // Asigna la tienda por medio de su id
+    this.equiposForm.controls['codigoClienteidFk'].setValue(data.codigoClienteidFk.toString());
+    this.validateTiendas();
+    setTimeout(() => {                                
+      this.equiposForm.controls['codigoTiendaidFk'].setValue(data.codigoTiendaidFk);
     }, 1000);
-    for ( let x = 0; x < 2; x++  ) {
-      this.equiposForm.controls['tipomaq'].setValue(data.tipo);  // Asigna el tipo de maquina
-      this.equiposForm.controls['nomMarc'].setValue(this.marca); // Asigna la marca
-      this.obtenerMarcas();                                      // Obtiene las marcas
-      this.equiposForm.controls['nomMod'].setValue(this.modelo); // Asigna el modelo
-      this.count ++;
-    }
+    this.equiposForm.controls['tipomaq'].setValue(data.tipo);
+    this.obtenerMarcas();
+    setTimeout(() => { 
+      this.equiposForm.controls['nomMarc'].setValue(data.marca.toString().trim());
+      this.obtenerModelos();
+    }, 1000);
+    setTimeout(() => { 
+    this.equiposForm.controls['nomMod'].setValue(data.modelo.toString().trim());
+    }, 1500);
     let fechaA: any;
     if( data.fechaInstalacion != null || data.fechaInstalacion != undefined ) {
       let date: any = data.fechaInstalacion.toString().split('T');
@@ -663,17 +515,16 @@ export class EquipoComponent implements OnInit {
               'Desactivado!',
               'El equipo está desactivado',
               'success'
-            )
-          }, error: (e) => {
-            console.error(e);
+          )}, 
+          error: (e) => {
             this._show_spinner = false;
             Swal.fire(
               'Upps!',
               'No hemos podido desactivar este equipo',
               'error'
-            )
-          }, complete: () => {
-            this.obtenerEquipos(1,'void');
+            )}, 
+          complete: () => {
+            this.obtenerEquipos();
             this.limpiar();
           } 
         })
@@ -683,11 +534,8 @@ export class EquipoComponent implements OnInit {
 
   obtenerIps() {
     this.equiposerv.obtenerIPEquipos().subscribe({
-      next: (x) => {
-        console.log('Esto trae las IP');
-        console.log(x);
-        this.listaIps = x;
-      }
+      next: (x) => this.listaIps = x, 
+      error: (e) => console.error(e)
     })
   }
 
@@ -735,46 +583,67 @@ export class EquipoComponent implements OnInit {
     this._create_show   = true;
   }
 
+  validateTiendas() {
+    const codigoCliente = this.equiposForm.controls['codigoClienteidFk'].value;
+    if (codigoCliente) {
+      this.tiendaservs.obtenerTiendaFiltroCliente(codigoCliente).subscribe({
+        next: (tiendas) => this.tiendalista = tiendas,
+        error: (e) => console.error(e),
+        complete: () => {
+          if (this.tiendalista.length > 0) this.equiposForm.controls['codigoTiendaidFk'].setValue(this.tiendalista[0].id);
+        },
+      });
+    }
+  }
+
   obtenerMarcas() {
-    let x:any = this.equiposForm.controls['tipomaq'].value;
-    this.equiposerv.obtenerMarca(x).subscribe({
-      next: (x) => {
-        this.listaMarcas = x;
-      }, error: (e) => {
-        console.error(e);
-      }, complete: () => {
-        this.show_modelos = true;
-        setTimeout(() => {
+    let tipoMaq = this.equiposForm.controls['tipomaq'].value!;
+    this.equiposerv.obtenerMarca(tipoMaq).subscribe({
+      next: (marcas:any) => {
+        this.listaMarcas = marcas.map((marca:any) => {
+          return {
+            ...marca,
+            codmarca: marca.codmarca.trim()
+          };
+        });
+        this.show_modelos = this.listaMarcas.length > 0;
+        if (this.listaMarcas.length > 0) {
+          this.equiposForm.controls['nomMarc'].setValue(this.listaMarcas[0].codmarca);
           this.obtenerModelos();
-        }, 500);
-      }
-    })
+        } else {
+          this.listaModelos = [];
+          this.equiposForm.controls['nomMarc'].setValue('');
+        }
+      },
+      error: (e) => console.error(e)
+    });
   }
   
   obtenerModelos() {
-    let xtipo:any = this.equiposForm.controls['tipomaq'].value;
-    let xmarca = this.equiposForm.controls['nomMarc'].value;
-    this.equiposerv.obtenerModelo(xtipo, xmarca).subscribe({
-      next:(x) => {
-        this.listaModelos = x;
-      }
-    })
+    let tipoMaq = this.equiposForm.controls['tipomaq'].value;
+    let marca = this.equiposForm.controls['nomMarc'].value;
+    this.equiposerv.obtenerModelo(tipoMaq, marca).subscribe({
+      next: (modelos: any) => {
+        this.listaModelos = modelos.map((modelo:any) => {
+          return {
+            ...modelo,
+            codmodelo: modelo.codmodelo.trim()
+          };
+        });
+        if (this.listaModelos.length > 0) {
+          this.equiposForm.controls['nomMod'].setValue(this.listaModelos[0].codmodelo);
+        } else {
+          this.equiposForm.controls['nomMod'].setValue('');
+        }
+      },
+      error: (e) => console.error(e)
+    });
   }
 
-  getDataMaster(cod:string) {
-    this.sharedservs.getDataMaster(cod).subscribe({
-      next: (data) => {
-        console.log('Esto trae los DataMaster');
-        console.log(data);
-        switch(cod) {
-        case 'MQT':
-          this.listaCompleta = data;
-          this.tipomaqlista = this.listaCompleta.filter((item:any) => 
-            item.nombre === "DEPOSITARIO DE BILLETES" || item.nombre === "DEPOSITARIO DE MONEDAS"
-          );
-          break;
-        }
-      }
+  getDataMaster() {
+    this.sharedservs.getTipoEquipo().subscribe({
+      next: (data) => this.tipomaqlista = data, 
+      error: (e) => console.error(e)
     })
   }
 
@@ -791,14 +660,11 @@ export class EquipoComponent implements OnInit {
       if (result.isConfirmed) {
         this._show_spinner = true;
         this.equiposerv.activarEquipo(equipo.id).subscribe({
-          next: (x) => {
-            Toast.fire({ icon: 'success', title: 'Equipo activado' });
-          }, error: (e) => {
-            console.error(e);
-            Toast.fire({ icon: 'error', title: 'No se ha podido activar este equipo' });
-          }, complete: () => {
+          next: (x) => Toast.fire({ icon: 'success', title: 'Equipo activado' }), 
+          error: (e) => Toast.fire({ icon: 'error', title: 'No se ha podido activar este equipo' }), 
+          complete: () => {
             this._show_spinner = false;
-            this.obtenerEquipos(1, 'void');
+            this.obtenerEquipos();
             this.obtenerIps();
             this.limpiar();
           }
@@ -809,30 +675,13 @@ export class EquipoComponent implements OnInit {
 
   machineDesactive(){
     this.isActive = !this.isActive;
-    this.obtenerEquipos(1,'void');
+    this.obtenerEquipos();
   }
 
   getClientSelect() {
     this.clienteserv.ObtenerClienteSelect().subscribe({
-      next: (clientes) => {
-        console.log("Clientes Select");
-        console.log(clientes);
-        this.clientelista = clientes;
-      }, error: (e) => {
-        console.error(e);
-      }
-    });
-  }
-
-  getTiendaSelect(id: any){
-    this.tiendaservs.obtenerTiendaFiltroCliente(id).subscribe({
-      next: (tiendas) => {
-        console.log("Tienda Select");
-        console.log(tiendas);
-        this.tiendalista = tiendas;
-      }, error: (e) => {
-        console.error(e);
-      }
+      next: (clientes) => this.clientelista = clientes, 
+      error: (e) => console.error(e)
     });
   }
 }

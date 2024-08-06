@@ -452,6 +452,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     this.monitoreo.obtenerDetalleEquipos(this.nserie)
     .subscribe({
       next:(x) => {
+        console.log("Esto es repodash", x);
         this.primaryLista = x;
         if ( this.nserie == this.primaryLista[0].machine_Sn ) { 
           this.primaryLista.filter((element:any) => {
@@ -653,7 +654,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     console.log(tp);
     console.log(ctienda);
     console.log('***********************');
-    this.equiposerv.obtenerEquipo(tp, ctienda).subscribe(
+    this.equiposerv.obtenerEquipo().subscribe(
       {
         next: (equipo) => {
           this.listaEsquipo = equipo;
@@ -771,8 +772,6 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   obtenerDetalleEquipos( data:any ) {
-    console.log('<<<<<<<<data>>>>>>>>')
-    console.log(data)
     this._show_spinner = true;
     this.nserie = data.serieEquipo;
     localStorage.setItem('equipoMonitoreando', this.nserie);
@@ -783,9 +782,8 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     this.monitoreo.obtenerDetalleEquipos(this.nserie).subscribe(
       {
       next:(x) => {
+        console.log("Esto es repodash 2",x);
         this.primaryLista = x;
-        //console.warn('ESTO PASA EN MONITOREAR')
-        //console.warn(this.primaryLista)
         if ( this.nserie == this.primaryLista[0].machine_Sn ) 
         { 
           this.primaryLista.filter((element:any) => {

@@ -9,10 +9,9 @@
     <div class="register d-flex justify-content-between w-100">
         <div class="w-25 p-3" *ngIf="viewForm"
             [style]="'overflow-y: auto'">
-            <div class="">
+            <div >
                 <h1>Registro de equipos <span style="opacity: 0;"> {{count}}</span> </h1>
             </div>
-            <hr>
             <form [formGroup]="equiposForm"
                 (ngSubmit)="onSubmit()">
                 <label for="codigoClienteidFk" class="form-label">
@@ -45,62 +44,42 @@
                             </option>
                     </select>
                 </div>
-                <div *ngIf="equiposForm" class="animate__animated animate__backInLeft p-2 bg-light rounded-2 "  >
+                <div *ngIf="equiposForm" class="animate__animated animate__backInLeft p-2 bg-light rounded-2 ">
                     <div class="mb-3">
-                        <label for="tipomaq" class="form-label ">
-                            <span class="text-primary" > Tipo de Equipo </span>
+                        <label for="tipomaq" class="form-label">
+                            <span class="text-primary">Tipo de Equipo</span>
                             <span class="text-danger">*</span>
                         </label>
-                        <select class="inpForms form-select   w-100"
-                                formControlName="tipomaq" #tipomaq id="tipomaq" 
-                                (change)="obtenerMarcas()"
-                                aria-label="">
-                                <option *ngFor="let tipo of tipomaqlista"
-                                    [value]="tipo.codigo" >
-                                    {{tipo.nombre | titlecase }}                                
-                                </option>
+                        <select class="inpForms form-select w-100" formControlName="tipomaq" #tipomaq id="tipomaq" (change)="obtenerMarcas()" aria-label="">
+                            <option *ngFor="let tipo of tipomaqlista" [value]="tipo.codigo">
+                                {{ tipo.nombre | titlecase }}
+                            </option>
                         </select>
                     </div>
-                    <div class="mb-3"  >
+                    <div class="mb-3">
                         <label for="nomMarc" class="form-label">
-                            <span class="text-primary">
-                                Marca:
-                                <strong class="text-primary">
-                                    ({{listaMarcas.length}})
-                                </strong>
+                            <span class="text-primary">Marca:
+                                <strong class="text-primary">({{ listaMarcas.length }})</strong>
                             </span>
                             <span class="text-danger">*</span>
                         </label>
-                        <select class="inpForms form-select w-100"
-                            formControlName="nomMarc"
-                            #nomMarc
-                            id="nomMarc"
-                            (change)="obtenerModelos()"
-                            aria-label="">
-                            <option *ngFor="let marca of listaMarcas"
-                                [value]="marca.codmarca">
-                                {{marca.nombremarca | titlecase }} / {{marca.codmarca}}
+                        <select class="inpForms form-select w-100" formControlName="nomMarc" #nomMarc id="nomMarc" (change)="obtenerModelos()" aria-label="">
+                            <option *ngFor="let marca of listaMarcas" [value]="marca.codmarca">
+                                {{ marca.nombremarca | titlecase }} / {{ marca.codmarca }}
                             </option>
                         </select>
                     </div>
                     <div class="mb-3" *ngIf="show_modelos">
-                        <label for="nomMod" class="form-label ">
-                            <span class="text-primary">
-                                Modelo: <strong class="text-primary"> ({{listaModelos.length}}) </strong>
-                            </span>
+                        <label for="nomMod" class="form-label">
+                            <span class="text-primary">Modelo: <strong class="text-primary">({{ listaModelos.length }})</strong></span>
                             <span class="text-danger">*</span>
                         </label>
-                        <select class="inpForms form-select w-100"
-                            formControlName="nomMod"
-                            #nomMod
-                            id="nomMod"
-                            aria-label="">
-                            <option *ngFor="let modelo of listaModelos"
-                                [value]="modelo.codmodelo">
-                                {{modelo.nombremodelo | titlecase }} / {{modelo.codmodelo }}
+                        <select class="inpForms form-select w-100" formControlName="nomMod" #nomMod id="nomMod" aria-label="">
+                            <option *ngFor="let modelo of listaModelos" [value]="modelo.codmodelo">
+                                {{ modelo.nombremodelo | titlecase }} / {{ modelo.codmodelo }}
                             </option>
                         </select>
-                    </div>                    
+                    </div>
                         <div class="mb-3 w-100">
                             <label for="ipmaquina"
                                 class="form-label text-secondary">
@@ -162,28 +141,12 @@
                                    (keyup)="validateInputNumber(capacidadAsegurada)">
                         </div>
                         <div class="mb-3 w-100">
-                            <label for="capacidadIniSobres" class="form-label text-secondary ">
-                                Capacidad monedas <small class="text-primary" > ( Lbs. )</small> : 
-                            </label>
-                            <div class="d-flex justify-content-start   " >
-                            <input type="text"
-                                   formControlName="capacidadIniSobres"
-                                   #capacidadIniSobres
-                                   id="capacidadIniSobres"
-                                   class="form-control"
-                                   placeholder=""
-                                   (keyup)="validateInputNumber(capacidadIniSobres)">
-                            </div>
-                        </div>
-                        <div class="mb-3 w-100">
                             <label for="Direccion" class="form-label text-secondary">
                                 Fecha Instalación:
                             </label>
                             <input type="date" class="form-control" formControlName="fechaInstalacion" 
                                    #fechaInstalacion id="fechaInstalacion" placeholder="Av. Carlos Julio....">
                         </div>
-                        
-                        
                     <div class="d-flex flex-wrap justify-content-between">
                         <div class="floating-button">
                             <button type="button"
@@ -239,8 +202,8 @@
                         <tr>
                             <th class="p-2" *ngIf="permisonUsers"></th>
                             <th class="p-2">IP</th>
-                            <th class="p-2">Nombre del Equipo</th>
-                            <th class="p-2">Nombre Tienda</th>
+                            <th class="p-2">Equipo</th>
+                            <th class="p-2">Tienda</th>
                             <th class="p-2">Capacidad de Billetes</th>
                             <th class="p-2">Capacidad Asegurada</th>
                             <th class="p-2">Tipo de Equipo</th>
@@ -260,7 +223,7 @@
                                 </td>
                             </ng-container>
                             <ng-template #EquipoDesactivado>
-                                <td *ngIf="permisonUsers" class="td_button">
+                                <td *ngIf="permisonUsers" align="center">
                                     <div class="button_task" (click)="updateActive(equipos)" title="Activar">
                                         <mat-icon>add_to_queue</mat-icon>
                                     </div>

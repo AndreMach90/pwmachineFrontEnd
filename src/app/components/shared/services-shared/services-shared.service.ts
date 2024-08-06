@@ -30,6 +30,10 @@ export class ServicesSharedService {
     return this.http.get( this.env.apiurl() + 'DataMaster/GetDataMaster/' + master, { headers: this.headers } );
   }
 
+  getTipoEquipo () {
+    return this.http.get( this.env.apiurl() + 'DataMaster/GetTipoEquipo', { headers: this.headers } )
+  }
+
   validateRol():any {
     const x:any = sessionStorage.getItem('PR');
     const rol:any = this.ncrypt.decryptWithAsciiSeed(x, this.env.es, this.env.hash);

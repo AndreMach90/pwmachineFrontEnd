@@ -18,8 +18,8 @@ export class ModalDetalleMaquinaTranComponent implements OnInit {
   }
 
   constructor(public dialogRef: MatDialogRef<MonitoreoEquiposComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, private env: Environments,
-    private transacciones: TransaccionesTiendaService, private sharedservs: ServicesSharedService, private monitoreo: MonitoreoService) {}
+    @Inject(MAT_DIALOG_DATA) public data: any, 
+    private monitoreo: MonitoreoService) {}
 
     listaDetalleequipoManual: any = [];
     listaDetalleequipoTransa: any = [];
@@ -39,6 +39,7 @@ export class ModalDetalleMaquinaTranComponent implements OnInit {
     obtenerDetalleEquipos( id:any ) {
       this.monitoreo.obtenerDetalleEquipos(id).subscribe({
         next:(x) => {
+          console.log("Esto es detalle equipo",x);
           this.primaryLista = x;
           this.primaryLista.filter((element:any)=>{
 

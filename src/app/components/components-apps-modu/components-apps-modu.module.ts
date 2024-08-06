@@ -195,7 +195,6 @@ import { ObtenerLocalidadClienteComponent } from '../dahsboards/cliente/modal-lo
     UsuariosTemporalesMaquinaComponent,
     ProgressmachineComponent,
     ModalUsuariosTemporalesComponent,
-    MonitoreoEquiposComponent,
     ModalDataEquiposComponent,
     DashboardDataExportComponent,
     ModeldataComponent,
