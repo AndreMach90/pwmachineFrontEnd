@@ -118,11 +118,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   bill:   any = this.env.apiUrlIcon()+'dollar.png';
   coin:   any = this.env.apiUrlIcon()+'monedas.png';
 
-  private urlHub: any = this.env.apiUrlHub();
-  private connectionSendPingEquipo: HubConnection;
-  private manualTransactionHub:     HubConnection;
-  private automaticTransactionHub:  HubConnection;
-  private recollectTransactionHub:  HubConnection;
+
 
   public filterequipForm = new FormGroup({
     filterequip:   new FormControl('')
@@ -134,26 +130,6 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
                private equiposerv: EquipoService,
                private shar:       SharedService
   ) {
-    // Ping Hub esta funcion establece la conexión con el Estado ping del equipo, mediante el canal 'PingHubEquipos' [#001]
-    this.connectionSendPingEquipo = new HubConnectionBuilder().withUrl(this.urlHub+'PingHubEquipos').build();
-    this.connectionSendPingEquipo.on("SendPingEquipo", message => {
-      this.PingHub(message);
-    });
-    // Transacciones Manuales
-    this.manualTransactionHub = new HubConnectionBuilder().withUrl(this.urlHub+'manualTransaction').build();
-    this.manualTransactionHub.on("SendTransaccionManual", message => {
-      this.MtransHub(message);
-    });
-    // Transacciones Automáticas
-    this.automaticTransactionHub = new HubConnectionBuilder().withUrl(this.urlHub+'autoTransaccion').build();
-    this.automaticTransactionHub.on("SendTransaccionAuto", message => {
-      this.AuTransHub(message);
-    });
-    // Transacciones Recolección
-    this.recollectTransactionHub = new HubConnectionBuilder().withUrl(this.urlHub+'recoleccionTransaccion').build();
-    this.recollectTransactionHub.on("SendTransaccionRecoleccion", message => {
-      this.RecoTransHub(message);
-    });
   }
 
   @ViewChild('audioPlayer') audioPlayer!: ElementRef;
@@ -167,84 +143,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     this.obtenerIndicadoresHomeMenu();
   }
 
-  inicializadorHubs() {
-    //console.warn( 'PINGHUB CONECTADO!' )
-    this.connectionSendPingEquipo.start()
-    .then( ()=> { })
-    .catch( e => {
-      Swal.fire({
-        title: "Error #MT-001",
-        text: "Este error suele ocurrir debido a una interferencia entre el canal hub que transmite datos desde el servidor, específicamente Estado ping del equipo.",
-        icon: "error"
-      });
-      console.error('ALGO HA PASADO CON PING:',e);
-    })
-    this.manualTransactionHub.start()
-    .then( ()=> { })
-    .catch( e => {
-      Swal.fire({
-        title: "Error #MT-002",
-        text:  "Este error suele ocurrir debido a una interferencia entre el canal hub que transmite datos desde el servidor, especifícamente Transacciones manuales.",
-        icon:  "error"
-      });
-      console.error('ALGO HA PASADO CON MT:',e);
-    })
-    this.automaticTransactionHub.start()
-    .then( ()=> { })
-    .catch( e => {
-      Swal.fire({
-        title: "Error #MT-003",
-        text:  "Este error suele ocurrir debido a una interferencia entre el canal hub que transmite datos desde el servidor, especifícamente Transacciones automáticas.",
-        icon:  "error"
-      });
-      console.error('ALGO HA PASADO CON AT: ',e);
-    })
-    this.recollectTransactionHub.start()
-    .then( () => { })
-    .catch( e => {
-      Swal.fire({
-        title: "Error #MT-004",
-        text:  "Este error suele ocurrir debido a una interferencia entre el canal hub que transmite datos desde el servidor, especifícamente Transacciones de indoles de recolección.",
-        icon:  "error"
-      });
-      console.error('ALGO HA PASADO CON RC:',e);
-    })
-  }
-
-  public countmin: number = 5000;
-  private PingHub(data:any) {
-
-    // console.log('--*-*----*-*-*-*-*---**');
-    // console.log('PING HUB OBTENIENDO');
-    // console.log(data);
-    // console.log('--*-*----*-*-*-*-*---**');
-
-    data.filter( (element:any) => {
-      this.listaEsquipo.filter( (equi:any) => {
-        if( element.ip == equi.ipEquipo ) {
-          if( element.estadoPing == 1 ) {
-            equi.colorEsstado = '#DAEFE6';
-            equi.colorTexto   = 'text-success';
-            equi.colorBtn     = 'btn btn-success w-100';
-            equi.estadoPing   = element.estadoPing;
-          }
-          else if ( element.estadoPing == 2 ) {
-            equi.colorEsstado = '#FCB605';
-            equi.colorTexto   = 'text-dark';
-            equi.colorBtn     = 'btn btn-warning w-100';
-            equi.estadoPing   = element.estadoPing;
-          }
-          else if ( element.estadoPing == 0 ) {
-            equi.colorEsstado = '#FFDAD2';
-            equi.colorTexto   = 'text-danger';
-            equi.colorBtn     = 'btn btn-danger w-100';
-            equi.estadoPing = element.estadoPing;
-          }
-        }
-      })
-    })
-  }
-
+  
   estadointerfazEmit(tipo:string) {
     var x = tipo.trim();
     this.estadointerfaz.emit(x);
@@ -307,120 +206,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  private MtransHub(data:any) {
-    // Actualizar variable de entorno INICIO
-    let vent:number = Number(localStorage.getItem('valor_validador'));
-    let totalNormal: number = data[2][0].total;
-    let xmachine:any = localStorage.getItem('equipoMonitoreando');
-    if( xmachine === data[0].machineSn ) {
-      let sumNormal: number = vent + totalNormal;
-      localStorage.setItem('valor_validador', sumNormal.toFixed(2).toString());
-    }
-    // FIN
-    this.EmitManualTransHub = data[2];
-    this.EmitManualPiezasCantidadTransactionHub = data[3];
 
-    this.billete1        = data[0].manualDepositoBill1;
-    this.billete2        = data[0].manualDepositoBill2;
-    this.billete5        = data[0].manualDepositoBill5;
-    this.billete10       = data[0].manualDepositoBill10;
-    this.billete20       = data[0].manualDepositoBill20;
-    this.billete50       = data[0].manualDepositoBill50;
-    this.billete100      = data[0].manualDepositoBill100;
-
-    this.montoBillete1   = 1 * data[0].totalDepositoBill1;
-    this.montoBillete2   = 2 * data[0].totalDepositoBill2;
-    this.montoBillete5   = 5 * data[0].totalDepositoBill5;
-    this.montoBillete10  = 10 * data[0].totalDepositoBill10;
-    this.montoBillete20  = 20 * data[0].totalDepositoBill20;
-    this.montoBillete50  = 50 * data[0].totalDepositoBill50;
-    this.montoBillete100 = 100 * data[0].totalDepositoBill100;
-
-    this.manualDepositoCoin1   = data[0].manualDepositoCoin1;
-    this.manualDepositoCoin5   = data[0].manualDepositoCoin5;
-    this.manualDepositoCoin10  = data[0].manualDepositoCoin10;
-    this.manualDepositoCoin25  = data[0].manualDepositoCoin25;
-    this.manualDepositoCoin50  = data[0].manualDepositoCoin50;
-    this.manualDepositoCoin100 = data[0].manualDepositoCoin100;
-
-    this.sumatoriasTotalHub           = this.billete1 + this.billete2 + this.billete5 + this.billete10 + this.billete20 + this.billete50 + this.billete100;
-    this.sumatoriasTotalManualHub     = (1 * this.billete1) + (2 * this.billete2) + (5 * this.billete5) + (10 * this.billete10) + (20 * this.billete20) + (50 * this.billete50) + (100 * this.billete100);
-    this.montoSumatoriasTotalHub      = this.montoBillete1 + this.montoBillete2 + this.montoBillete5 + this.montoBillete10 + this.montoBillete20 + this.montoBillete50 + this.montoBillete100;
-    this.sumatoriasTotalCoinHub       = this.manualDepositoCoin1 + this.manualDepositoCoin5 + this.manualDepositoCoin10 + this.manualDepositoCoin25 + this.manualDepositoCoin50 + this.manualDepositoCoin100;
-    this.sumatoriasTotalMontoCoinHub  = (0.01 * this.manualDepositoCoin1) + (0.05 * this.manualDepositoCoin5) + (0.10 * this.manualDepositoCoin10) + (0.25 * this.manualDepositoCoin25) + (0.50 * this.manualDepositoCoin50) + (1 * this.manualDepositoCoin100);
-    this.numeroTransa                 = data[0].transaccionNo;
-    this.machSerie                    = data[0].machineSn;
-
-    this.calculoPrimaryLista( this.EmitManualPiezasCantidadTransactionHub, 'T' );
-    this.listaEsquipo.filter( (element: any) => {
-      if( this.machSerie == element.serieEquipo ) {
-        element.indicadorTotalAsegurado              = element.indicadorTotalAsegurado + (this.sumatoriasTotalManualHub + this.sumatoriasTotalMontoCoinHub);
-        element.indicadorPorcentajeTotalMaxAsegurado = Number(((element.indicadorTotalAsegurado / element.indicadorTotalMaxAsegurado) * 100).toFixed(2));
-        if( element.indicadorPorcentajeBilletes > 0 && element.indicadorPorcentajeBilletes < 80  ) {
-          element.indicadorColorBarProgressBilletes = "bg-success text-light";
-        }
-        else if ( element.indicadorPorcentajeBilletes >= 80 && element.indicadorPorcentajeBilletes <= 90 ) {
-          element.indicadorColorBarProgressBilletes = "bg-warning text-dark"; 
-          this.controlAlerts( 'Capacidad de piezas del equipo', 'A punto de alcanzar límite de piezas del equipo, ' + element.serieEquipo, 'orange', 'black', element.serieEquipo );
-        }
-        else if ( element.indicadorPorcentajeBilletes > 90 ) {
-          element.indicadorColorBarProgressBilletes = "bg-danger text-light";
-          this.controlAlerts( 'Capacidad de piezas del equipo', 'Haz alcanzado el límite de piezas del equipo, ' + element.serieEquipo, 'orangered', 'white', element.serieEquipo );
-        }
-        if ( element.indicadorPorcentajeTotalMaxAsegurado > 0 && element.indicadorPorcentajeTotalMaxAsegurado < 80 ) {
-          element.indicadorColorBarProgressAsegurado = "bg-success text-light";
-        }
-        else if ( element.indicadorPorcentajeTotalMaxAsegurado >= 80 && element.indicadorPorcentajeTotalMaxAsegurado <= 90 ) {
-          element.indicadorColorBarProgressAsegurado = "bg-warning text-dark";
-          this.controlAlerts( 'Monto asegurado del equipo', 'A punto de alcanzar el monto asegurado del equipo, ' + element.serieEquipo, 'orange', 'black', element.serieEquipo );
-        }
-        else if ( element.indicadorPorcentajeTotalMaxAsegurado >= 90 ) {
-          element.indicadorColorBarProgressAsegurado = "bg-danger text-light";
-          this.controlAlerts( 'Monto asegurado del equipo', 'Haz alcanzado el monto asegurado del equipo, ' + element.serieEquipo, 'orangered', 'whitesmoke', element.serieEquipo );
-        }
-      }
-    })
-  }
-
-  controlAlerts(tipo: string, msj: string, colorbg: string, colorfg: string, nserie: string) {
-    let arr: any = {
-      tipo:    tipo,
-      msj:     msj,
-      colorbg: colorbg,
-      colorfg: colorfg,
-      nserie:  nserie
-    }
-    this.listAlertas.push(arr);
-    const uniqueData = new Map();
-    for (const item of this.listAlertas) {
-      // Crear una cadena que representa el objeto para verificar duplicados
-      const key = JSON.stringify({
-        tipo: item.tipo,
-        msj: item.msj,
-        colorbg: item.colorbg,
-        colorfg: item.colorfg,
-        nserie: item.nserie
-      });
-      if (!uniqueData.has(key)) {
-        uniqueData.set(key, item);
-      }
-    }
-    this.nuevoObjectAlerts = Array.from(uniqueData.values());
-  }
-  
-  readTextAloud(text: string) {
-    let synth = window.speechSynthesis;
-    let voices = synth.getVoices();
-    let spanishVoice = voices.find(voice => voice.lang.startsWith('es-'));
-    if (spanishVoice) {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.voice = spanishVoice;
-      utterance.lang = 'es-LA';
-      synth.speak(utterance);
-    } else {
-      console.error('No se encontró una voz en español disponible.');
-    }
-  }  
 
   listaHomeMenu: any = [];
   obtenerIndicadoresHomeMenu() {
@@ -463,171 +249,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     this.listAlertas.splice(i, 1);
   }
 
-  EmitRecolTransHub: any = [];
-  private RecoTransHub(data:any) {
-    const zero = 0;
-    let xmachine:any = localStorage.getItem('equipoMonitoreando');
-    if( xmachine === data[0].machineSn ) {
-      localStorage.setItem('valor_validador', zero.toString());
-      if ( this.nserie == data[0].machineSn ) {
-        this.totalBilletesCantidadT   = 0;
-        this.totalBilletesMontoT      = 0;
-        this.totalBilletesCantidadM   = 0;
-        this.totalBilletesMontoM      = 0;
-      }
-    }
-    this.EmitRecolTransHub        = data[1];
-    this.machSerie                = data[0].machineSn;
-    this.listaDetalleequipoTransa = [];
-    this.listaDetalleequipoManual = [];
-    this.listaEsquipo.filter( ( element: any ) => {
-        if( element.serieEquipo == this.machSerie  ) {
-          element.indicadorCapacidadBilletes           = 0;
-          element.indicadorTotalAsegurado              = 0;
-          element.indicadorPorcentajeBilletes          = 0;
-          element.indicadorPorcentajeTotalMaxAsegurado = 0;
-          this.totalBilletesCantidadT = this.totalBilletesCantidadT * 0;
-          this.totalBilletesMontoT    = this.totalBilletesMontoT    * 0;
-          this.totalBilletesCantidadM = this.totalBilletesCantidadM * 0;
-          this.totalBilletesMontoM    = this.totalBilletesMontoM    * 0;
-          this.totalMonedasMontoM     = this.totalMonedasMontoM     * 0;
-          if ('speechSynthesis' in window) {
-            this.readTextAloud('Se ha realizado un set collection, del equipo ' + this.machSerie );
-          } else {
-            console.error('La API de Web Speech no está disponible en este navegador.');
-          }
-        }
-      }
-    )
 
-    this.primaryLista = [];
-    this.listAlertas  = [];
-    this.nserie = xmachine;
-    this.monitoreo.obtenerDetalleEquipos(this.nserie)
-    .subscribe({
-      next:(x) => {
-        this.primaryLista = x;
-        if ( this.nserie == this.primaryLista[0].machine_Sn ) { 
-          this.primaryLista.filter((element:any) => {
-            if(element.tipo == 'Manual') {
-              this.listaDetalleequipoManual.push(element);
-            }
-            else if ( element.tipo == 'Deposito' ) {
-              this.listaDetalleequipoTransa.push(element);
-            }
-          })
-        }
-        this._show_spinner = false;
-      }, error: (e) => {
-        console.error(e);
-        this._show_spinner = false;
-      }, complete: () => {
-        // Inicializar las variables
-        this.totalBilletesCantidadM = 0;
-        this.totalBilletesMontoM    = 0;
-        this.totalMonedasCantidadM  = 0;
-        this.totalMonedasMontoM     = 0;
-
-        this.totalBilletesCantidadT = 0;
-        this.totalBilletesMontoT    = 0;
-        this.totalMonedasCantidadT  = 0;
-        this.totalMonedasMontoT     = 0;
-  
-        // Recorrer la lista y realizar las sumatorias
-        this.listaDetalleequipoManual.forEach((detalle:any) => {
-          if( detalle.tipo == 'Manual') {
-            this.totalBilletesCantidadM += detalle.depositoCant100 + detalle.depositoCant50 + detalle.depositoCant20 +
-                                           detalle.depositoCant10  + detalle.depositoCant5  + detalle.depositoCant2  + detalle.depositoCant1;
-            this.totalBilletesMontoM    += detalle.depositoMont100 + detalle.depositoMont50 + detalle.depositoMont20 +
-                                           detalle.depositoMont10  + detalle.depositoMont5  + detalle.depositoMont2  + detalle.depositoMont1;
-            this.totalMonedasCantidadM  += detalle.depositoCantCoin100 + detalle.depositoCantCoin50 + detalle.depositoCantCoin25 +
-                                           detalle.depositoCantCoin10  + detalle.depositoCantCoin5  + detalle.depositoCantCoin1;
-            this.totalMonedasMontoM     += detalle.depositoMontCoin100 + detalle.depositoMontCoin50 + detalle.depositoMontCoin25 +
-                                           detalle.depositoMontCoin10  + detalle.depositoMontCoin5  + detalle.depositoMontCoin1;
-          }
-        });
-  
-        this.listaDetalleequipoTransa.forEach((detalle:any) => {
-          if ( detalle.tipo == 'Deposito' ) {
-            this.totalBilletesCantidadT += detalle.depositoCant100 + detalle.depositoCant50 + detalle.depositoCant20 +
-                                           detalle.depositoCant10  + detalle.depositoCant5  + detalle.depositoCant2  + detalle.depositoCant1;  
-            this.totalBilletesMontoT    += detalle.depositoMont100 + detalle.depositoMont50 + detalle.depositoMont20 +
-                                           detalle.depositoMont10  + detalle.depositoMont5  + detalle.depositoMont2  + 
-                                           detalle.depositoMont1;  
-            this.totalMonedasCantidadT  += detalle.depositoCantCoin100 + detalle.depositoCantCoin50 + detalle.depositoCantCoin25 +
-                                           detalle.depositoCantCoin10  + detalle.depositoCantCoin5  + detalle.depositoCantCoin1;  
-            this.totalMonedasMontoT     += detalle.depositoMontCoin100 + detalle.depositoMontCoin50 + detalle.depositoMontCoin25 +
-                                           detalle.depositoMontCoin10  + detalle.depositoMontCoin5  + detalle.depositoMontCoin1;
-            }
-          }
-        )
-        this._show_spinner = false;
-      }
-    })
-  }
-  
-  private AuTransHub(data:any) {
-    // INICIO
-    let vent:number = Number(localStorage.getItem('valor_validador'));
-    let totalNormal: number = data[1][0].total;
-    let xmachine:any = localStorage.getItem('equipoMonitoreando');
-    if( xmachine === data[0].machineSn ) {
-      let sumNormal: number = vent + totalNormal;
-      localStorage.setItem('valor_validador', sumNormal.toFixed(2).toString());
-    }
-    // FIN
-    this.EmitAutoTransHub = data[1];
-    this.billete1        = data[0].depositoBill1;
-    this.billete2        = data[0].depositoBill2;
-    this.billete5        = data[0].depositoBill5;
-    this.billete10       = data[0].depositoBill10;
-    this.billete20       = data[0].depositoBill20;
-    this.billete50       = data[0].depositoBill50;
-    this.billete100      = data[0].depositoBill100;
-    
-    this.montoBillete1   = 1 * data[0].totalDepositoBill1;
-    this.montoBillete2   = 2 * data[0].totalDepositoBill2;
-    this.montoBillete5   = 5 * data[0].totalDepositoBill5;
-    this.montoBillete10  = 10 * data[0].totalDepositoBill10;
-    this.montoBillete20  = 20 * data[0].totalDepositoBill20;
-    this.montoBillete50  = 50 * data[0].totalDepositoBill50;
-    this.montoBillete100 = 100 * data[0].totalDepositoBill100;
-
-    this.sumatoriasTotalHub      = this.billete1      + this.billete2      + this.billete5      + this.billete10      + this.billete20      + this.billete50      + this.billete100;
-    this.montoSumatoriasTotalHub = this.montoBillete1 + this.montoBillete2 + this.montoBillete5 + this.montoBillete10 + this.montoBillete20 + this.montoBillete50 + this.montoBillete100;
-    this.numeroTransa            = data[0].transaccionNo;
-    this.machSerie               = data[0].machineSn;
-
-    this.EmitAutomaticPiezasCantidadTransactionHub = data[2];
-
-    this.calculoPrimaryLista(this.EmitAutomaticPiezasCantidadTransactionHub, 'T');
-    this.listaEsquipo.filter( (element: any) => {
-      if ( element.serieEquipo == this.machSerie  ) {
-        element.indicadorCapacidadBilletes          += this.sumatoriasTotalHub;
-        element.indicadorTotalAsegurado = data[1][0].totalRecoleccion;
-        element.indicadorPorcentajeBilletes          = Number(((element.indicadorCapacidadBilletes / element.indicadorCapacidadBilletesMax) * 100).toFixed(2));
-        element.indicadorPorcentajeTotalMaxAsegurado = Number(((element.indicadorTotalAsegurado / element.indicadorTotalMaxAsegurado) * 100).toFixed(2));
-        if( element.indicadorPorcentajeBilletes > 0 && element.indicadorPorcentajeBilletes < 80  ) {
-          element.indicadorColorBarProgressBilletes = "bg-success text-light";
-        }
-        else if ( element.indicadorPorcentajeBilletes >= 80 && element.indicadorPorcentajeBilletes <= 90 ) {
-          element.indicadorColorBarProgressBilletes = "bg-warning text-dark";
-        }
-        else if ( element.indicadorPorcentajeBilletes > 90 ) {
-          element.indicadorColorBarProgressBilletes = "bg-danger text-light";
-        }
-        if ( element.indicadorPorcentajeTotalMaxAsegurado > 0 && element.indicadorPorcentajeTotalMaxAsegurado < 80 ) {
-          element.indicadorColorBarProgressAsegurado = "bg-success text-light";
-        }
-        else if ( element.indicadorPorcentajeTotalMaxAsegurado >= 80 && element.indicadorPorcentajeTotalMaxAsegurado <= 90 ) {
-          element.indicadorColorBarProgressAsegurado = "bg-warning text-dark";
-        }
-        else if ( element.indicadorPorcentajeTotalMaxAsegurado >= 90 ) {
-          element.indicadorColorBarProgressAsegurado = "bg-danger text-light";
-        }
-      }
-    })
-  }
 
   ngAfterViewInit(): void {}
   ngOnChanges(changes: SimpleChanges): void {
@@ -658,7 +280,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   tipoFiltro:any;
-  recibirTipoFiltro(tipo: any) {
+  recibirTipoFiltro(tipo: any) {  
     this.tipoFiltro = tipo;
   }
 

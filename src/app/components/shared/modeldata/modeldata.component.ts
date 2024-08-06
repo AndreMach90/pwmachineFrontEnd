@@ -14,6 +14,7 @@ import * as ExcelJS from 'exceljs';
 import Swal from 'sweetalert2'
 import { format } from 'date-fns';
 import { ConsolidadoService } from './services/consolidado.service';
+import { MonitoreoIndividualService } from '../../dahsboards/monitorear-equipo/services/monitoreo-individual.service';
 
 const Toast = Swal.mixin({
   toast: true,
@@ -40,30 +41,32 @@ export class ModeldataComponent implements OnInit {
   @ViewChild('horaini') horaini: ElementRef | undefined;
   @ViewChild('horafin') horafin: ElementRef | undefined;
 
+  cantidadTransacciones:      number = 0;
+  listamaquinasTemporales:    any = [];
   RezagadasTran:              any = [];
   transaccionesDentroDeRango: any = [];
-  cantidadRezagadas: number = 0;
-  sumtran: number = 0;
-  dini: any;
-  dfin: any;
-  disbutton_obtener: boolean = false;
-  totalSubstract: number = 0;
-  _cancel_button: boolean = false;
-  barprogress: boolean = false;
-  modelTransaccionesAc: any = [];
-  countTransaction: number = 0;
-  porcentaje : number = 0;
-  validExportExcel:boolean = false;
-  tran: any = [];
+  cantidadRezagadas:          number = 0;
+  sumtran:                    number = 0;
+  dini:                       any;
+  dfin:                       any;
+  disbutton_obtener:          boolean = false;
+  totalSubstract:             number = 0;
+  _cancel_button:             boolean = false;
+  barprogress:                boolean = false;
+  modelTransaccionesAc:       any = [];
+  countTransaction:           number = 0;
+  porcentaje:                 number = 0;
+  validExportExcel:           boolean = false;
+  tran:                       any = [];
   listaDatosTransaccionesAcreditar:any = [];
-  maquinasEscogidasDialog:  any   = [];
-  transaccionesAutomaticas: any[] = [];
-  transaccionesManuales: any[] = [];
-  colorguia:boolean = false;
-  items: MenuItem[] | undefined;
-  clienteListaGhost: any = [];
-  clientelista:any = [];
-  mostrarCiclo: boolean = false;
+  maquinasEscogidasDialog:    any   = [];
+  transaccionesAutomaticas:   any[] = [];
+  transaccionesManuales:      any[] = [];
+  colorguia:                  boolean = false;
+  items:                      MenuItem[] | undefined;
+  clienteListaGhost:          any = [];
+  clientelista:               any = [];
+  mostrarCiclo:               boolean = false;
   listaDataExportExcelNewFormat: any = [];
   _transaction_show:             boolean = false;
   checked:                       boolean = false;
@@ -93,24 +96,49 @@ export class ModeldataComponent implements OnInit {
   dis_exp_excel:                 boolean = true;
   conttransaccion:               boolean = false;
 
-  public filterTransaccForm = new FormGroup({
+  listaEquipo:        any = [];
+  listaEquipoGhost:   any = [];
+  listaCuadreEquipos: any = [];
+  cantCuadrada:       number = 0;
+
+  show_cuadre:                boolean = false;
+  modelConsolidadoSend:       any = [];
+  listaConsolidados:          any = [];
+  listaConsolidadosRezagadas: any = [];
+
+  maquinasEscogidasDialogGhost: any = [];
+  _show_fecha: boolean = false;
+  numericColumns: any = [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28];
+  headerExcel: any = ['Localidad', 'Fecha', 'Hora', 'Cliente', 'Tienda', 'N. Trans.', 'N. Serie Equipo',
+    'Usuario', 'Establecimiento', 'Actividad', 'Cod. Establ.', 'Nom. Banco', 'T. Cuenta',
+    'Cta. Bancaria', '$1', '$2', '$5', '$10', '$20', '$50', '$100', '$0.01', '$0.05', '$0.10',
+    '$0.25', '$0.50', '$1.00', 'Total', 'T. T.'];
+  dias_estimados:     string = '';
+  disButton:          boolean = true;
+  diasEncontrar:      number  = 31;
+  val:number = 0;
+  
+  public filterTransaccForm = new FormGroup ({
     filterTransacc: new FormControl('')
   })
 
-  public exportdateform = new FormGroup({
-    dateini:              new FormControl(''),
-    datefin:              new FormControl(''),
-    horaini:              new FormControl(''),
-    horafin:              new FormControl(''),
-    ciclo:                new FormControl(false),
-    indices:              new FormControl(false),
-    acreditada:           new FormControl(false),
-    spriv:                new FormControl(true),
-    codigoClienteidFk:    new FormControl(),
-    codigoTiendaidFk:     new FormControl()
-  })
+  public exportdateform = new FormGroup (
+    {
+      dateini:              new FormControl(''),
+      datefin:              new FormControl(''),
+      horaini:              new FormControl(''),
+      horafin:              new FormControl(''),
+      ciclo:                new FormControl(false),
+      indices:              new FormControl(false),
+      acreditada:           new FormControl(false),
+      spriv:                new FormControl(true),
+      codigoClienteidFk:    new FormControl(),
+      codigoTiendaidFk:     new FormControl()
+    }
+  )
 
   constructor( private formBuilder: FormBuilder,
+    private mequipo:       MonitoreoIndividualService,
     private clienteserv:   ClientesService,
     private tiendaservs:   TiendaService,
     public  router:        Router,
@@ -118,11 +146,13 @@ export class ModeldataComponent implements OnInit {
     private consolidado:   ConsolidadoService,
     public  dialog:        MatDialog,
     private env:           Environments ) {
+
       this.transac = this.formBuilder.group({
         manualTransactions:    true,
         automaticTransactions: true,
         recolecciones:         false
       });
+
     }
 
   ngOnInit(): void {
@@ -132,7 +162,7 @@ export class ModeldataComponent implements OnInit {
   }
 
   visibleDataTable() {
-    switch (this.exportdateform.controls['spriv'].value) {
+    switch ( this.exportdateform.controls['spriv'].value ) {
       case true:
         this.reportVisible = false;
         break;
@@ -145,9 +175,7 @@ export class ModeldataComponent implements OnInit {
   onSubmitHora() {}
   onSubmitDate() {}
 
-  submitTransacFilter() {
-    ////console.log(this.transac.value);
-  }
+  submitTransacFilter() {}
 
   validateSesion() {
     let xtoken:any = sessionStorage.getItem('token');
@@ -159,7 +187,6 @@ export class ModeldataComponent implements OnInit {
     let xtoken:any = sessionStorage.getItem('token');
     if( xtoken == undefined || xtoken == null || xtoken == '' ) this.router.navigate(['login']);
   }
-
 
   filtrarTransaccionesFueraDeRango(): void {
     // Tomamos las fechas para concatenarla para más después
@@ -200,10 +227,92 @@ export class ModeldataComponent implements OnInit {
     this.exportToExcelRezagadas();
   }
 
+  procesados: number = 0;  
+  listaCuadradas: any = [];
+  listaRepetidas: any = [];
+  listaResagadas: any = [];
+  idCli: number = 0;
+  obtenerEquipos(idcli: any) {
 
-  modelConsolidadoSend: any = [];
-  listaConsolidados: any = [];
-  listaConsolidadosRezagadas: any = [];
+    if (idcli) {
+      
+      this.clientelista.filter( (cli:any) => { if( idcli == cli.codigoCliente ) this.idCli = cli.id; });
+
+      this.mequipo.obtenerEquiposCliente(idcli).subscribe({
+        next: (x: any) => {
+          this.listaEquipo = x;
+          this.listaEquipoGhost = x;
+          // Agregar una propiedad cuadreData por defecto a cada equipo
+          this.listaEquipo.forEach((equipo: any) => {
+            equipo.cuadreData = { diferencia: null, icon_data: '', color_data: '' };
+          });
+        },
+        error: (e) => {
+          console.error(e);
+        },
+        complete: () => {
+          let cuadrePromises: Promise<any>[] = this.listaEquipo.map((x: any) => {
+            return new Promise((resolve, reject) => {
+              this.obtenerCuadreEquipos(x.serieEquipo.toString().trim(), resolve, reject);
+            });
+          });
+  
+          Promise.all(cuadrePromises).then(() => {
+            this.listaCuadreEquipos.filter((x: any) => {
+              if (x.cuadreData.resultado == 1) {
+                x.cuadreData.icon_data = 'cancel';
+                x.cuadreData.color_data = 'red';
+                x.cuadreData.msj_data = 'Transacciones repetidas';
+                this.listaRepetidas.push(x);
+              } else if (x.cuadreData.resultado == 0) {
+                x.cuadreData.icon_data = 'done';
+                x.cuadreData.color_data = 'green';
+                x.cuadreData.msj_data = 'Transacciones cuadradas';
+                this.listaCuadradas.push(x);
+                // this.listaCuadradas = x.length;
+              } else if (x.cuadreData.resultado == 2) {
+                x.cuadreData.icon_data = 'cancel';
+                x.cuadreData.color_data = 'red';
+                x.cuadreData.msj_data = 'Transacciones faltantes';
+                this.listaResagadas.push(x);
+              }
+              this.procesados++;
+            });
+          }).catch((error) => {
+            console.error("Error en obtenerCuadreEquipos:", error);
+          });
+        }
+      });
+    }
+  }
+  
+  obtenerCuadreEquipos(machineSn: string, resolve: any, reject: any) {
+    this._show_spinner = true;
+    this.transacciones.obtenerCuadre(machineSn).subscribe({
+      next: (x: any) => {
+        // Encuentra el equipo correspondiente y actualiza su cuadreData
+        let equipo = this.listaEquipo.find((equipo: any) => equipo.serieEquipo.trim() === machineSn);
+        if (equipo) {
+          equipo.cuadreData = x;
+        }
+        this.listaCuadreEquipos.push({
+          machineSn: machineSn,
+          cuadreData: x
+        });
+      },
+      complete: () => {
+        this._show_spinner = false;
+        this._show_fecha = true;
+        resolve();
+      },
+      error: (e) => {
+        this._show_spinner = false;
+        console.error(e);
+        reject(e);
+      }
+    });
+  }
+  
   obtenerConsolidado( type: number ) {
     let di: any = this.exportdateform.controls['dateini'].value;
     let df: any = this.exportdateform.controls['datefin'].value;
@@ -312,11 +421,6 @@ export class ModeldataComponent implements OnInit {
     this.exportToExcel();
   }
 
-  numericColumns: any = [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28];
-  headerExcel: any = ['Localidad', 'Fecha', 'Hora', 'Cliente', 'Tienda', 'N. Trans.', 'N. Serie Equipo',
-    'Usuario', 'Establecimiento', 'Actividad', 'Cod. Establ.', 'Nom. Banco', 'T. Cuenta',
-    'Cta. Bancaria', '$1', '$2', '$5', '$10', '$20', '$50', '$100', '$0.01', '$0.05', '$0.10',
-    '$0.25', '$0.50', '$1.00', 'Total', 'T. T.'];
   bodyExcel = (item: any, transaccion: any) => {
     return [ item.localidad,
       format(new Date(transaccion.fechaTransaccion), 'dd-MM-yyyy'),
@@ -349,6 +453,7 @@ export class ModeldataComponent implements OnInit {
       transaccion.tipoTransaccion
     ]
   }
+
   async exportToExcelConsolidadoGeneral(): Promise<void> {
     try {
       const fecha         = new Date();
@@ -1010,15 +1115,14 @@ export class ModeldataComponent implements OnInit {
     });
   }
 
-  dias_estimados:     string = '';
-  disButton:          boolean = true;
-  diasEncontrar:      number  = 31;
   validateDateIni() {
     this.validateDateRange(this.dateini?.nativeElement.value, this.datefin?.nativeElement.value, 'start');
   }
+
   validateDatefin() {
     this.validateDateRange(this.dateini?.nativeElement.value, this.datefin?.nativeElement.value, 'end');
   }
+
   validateDateRange(startValue: string, endValue: string, changed: 'start' | 'end') {
     if (startValue && endValue) {
       const fechaInicio = new Date(startValue);
@@ -1045,10 +1149,12 @@ export class ModeldataComponent implements OnInit {
       this._transaction_show = true;
     }
   }
+
   calculateMaxEndDate(startDate: Date): string {
     startDate.setDate(startDate.getDate() + this.diasEncontrar);
     return startDate.toISOString().split('T')[0];
   }
+
   calculateMinIniDate(endDate: Date): string {
     endDate.setDate(endDate.getDate() - this.diasEncontrar);
     return endDate.toISOString().split('T')[0];
@@ -1095,40 +1201,43 @@ export class ModeldataComponent implements OnInit {
     return headers.filter(header => header !== 'T$0.01' && header !== 'T$0.05' && header !== 'T$0.10' && header !== 'T$0.25' && header !== 'T$0.50' &&  header !== 'observacion' && header !== 'fechaRecoleccion' && header !== 'totalRecoleccion' && header !== 'color' && header !== 'fecha' );
   }
 
-  val:number = 0;
   acredit(): number {
     this.val = (this.exportdateform.controls['acreditada'].value == true) ? 1 : 2;
     return this.val;
   }
 
-  maquinasEscogidasDialogGhost: any = [];
   openDataEquiposDialog() {
     let arr: any = [];
+    let excelData: any = null;
     if( this.dataExportarExcel ) {
-      arr = {
-        acreditado:        this.acredit(),
-        fecchaIni:         this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value,
-        fechaFin:          this.exportdateform.controls['datefin'].value + ' ' + this.exportdateform.controls['horafin'].value,
-        codigocliente:     this.exportdateform.controls['codigoClienteidFk'].value,
-        codigoTienda:      this.exportdateform.controls['codigoTiendaidFk'].value,
-        equiposExistentes: this.dataExportarExcel
-      }
+      excelData = this.dataExportarExcel;
     } else {
-      arr = {
-        acreditado:        this.acredit(),
-        fecchaIni:         this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value,
-        fechaFin:          this.exportdateform.controls['datefin'].value + ' ' + this.exportdateform.controls['horafin'].value,
-        codigocliente:     this.exportdateform.controls['codigoClienteidFk'].value,
-        codigoTienda:      this.exportdateform.controls['codigoTiendaidFk'].value,
-        equiposExistentes: null
-      }
+      excelData = null;
     }
+
+    arr = {
+      acreditado:        this.acredit(),
+      fecchaIni:         this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value,
+      fechaFin:          this.exportdateform.controls['datefin'].value + ' ' + this.exportdateform.controls['horafin'].value,
+      codigocliente:     this.idCli,
+      codigoTienda:      this.exportdateform.controls['codigoTiendaidFk'].value,
+      equiposExistentes: excelData,
+      cuadradas:         this.listaCuadradas,
+      repetidas:         this.listaRepetidas,
+      noRegistradas:     this.listaResagadas
+    }
+
+    console.log(arr)
 
     const dialogRef = this.dialog.open( ModalDataEquiposComponent, {
       height: '100%',
       width:  '60%',
       data:   arr,
     });
+
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>')
+    console.log(arr)
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>')
 
     dialogRef.afterClosed().subscribe( (result:any) => {      
       if( result ) {
@@ -1200,34 +1309,25 @@ export class ModeldataComponent implements OnInit {
   obtenerCliente() {
     this.clientelista = [];
     this._show_spinner = true;
-    this.clienteserv.obtenerCliente().subscribe({
+
+    this.clienteserv.ObtenerClienteSelect().subscribe({
       next: (cliente) => {
-        this.clienteListaGhost = cliente;
+        this.clientelista = cliente;
         this._show_spinner = false;
-      }, error: (e) => {
+      },
+      error: (e) => {
         this._show_spinner = false;
-        console.log(e)
-      }, complete: () => {
-        this.clienteListaGhost.filter((element:any) => {
-          let arr: any = {
-            "id": element.id,
-            "codigoCliente": element.codigoCliente,
-            "nombreCliente": element.nombreCliente,
-            "ruc": element.ruc,
-            "direccion": element.direccion,
-            "telefcontacto": element.telefcontacto,
-            "emailcontacto": element.emailcontacto,
-            "nombrecontacto": element.nombrecontacto
-          }
-          this.clientelista.unshift(arr);
-        })
+        console.error(e);
       }
-    })
+    });
   }
 
   obtenerIDCLiente() {
     this.idcliente = ( this.exportdateform.controls['codigoClienteidFk'].value == undefined || this.exportdateform.controls['codigoClienteidFk'].value == null ) ?
       this.clientelista[0].id : this.exportdateform.controls['codigoClienteidFk'].value;
+    // console.log('Este es el ID del Cliente')
+    // console.log(this.idcliente)
+    this.obtenerEquipos(this.idcliente);
   }
 
   obtenerTiendas() {    
@@ -1236,12 +1336,19 @@ export class ModeldataComponent implements OnInit {
     this.tiendaservs.obtenerTiendas().subscribe({
       next: (tienda) => {
         this.tiendaListaGhost = tienda;
+        console.warn('*************************************************')
+        console.warn('*************************************************')
+        console.warn('Esta es la tienda que estoy eligiendo')
+        console.warn(this.tiendaListaGhost)
+        console.warn('*************************************************')
+        console.warn('*************************************************')
       }, complete: () => {
         this.obtenerIDCLiente();
         this.tiendaListaGhost.filter( (element:any) => {
           if( element.codigoClienteidFk == this.idcliente ) this.tiendalista.push(element);
           })
-        }
+        this.show_cuadre = true;
+      }
       }
     )
   }
@@ -1394,7 +1501,7 @@ export class ModeldataComponent implements OnInit {
             next: (z) => {
               element.transacciones = z;
               element.longitud = element.transacciones.length;
-              this.obterSaldoTransac(element.nserie);
+              // this.obterSaldoTransac(element.nserie);
               resolve();
             },            
             error: (e) => reject(e),
@@ -1466,26 +1573,7 @@ export class ModeldataComponent implements OnInit {
         break;
     }
   }
-  
-  modelDataSaldo: any = [];
-  obterSaldoTransac( machineSn:any ) {
-    this.transacciones.ObtenerEquiposSaldo(machineSn).subscribe({
-      next: (x) => {
-        this.modelDataSaldo = x;
-      }, error: (e) => console.error(e),
-      complete: () => {
-        this.dataExportarExcel.filter( ( j:any ) => {
-          this.modelDataSaldo.filter( (saldo: any) => {
-            if( j.nserie ==  saldo.machineSn ) {
-              j.saldo = saldo.totalRecoleccion;
-            }
-          })
-        })
-      }
-    })
-  }
 
-  cantidadTransacciones: number = 0;
   sumatoriaTotalTransacciones() {
     this.cantidadTransacciones  = 0;
     this.sumatoriaTransacciones = 0;
@@ -1667,4 +1755,5 @@ export class ModeldataComponent implements OnInit {
   checkFiltrarCliente(checktienda: boolean){
     if(!checktienda) this.exportdateform.controls['codigoClienteidFk'].setValue(null);
   }
+
 }

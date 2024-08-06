@@ -69,15 +69,21 @@ export class ModalDataEquiposComponent implements OnInit {
       fechaIni : this.data.fecchaIni,
       fechaFin : this.data.fechaFin
     }
+
     this.equiposerv.obtenerEquipoConteoTran(xi, this.modelFilterTranEqipos).subscribe(
       {
         next: (equipo) => {
           this.listaEsquipoGhost = equipo;
+          console.warn(this.listaEsquipoGhost);
         },
         error: (e) => {
           console.error(e);
         },
         complete: ()  => {
+          console.warn('============================================');
+          console.warn('this.data.codigocliente');
+          console.warn(this.data.codigocliente);
+          console.warn('============================================');
           if (this.data.codigocliente !== null) {
             if (this.data.equiposExistentes == null || this.data.equiposExistentes.length == 0 ) {
               this.listaEsquipo = this.listaEsquipoGhost.filter( (x:any) => x.idCliente2 == this.data.codigocliente );
@@ -97,7 +103,14 @@ export class ModalDataEquiposComponent implements OnInit {
             }
           }
           this.localidadesEncontradas = [];
+          console.warn(this.listaEsquipo)
+          console.warn(1)
           this.listaEsquipo.forEach((element: any) => {
+            
+              console.warn(2)
+              console.log('ELEMENT LISTA')
+              console.log(element)
+
               if (element.conteo_A == null || element.conteo_A == undefined) element.conteo_A = 0;
               if (element.conteo_M == null || element.conteo_M == undefined) element.conteo_M = 0;
               if (element.conteo_R == null || element.conteo_R == undefined) element.conteo_R = 0;
@@ -123,8 +136,15 @@ export class ModalDataEquiposComponent implements OnInit {
               }
               this.localidadesEncontradas[localidadIndex !== -1 ? localidadIndex : this.localidadesEncontradas.length - 1].equiposTrans.push(element);
               this.localidadesEncontradasGhost[localidadIndex !== -1 ? localidadIndex : this.localidadesEncontradasGhost.length - 1].equiposTrans.push(element);
+
+              console.warn(3)
+
           });
+
+          console.warn(this.localidadesEncontradas);
+          console.warn(this.localidadesEncontradasGhost);
           this.sumatoriaRezagadasTransac(this.listaEsquipo);
+
         }
       }
     )

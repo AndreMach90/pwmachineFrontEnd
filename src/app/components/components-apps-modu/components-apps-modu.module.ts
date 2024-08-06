@@ -156,9 +156,12 @@ import { ModalLocalidadClienteComponent } from '../dahsboards/cliente/modal-loca
 import { ObtenerLocalidadClienteComponent } from '../dahsboards/cliente/modal-localidad-cliente/obtener-localidad-cliente/obtener-localidad-cliente.component';
 import { MonitorearEquipoComponent } from '../dahsboards/monitorear-equipo/monitorear-equipo.component';
 import { ModalDataEquiposComponent } from '../dahsboards/repodash/filtrotransaccional/modal-data-equipos/modal-data-equipos.component';
+import { ModalConfigExcelComponent } from '../dahsboards/repodash/filtrotransaccional/modal-config-excel/modal-config-excel.component';
+import { FiltrotransaccionalComponent } from '../dahsboards/repodash/filtrotransaccional/filtrotransaccional.component';
 
 @NgModule({
   declarations: [
+    ModalConfigExcelComponent,
     LoginComponent,
     ModalDataEquiposComponent,
     DahsboardsComponent,
@@ -183,7 +186,7 @@ import { ModalDataEquiposComponent } from '../dahsboards/repodash/filtrotransacc
     ModalLocalidadClienteComponent,
     ObtenerLocalidadClienteComponent,
     MonitorearEquipoComponent,
-    
+    FiltrotransaccionalComponent
   ],
   imports: [
     NgxTimepickerModule,
@@ -326,7 +329,9 @@ import { ModalDataEquiposComponent } from '../dahsboards/repodash/filtrotransacc
     DashboardDataExportComponent,
     ModeldataComponent,
     HistorialAcreditacionComponent,
-    ModalDataEquiposComponent
+    ModalDataEquiposComponent,
+    ModalConfigExcelComponent,
+    FiltrotransaccionalComponent
   ]
 })
 export class ComponentsAppsModuModule { }

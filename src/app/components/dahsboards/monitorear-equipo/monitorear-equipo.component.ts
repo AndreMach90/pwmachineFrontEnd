@@ -95,7 +95,6 @@ export class MonitorearEquipoComponent implements OnInit {
   obtenerEquipos() {
 
     let cli = this.tiendaForm.controls['codigoClienteidFk'].value;
-
     if (cli) {
       this.mequipo.obtenerEquiposCliente(cli).subscribe({
         next: (x:any) => {
