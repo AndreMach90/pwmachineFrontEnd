@@ -1,5 +1,4 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Environments } from 'src/app/components/environments/environments';
 
@@ -30,5 +29,9 @@ export class TransaccionesTiendaService {
 
   ObtenerEquiposSaldo( machineSn: any ) {
     return this.http.get( this.env.apiurl() + 'EquipoDetalle/ObtenerTotales/' + machineSn, { headers: this.headers } );
+  }
+
+  obtenerCuadre(machineSn: any) {
+    return this.http.get( this.env.apiurl() + 'EquiposNoTransaccion/Cuadre/' + machineSn, { headers: this.headers } );
   }
 }

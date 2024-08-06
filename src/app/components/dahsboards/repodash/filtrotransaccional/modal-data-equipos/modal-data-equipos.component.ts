@@ -28,7 +28,7 @@ export class ModalDataEquiposComponent implements OnInit {
                @Inject(MAT_DIALOG_DATA) public data: any,
                private env: Environments,
                public dialogRef: MatDialogRef<ModeldataComponent>) {}
-               public dialogRef: MatDialogRef<ModeldataComponent>) {}
+
 
   public equipoCliForm = new FormGroup({
     filterEqui:   new FormControl('')
@@ -155,7 +155,6 @@ export class ModalDataEquiposComponent implements OnInit {
           this.addToSelectedEquipos(equipo);
         });
       });
-    } else {
     } else {
       this.localidadesEncontradas.filter((localidad:any) => {
         localidad.equiposTrans.forEach((equipo: any, index: number) => {

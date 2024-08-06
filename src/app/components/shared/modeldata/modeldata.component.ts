@@ -1591,7 +1591,6 @@ export class ModeldataComponent implements OnInit {
     })
   }
 
-  cantidadTransacciones: number = 0;
   sumatoriaTotalTransacciones() {
     this.cantidadTransacciones  = 0;
     this.sumatoriaTransacciones = 0;
