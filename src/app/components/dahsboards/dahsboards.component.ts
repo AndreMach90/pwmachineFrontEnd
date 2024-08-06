@@ -5,6 +5,7 @@ import { Environments } from '../environments/environments';
 import jwt_decode from 'jwt-decode';
 import { EncryptService } from '../shared/services/encrypt.service';
 import Swal from 'sweetalert2'
+import { SharedService } from '../shared/services/shared.service';
 @Component({
   selector: 'app-dahsboards',
   templateUrl: './dahsboards.component.html',
@@ -21,11 +22,13 @@ export class DahsboardsComponent implements OnInit {
   show_clientes: boolean = false;
   show_equipo: boolean = false;
   show_home: boolean = true;
+  show_monitorear_equipo: boolean = false;
   constructor(
     private ncrypt: EncryptService,
     private log: LoginService,
     private router: Router,
-    private env: Environments
+    private env: Environments,
+    private shar:       SharedService
   ) {}
 
   primary: any;
@@ -50,6 +53,7 @@ export class DahsboardsComponent implements OnInit {
 
   ngOnInit(): void {
     this.validateSesion();
+    this.obtenerIndicadoresHomeMenu();
     let xuser: any = sessionStorage.getItem('usuario');
     this.usuario = xuser;
     let xtoken: any = sessionStorage.getItem('token');
@@ -66,12 +70,12 @@ export class DahsboardsComponent implements OnInit {
       this.iss = decoded['iss'];
       this.aud = decoded['aud'];
 
-      console.warn('=====================================');
-      console.warn('this.exp');
-      console.warn(this.exp);
+      // console.warn('=====================================');
+      // console.warn('this.exp');
+      // console.warn(this.exp);
       this.horaCierre = this.convertTimestampToReadableDate(this.exp);
-      console.warn('Fecha y hora legible:', this.horaCierre);
-      console.warn('=====================================');
+      // console.warn('Fecha y hora legible:', this.horaCierre);
+      // console.warn('=====================================');
 
       const rolEncrypt: any = this.ncrypt.encryptWithAsciiSeed(this.role, this.env.es, this.env.hash);
       sessionStorage.setItem('PR', rolEncrypt);
@@ -94,6 +98,43 @@ export class DahsboardsComponent implements OnInit {
     let arrmodulo = { nombre: xmodulo };
     this.recibirModulo(arrmodulo);
   }
+
+  listaHomeMenu: any = [];
+  obtenerIndicadoresHomeMenu() {
+    this.shar.getIndicadoresHome().subscribe({
+      next: (x) => {
+        // console.log('BOTONES HOME');
+        // console.log(x);
+        this.listaHomeMenu = x;
+      },
+      error: (e) => {
+        console.error(e);
+      },
+      complete: () => {
+        const arr: any = [
+          { 'tipo': 'Monitorear transaccional', 'icon': 'timeline', 'width': '480px !important' },
+          { 'tipo': 'Monitoreo de equipos', 'icon': 'precision_manufacturing', 'width': '550px !important' },
+          { 'tipo': 'Reporte de datos', 'icon': 'article', 'width': '450px !important' }
+        ];
+
+        const iconMap: any = {
+          'clientes': 'face',
+          'tiendas': 'storefront',
+          'equipos': 'point_of_sale',
+          'usuarios': 'supervised_user_circle'
+        };
+
+        this.listaHomeMenu.forEach((x: any) => {
+          if (iconMap[x.tipo]) {
+            x.icon = iconMap[x.tipo];
+            x.width = '300px'
+          }
+        });
+
+        this.listaHomeMenu = this.listaHomeMenu.concat(arr);
+      }
+    });
+  }
   
   convertTimestampToReadableDate(timestamp: number): string {
     // Convertir el timestamp a milisegundos
@@ -105,7 +146,7 @@ export class DahsboardsComponent implements OnInit {
     return readableDate;
   }
 
-  /** TOKEN NO TOCAR */
+  /** TOKEN NO TOCAR [EXPIRACION SESION] */
   startSessionTimer(exp: number): void {
     const currentTime = Math.floor(Date.now() / 1000); // Obtener el tiempo actual en segundos
     const timeUntilExpiration = exp - currentTime;
@@ -116,10 +157,10 @@ export class DahsboardsComponent implements OnInit {
         setTimeout(() => {
           const minutesLeft = Math.floor((exp - Math.floor(Date.now() / 1000)) / 60);
           Swal.fire({
-            title: "Sesión por expirar.",
-            text: `Por motivos de seguridad su sesión está por expirar en ${minutesLeft} minutos`,
+            title:  "Sesión por expirar.",
+            text:   `Por motivos de seguridad su sesión está por expirar en ${minutesLeft} minutos`,
             footer: 'Puedes volver a iniciar sesión para generar un token de sesión nuevo.',
-            icon: "warning"
+            icon:   "warning"
           });
           setTimeout(() => {
             this.closeSession();
@@ -136,12 +177,70 @@ export class DahsboardsComponent implements OnInit {
   }
 
   validateSesion() {
-
     let xtoken: any = sessionStorage.getItem('token');
-    if (xtoken == null || xtoken == undefined || xtoken == '') {
-      this.router.navigate(['login']);
-    }
+    if (xtoken == null || xtoken == undefined || xtoken == '') this.router.navigate(['login']);    
+  }
 
+  showHeadMenu:boolean = false;
+  recibirDataButtonHome(event:any) {
+    switch (event) {
+      case 'usuarios':
+        this.show_home              = false;
+        this.show_usuarios          = true;
+        this.show_tiendas           = false;
+        this.show_clientes          = false;
+        this.show_equipo            = false;
+        this.show_monit_equip       = false;
+        this.show_monitorear_equipo = false;
+        this.showHeadMenu = true;
+        break;
+      case 'tiendas':
+        this.show_home              = false;
+        this.show_usuarios          = false;
+        this.show_tiendas           = true;
+        this.show_clientes          = false;
+        this.show_equipo            = false;
+        this.show_monit_equip       = false;
+        this.show_monitorear_equipo = false;
+        this.showHeadMenu = true;
+        break;
+      case 'clientes':
+        this.show_home              = false;
+        this.show_usuarios          = false;
+        this.show_tiendas           = false;
+        this.show_clientes          = true;
+        this.show_equipo            = false;
+        this.show_monit_equip       = false;
+        this.show_monitorear_equipo = false;
+        this.showHeadMenu = true;
+        break;
+      case 'equipos':
+        this.show_home              = false;
+        this.show_usuarios          = false;
+        this.show_tiendas           = false;
+        this.show_clientes          = false;
+        this.show_equipo            = true;
+        this.show_monit_equip       = false;
+        this.show_monitorear_equipo = false;
+        this.showHeadMenu           = true;
+        break;
+      case 'Monitorear transaccional':
+        this.show_home              = false;
+        this.show_usuarios          = false;
+        this.show_tiendas           = false;
+        this.show_clientes          = false;
+        this.show_equipo            = false;
+        this.show_monit_equip       = false;
+        this.show_monitorear_equipo = true;
+        this.showHeadMenu = true;
+        break;
+      case 'Monitoreo de equipos':
+        this.router.navigate(['moneq']);
+        break;
+      case 'Reporte de datos':
+        this.router.navigate(['datexport']);
+        break;
+    }
   }
 
   closeSession() {
@@ -181,52 +280,58 @@ export class DahsboardsComponent implements OnInit {
     this.iconmodulo = this.moduloEmitter.icono;
     switch (this.moduloEmitter.nombre) {
       case 'Home':
-        this.show_home = true;
-        this.show_usuarios = false;
-        this.show_tiendas = false;
-        this.show_clientes = false;
-        this.show_equipo = false;
+        this.show_home        = true;
+        this.show_usuarios    = false;
+        this.show_tiendas     = false;
+        this.show_clientes    = false;
+        this.show_equipo      = false;
         this.show_monit_equip = false;
+        this.showHeadMenu = false;
         break;
       case 'Usuarios':
-        this.show_home = false;
-        this.show_usuarios = true;
-        this.show_tiendas = false;
-        this.show_clientes = false;
-        this.show_equipo = false;
+        this.show_home        = false;
+        this.show_usuarios    = true;
+        this.show_tiendas     = false;
+        this.show_clientes    = false;
+        this.show_equipo      = false;
         this.show_monit_equip = false;
+        this.showHeadMenu = true;
         break;
       case 'Tienda':
-        this.show_home = false;
-        this.show_usuarios = false;
-        this.show_tiendas = true;
-        this.show_clientes = false;
-        this.show_equipo = false;
+        this.show_home        = false;
+        this.show_usuarios    = false;
+        this.show_tiendas     = true;
+        this.show_clientes    = false;
+        this.show_equipo      = false;
         this.show_monit_equip = false;
+        this.showHeadMenu = true;
         break;
       case 'Cliente':
-        this.show_home = false;
-        this.show_usuarios = false;
-        this.show_tiendas = false;
-        this.show_clientes = true;
-        this.show_equipo = false;
+        this.show_home        = false;
+        this.show_usuarios    = false;
+        this.show_tiendas     = false;
+        this.show_clientes    = true;
+        this.show_equipo      = false;
         this.show_monit_equip = false;
+        this.showHeadMenu = true;
         break;
       case 'Equipo':
-        this.show_home = false;
-        this.show_usuarios = false;
-        this.show_tiendas = false;
-        this.show_clientes = false;
-        this.show_equipo = true;
+        this.show_home        = false;
+        this.show_usuarios    = false;
+        this.show_tiendas     = false;
+        this.show_clientes    = false;
+        this.show_equipo      = true;
         this.show_monit_equip = false;
+        this.showHeadMenu = true;
         break;
       case 'Monitoreo de Equipos':
-        this.show_home = false;
-        this.show_usuarios = false;
-        this.show_tiendas = false;
-        this.show_clientes = false;
-        this.show_equipo = false;
+        this.show_home        = false;
+        this.show_usuarios    = false;
+        this.show_tiendas     = false;
+        this.show_clientes    = false;
+        this.show_equipo      = false;
         this.show_monit_equip = true;
+        this.showHeadMenu = true;
         break;
     }
   }

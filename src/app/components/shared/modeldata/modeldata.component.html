@@ -13,54 +13,10 @@
         <span>
             <h1> Configuración de exportación de datos: </h1>
         </span>
-        <span class="text-primary">
-            <div class="d-flex justify-content-end align-items-center">
-                <div class="formcontent d-flex">
-                    <!-- <div class="d-flex">
-                        <div class="m-1">
-                            <input type="checkbox"
-                                   class="form-check-input"
-                                   id="clientecheck"
-                                   (change)="checktiendas = !checktiendas; choicetiendas = false; checkFiltrarCliente(checktiendas)"/>
-                                   <label for="clientecheck">
-                                       <span> Filtrar por cliente </span>
-                                   </label>
-                        </div>
-                    </div> -->
-                    <!-- <div *ngIf="_transaction_show">
-                        <form [formGroup]="transac"
-                              (ngSubmit)="submitTransacFilter()">
-                              <div class="d-flex">
-                                  <div class="m-1">
-                                    <input type="checkbox"
-                                           class="form-check-input"
-                                           id="manualTransactions"
-                                           formControlName="manualTransactions"
-                                           (change)="transaccionesManuealesSolo()"
-                                           />
-                                    <label for="manualTransactions">
-                                        <span>Transacciones Manuales</span>
-                                    </label>
-                                  </div>
-                                  <div class="m-1">
-                                      <input type="checkbox" class="form-check-input"
-                                             id="automaticTransactions"
-                                             (change)="transaccionesAutomaticasSolo()"
-                                             formControlName="automaticTransactions"/>
-                                             <label for="automaticTransactions">
-                                                 <span>Transacciones Automáticas</span>
-                                             </label>
-                                  </div>
-                              </div>
-                        </form>
-                    </div> -->
-                </div>
-            </div>
-        </span>
     </div>
     <hr>
     <div class="d-flex flex-column" style="overflow-y: auto; max-height: 800px;" >
-    <div class="w-100"  >
+    <div class="w-100">
     <div class="form-filter w-100">
         <div class="text-secondary " *ngIf="barprogress">
             <div> 
@@ -78,7 +34,8 @@
         <form [formGroup]="exportdateform" class="w-100" (ngSubmit)="onSubmitDate()" >
             <div class="d-flex align-items-end justify-content-between">
                 <div class="d-flex align-items-end">
-                <div class="d-flex flex-column animate__animated animate__fadeIn p-2"
+                <div class="d-flex flex-column 
+                            animate__animated animate__fadeIn p-2"
                      *ngIf="true">
                      <label for="codigoClienteidFk"
                             class="form-label">
@@ -92,12 +49,12 @@
                              #codigoClienteidFk
                              id="codigoClienteidFk">
                              <option *ngFor="let cliente of clientelista"
-                                     [value]="cliente.id">
+                                     [value]="cliente.codigoCliente">
                                      {{ cliente.nombreCliente | titlecase }} - {{ cliente.ruc }}
                              </option>
                      </select>
                 </div>
-                <div class="d-flex flex-column animate__animated animate__fadeIn p-2" *ngIf="choicetiendas">
+                <!-- <div class="d-flex flex-column animate__animated animate__fadeIn p-2" *ngIf="choicetiendas">
                     <label for="codigoClienteidFk" class="form-label">
                         <span class="text-primary" > Escoge la Tienda </span>
                     </label>
@@ -111,34 +68,34 @@
                                     {{tiendas.nombreTienda | titlecase }}
                             </option>
                     </select>
-                </div>
-                <div class="d-flex align-items-end "
-                     *ngIf="true">
-                     <div class="d-flex flex-column  p-2">
-                        <label for="Nombre_Cliente"
-                               class="form-label text-secondary">
-                               Fecha inicial:
-                        </label>
-                        <input type="date"
-                               class="form-control"
-                               formControlName="dateini"
-                               #dateini
-                               (change)="validateExistDate()"
-                               (keyup)="validateExistDate()"
-                               id="dateini">
-                     </div>
-                     <div class="d-flex flex-column p-2">
-                         <label for="Nombre_Cliente"
-                                class="form-label text-secondary">
-                                Fecha final:
-                         </label>
-                         <input type="date" class="form-control"
-                                formControlName="datefin"
-                                #datefin
-                                (keyup)="validateExistDate()"
-                                (change)="validateExistDate()"
-                                id="datefin">
-                     </div>
+                </div> -->
+                <div class="d-flex align-items-end"
+                     *ngIf="_show_fecha">
+                        <div class="d-flex flex-column p-2">
+                           <label for="Nombre_Cliente"
+                                  class="form-label text-secondary">
+                                  Fecha inicial:
+                           </label>
+                           <input type="date"
+                                  class="form-control"
+                                  formControlName="dateini"
+                                  #dateini
+                                  (change)="validateDateIni()"
+                                  (keyup)="validateDateIni()"
+                                  id="dateini">
+                        </div>
+                        <div class="d-flex flex-column p-2">
+                           <label for="Nombre_Cliente"
+                                   class="form-label text-secondary">
+                                   Fecha final:
+                           </label>
+                           <input type="date" class="form-control"
+                                   formControlName="datefin"
+                                   #datefin
+                                   (keyup)="validateDatefin()"
+                                   (change)="validateDatefin()"
+                                   id="datefin"/>
+                        </div>
                     </div>
                     <div class="d-flex align-items-end" *ngIf="_transaction_show">
                        <div class="d-flex flex-column  p-2">
@@ -165,8 +122,9 @@
                                    id="horafin">
                         </div>
                         <div class=" rounded-pill d-flex shadow-sm align-items-center"
-                             style="background-color: rgb(226, 226, 226); height: 37px; margin-bottom: 10px;
-                                    border: solid 1px rgb(195, 195, 195);">
+                             style="background-color: rgb(226, 226, 226);
+                                    border: solid 1px rgb(195, 195, 195);
+                                    height: 37px; margin-bottom: 10px;">
                                     <label for="acreditada"
                                            class="p-1"
                                            title="Transacciones por acreditar">
@@ -183,6 +141,7 @@
                         </div>                        
                         <div class="p-2 d-flex align-items-end">
                             <button type="button"
+                                    [disabled]="disButton"
                                     class="btn btn-outline-dark"
                                     (click)="openDataEquiposDialog()"
                                     style="height: 37px;"
@@ -212,6 +171,62 @@
         </form>
     </div>
 </div>
+
+<div class="box_cuadre mt-2 w-50 animate__animated animate__fadeIn" *ngIf="show_cuadre">
+    <div class="p-2 text-light">
+      <span>
+        Proceso de cuadre de {{ listaEquipo.length }} equipos
+      </span>
+      <div class="progress mt-1" style="height: 10px;">
+        <div class="progress-bar"
+             role="progressbar" 
+             [style.width.%]="( procesados / listaEquipo.length ) * 100" 
+             [attr.aria-valuenow]="( procesados / listaEquipo.length ) * 100"
+             aria-valuemin="0"
+             aria-valuemax="100">
+        </div>
+      </div>
+    </div>
+    <div class="box_cuadre_equipos">
+      <div class="equipo d-flex justify-content-between align-items-center"
+           *ngFor="let equipo of listaEquipo"
+           [style]="'transition:ease all 0.5s; border: solid 3px ' + equipo.cuadreData.color_data + '!important'">
+        <span>
+          <strong>{{ equipo.serieEquipo }}</strong>
+        </span>
+        <span *ngIf="equipo.cuadreData.diferencia !== 0">
+          <strong> Diferencia de valor: $ {{ equipo.cuadreData.diferencia | number : '1.2-2' }} </strong>
+        </span>
+        <span class="d-flex align-items-center">
+          <strong [ngStyle]="{'color': equipo.cuadreData.color_data}">
+            {{ equipo.cuadreData.msj_data }}
+          </strong>
+          &nbsp;
+          &nbsp;
+          <mat-icon [ngStyle]="{'color': equipo.cuadreData.color_data}">{{ equipo.cuadreData.icon_data }}</mat-icon>
+        </span>
+      </div>
+    </div>
+    <div class="p-2 d-flex justify-content-between align-items-center">
+      <div class="d-flex p-1 rounded-2 shadow-sm" style="background-color: #e3e3e3;">
+        <div class="text-success m-1">
+          <strong> Cuadradas:  {{listaCuadradas.length}} </strong>
+        </div>
+        <div class="text-danger m-1">
+          <strong> Repetidas:  {{listaRepetidas.length}} </strong>
+        </div>
+        <div class="text-danger m-1">
+          <strong> Resagadas:  {{listaResagadas.length}} </strong>
+        </div>
+      </div>
+      <button class="btn btn-warning m-1 d-flex align-items-center"
+              (click)="show_cuadre = !show_cuadre">
+              <mat-icon> done </mat-icon> Aceptar
+      </button>
+    </div>
+  </div>
+  
+
 <div class="w-100" *ngIf="reportVisible" >
     <div *ngFor="let equipo of dataExportarExcel" class="bg-secondary mb-2 w-100 table-responsive-lg rounded-2"
          style="border: solid 3px gray; ">
@@ -405,6 +420,7 @@
         </tbody>
         </table>
     </div>
+
 </div>
 
 </div>

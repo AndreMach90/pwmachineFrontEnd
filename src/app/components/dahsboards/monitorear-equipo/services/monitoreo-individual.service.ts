@@ -6,17 +6,16 @@ import { Environments } from 'src/app/components/environments/environments';
   providedIn: 'root'
 })
 
-export class GraficasService {
+export class MonitoreoIndividualService {
+
   constructor( private env: Environments, private http: HttpClient ) { }
 
-  private get headers(): HttpHeaders {
-    return new HttpHeaders({
+  obtenerEquiposCliente( codcli:any ) {    
+    const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.env.TokenJWT()}`,
       'Content-Type': 'application/json'
     });
+    return this.http.get(this.env.apiurl() + 'Equipo/EquipoLista/' + codcli, { headers });
   }
 
-  obtenerGraficaCollection(nserie:string) {
-    return this.http.get( this.env.apiurl() + 'Grafico/ObtenerEquipo/' + nserie, { headers: this.headers } );
-  }
 }

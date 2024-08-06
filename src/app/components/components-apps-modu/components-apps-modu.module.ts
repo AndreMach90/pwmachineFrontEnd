@@ -5,11 +5,6 @@ import { CommonModule } from '@angular/common';
 //#region Angular Material
 
 import {DragDropModule} from '@angular/cdk/drag-drop';
-import {PortalModule} from '@angular/cdk/portal';
-import {ScrollingModule} from '@angular/cdk/scrolling';
-import {CdkStepperModule} from '@angular/cdk/stepper';
-import {CdkTableModule} from '@angular/cdk/table';
-import {CdkTreeModule} from '@angular/cdk/tree';
 
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -40,18 +35,10 @@ import {MatRadioModule} from '@angular/material/radio';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatSliderModule} from '@angular/material/slider';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
-import {MatSortModule} from '@angular/material/sort';
-import {MatTableModule} from '@angular/material/table';
 import {MatTabsModule} from '@angular/material/tabs';
-import {MatToolbarModule} from '@angular/material/toolbar';
 import { HttpClientModule } from '@angular/common/http';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {MatTreeModule} from '@angular/material/tree';
-import {OverlayModule} from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LoginComponent } from '../login/login.component';
 import { DahsboardsComponent } from '../dahsboards/dahsboards.component';
 import { NavsideWorksComponent } from '../shared/navside-works/navside-works.component';
@@ -63,7 +50,7 @@ import { EquipoComponent } from '../dahsboards/equipo/equipo.component';
 import { RepodashComponent } from '../dahsboards/repodash/repodash.component';
 import { ClienteComponent } from '../dahsboards/cliente/cliente.component';
 import { ModalClienteComponent } from '../dahsboards/cliente/modal-cliente/modal-cliente.component';
-import { JwtModule } from "@auth0/angular-jwt";
+
 
 // Import PrimeNG modules
 import { AccordionModule } from 'primeng/accordion';
@@ -158,28 +145,25 @@ import { InitRepoComponent } from '../dahsboards/init-repo/init-repo.component';
 import { ModalTiendaCuentaComponent } from '../dahsboards/tienda/modal-tienda-cuenta/modal-tienda-cuenta.component';
 import { UsuariosTemporalesMaquinaComponent } from '../dahsboards/equipo/usuarios-temporales-maquina/usuarios-temporales-maquina.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import { CollectiongraphComponent } from '../dahsboards/repodash/collectiongraph/collectiongraph.component';
-import { TablaTransaccionesComponent } from '../dahsboards/repodash/tabla-transacciones/tabla-transacciones.component';
 import { NgxTimepickerModule } from 'ngx-timepicker';
-import { FiltrotransaccionalComponent } from '../dahsboards/repodash/filtrotransaccional/filtrotransaccional.component';
 import { ProgressmachineComponent } from '../dahsboards/progressmachine/progressmachine.component';
 import { ModalUsuariosTemporalesComponent } from '../dahsboards/cliente/modal-usuarios-temporales/modal-usuarios-temporales.component';
-import { ModalConfigExcelComponent } from '../dahsboards/repodash/filtrotransaccional/modal-config-excel/modal-config-excel.component';
-import { ModalDataEquiposComponent } from '../dahsboards/repodash/filtrotransaccional/modal-data-equipos/modal-data-equipos.component';
 import { NavsideExpDataComponent } from '../shared/navside-exp-data/navside-exp-data.component';
 import { DashboardDataExportComponent } from '../shared/dashboard-data-export/dashboard-data-export.component';
 import { ModeldataComponent } from '../shared/modeldata/modeldata.component';
 import { HistorialAcreditacionComponent } from '../shared/historial-acreditacion/historial-acreditacion.component';
 import { ModalLocalidadClienteComponent } from '../dahsboards/cliente/modal-localidad-cliente/modal-localidad-cliente.component';
 import { ObtenerLocalidadClienteComponent } from '../dahsboards/cliente/modal-localidad-cliente/obtener-localidad-cliente/obtener-localidad-cliente.component';
+import { MonitorearEquipoComponent } from '../dahsboards/monitorear-equipo/monitorear-equipo.component';
+import { ModalDataEquiposComponent } from '../dahsboards/repodash/filtrotransaccional/modal-data-equipos/modal-data-equipos.component';
+import { ModalConfigExcelComponent } from '../dahsboards/repodash/filtrotransaccional/modal-config-excel/modal-config-excel.component';
+import { FiltrotransaccionalComponent } from '../dahsboards/repodash/filtrotransaccional/filtrotransaccional.component';
 
 @NgModule({
   declarations: [
     ModalConfigExcelComponent,
-    FiltrotransaccionalComponent,
-    TablaTransaccionesComponent,
-    CollectiongraphComponent,
     LoginComponent,
+    ModalDataEquiposComponent,
     DahsboardsComponent,
     NavsideWorksComponent,
     NavsideExpDataComponent,
@@ -195,12 +179,14 @@ import { ObtenerLocalidadClienteComponent } from '../dahsboards/cliente/modal-lo
     UsuariosTemporalesMaquinaComponent,
     ProgressmachineComponent,
     ModalUsuariosTemporalesComponent,
-    ModalDataEquiposComponent,
+    MonitoreoEquiposComponent,
     DashboardDataExportComponent,
     ModeldataComponent,
     HistorialAcreditacionComponent,
     ModalLocalidadClienteComponent,
-    ObtenerLocalidadClienteComponent, 
+    ObtenerLocalidadClienteComponent,
+    MonitorearEquipoComponent,
+    FiltrotransaccionalComponent
   ],
   imports: [
     NgxTimepickerModule,
@@ -328,7 +314,6 @@ import { ObtenerLocalidadClienteComponent } from '../dahsboards/cliente/modal-lo
     CardModule
   ], 
   exports: [
-    TablaTransaccionesComponent,
     LoginComponent,
     DahsboardsComponent,
     NavsideWorksComponent,
@@ -339,13 +324,14 @@ import { ObtenerLocalidadClienteComponent } from '../dahsboards/cliente/modal-lo
     RepodashComponent,
     MonitoreoEquiposComponent,
     InitRepoComponent,
-    CollectiongraphComponent,
-    FiltrotransaccionalComponent,
     ProgressmachineComponent,
     NavsideExpDataComponent,
     DashboardDataExportComponent,
     ModeldataComponent,
-    HistorialAcreditacionComponent
+    HistorialAcreditacionComponent,
+    ModalDataEquiposComponent,
+    ModalConfigExcelComponent,
+    FiltrotransaccionalComponent
   ]
 })
 export class ComponentsAppsModuModule { }

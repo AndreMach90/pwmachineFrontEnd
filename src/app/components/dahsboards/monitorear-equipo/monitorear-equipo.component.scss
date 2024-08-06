@@ -1,0 +1,79 @@
+
+.overlay-custom {
+    max-height: 300px; 
+    overflow-y: auto;
+  }
+
+.boxequip {
+    background-color: whitesmoke;
+    border-radius: 10px;
+    margin-bottom: 5px;
+}
+
+.box-f {
+  padding: 5px;
+}
+
+.monitoreo-box-a {
+  background-color: aliceblue;
+  padding: 10px;
+  border-radius: 7px;
+  margin: 5px;
+  height: 140px;
+}
+
+.tabla-datos {
+  height: 80vh;
+  overflow-y: auto;
+}
+
+// Tabla
+.bordeTabla {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: auto;
+}
+.bordeTabla thead th { 
+  position: sticky; 
+  top: 0; 
+  z-index: 1;
+  background: #0D6EFD;
+  color: white;
+}
+
+thead {
+  box-shadow: 0px 10px 10px rgba($color: #000000, $alpha: 0.4);
+}
+
+tbody,tr,td {
+  z-index: 0;
+}
+
+.box-total-tran {
+  transition: ease all 0.5s;
+  cursor: pointer;
+}
+
+.box-total-tran:hover { 
+  transition: ease all 0.5s;
+  background-color: rgb(209, 209, 209);
+}
+
+.box-subtotales {
+  width: 300px;
+  height: auto;
+  padding: 10px;
+  background-color: whitesmoke;
+  border: groove 2px gray;
+  box-shadow: 0px 0px 10px rgba($color: #000000, $alpha: 0.3);
+  position: absolute;
+  top: 120px;
+  right: 25px;
+  z-index: 15;
+}
+
+.icono {
+  height: 20px !important;
+  width:  20px !important;
+}

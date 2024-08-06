@@ -28,6 +28,7 @@ export class ModalDataEquiposComponent implements OnInit {
                @Inject(MAT_DIALOG_DATA) public data: any,
                private env: Environments,
                public dialogRef: MatDialogRef<ModeldataComponent>) {}
+               public dialogRef: MatDialogRef<ModeldataComponent>) {}
 
   public equipoCliForm = new FormGroup({
     filterEqui:   new FormControl('')
@@ -44,6 +45,7 @@ export class ModalDataEquiposComponent implements OnInit {
   totalAutomaticas: number = 0;
   SumatotalTransac: number = 0;
   SumatotalTransacResag: number = 0;
+
 
   sumatoriaRezagadasTransac( objeto:any ) {
     this.totalRezagadasAutomaticas = 0;
@@ -88,6 +90,7 @@ export class ModalDataEquiposComponent implements OnInit {
               });
             }
           } else if (this.data.codigocliente == null) {
+          } else if (this.data.codigocliente == null) {
             if (this.data.equiposExistentes == null || this.data.equiposExistentes.length == 0 ) {
               this.listaEsquipo = this.listaEsquipoGhost;
             } else {
@@ -107,11 +110,16 @@ export class ModalDataEquiposComponent implements OnInit {
                 element.localidad = 'No asignado';
                 element.bgloc = 'bg-secondary text-light ';
                 element.localidad = element.localidad.toString().trim();
+                element.bgloc = 'bg-secondary text-light ';
+                element.localidad = element.localidad.toString().trim();
                 }
                 if (element.localidad != null || element.localidad != undefined) {
                   element.bgloc = 'bg-primary text-light';
                   element.localidad = element.localidad.toString().trim();
+                  element.bgloc = 'bg-primary text-light';
+                  element.localidad = element.localidad.toString().trim();
               }
+              if (element.nombreTienda == null || element.nombreTienda == undefined) element.nombreTienda = 'No asignado';
               if (element.nombreTienda == null || element.nombreTienda == undefined) element.nombreTienda = 'No asignado';
               let localidadIndex = this.localidadesEncontradas.findIndex((x: any) => x.loc === element.localidad);
               let localidadIndex2 = this.localidadesEncontradasGhost.findIndex((x: any) => x.loc === element.localidad);
@@ -123,8 +131,15 @@ export class ModalDataEquiposComponent implements OnInit {
               }
               this.localidadesEncontradas[localidadIndex !== -1 ? localidadIndex : this.localidadesEncontradas.length - 1].equiposTrans.push(element);
               this.localidadesEncontradasGhost[localidadIndex !== -1 ? localidadIndex : this.localidadesEncontradasGhost.length - 1].equiposTrans.push(element);
+
+              console.warn(3)
+
           });
+
+          console.warn(this.localidadesEncontradas);
+          console.warn(this.localidadesEncontradasGhost);
           this.sumatoriaRezagadasTransac(this.listaEsquipo);
+
         }
       }
     )
@@ -140,6 +155,7 @@ export class ModalDataEquiposComponent implements OnInit {
           this.addToSelectedEquipos(equipo);
         });
       });
+    } else {
     } else {
       this.localidadesEncontradas.filter((localidad:any) => {
         localidad.equiposTrans.forEach((equipo: any, index: number) => {
@@ -184,6 +200,7 @@ export class ModalDataEquiposComponent implements OnInit {
 
   selectedEquiposControl = new FormControl(false);
   toggleSelection(equipo: any, localidad: any) {
+    (this.selectedEquiposControl.value) ? this.addToSelectedEquipos(equipo) : this.removeFromSelectedEquipos(equipo);
     (this.selectedEquiposControl.value) ? this.addToSelectedEquipos(equipo) : this.removeFromSelectedEquipos(equipo);
   }
 

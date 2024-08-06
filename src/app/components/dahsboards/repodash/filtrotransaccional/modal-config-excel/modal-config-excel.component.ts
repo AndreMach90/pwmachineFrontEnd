@@ -106,7 +106,7 @@ export class ModalConfigExcelComponent implements OnInit {
   obetenerDetalleDeEquipos() {
     // this.monitoreo.obtenerDetalleEquipos(  )
   }
-  
+
   clienteListaGhost: any = [];
   clientelista:any = []
   obtenerCliente() {
@@ -136,6 +136,9 @@ export class ModalConfigExcelComponent implements OnInit {
           this.clientelista.unshift(arr);
 
         })
+
+        // this.obtenerCuadreEquipos('');
+
       }
     })
   }

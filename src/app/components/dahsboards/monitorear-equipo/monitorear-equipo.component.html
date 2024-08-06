@@ -1,0 +1,609 @@
+<div class="spinner-overlay" *ngIf="_show_spinner">
+    <div class="spinner-container">
+      <span class="loader"></span>
+    </div>
+</div>
+
+<div class="dashworks p-3 rounded-3 d-flex justify-content-between align-items-center w-100 mb-1"  
+     [ngStyle]="{ 'background-color': 'white', 'height': '60px' }">
+     <div>
+     <form [formGroup]="tiendaForm" class="d-flex" >
+        <div class="d-flex">
+          <label for="codigoClienteidFk" class="form-label m-0 d-flex align-items-center" style="width: 250px;">
+            <span class="text-secondary fs-6">
+              <strong>
+                Escoge el Cliente
+              </strong>
+            </span>
+            <span class="text-danger">*</span>
+          </label>
+          <select id="codigoClienteidFk"
+            class="inpForms form-select w-100"
+            formControlName="codigoClienteidFk"
+            #codigoClienteidFk
+            (change)="obtenerEquipos();"
+            aria-label="">
+            <option *ngFor="let cliente of clientelista"
+              [value]="cliente.codigoCliente">
+              {{ cliente.nombreCliente | titlecase }}
+            </option>
+          </select>
+        </div>
+        &nbsp;&nbsp;
+        <div class="ml-3">
+            <button class="btn btn-warning d-flex justify-content-center align-items-center shadow-sm animate__animated animate__fadeInLeft"
+                    (click)="op.toggle($event);" 
+                    *ngIf="showEquipos">
+                    <mat-icon>precision_manufacturing</mat-icon>
+                    <span>Equipos</span>&nbsp;&nbsp;<span><strong> {{listaEquipo.length}} </strong></span>
+            </button>
+            <p-overlayPanel #op >
+                <div class="mb-2 d-flex w-100">                    
+                      <input type="text"
+                             class="w-100 shadow-sm form-control rounded-pill"
+                             fxFlex="auto"
+                             formControlName="filterEquipo"
+                             #filterEquipo
+                             id="filterEquipo"
+                             (keyup)="filterEquipos()"
+                             placeholder="Búsqueda de equipos registrados..."/>
+                </div>
+                <div class="overlay-custom w-100">
+                    <div *ngFor="let eq of listaEquipo; let i = index"
+                        class="boxequip  d-flex justify-content-betweens align-items-center w-100">
+                        <div class="m-1 d-flex flex-column w-100">
+                            <span>
+                                <strong> {{ eq.serieEquipo }} </strong>
+                            </span>
+                            <small class="text-secondary" style="font-size: 9pt;">
+                                <strong> {{ eq.nombreTienda | uppercase }} </strong>
+                            </small>
+                        </div>
+                        &nbsp;
+                        &nbsp;
+                        &nbsp;
+                        <div>
+                            <button mat-mini-fab color="primary" 
+                                    (click)="obtenerDetalleEquipos(eq)">
+                                    <mat-icon>visibility</mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </p-overlayPanel>
+        </div>
+     </form>
+  </div>
+  <div class="d-flex" >
+    <div class="box-total-tran d-flex align-items-center p-1 rounded-2 m-1 animate__animated animate__backInRight"
+         *ngIf="trans_detail" 
+         (click)="show_trans = !show_trans" >
+         <div>
+           <span style="color: rgb(70, 70, 70);">
+             <strong> Trans. Automáticas: </strong>
+           </span>
+         </div>
+         <div class="d-flex justify-content-between bg-warning text-dark shadow-sm p-2 rounded-2 m-1">
+          <div [style]="'background-image: url( '+bill+' )' " style="background-repeat: none !important; width: 35px; background-size: 100%, 100%; height: 20px;"></div>
+          &nbsp;
+           <strong> {{totalDepositoCant}} </strong>
+         </div>
+         <div class="data-m-r bg-warning text-dark shadow-sm p-2 rounded-2 m-1">
+           <strong> $ {{totalDepositoMont  | number : '1.2-2'}} </strong>
+         </div>
+    </div>
+    <div class="box-total-tran d-flex align-items-center p-1 rounded-2 m-1 animate__animated animate__backInRight"
+         *ngIf="trans_detail" (click)="show_trans = !show_trans">
+      <div>
+        <span style="color: rgb(70, 70, 70);">
+          <strong> Trans. Manuales: </strong>
+        </span>
+      </div>
+      <div class="d-flex justify-content-between bg-warning text-dark shadow-sm p-2 rounded-2 m-1">
+        <div [style]="'background-image: url( '+bill+' )' " style="background-repeat: none !important; width: 35px; background-size: 100%, 100%; height: 20px;"></div>
+        &nbsp;
+        <strong> {{totalManualBillCant}} </strong>
+      </div>
+      <div class="data-m-r bg-warning text-dark shadow-sm p-2 rounded-2 m-1">
+        <strong> $ {{totalManualBillMont  | number : '1.2-2'}} </strong>
+      </div>
+      <div class="d-flex justify-content-between bg-warning text-dark shadow-sm p-2 rounded-2 m-1">
+        <div [style]="'background-image: url( '+coin+' )' " style="background-repeat: none !important; width: 20px; background-size: 100%, 100%; height: 20px;"></div>
+        &nbsp;
+        <strong> {{totalManualCoinCant}} </strong>
+      </div>
+      <div class="data-m-r bg-warning text-dark shadow-sm p-2 rounded-2 m-1">
+        <strong> $ {{totalManualCoinMont  | number : '1.2-2'}} </strong>
+      </div>
+    </div>    
+    <div class="box-total-tran d-flex align-items-center p-1 rounded-2 m-1" (click)="trans_detail = !trans_detail"
+         style="transition: ease all 0.5s;">
+         <div>
+           <span style="color: rgb(70, 70, 70);">
+             <strong> Totales de dinero: </strong>
+           </span>
+         </div>
+         <div class="d-flex align-items-center fs-5 justify-content-end">
+              <strong>
+                  $ {{ totalDepositoMont + totalManualBillMont + totalManualCoinMont | number: '1.2-2' }}
+              </strong>
+         </div>
+         <div class="box-subtotales animate__animated animate__backInDown" *ngIf="trans_detail">
+          <div class="box-total-tran d-flex flex-column align-items-start p-1 rounded-2 m-1"
+               style="border: solid 1px rgb(184, 184, 184);">
+                <div class="d-flex justify-content-between p-1 w-100">
+                    <div class="d-flex align-items-center justify-content-end">
+                      <small title="Total de transacciones manuales" class="fs-6">
+                        T. T. Auto:
+                      </small>
+                    </div>
+                    <div class="data-m-r-t d-flex align-items-center fs-5 justify-content-end ">
+                        <strong> $ {{totalDepositoMont | number : '1.2-2'}} </strong>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between p-1 w-100">
+                    <div class="d-flex align-items-center justify-content-end">
+                      <small title="Total de transacciones manuales" class="fs-6">
+                        T. T. Manuales:
+                      </small>
+                    </div>
+                    <div class="data-m-r-t d-flex align-items-center fs-5 justify-content-end "
+                        [title]="'Piezas billetes: ' + totalBilletesCantidadM + ' - Piezas monedas: ' + totalMonedasCantidadM">
+                        <strong> $ {{totalManualBillMont + totalManualCoinMont | number : '1.2-2' }} </strong>
+                    </div>
+                </div>
+            </div>
+         </div>
+    </div>
+  </div>
+</div>
+
+<div class="dashworks p-2 rounded-3 d-flex flex-column w-100"    >     
+  <div class="d-flex justify-content-between" *ngIf="show_trans">
+     <div class="monitoreo-box-a">
+        <div class="table-responsive p-1">
+          <div class="w-100 bg-warning p-1 rounded-top-2 d-flex justify-content-between align-items-center">
+            <span> <strong> Transacciones Automáticas </strong> </span>
+            <span>
+              <div [style]="'background-image: url( '+bill+' )' "
+                   style="background-repeat: none !important; width: 35px; background-size: 100%, 100%; height: 20px;"
+                   class="m-1" >
+              </div>
+            </span>
+          </div>
+          <table class="table table-primary table-bordered table-striped-columns">
+            <thead class="bg-primary text-light">
+              <th class="p-1">$100</th>
+              <th class="p-1">$50</th>
+              <th class="p-1">$20</th>
+              <th class="p-1">$10</th>
+              <th class="p-1">$5</th>
+              <th class="p-1">$2</th>
+              <th class="p-1">$1</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="d-flex">
+                    <div class="box-f"> 
+                       {{depositoCant100}}
+                    </div>&nbsp;
+                    <div class="box-f"> 
+                      ${{depositoMont100}}
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex">
+                    <div class="box-f">  {{depositoCant50}} </div> &nbsp;
+                    <div class="box-f"> ${{depositoMont50}} </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex">
+                    <div class="box-f">  {{depositoCant20}} </div> 
+                    &nbsp;
+                    <div class="box-f"> ${{depositoMont20}} </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex">
+                    <div class="box-f">  {{depositoCant10}} </div> 
+                    &nbsp;
+                    <div class="box-f"> ${{depositoMont10}} </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex">
+                    <div class="box-f">  {{depositoCant5}} </div> 
+                    &nbsp;
+                    <div class="box-f"> ${{depositoMont5}} </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex">
+                    <div class="box-f">  {{depositoCant2}} </div> 
+                    &nbsp;
+                    <div class="box-f"> ${{depositoMont2}} </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex">
+                    <div class="box-f">  {{depositoCant1}} </div> 
+                    &nbsp;
+                    <div class="box-f"> ${{depositoMont1}} </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+    </div>
+
+    <div class="monitoreo-box-a d-flex">
+
+      <div class="table-responsive p-1">
+        <div class="w-100 bg-warning p-1 rounded-top-2 d-flex justify-content-between align-items-center">
+          <span> <strong> Transacciones Manuales (Billetes) </strong></span>
+          <span>
+            <div [style]="'background-image: url( '+bill+' )' "
+                 style="background-repeat: none !important; width: 35px; background-size: 100%, 100%; height: 20px;"
+                 class="m-1" >
+            </div>
+          </span>
+        </div>
+        <table class="table table-primary table-bordered table-striped-columns">
+          <thead class="bg-primary text-light">
+            <th class="p-1">$100</th>
+            <th class="p-1">$50</th>
+            <th class="p-1">$20</th>
+            <th class="p-1">$10</th>
+            <th class="p-1">$5</th>
+            <th class="p-1">$2</th>
+            <th class="p-1">$1</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="d-flex">
+                  <div class="box-f">  {{depositoCant100}} </div>&nbsp;
+                  <div class="box-f"> ${{depositoMont100}} </div>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex">
+                  <div class="box-f">  {{depositoCant50}} </div>&nbsp;
+                  <div class="box-f"> ${{depositoMont50}} </div>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex">
+                  <div class="box-f">  {{depositoCant20}} </div>&nbsp;
+                  <div class="box-f"> ${{depositoMont20}} </div>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex">
+                  <div class="box-f">  {{depositoCant10}} </div>&nbsp;
+                  <div class="box-f"> ${{depositoMont10}} </div>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex">
+                  <div class="box-f">  {{depositoCant5}} </div>&nbsp;
+                  <div class="box-f"> ${{depositoMont5}} </div>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex">
+                  <div class="box-f">  {{depositoCant2}} </div>&nbsp;
+                  <div class="box-f"> ${{depositoMont2}} </div>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex">
+                  <div class="box-f">  {{depositoCant1}} </div>&nbsp;
+                  <div class="box-f"> ${{depositoMont1}} </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-responsive p-1">
+        <div class="w-100 bg-warning p-1 rounded-top-2 d-flex justify-content-between align-items-center ">
+          <span>
+            <strong> Transacciones Manuales (Monedas) </strong>
+          </span>
+          <span>
+            <div [style]="'background-image: url( '+coin+' )' "
+                 class="icono m-1" >
+            </div>
+          </span>
+        </div>
+        <table class="table table-primary table-bordered table-striped-columns">
+          <thead class="bg-primary text-light">
+            <th class="p-1">$1.00</th>
+            <th class="p-1">$0.50</th>
+            <th class="p-1">$0.25</th>
+            <th class="p-1">$0.10</th>
+            <th class="p-1">$0.05</th>
+            <th class="p-1">$0.01</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="d-flex">
+                  <div class="box-f">  {{manualCantCoin100}} </div>&nbsp;
+                  <div class="box-f"> ${{manualMontCoin100}} </div>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex">
+                  <div class="box-f">  {{manualCantCoin50}} </div>&nbsp;
+                  <div class="box-f"> ${{manualMontCoin50}} </div>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex">
+                  <div class="box-f">  {{manualCantCoin25}} </div>&nbsp;
+                  <div class="box-f"> ${{manualMontCoin25}} </div>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex">
+                  <div class="box-f">  {{manualCantCoin10}} </div>&nbsp;
+                  <div class="box-f"> ${{manualMontCoin10}} </div>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex">
+                  <div class="box-f">  {{manualCantCoin5}} </div>&nbsp;
+                  <div class="box-f"> ${{manualMontCoin5}} </div>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex">
+                  <div class="box-f">  {{manualCantCoin1}} </div>&nbsp;
+                  <div class="box-f"> ${{manualMontCoin1}} </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+    </div>
+  </div>
+  <div class="dashworks rounded-2 p-3" [ngStyle]="{ 'background-color': 'whitesmoke' }">  
+    <div class="filtros">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="w-75 d-flex align-items-center">
+          <section class="filtros w-100 mt-1">
+            <div class="mb-2 d-flex w-100">
+              <form [formGroup]="filterTransaccForm"
+                    class="w-100">
+                    <input type="text"
+                      class="w-100 shadow-sm form-control rounded-pill"
+                      fxFlex="auto"
+                      formControlName="filterTransacc"
+                      #filterTransacc
+                      id="filterTransacc"
+                      (keyup)="filterTransaccos()"
+                      [placeholder]="'Búsqueda de '+listaTrsansaccionesTabla.length+' transacciones registradas del equipo ' + nserie + '...'"/>
+              </form>
+            </div>
+          </section>
+        </div>
+        <div *ngIf="true" class="d-flex">
+          <form [formGroup]="filterDateForm">
+            <div class="d-flex">
+              <div class="date-input p-1">
+                <input type="date"
+                  class="form-control"
+                  formControlName="startDate"
+                  #startDate
+                  id="startDate"
+                  (change)="validarRangoDeFechas()"
+                />
+              </div>
+              <div class="date-input p-1">
+                <input type="date"
+                  class="form-control"
+                  formControlName="endDate"
+                  #endDate
+                  id="endDate"
+                  (change)="validarRangoDeFechas()"
+                />
+                <small class="text-secondary">
+                  <strong>{{ dias_estimados }}</strong>
+                </small>
+              </div>
+            </div>
+          </form>
+          <button class="btn btn-warning"
+            [disabled]="disButton"
+            (click)="filterByDateRange()">
+            Buscar
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="tabla-datos mt-1">
+        <div class="bordeTabla table-responsive ">
+          <table class="table table-bordered  ">
+            <thead class="bg-primary text-light">
+              <th class="p-1">Fecha   </th>
+              <th class="p-1">Hora    </th>
+              <th class="p-1">Cliente </th>
+              <th class="p-1">Tienda  </th>
+              <th class="p-1" title="Número de transacción">
+                N. Trans.
+              </th>
+              <th class="p-1">N. Serie Equipo</th>
+              <th class="p-1">Usuario </th>
+              <th>Establecimiento     </th>
+              <th>Cod. Establecimiento</th>
+              <th class="p-1"
+                  title="Actividad del usuario creado en máquina">
+                  Actividad
+              </th>
+              <th class="p-1"
+                  title="Número de cuenta bancaria">
+                  Cta. Bancaria
+              </th>
+              <th class="p-1"
+                  title="Nombre del banco">
+                  Nom. Banco
+              </th>
+              <th class="p-1"
+                  title="Tipo de cuenta bancaria">
+                  T. Cuenta
+              </th>
+              <th class="p-1">
+                  $1
+              </th>
+              <th class="p-1">
+                  $2
+              </th>
+              <th class="p-1">
+                  $5
+              </th>
+              <th class="p-1">
+                  $10
+              </th>
+              <th class="p-1">
+                  $20
+              </th>
+              <th class="p-1">
+                  $50
+              </th>
+              <th class="p-1">
+                  $100
+              </th>
+              <th class="p-1">
+                  $0.01
+              </th>
+              <th class="p-1">
+                  $0.05
+              </th>
+              <th class="p-1">
+                  $0.10
+              </th>
+              <th class="p-1">
+                  $0.25
+              </th>
+              <th class="p-1">
+                  $0.50
+              </th>
+              <th class="p-1">
+                  $1.00
+              </th>
+              <th class="p-1">
+                  Total
+              </th>
+              <th class="p-1" title="Tipo de transacción" >
+                  T.T.
+              </th>
+            </thead> 
+            <tbody>
+               
+              <tr *ngFor="let transac of listaTrsansaccionesTabla">
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.fechaTransaccion | date: 'dd-MM-yyyy' }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.hora }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.nombreCliente }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.nombreTienda }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.transaccion_No }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.machine_Sn }}
+                </td>                    
+                <td [title]="transac.nombreUsuario" [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.usuarios_idFk }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'"> 
+                  {{ transac.establecimiento }} 
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'"> 
+                  {{ transac.codigoEstablecimiento }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.observacion | titlecase }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.numerocuenta }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.nombanco | titlecase }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.tipoCuenta | titlecase }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.deposito_Bill_1 }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.deposito_Bill_2 }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.deposito_Bill_5 }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.deposito_Bill_10 }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.deposito_Bill_20 }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.deposito_Bill_50 }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.deposito_Bill_100 }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.manual_Deposito_Coin_1 }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.manual_Deposito_Coin_5 }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.manual_Deposito_Coin_10 }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.manual_Deposito_Coin_25 }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.manual_Deposito_Coin_50 }}
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    {{ transac.manual_Deposito_Coin_100 }}
+                </td>
+                <td style="background-color: rgb(191, 245, 191) !important; "  >
+                    <div style="text-align: right;" >
+                        {{ transac.total | number : '1.2-2' }}
+                    </div>
+                </td>
+                <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
+                    <strong> {{ transac.tipoTransaccion | slice:0:1 }} </strong>
+                </td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+    </div>
+    
+  </div>     
+
+</div>
+
+

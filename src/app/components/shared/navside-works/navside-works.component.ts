@@ -58,7 +58,7 @@ export class NavsideWorksComponent implements OnInit {
       icon_module: 'group',
       permison: 1,
       state: 1,
-    },
+    }
   ];
 
   constructor( private env: Environments ) {}
