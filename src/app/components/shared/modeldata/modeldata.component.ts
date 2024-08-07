@@ -106,6 +106,12 @@ export class ModeldataComponent implements OnInit {
   listaConsolidados:          any = [];
   listaConsolidadosRezagadas: any = [];
 
+  procesados: number = 0;  
+  listaCuadradas: any = [];
+  listaRepetidas: any = [];
+  listaResagadas: any = [];
+  idCli: number = 0;
+
   maquinasEscogidasDialogGhost: any = [];
   _show_fecha: boolean = false;
   numericColumns: any = [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28];
@@ -227,15 +233,12 @@ export class ModeldataComponent implements OnInit {
     this.exportToExcelRezagadas();
   }
 
-  procesados: number = 0;  
-  listaCuadradas: any = [];
-  listaRepetidas: any = [];
-  listaResagadas: any = [];
-  idCli: number = 0;
   obtenerEquipos(idcli: any) {
 
     if (idcli) {
-      
+      this.listaCuadradas = [];
+      this.listaRepetidas = [];
+      this.listaResagadas = [];
       this.clientelista.filter( (cli:any) => { if( idcli == cli.codigoCliente ) this.idCli = cli.id; });
 
       this.mequipo.obtenerEquiposCliente(idcli).subscribe({
@@ -1086,7 +1089,7 @@ export class ModeldataComponent implements OnInit {
             setTimeout(() => {   
               this._show_spinner = false;
               this.moduleChange.emit(true);
-            }, 2000);
+            }, 2500);
           }
         });
       }
@@ -1236,8 +1239,8 @@ export class ModeldataComponent implements OnInit {
     });
 
     console.log('>>>>>>>>>>>>>>>>>>>>>>>')
-    console.log(arr)
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>')
+    console.log(arr);
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>');
 
     dialogRef.afterClosed().subscribe( (result:any) => {      
       if( result ) {
@@ -1336,12 +1339,6 @@ export class ModeldataComponent implements OnInit {
     this.tiendaservs.obtenerTiendas().subscribe({
       next: (tienda) => {
         this.tiendaListaGhost = tienda;
-        console.warn('*************************************************')
-        console.warn('*************************************************')
-        console.warn('Esta es la tienda que estoy eligiendo')
-        console.warn(this.tiendaListaGhost)
-        console.warn('*************************************************')
-        console.warn('*************************************************')
       }, complete: () => {
         this.obtenerIDCLiente();
         this.tiendaListaGhost.filter( (element:any) => {

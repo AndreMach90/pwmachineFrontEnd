@@ -3,7 +3,7 @@
       <span><h2 class="m-0">Data de equipos a importar:</h2></span>
       <span class=" shadow-sm p-3 d-flex justify-content-center align-items-center bg-warning text-dark "
       style="width: 45px; height: 45px; border-radius: 100%; " > 
-      <strong class="fs-6"> {{localidadesEncontradas.length}}  </strong>
+      <strong class="fs-6"> {{listaEsquipo.length}}  </strong>
     </span>
   </div>
   <hr>
@@ -66,9 +66,15 @@
               </th>
           </thead>
           <tbody>
-            <tr *ngFor="let equipo of local.equiposTrans; let j = index">
-              <td>
-                <input type="checkbox" [formControl]="selectedEquiposControl" (change)="toggleSelection(equipo, local)" [id]=" local.loc + '-' + j">
+            <tr *ngFor="let equipo of local.equiposTrans; let j = index" [style]=" 'border: solid 3px ' +  equipo.color + ';'" >
+              <td >
+                
+                <input type="checkbox"
+                        *ngIf="equipo.disabled_check"
+                       [formControl]="selectedEquiposControl" 
+                       (change)=" toggleSelection(equipo, local) "
+                       [id]=" local.loc + '-' + j ">
+                
               </td>
               <td>
                 {{ equipo.machine_Sn }}

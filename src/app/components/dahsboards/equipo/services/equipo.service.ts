@@ -7,104 +7,71 @@ import { Environments } from 'src/app/components/environments/environments';
 })
 
 export class EquipoService {
+  constructor( private env: Environments, private http: HttpClient ) { }
 
-  constructor( private env: Environments, 
-               private http: HttpClient ) { }
-
-  obtenerModelo( codtipomaq: any, codmarca: any ) {
-    const headers = new HttpHeaders({
+  private get headers(): HttpHeaders {
+    return new HttpHeaders({
       'Authorization': `Bearer ${this.env.TokenJWT()}`,
       'Content-Type': 'application/json'
     });
-    return this.http.get( this.env.apiurl() + 'MarcaModeloEquipo/ObtenerModelo/' + codtipomaq + '/' + codmarca, { headers } );
+  }
+
+  obtenerModelo( codtipomaq: any, codmarca: any ) {
+    return this.http.get( this.env.apiurl() + 'MarcaModeloEquipo/ObtenerModelo/' + codtipomaq + '/' + codmarca, { headers: this.headers } );
   }
 
   obtenerMarca( codtipomaq:string ) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.get( this.env.apiurl() + 'MarcaModeloEquipo/ObtenerMarca/' + codtipomaq, { headers } );
+    console.log(codtipomaq);
+    
+    return this.http.get( this.env.apiurl() + 'MarcaModeloEquipo/ObtenerMarca/' + codtipomaq, { headers: this.headers } );
   }
 
   guardarEquipo(model: any []) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.post(this.env.apiurl() + 'Equipo/GuardarEquipo', model, { headers });
+    return this.http.post(this.env.apiurl() + 'Equipo/GuardarEquipo', model, { headers: this.headers });
   }
 
   actualizarEquipo( id:number, model:any [] ) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.put(this.env.apiurl() + 'Equipo/ActualizarEquipo/' + id, model, { headers });
+    return this.http.put(this.env.apiurl() + 'Equipo/ActualizarEquipo/' + id, model, { headers: this.headers });
   }
 
-  obtenerEquipo( tp:number, ctienda:string ) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.get(this.env.apiurl() + 'Equipo/ObtenerEquipo/'+ tp + '/' + ctienda, { headers });
+  obtenerEquipo() {
+    return this.http.get(this.env.apiurl() + 'Equipo/ObtenerEquipo', { headers: this.headers });
+  }
+
+  obtenerEquipoMoneq() {
+    return this.http.get(this.env.apiurl() + 'Equipo/ObtenerEquipoMoneq', { headers: this.headers });
+  }
+
+  obtenerTotalesMoneq(machine_sn: any) {
+    return this.http.get(this.env.apiurl() + 'Equipo/ObtenerTotalesMoneq/' + machine_sn, { headers: this.headers });
   }
 
   obtenerEquipoConteoTran( option:any, model:any [] ) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.post(this.env.apiurl() + 'EquiposNoTransaccion/Conteo/'+option, model, { headers });
+    return this.http.post(this.env.apiurl() + 'EquiposNoTransaccion/Conteo/'+option, model, { headers: this.headers });
   }
 
   eliminarEquipos(id:number) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.delete(this.env.apiurl() + 'Equipo/BorrarEquipo/'+id, { headers });
+    return this.http.delete(this.env.apiurl() + 'Equipo/BorrarEquipo/'+id, { headers: this.headers });
   }
 
   obtenerUsuariosTemporales(ip:string) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.get( this.env.apiurl() + 'UsuarioTemporal/Usuario/'+ip, { headers } )
+    return this.http.get( this.env.apiurl() + 'UsuarioTemporal/Usuario/'+ip, { headers: this.headers } )
   }
 
   obtenerUsuariosIp(ip:string) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.get( this.env.apiurl() + 'Usuario/ObtenerUsuarioIP/'+ip, { headers } )
+    console.log(ip);
+    return this.http.get( this.env.apiurl() + 'Usuario/ObtenerUsuarioIP/'+ip, { headers: this.headers })
   }
 
   eliminarUsuarioTemporal(id:number) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.get( this.env.apiurl() + 'UsuarioTemporal/UsuarioDelete/' + id, { headers } );
+    return this.http.get( this.env.apiurl() + 'UsuarioTemporal/UsuarioDelete/' + id, { headers: this.headers });
   } 
 
   obtenerIPEquipos() {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.get( this.env.apiurl() + 'Equipo/EquipoNuevo', { headers } );
+    return this.http.get( this.env.apiurl() + 'Equipo/EquipoNuevo', { headers: this.headers });
   }
 
   activarEquipo (id: number) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.put( this.env.apiurl() + 'Equipo/ActivarEquipo/' + id, id, { headers });
-  } 
-
+    return this.http.put( this.env.apiurl() + 'Equipo/ActivarEquipo/' + id, id, { headers: this.headers });
+  }
 }

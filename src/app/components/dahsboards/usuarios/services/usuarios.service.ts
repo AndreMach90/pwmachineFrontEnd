@@ -31,31 +31,59 @@ export class UsuariosService {
   }
 
   obtenerUsuarios() {
-    return this.http.get( this.env.apiurl() + 'Usuario/ObtenerUsuario' )
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get( this.env.apiurl() + 'Usuario/ObtenerUsuario', {headers} )
   }
 
   obtenerUsuariosPortal() {
-    return this.http.get( this.env.apiurl() + 'UsuarioPortal/ObtenerUsuario' )
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get( this.env.apiurl() + 'UsuarioPortal/ObtenerUsuario', {headers} )
   }
 
   actualizarUsuario( id:number,  model:any []) {
-    return this.http.put( this.env.apiurl() + 'Usuario/ActualizarUsuario/' + id, model );
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.put( this.env.apiurl() + 'Usuario/ActualizarUsuario/' + id, model, {headers} );
   } 
 
   actualizarUsuarioPortal ( id:number, model:any [] ) {
-    return this.http.put( this.env.apiurl() + 'UsuarioPortal/ActualizarUsuario/' + id, model );
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.put( this.env.apiurl() + 'UsuarioPortal/ActualizarUsuario/' + id, model, {headers} );
   }
   
   actualizarDatosPersonales( id:number, model:any [] ) {
-    return this.http.put( this.env.apiurl() + 'Usuario/ActualizarDatosPersonales/' + id, model );
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.put( this.env.apiurl() + 'Usuario/ActualizarDatosPersonales/' + id, model, {headers} );
   }
 
   deleteUsuario( id:number ) {
-    return this.http.delete( this.env.apiurl()+ 'Usuario/BorrarUsuario/' + id );
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.delete( this.env.apiurl()+ 'Usuario/BorrarUsuario/' + id, {headers} );
   }
 
   deleteUsuarioPortal( id:number ) {
-    return this.http.delete( this.env.apiurl()+ 'UsuarioPortal/BorrarUsuario/' + id );
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.delete( this.env.apiurl()+ 'UsuarioPortal/BorrarUsuario/' + id, {headers} );
   }
 
 }

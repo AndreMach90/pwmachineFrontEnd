@@ -330,7 +330,7 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     console.log(tp);
     console.log(ctienda);
     console.log('***********************');
-    this.equiposerv.obtenerEquipo(tp, ctienda).subscribe(
+    this.equiposerv.obtenerEquipo().subscribe(
       {
         next: (equipo) => {
           this.listaEsquipo = equipo;
