@@ -23,13 +23,13 @@
                     </div>
                 </div>
                 
-                <div class="d-flex">
-                    <div [style]="'background-image: url(' +iconmodulo+ ')'"
-                         class="icono animate__animated animate__bounceIn"></div>
-                         <span class="text-light">
+                <div class="btnhome d-flex" (click)="goToHome()" >
+                    <div class="icono animate__animated animate__bounceIn"></div>
+                         <span class="text-light d-flex justify-content-center align-items-center ">
+                            <mat-icon>home</mat-icon>
                              <h1 class="m-0">
                                  &nbsp;
-                                 <span> {{namemodulo}} </span>
+                                 <span> Home </span>
                              </h1>
                          </span>
                 </div>

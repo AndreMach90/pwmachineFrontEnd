@@ -19,6 +19,21 @@
     cursor: pointer;
 }
 
+.btnhome {
+    transition: ease all 0.5s;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btnhome:hover {
+    transition: ease all 0.5s;
+    background-color: rgba(0, 0, 0, 0.678);
+    border-radius: 10px;
+    padding: 10px;
+}
+
 #icono-modulo:hover {
     transition: ease-in-out all 0.5s;
     transform: rotate(-25deg);

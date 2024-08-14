@@ -1330,7 +1330,9 @@ export class ModeldataComponent implements OnInit {
       this.clientelista[0].id : this.exportdateform.controls['codigoClienteidFk'].value;
     // console.log('Este es el ID del Cliente')
     // console.log(this.idcliente)
-    this.obtenerEquipos(this.idcliente);
+    if ( this.exportdateform.controls['acreditada'].value == true ) {
+      this.obtenerEquipos(this.idcliente);
+    }
   }
 
   obtenerTiendas() {    
@@ -1344,7 +1346,10 @@ export class ModeldataComponent implements OnInit {
         this.tiendaListaGhost.filter( (element:any) => {
           if( element.codigoClienteidFk == this.idcliente ) this.tiendalista.push(element);
           })
-        this.show_cuadre = true;
+        
+          if ( this.exportdateform.controls['acreditada'].value == true ) {
+            this.show_cuadre = true;
+          }
       }
       }
     )
@@ -1371,59 +1376,59 @@ export class ModeldataComponent implements OnInit {
     ];
   }
 
-  transaccionesManuealesSolo() { 
-    let a:boolean = this.transac.controls['manualTransactions'].value;  
-    switch(a) {
-      case true:
-        this.dataExportarExcel.forEach((element:any)=>{
-          element.transacciones.push(...this.transaccionesManuales.filter((transaccionManual) => transaccionManual.idElemento == element.id && transaccionManual.machine_Sn == element.nserie ));
-          element.transacciones.sort((a:any, b:any) => {
-            let dateA = new Date(a.fechaTransaccion + 'T' + a.hora);
-            let dateB = new Date(b.fechaTransaccion + 'T' + b.hora);
-            return dateB.getTime() - dateA.getTime();
-          });
-          element.longitud = element.transacciones.length;
-        });
-        this.transaccionesManuales = [];
-        break;
-      case false:
-        this.dataExportarExcel.forEach( (element:any) => {
-          let transaccionesManualesElemento = element.transacciones.filter((elementTra:any) => elementTra.tipoTransaccion == 'Manual');
-          this.transaccionesManuales.push(...transaccionesManualesElemento);
-          element.transacciones = element.transacciones.filter((elementTra:any) => elementTra.tipoTransaccion != 'Manual');
-          element.longitud = element.transacciones.length;
-        });
-        break;
-    }
-    this.sumatoriaTotalTransacciones();
-  }
+  // transaccionesManuealesSolo() { 
+  //   let a:boolean = this.transac.controls['manualTransactions'].value;  
+  //   switch(a) {
+  //     case true:
+  //       this.dataExportarExcel.forEach((element:any)=>{
+  //         element.transacciones.push(...this.transaccionesManuales.filter((transaccionManual) => transaccionManual.idElemento == element.id && transaccionManual.machine_Sn == element.nserie ));
+  //         element.transacciones.sort((a:any, b:any) => {
+  //           let dateA = new Date(a.fechaTransaccion + 'T' + a.hora);
+  //           let dateB = new Date(b.fechaTransaccion + 'T' + b.hora);
+  //           return dateB.getTime() - dateA.getTime();
+  //         });
+  //         element.longitud = element.transacciones.length;
+  //       });
+  //       this.transaccionesManuales = [];
+  //       break;
+  //     case false:
+  //       this.dataExportarExcel.forEach( (element:any) => {
+  //         let transaccionesManualesElemento = element.transacciones.filter((elementTra:any) => elementTra.tipoTransaccion == 'Manual');
+  //         this.transaccionesManuales.push(...transaccionesManualesElemento);
+  //         element.transacciones = element.transacciones.filter((elementTra:any) => elementTra.tipoTransaccion != 'Manual');
+  //         element.longitud = element.transacciones.length;
+  //       });
+  //       break;
+  //   }
+  //   this.sumatoriaTotalTransacciones();
+  // }
 
-  transaccionesAutomaticasSolo() {
-    let a:boolean = this.transac.controls['automaticTransactions'].value;
-    switch(a) {
-      case true:
-        this.dataExportarExcel.forEach((element:any)=>{
-          element.transacciones.push(...this.transaccionesAutomaticas.filter((transaccionAuto) => transaccionAuto.idElemento == element.id && transaccionAuto.machine_Sn == element.nserie));
-          element.transacciones.sort( ( a:any, b:any ) => {
-            let dateA = new Date(a.fechaTransaccion + 'T' + a.hora);
-            let dateB = new Date(b.fechaTransaccion + 'T' + b.hora);
-            return dateB.getTime() - dateA.getTime();
-          });
-          element.longitud = element.transacciones.length;
-        });
-        this.transaccionesAutomaticas = [];
-        break;
-      case false:
-        this.dataExportarExcel.forEach((element:any)=>{
-          let transaccionesAutomaticasElemento = element.transacciones.filter((elementTra:any) => elementTra.tipoTransaccion == 'Automático');
-          this.transaccionesAutomaticas.push(...transaccionesAutomaticasElemento);
-          element.transacciones = element.transacciones.filter((elementTra:any) => elementTra.tipoTransaccion != 'Automático');
-          element.longitud = element.transacciones.length;
-        });
-        break;
-    }
-    this.sumatoriaTotalTransacciones();
-  }
+  // transaccionesAutomaticasSolo() {
+  //   let a:boolean = this.transac.controls['automaticTransactions'].value;
+  //   switch(a) {
+  //     case true:
+  //       this.dataExportarExcel.forEach((element:any)=>{
+  //         element.transacciones.push(...this.transaccionesAutomaticas.filter((transaccionAuto) => transaccionAuto.idElemento == element.id && transaccionAuto.machine_Sn == element.nserie));
+  //         element.transacciones.sort( ( a:any, b:any ) => {
+  //           let dateA = new Date(a.fechaTransaccion + 'T' + a.hora);
+  //           let dateB = new Date(b.fechaTransaccion + 'T' + b.hora);
+  //           return dateB.getTime() - dateA.getTime();
+  //         });
+  //         element.longitud = element.transacciones.length;
+  //       });
+  //       this.transaccionesAutomaticas = [];
+  //       break;
+  //     case false:
+  //       this.dataExportarExcel.forEach((element:any)=>{
+  //         let transaccionesAutomaticasElemento = element.transacciones.filter((elementTra:any) => elementTra.tipoTransaccion == 'Automático');
+  //         this.transaccionesAutomaticas.push(...transaccionesAutomaticasElemento);
+  //         element.transacciones = element.transacciones.filter((elementTra:any) => elementTra.tipoTransaccion != 'Automático');
+  //         element.longitud = element.transacciones.length;
+  //       });
+  //       break;
+  //   }
+  //   this.sumatoriaTotalTransacciones();
+  // }
 
   transaccionesRecoleccionesSolo() {
     this.transaccionesRecolecciones = [];

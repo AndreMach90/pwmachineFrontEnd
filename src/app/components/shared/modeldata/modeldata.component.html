@@ -105,24 +105,6 @@
                                    #horafin
                                    (change)="validateTime()"
                                    id="horafin">
-                        </div>
-                        <div class=" rounded-pill d-flex shadow-sm align-items-center"
-                             style="background-color: rgb(226, 226, 226);
-                                    border: solid 1px rgb(195, 195, 195);
-                                    height: 37px; margin-bottom: 10px;">
-                                    <label for="acreditada"
-                                           class="p-1"
-                                           title="Transacciones por acreditar">
-                                           Trans. por acreditadar
-                                    </label>
-                                    <div class="p-1">
-                                        <input type="checkbox"
-                                               class="form-check-input"
-                                               (change)="barprogress = !barprogress"
-                                               formControlName="acreditada"
-                                               #acreditada
-                                               id="acreditada">
-                                    </div>
                         </div>                        
                         <div class="p-2 d-flex align-items-end">
                             <button type="button"
@@ -150,6 +132,25 @@
                                     #spriv
                                     id="spriv">
                          </div>
+                    </div>
+                    &nbsp;&nbsp;
+                    <div class=" rounded-pill d-flex shadow-sm align-items-center"
+                         style="background-color: rgb(226, 226, 226);
+                                border: solid 1px rgb(195, 195, 195);
+                                height: 37px; margin-bottom: 10px;">
+                                <label for="acreditada"
+                                       class="p-1"
+                                       title="Transacciones por acreditar">
+                                       Trans. por acreditadar
+                                </label>
+                                <div class="p-1">
+                                    <input type="checkbox"
+                                           class="form-check-input"
+                                           (change)="barprogress = !barprogress"
+                                           formControlName="acreditada"
+                                           #acreditada
+                                           id="acreditada">
+                                </div>
                     </div>
                 </div>
             </div>

@@ -7,6 +7,7 @@ import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import Swal from 'sweetalert2'
 import { FormControl, FormGroup } from '@angular/forms';
 import { SharedService } from '../../shared/services/shared.service';
+import { Router } from '@angular/router';
 const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
@@ -128,7 +129,8 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
                private monitoreo:  MonitoreoService,
                public  dialog:     MatDialog,
                private equiposerv: EquipoService,
-               private shar:       SharedService
+               private shar:       SharedService,
+               private router:     Router
   ) {
   }
 
@@ -223,7 +225,8 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
         const arr: any = [
           { 'tipo': 'Monitorear transaccional', 'icon': 'timeline', 'width': '480px !important' },
           { 'tipo': 'Monitoreo de equipos', 'icon': 'precision_manufacturing', 'width': '550px !important' },
-          { 'tipo': 'Reporte de datos', 'icon': 'article', 'width': '450px !important' }
+          { 'tipo': 'Reporte de datos', 'icon': 'article', 'width': '450px !important' },
+          { 'tipo': 'Cerrar Sesión', 'icon': 'power_settings_new', 'width': '350px !important' }
         ];
 
         const iconMap: any = {
@@ -249,6 +252,13 @@ export class RepodashComponent implements OnInit, AfterViewInit, OnChanges {
     this.listAlertas.splice(i, 1);
   }
 
+  closeSession() {
+    sessionStorage.removeItem('token');
+    let xtoken: any = sessionStorage.getItem('token');
+    if (xtoken == undefined || xtoken == null || xtoken == '') {
+      this.router.navigate(['login']);
+    }
+  }
 
 
   ngAfterViewInit(): void {}

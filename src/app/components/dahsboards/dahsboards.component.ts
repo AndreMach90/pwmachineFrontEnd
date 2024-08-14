@@ -36,7 +36,7 @@ export class DahsboardsComponent implements OnInit {
   secondary_a: any;
   secondary_b: any;
   show_monit_equip: boolean = false;
-  namemodulo: any = '';
+  namemodulo: string = 'Home';
   iconmodulo: any = '';
   nameidentifier: any;
   sub: any;
@@ -49,9 +49,13 @@ export class DahsboardsComponent implements OnInit {
   usuario: any;
   monitor: boolean = false;
 
+  estadow: boolean = true;
+  height_app: any = '100vh';
+
   horaCierre: any;
 
   ngOnInit(): void {
+    this.namemodulo = 'Home';
     this.validateSesion();
     this.obtenerIndicadoresHomeMenu();
     let xuser: any = sessionStorage.getItem('usuario');
@@ -69,13 +73,7 @@ export class DahsboardsComponent implements OnInit {
       this.exp = decoded['exp'];
       this.iss = decoded['iss'];
       this.aud = decoded['aud'];
-
-      // console.warn('=====================================');
-      // console.warn('this.exp');
-      // console.warn(this.exp);
       this.horaCierre = this.convertTimestampToReadableDate(this.exp);
-      // console.warn('Fecha y hora legible:', this.horaCierre);
-      // console.warn('=====================================');
 
       const rolEncrypt: any = this.ncrypt.encryptWithAsciiSeed(this.role, this.env.es, this.env.hash);
       sessionStorage.setItem('PR', rolEncrypt);
@@ -114,7 +112,8 @@ export class DahsboardsComponent implements OnInit {
         const arr: any = [
           { 'tipo': 'Monitorear transaccional', 'icon': 'timeline', 'width': '480px !important' },
           { 'tipo': 'Monitoreo de equipos', 'icon': 'precision_manufacturing', 'width': '550px !important' },
-          { 'tipo': 'Reporte de datos', 'icon': 'article', 'width': '450px !important' }
+          { 'tipo': 'Reporte de datos', 'icon': 'article', 'width': '450px !important' },
+          { 'tipo': 'Cerrar Sesión', 'icon': 'power_settings_new', 'width': '350px !important' },
         ];
 
         const iconMap: any = {
@@ -240,8 +239,13 @@ export class DahsboardsComponent implements OnInit {
       case 'Reporte de datos':
         this.router.navigate(['datexport']);
         break;
+      case 'Cerrar Sesión':
+        this.closeSession();
+        break;
     }
   }
+
+  
 
   closeSession() {
     sessionStorage.removeItem('token');
@@ -251,12 +255,20 @@ export class DahsboardsComponent implements OnInit {
     }
   }
 
+  goToHome() {
+    this.router.navigate(['dashboard']);
+    this.show_home = true;
+    this.showHeadMenu = false;
+    this.show_usuarios = false;
+    this.show_tiendas = false;
+    this.show_clientes = false;
+    this.show_equipo = false;
+  }
+
   emitEstado(estado: any) {
     this.estadointerfaz.emit(estado);
   }
 
-  estadow: boolean = true;
-  height_app: any = '100vh';
   controlWidth() {
     switch (this.estadow) {
       case true:
@@ -332,6 +344,9 @@ export class DahsboardsComponent implements OnInit {
         this.show_equipo      = false;
         this.show_monit_equip = true;
         this.showHeadMenu = true;
+        break;
+      case 'Cerrar Sesión':
+        this.closeSession();
         break;
     }
   }
