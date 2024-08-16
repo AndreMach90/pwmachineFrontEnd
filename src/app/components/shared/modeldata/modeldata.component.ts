@@ -1376,60 +1376,6 @@ export class ModeldataComponent implements OnInit {
     ];
   }
 
-  // transaccionesManuealesSolo() { 
-  //   let a:boolean = this.transac.controls['manualTransactions'].value;  
-  //   switch(a) {
-  //     case true:
-  //       this.dataExportarExcel.forEach((element:any)=>{
-  //         element.transacciones.push(...this.transaccionesManuales.filter((transaccionManual) => transaccionManual.idElemento == element.id && transaccionManual.machine_Sn == element.nserie ));
-  //         element.transacciones.sort((a:any, b:any) => {
-  //           let dateA = new Date(a.fechaTransaccion + 'T' + a.hora);
-  //           let dateB = new Date(b.fechaTransaccion + 'T' + b.hora);
-  //           return dateB.getTime() - dateA.getTime();
-  //         });
-  //         element.longitud = element.transacciones.length;
-  //       });
-  //       this.transaccionesManuales = [];
-  //       break;
-  //     case false:
-  //       this.dataExportarExcel.forEach( (element:any) => {
-  //         let transaccionesManualesElemento = element.transacciones.filter((elementTra:any) => elementTra.tipoTransaccion == 'Manual');
-  //         this.transaccionesManuales.push(...transaccionesManualesElemento);
-  //         element.transacciones = element.transacciones.filter((elementTra:any) => elementTra.tipoTransaccion != 'Manual');
-  //         element.longitud = element.transacciones.length;
-  //       });
-  //       break;
-  //   }
-  //   this.sumatoriaTotalTransacciones();
-  // }
-
-  // transaccionesAutomaticasSolo() {
-  //   let a:boolean = this.transac.controls['automaticTransactions'].value;
-  //   switch(a) {
-  //     case true:
-  //       this.dataExportarExcel.forEach((element:any)=>{
-  //         element.transacciones.push(...this.transaccionesAutomaticas.filter((transaccionAuto) => transaccionAuto.idElemento == element.id && transaccionAuto.machine_Sn == element.nserie));
-  //         element.transacciones.sort( ( a:any, b:any ) => {
-  //           let dateA = new Date(a.fechaTransaccion + 'T' + a.hora);
-  //           let dateB = new Date(b.fechaTransaccion + 'T' + b.hora);
-  //           return dateB.getTime() - dateA.getTime();
-  //         });
-  //         element.longitud = element.transacciones.length;
-  //       });
-  //       this.transaccionesAutomaticas = [];
-  //       break;
-  //     case false:
-  //       this.dataExportarExcel.forEach((element:any)=>{
-  //         let transaccionesAutomaticasElemento = element.transacciones.filter((elementTra:any) => elementTra.tipoTransaccion == 'Automático');
-  //         this.transaccionesAutomaticas.push(...transaccionesAutomaticasElemento);
-  //         element.transacciones = element.transacciones.filter((elementTra:any) => elementTra.tipoTransaccion != 'Automático');
-  //         element.longitud = element.transacciones.length;
-  //       });
-  //       break;
-  //   }
-  //   this.sumatoriaTotalTransacciones();
-  // }
-
   transaccionesRecoleccionesSolo() {
     this.transaccionesRecolecciones = [];
     let a:boolean = this.transac.controls['recolecciones'].value;
@@ -1484,6 +1430,7 @@ export class ModeldataComponent implements OnInit {
     this.disbutton_obtener = false;
   }
 
+  /** OBTIENE LA DATA DE LAS TRANSACCIONES */
   obtenerTransacTabla() {
     let x = 0;
     x = (this.exportdateform.controls['acreditada'].value) ? 2 : 1;  
@@ -1532,7 +1479,11 @@ export class ModeldataComponent implements OnInit {
       });
     }
   }
-
+  
+  /** FUNCION PARA DETECTAR TRANSACCIONES REZAGADAS, 
+   * SU USO SE REALIZA EN LA FUNCION QUE EMITE EL EXCEL DE REZAGADAS 
+   * Y TAMBIEN EL CFI GENERAL */
+  // #region [INI REZAGADAS]
   detectaTransaccionesRezagadas(dateIni: any, dateFin: any, type: number) {
     this.cantidadRezagadas = 0;
     switch (type) {
@@ -1575,7 +1526,13 @@ export class ModeldataComponent implements OnInit {
         break;
     }
   }
+  // #endregion
 
+  // ========================================================================================================== 
+  // ========================================================================================================== 
+  
+  /** CALCULO DE SUMATORIAS */
+  // #region [INI SUMATORIAS] 
   sumatoriaTotalTransacciones() {
     this.cantidadTransacciones  = 0;
     this.sumatoriaTransacciones = 0;
@@ -1613,8 +1570,16 @@ export class ModeldataComponent implements OnInit {
       this.exportdateform.controls['horafin'].disable();
       this.exportdateform.controls['codigoClienteidFk'].disable();
     }
+
   }
+  //#endregion
   
+  // ========================================================================================================== 
+  // ========================================================================================================== 
+  
+  /** CAMBIO DE COLOR EN LA TABLA DE PREVISUALIZACION POR EL TIPO DE TRANSACCIONES, 
+   * TABLA QUE PUEDES RENDERIZAR ANTES DE ACREDITAR */
+  // #region [INI COLOR PREVISU]
   changeColorsTransac() {
     this.dataExportarExcel.filter( (element:any) => {  
       element.transacciones.filter( (elementTra:any) => {
@@ -1637,27 +1602,36 @@ export class ModeldataComponent implements OnInit {
       })
     })
   }
+  // #endregion
 
-  respladoDataTran() {
-    this._show_spinner = true;
-    this.dataExportarExcelGhost.filter( (element:any) => {
-      this.transacciones.obtenerTransaccionesTienda(element.nserie, 2).subscribe({
-        next: ( transacciones ) => {
-          element.transacciones = transacciones;
-          element.transacciones.filter((elementtr:any)=> {
-            let xdate = elementtr.fechaTransaccion.toString().split('T');
-            elementtr.fechaTransaccion = xdate[0];
-            elementtr.hora = xdate[1].slice(0,8);
-          })
-          this._show_spinner = false;
-        }, error: (e) => {
-          this._show_spinner = false;
-          console.log(console.log(e));
-        }
-      })
-    })
-  }
+  // ========================================================================================================== 
+  // ========================================================================================================== 
+  
+  // respladoDataTran() {
+  //   this._show_spinner = true;
+  //   this.dataExportarExcelGhost.filter( (element:any) => {
+  //     this.transacciones.obtenerTransaccionesTienda(element.nserie, 2).subscribe({
+  //       next: ( transacciones ) => {
+  //         element.transacciones = transacciones;
+  //         element.transacciones.filter((elementtr:any)=> {
+  //           let xdate = elementtr.fechaTransaccion.toString().split('T');
+  //           elementtr.fechaTransaccion = xdate[0];
+  //           elementtr.hora = xdate[1].slice(0,8);
+  //         })
+  //         this._show_spinner = false;
+  //       }, error: (e) => {
+  //         this._show_spinner = false;
+  //         console.log(console.log(e));
+  //       }
+  //     })
+  //   })
+  // }
 
+  // ========================================================================================================== 
+  // ========================================================================================================== 
+
+  /** VALIDA QUE EL RANGO DE FECHAS INICIAL Y FINAL EN EL FILTRO NO SEA MAYOR A UN MES */
+  // #region [INI FECHAS VALIDA]
   validarRangoFechas() {
     let valorFechaInicial = this.exportdateform.controls['dateini'].value;
     let valorFechaFinal = this.exportdateform.controls['datefin'].value;
@@ -1668,19 +1642,11 @@ export class ModeldataComponent implements OnInit {
       if (diferencia == 1) this.mostrarCiclo = true;
     }
   }
+  //#endregion
 
-  recuperarData() {
-    this.respladoDataTran();
-    const datenow = new Date();
-    this.exportdateform.controls['dateini'].setValue(datenow.toDateString());
-    this.exportdateform.controls['datefin'].setValue(datenow.toDateString());
-    this.exportdateform.controls['horaini'].setValue('');
-    this.exportdateform.controls['horafin'].setValue('');
-    this.transac.controls['recolecciones'].setValue(true);
-    this.transac.controls['automaticTransactions'].setValue(true);
-    this.transac.controls['manualTransactions'].setValue(true);
-    this.mostrarCiclo = false;
-  }
+  // ========================================================================================================== 
+  // ========================================================================================================== 
+
 
   busquedaPorRango() {
     const fechaInicial = this.exportdateform.controls['dateini'].value;
