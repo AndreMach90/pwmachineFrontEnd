@@ -9,36 +9,27 @@ export class ModalClienteService {
 
   constructor( private env: Environments, private http: HttpClient ) { }
 
-  obtenerLocalidades( codcli:any ) {
-    const headers = new HttpHeaders({
+  private get headers(): HttpHeaders {
+    return new HttpHeaders({
       'Authorization': `Bearer ${this.env.TokenJWT()}`,
       'Content-Type': 'application/json'
     });
-    return this.http.get( this.env.apiurl() + 'DataMaster/ObtenerDatamasterLocalidades/' + codcli, {headers} );
+  }
+
+  obtenerLocalidades( codcli:any ) {
+    return this.http.get( this.env.apiurl() + 'DataMaster/ObtenerDatamasterLocalidades/' + codcli, { headers: this.headers });
   }
   
   guardarLocalidades( model:any ) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.post( this.env.apiurl() + 'ClienteSignaLocalidad/GuardarClienteSignaTienda', model, {headers} );
+    return this.http.post( this.env.apiurl() + 'ClienteSignaLocalidad/GuardarClienteSignaTienda', model, { headers: this.headers });
   }
 
   obtenerLocalidadesCliente( codcli: any ) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.get( this.env.apiurl() + 'ClienteSignaLocalidad/ObtenerLocalidades/' + codcli, {headers} );
+    return this.http.get( this.env.apiurl() + 'ClienteSignaLocalidad/ObtenerLocalidades/' + codcli, { headers: this.headers });
   }
 
   eliminarLocalidadCliente( id:number ) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.delete( this.env.apiurl() + 'ClienteSignaLocalidad/BorrarLocalidad/' + id, {headers} );
+    return this.http.delete( this.env.apiurl() + 'ClienteSignaLocalidad/BorrarLocalidad/' + id, { headers: this.headers });
   }
 
 }

@@ -7,7 +7,6 @@ import { Environments } from '../../environments/environments';
   providedIn: 'root'
 })
 export class SharedService {
-
   constructor( private http: HttpClient, private env: Environments ) { }
 
   generateRandomString = (num: any) => {
@@ -20,7 +19,7 @@ export class SharedService {
 
     return result1;
   }
-
+  //Posible API no utilizada
   getDataMaster(master: any) {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.env.TokenJWT()}`,
@@ -36,6 +35,4 @@ export class SharedService {
     });
     return this.http.get( this.env.apiurl() + 'Indicadores/ObtenerIndicadoresHome', {headers} );
   }
-
-
 }

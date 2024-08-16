@@ -1230,8 +1230,6 @@ export class ModeldataComponent implements OnInit {
       noRegistradas:     this.listaResagadas
     }
 
-    console.log(arr)
-
     const dialogRef = this.dialog.open( ModalDataEquiposComponent, {
       height: '100%',
       width:  '60%',

@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-
 import { LoginService } from './services/login.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Environments } from '../environments/environments';
-
 import { EncryptService } from '../shared/services/encrypt.service';
+import Swal from 'sweetalert2';
 
-import Swal from 'sweetalert2'
 const Toast = Swal.mixin({
   toast: true,
   position: 'top-end',
@@ -25,6 +23,7 @@ const Toast = Swal.mixin({
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
+
 export class LoginComponent implements OnInit {
   _show_spinner: boolean = false;
   primary:       any;
@@ -32,6 +31,8 @@ export class LoginComponent implements OnInit {
   title_login:   string  = 'Machine Controller';
   hide:          boolean = true;
   _show:         boolean = false;
+  version_actual:any;
+  loginModel:any = [];
 
   public user: any = [];
 
@@ -41,46 +42,35 @@ export class LoginComponent implements OnInit {
     }
   );
 
-  constructor(private log: LoginService, private ncrypt: EncryptService, private router: Router, private env: Environments) { }
-  
-  version_actual:any;
+  constructor( private log: LoginService, 
+    private ncrypt: EncryptService, 
+    private router: Router, 
+    private env: Environments) { }
   
   ngOnInit(): void {
-
+    let xtoken = sessionStorage.getItem('token');
     this.version_actual = this.env.version;
-
-      this.primary   =  this.env.appTheme.colorPrimary;
-      this.secondary = this.env.appTheme.colorSecondary_C;
-      
-      let xtoken = sessionStorage.getItem('token');
-      if( xtoken == null || xtoken == undefined ) {
-        this.router.navigate(['login']);
-      }
-      
-      else if (xtoken != null || xtoken != undefined) {
-        this.router.navigate(['dashboard']);
-      }
-
+    this.primary   =  this.env.appTheme.colorPrimary;
+    this.secondary = this.env.appTheme.colorSecondary_C;
+    if( xtoken == null || xtoken == undefined ) {
+      this.router.navigate(['login']);
+    } else if (xtoken != null || xtoken != undefined) {
+      this.router.navigate(['dashboard']);
+    }
   }
 
   onSubmit() {
     this.logins();
   }
 
-  loginModel:any = [];
   logins() {
-    
     this.loginModel = {
-      "Usuario":  this.loginForm.controls['email']      .value,
+      "Usuario":  this.loginForm.controls['email'].value,
       "Password": this.loginForm.controls['contrasenia'].value
     }
-
     this._show_spinner = true;
     this.log.login(this.loginModel).subscribe({
       next: (x:any) => {
-        console.warn('TOKEN JWT');
-        console.warn(x.token);
-
         const tokenEn:any = this.ncrypt.encryptWithAsciiSeed(x.token, 5, 10);
         sessionStorage.setItem('token', tokenEn);
         let xuser: any = this.loginForm.controls['email'].value;
@@ -92,39 +82,29 @@ export class LoginComponent implements OnInit {
         })
         this._show_spinner = false;
       }, error: (error) => {
-        console.error(error);
-
+        console.log(error);
         if( error.status == 404 ) {
-
           Swal.fire({
             icon: "error",
             title: this.env.E_404,
             text: error.error.message,
           });
-
         } else if ( error.status == 0 ) {
-
           Swal.fire({
             icon: "error",
             title: this.env.E_0,
             text: error.error.message,
           });
-
         } else if ( error.status == 500 ) {
-
           Swal.fire({
             icon: "error",
             title: this.env.E_500,
             text: error.error.message,
           });
-
         }
-
         this.router.navigate(['login']);
         this._show_spinner = false;     
       }
     })
-
   }
-
 }

@@ -7,15 +7,16 @@ import { Environments } from 'src/app/components/environments/environments';
 })
 
 export class ConsolidadoService {
-
   constructor( private env: Environments, private http: HttpClient ) { }
 
-  obtenerConsolidado( model:any) {
-    const headers = new HttpHeaders({
+  private get headers(): HttpHeaders {
+    return new HttpHeaders({
       'Authorization': `Bearer ${this.env.TokenJWT()}`,
       'Content-Type': 'application/json'
     });
-    return this.http.post( this.env.apiurl() + 'FiltroFechas/Consolidado', model, {headers} );
   }
 
+  obtenerConsolidado( model:any) {
+    return this.http.post( this.env.apiurl() + 'FiltroFechas/Consolidado', model, { headers: this.headers } );
+  }
 }

@@ -9,63 +9,38 @@ export class ClientesService {
 
   constructor( private env: Environments, private http: HttpClient ) { }
 
-  guardarClientes( model:any[] ) {
-    const headers = new HttpHeaders({
+  private get headers(): HttpHeaders {
+    return new HttpHeaders({
       'Authorization': `Bearer ${this.env.TokenJWT()}`,
       'Content-Type': 'application/json'
     });
+  }
 
-    return this.http.post(this.env.apiurl() + 'Cliente/GuardarCliente', model, { headers });
+  guardarClientes( model:any[] ) {
+    return this.http.post(this.env.apiurl() + 'Cliente/GuardarCliente', model, { headers: this.headers });
   }
 
   actualizarCliente (model:any[]) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.put( this.env.apiurl()+'Cliente/ActualizarCliente', model, {headers} );
+    return this.http.put( this.env.apiurl()+'Cliente/ActualizarCliente', model, { headers: this.headers } );
   }
 
   obtenerCliente() {    
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.get( this.env.apiurl()+'Cliente/obtenerCliente', {headers});
+    return this.http.get( this.env.apiurl()+'Cliente/obtenerCliente', { headers: this.headers });
   }
 
-  ObtenerClienteSelect() {    
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.get( this.env.apiurl()+'Cliente/ObtenerClienteSelect', {headers});
+  ObtenerClienteSelect() {
+    return this.http.get( this.env.apiurl()+'Cliente/ObtenerClienteSelect', { headers: this.headers });
   }
 
   obtenerCuentaCliente(id:number) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.get( this.env.apiurl()+'Cliente/ObtenerCuentaCliente/'+id, {headers});
+    return this.http.get( this.env.apiurl()+'Cliente/ObtenerCuentaCliente/'+id, { headers: this.headers });
   }
 
-  obtenerCuentaTransacCant(id:number) {    
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    console.warn(this.env.apiurl()+'Cuenta/NTransacciones/'+id)
-    return this.http.get( this.env.apiurl()+'Cuenta/NTransacciones/'+id, {headers});
+  obtenerCuentaTransacCant(id:number) {
+    return this.http.get( this.env.apiurl()+'Cuenta/NTransacciones/'+id, { headers: this.headers });
   }
-
 
   eliminarCliente( codigoCliente:string ) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.delete( this.env.apiurl() + 'Cliente/BorrarCliente/' + codigoCliente, {headers} );
+    return this.http.delete( this.env.apiurl() + 'Cliente/BorrarCliente/' + codigoCliente, { headers: this.headers } );
   }
-
 }

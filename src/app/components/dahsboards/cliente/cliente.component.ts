@@ -6,14 +6,12 @@ import { ModalClienteComponent } from './modal-cliente/modal-cliente.component';
 import { ClientesService } from './services/clientes.service';
 import { ServicesSharedService } from '../../shared/services-shared/services-shared.service';
 import { CuentasBancariasService } from './modal-cliente/services/cuentas-bancarias.service';
-
 import { ControlinputsService } from '../../shared/services/controlinputs.service';
-import { ModalDetalleMaquinaTranComponent } from '../monitoreo-equipos/modal-detalle-maquina-tran/modal-detalle-maquina-tran.component';
 import { ModalUsuariosTemporalesComponent } from './modal-usuarios-temporales/modal-usuarios-temporales.component';
-
 import Swal from 'sweetalert2'
 import { ModalLocalidadClienteComponent } from './modal-localidad-cliente/modal-localidad-cliente.component';
 import { ModalClienteService } from './modal-localidad-cliente/services/modal-cliente.service';
+
 const Toast = Swal.mixin({
   toast: true,
   position: 'top-end',
@@ -33,13 +31,9 @@ const Toast = Swal.mixin({
 })
 
 export class ClienteComponent implements OnInit {
-
   guardarControl: boolean = false;
-
-
   _width_table: string = 'tabledata table-responsive w-100 p-2';
   _show_add_tecnic: boolean = true;
-
   delete: any = this.env.apiUrlIcon()+'delete.png';
   localidad: any = this.env.apiUrlIcon()+'localidad.png';
   localidad1: any = this.env.apiUrlIcon()+'localidad1.png';
@@ -52,10 +46,9 @@ export class ClienteComponent implements OnInit {
   localidadesGuardadasCliente: any = [];
   codigoCliente:any;
   idlciente:any;
-
   tiendaListaGhost:any = [];
   filterequip:any =[];
-
+  clienteListaGhost: any = [];
   _edit_btn:    boolean = false;
   _delete_show: boolean = true;
   _edit_show:   boolean = true;
@@ -66,8 +59,15 @@ export class ClienteComponent implements OnInit {
   _show_spinner: boolean = false;
   _icon_button: string = 'add';
   _cancel_button: boolean = false;
-
   clientelista:any = [];
+  calwidth: boolean = true;
+  primary:any;
+  secondary:any;
+  secondary_a:any;
+  secondary_b:any;
+  namemodulo:any = '';
+  permisonUsers:boolean = true;
+  viewForm: boolean = false;
 
   public clienteForm = new FormGroup({
     Nombre_Cliente:   new FormControl(''), 
@@ -83,17 +83,15 @@ export class ClienteComponent implements OnInit {
     filterCli:   new FormControl('')
   })
 
-  calwidth: boolean = true;
+  constructor( private env:       Environments,
+    public  dialog:               MatDialog,
+    private loc:                  ModalClienteService,
+    private clienteserv:          ClientesService,
+    private controlInputsService: ControlinputsService,
+    private sharedservs:          ServicesSharedService, 
+    private ctabancarias:         CuentasBancariasService ) {}
 
-  primary:any;
-  secondary:any;
-  secondary_a:any;
-  secondary_b:any;
-  namemodulo:any = '';
-  permisonUsers:boolean = true;
-  viewForm: boolean = false;
   ngOnInit(): void {
-
     let x:any = this.sharedservs.validateRol();
     switch( x ) {
       case 1:
@@ -103,41 +101,30 @@ export class ClienteComponent implements OnInit {
         this.permisonUsers = false; 
         break;
     }
-
-      this.primary     =  this.env.appTheme.colorPrimary;
-      this.secondary   = this.env.appTheme.colorSecondary_C;
-      this.secondary_a = this.env.appTheme.colorSecondary_A;
-      this.secondary_b = this.env.appTheme.colorSecondary_B;
-      this.obtenerCliente();
-
+    this.primary     =  this.env.appTheme.colorPrimary;
+    this.secondary   = this.env.appTheme.colorSecondary_C;
+    this.secondary_a = this.env.appTheme.colorSecondary_A;
+    this.secondary_b = this.env.appTheme.colorSecondary_B;
+    this.obtenerCliente();
   }
-
-  constructor( private env:                  Environments,
-               public  dialog:               MatDialog,
-               private loc:                  ModalClienteService,
-               private clienteserv:          ClientesService,
-               private controlInputsService: ControlinputsService,
-               private sharedservs:          ServicesSharedService, 
-               private ctabancarias:         CuentasBancariasService ) {}
- 
-               validateInputText(data:any) {
-                this.controlInputsService.validateAndCleanInput(data);
-              }
+  
+  validateInputText(data:any) {
+    this.controlInputsService.validateAndCleanInput(data);
+  }
               
-              validateInputNumber(data: any) {
-                this.controlInputsService.validateAndCleanNumberInput(data);
-              }
+  validateInputNumber(data: any) {
+    this.controlInputsService.validateAndCleanNumberInput(data);
+  }
   
   obtenerLocalidad( codcli:any ) {
     this._show_spinner = true;
     this.loc.obtenerLocalidadesCliente( codcli ).subscribe({
       next: (x) => {
         this.localidadesGuardadasCliente = x;
-        console.warn(this.localidadesGuardadasCliente)
         this._show_spinner = false;
-      }, complete: () => {
-        this._show_spinner = false;
-      }, error: (e) => {
+      }, 
+      complete: () => this._show_spinner = false, 
+      error: (e) => {
         console.error(e);
         this._show_spinner = false;
       }
@@ -147,22 +134,15 @@ export class ClienteComponent implements OnInit {
   eliminarCliente( index:number, id:number, idcliente: number ) {
     this._show_spinner = true;
     this.loc.eliminarLocalidadCliente(id).subscribe({
-      next: (x) => {
-        Toast.fire({ icon: 'success', title: 'Asignación de localidad eliminada' });
-      }, error: (e) => {
+      next: (x) => Toast.fire({ icon: 'success', title: 'Asignación de localidad eliminada' }), 
+      error: (e) => {
         this._show_spinner = false;
         Toast.fire({ icon: 'error', title: 'No hemos podido eliminar la localidad' });
       }, complete: () => {
         this._show_spinner = false;
         this.localidadesGuardadasCliente.splice(index, 1);
         this.clientelista.filter( (x:any) => {
-          console.log( x.id )
-          console.log( idcliente )
-          if ( x.id == idcliente ) {
-            console.warn( 'cliente encontrado: '  )
-            console.warn( x )
-            x.cantidadLocalidades -1
-          }
+          if ( x.id == idcliente ) x.cantidadLocalidades -1;
         })
         this.obtenerCliente();
       }
@@ -183,11 +163,8 @@ export class ClienteComponent implements OnInit {
         break;
     }
   }
-              
 
-  clienteListaGhost: any = [];
   obtenerCliente() {
-
     this.clientelista      = [];
     this.clienteListaGhost = [];
     this._show_spinner     = true;
@@ -199,7 +176,6 @@ export class ClienteComponent implements OnInit {
         this._show_spinner = false;
         console.error(e);
       }, complete: () => {
-
         this.clienteListaGhost.filter( (element:any) => {
           let arr: any = {
             "id": element.id,
@@ -213,53 +189,41 @@ export class ClienteComponent implements OnInit {
             "cantidadCuntasBancarias": element.cantidadCuentasBancarias,
             "cantidadLocalidades": element.cantidadLocalidades
           }
-
           this.clientelista.unshift(arr);
-
         })
-
       }
     })
   }
 
-
   filterCliente () {
-
     let filter: any = this.filterForm.controls['filterCli'].value;
-
     this.clientelista = this.clienteListaGhost.filter((item:any) => 
       item.ruc.toLowerCase().includes(filter.toLowerCase()) ||
       item.nombreCliente.toLowerCase().includes(filter.toLowerCase())
     );
-    
   }
 
 
   onSubmit() {    
-      switch(this._action_butto) {
-        case 'Crear':
-          this.guardarClientes();
-          break;
-        case 'Editar':
-          this.editarClientes();
-          break;
-      }
+    switch(this._action_butto) {
+      case 'Crear':
+        this.guardarClientes();
+        break;
+      case 'Editar':
+        this.editarClientes();
+        break;
+    }
   } 
 
   guardarClientes() {
-
-    
     if( this.clienteForm.controls['Nombre_Cliente'].value == null || this.clienteForm.controls['Nombre_Cliente'].value == undefined || this.clienteForm.controls['Nombre_Cliente'].value == ''  ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de nombre cliente vacío' });
     else if( this.clienteForm.controls['RUC'].value == null || this.clienteForm.controls['RUC'].value == undefined || this.clienteForm.controls['RUC'].value == ''  ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de RUC cliente vacío' });
     else if( this.clienteForm.controls['Telefono'].value == null || this.clienteForm.controls['Telefono'].value == undefined || this.clienteForm.controls['Telefono'].value == ''  ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de Telefono cliente vacío' });
     else {
-      
       this._show_spinner = true;
       this._create_show = false;
       let date = new Date();
-      const codec: any =this.sharedservs.generateRandomString(10);
       const token: any = 'CLI-'+this.clienteForm.controls['Nombre_Cliente'].value?.slice(0,5).replace(' ', '_') +'-' + this.sharedservs.generateRandomString(10) + '-' + date.getFullYear() + '-' + date.getDay();
-
       let arr: any = {
         codigoCliente:   token,
         nombreCliente:   this.clienteForm.controls['Nombre_Cliente'].value,
@@ -269,29 +233,25 @@ export class ClienteComponent implements OnInit {
         emailcontacto:   this.clienteForm.controls['email_contacto'].value,
         nombrecontacto:  this.clienteForm.controls['nombre_contacto'].value?.replace(/[^a-zA-Z ]/g, ''),
       }
-
       setTimeout(() => {        
         this.clienteserv.guardarClientes( arr ).subscribe({
-          next: (x) => {
-            Toast.fire({ icon: 'success', title: 'Cliente gaurdado con éxito' });
-          }, error: (e) => {
+          next: (x) => Toast.fire({ icon: 'success', title: 'Cliente gaurdado con éxito' }), 
+          error: (e) => {
             console.error(e);
             Toast.fire({ icon: 'error', title: 'No se ha podido guardar' });
             this._show_spinner = false;
-          }, complete: () => {
+          },
+          complete: () => {
             this._show_spinner = false;
-            // this.clientelista.unshift(arr);
             this.obtenerCliente();
             this.limpiar();
           }
         })
       }, 1000);
     }
-
   }
 
   editarClientes() {
-
     if( this.clienteForm.controls['Nombre_Cliente'].value == null || this.clienteForm.controls['Nombre_Cliente'].value == undefined || this.clienteForm.controls['Nombre_Cliente'].value == ''  ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de nombre cliente vacío' });
     else if( this.clienteForm.controls['RUC'].value == null || this.clienteForm.controls['RUC'].value == undefined || this.clienteForm.controls['RUC'].value == ''  ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de RUC cliente vacío' });
     else if( this.clienteForm.controls['Telefono'].value == null || this.clienteForm.controls['Telefono'].value == undefined || this.clienteForm.controls['Telefono'].value == ''  ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de Telefono cliente vacío' });
@@ -306,9 +266,7 @@ export class ClienteComponent implements OnInit {
         emailcontacto:   this.clienteForm.controls['email_contacto'].value,
         nombrecontacto:  this.clienteForm.controls['nombre_contacto'].value?.replace(/[^a-zA-Z ]/g, ''),
       }
-
       this._show_spinner = true;
-
       this.clienteserv.actualizarCliente(arr).subscribe({
         next: ( x ) => {
           Toast.fire({ icon: 'success', title: 'Cliente actualizado con éxito' });
@@ -332,8 +290,6 @@ export class ClienteComponent implements OnInit {
     this.clienteserv.obtenerCuentaCliente(id).subscribe({
       next: ( cuentas ) => {
         this.cuentaslista = cuentas;
-        console.log('Obteniendo');
-        console.log(this.cuentaslista);
         this._show_spinner = false;
       }, error:(e) => {
         console.error(e);
@@ -351,9 +307,7 @@ export class ClienteComponent implements OnInit {
       }, error: (e) => {
         Toast.fire({ icon: 'error', title: 'Algo ha pasado' });
         this._show_spinner = false;
-      }, complete: () => {
-        this.cuentaslista.splice(i, 1);
-      }
+      }, complete: () => this.cuentaslista.splice(i, 1)
     })
   }  
 
@@ -393,21 +347,21 @@ export class ClienteComponent implements OnInit {
               'Eliminado!',
               'Cliente eliminado',
               'success'
-            )
-          }, error: (e) => {
+          )}, 
+          error: (e) => {
             console.error(e);
             this._show_spinner = false;
             Swal.fire(
               'Upps!',
               'No hemos podido eliminar este cliente',
               'error'
-            )
-          }, complete: () => {
+          )}, 
+          complete: () => {
             this.obtenerCliente();
             this.limpiar();
           } 
-          })
-        }
+        })
+      }
     })
   }
 
@@ -417,15 +371,14 @@ export class ClienteComponent implements OnInit {
     this.clienteForm.controls['Direccion'].setValue('');
     this.clienteForm.controls['Active'].setValue('A');
     this.clienteForm.controls['Telefono'].setValue('');
-    this.clienteForm.controls['email_contacto'].setValue('')
-    this.clienteForm.controls['nombre_contacto'].setValue('')
+    this.clienteForm.controls['email_contacto'].setValue('');
+    this.clienteForm.controls['nombre_contacto'].setValue('');
     this._action_butto = 'Crear'
     this._cancel_button = false;
     this.viewForm = false;
     this._width_table = 'tabledata table-responsive w-100 p-2';
     this._create_show = true;
   }
-
 
   openDialogCrearCuentaBancaria(data:any, action:string): void {
     let modelData: any;
@@ -448,7 +401,6 @@ export class ClienteComponent implements OnInit {
         this.clientelista.filter((element:any)=> {
           if( element.codigoCliente == data.codigoCliente) nombreCliente = element.nombreCliente;
         })
-
         modelData = {
           "id": data.id,
           "nombreCliente": nombreCliente,
@@ -463,52 +415,29 @@ export class ClienteComponent implements OnInit {
         }
         break;
     }
-
     const dialogRef = this.dialog.open( ModalClienteComponent, {
       height: 'auto',
       width:  '350px',
       data: modelData, 
     });
-
-
-    dialogRef.afterClosed().subscribe( result => {
-      this.obtenerCliente();
-    });
-
+    dialogRef.afterClosed().subscribe( result => this.obtenerCliente());
   }
 
   openDialogAsignarLocalidad(data:any): void {
-
-    console.log(data);
-
     const dialogRef = this.dialog.open( ModalLocalidadClienteComponent, {
       height: 'auto',
       width:  '80%',
       data: data, 
     });
-
-    dialogRef.afterClosed().subscribe( result => {
-      this.obtenerCliente();
-    });
-
+    dialogRef.afterClosed().subscribe( result => this.obtenerCliente());
   }
   
   openDialogUsuariosAsignados(data:any): void {
-
-
     const dialogRef = this.dialog.open( ModalUsuariosTemporalesComponent, {
       height: 'auto',
       width:  '80%',
       data: data, 
     });
-
-
-    dialogRef.afterClosed().subscribe( result => {      
-      ////////console.warn(result);
-      this.obtenerCliente();
-    });
-
-
-  }
-
+    dialogRef.afterClosed().subscribe( result => this.obtenerCliente());
+  }
 }

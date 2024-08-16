@@ -31,6 +31,7 @@ export class ModalDataEquiposComponent implements OnInit {
                private env: Environments,
                public dialogRef: MatDialogRef<ModeldataComponent>) {}
 
+
   public equipoCliForm = new FormGroup({
     filterEqui:   new FormControl('')
   })
@@ -54,6 +55,7 @@ export class ModalDataEquiposComponent implements OnInit {
   totalAutomaticas: number = 0;
   SumatotalTransac: number = 0;
   SumatotalTransacResag: number = 0;
+
 
   sumatoriaRezagadasTransac( objeto:any ) {
     this.totalRezagadasAutomaticas = 0;
@@ -79,7 +81,6 @@ export class ModalDataEquiposComponent implements OnInit {
       fechaIni : this.data.fecchaIni,
       fechaFin : this.data.fechaFin
     }
-
     this.equiposerv.obtenerEquipoConteoTran(xi, this.modelFilterTranEqipos).subscribe(
       {
         next: (equipo) => {
@@ -224,6 +225,7 @@ export class ModalDataEquiposComponent implements OnInit {
 
   selectedEquiposControl = new FormControl(false);
   toggleSelection(equipo: any, localidad: any) {
+    (this.selectedEquiposControl.value) ? this.addToSelectedEquipos(equipo) : this.removeFromSelectedEquipos(equipo);
     (this.selectedEquiposControl.value) ? this.addToSelectedEquipos(equipo) : this.removeFromSelectedEquipos(equipo);
   }
 

@@ -6,27 +6,21 @@ import { Environments } from 'src/app/components/environments/environments';
   providedIn: 'root'
 })
 export class UsuariosService {
+  constructor( private env: Environments, private http: HttpClient ) { }
 
-  constructor( private env: Environments, 
-               private http: HttpClient ) { }
-
-  guardarUsuarios( model:any[] ) {
-    const headers = new HttpHeaders({
+  private get headers(): HttpHeaders {
+    return new HttpHeaders({
       'Authorization': `Bearer ${this.env.TokenJWT()}`,
       'Content-Type': 'application/json'
     });
+  }
 
-    return this.http.post(this.env.apiurl() + 'Usuario/GuardarUsuario', model, { headers });
-
+  guardarUsuarios( model:any[] ) {
+    return this.http.post(this.env.apiurl() + 'Usuario/GuardarUsuario', model, { headers: this.headers });
   }
 
   guardarUsuariosPortal( model:any[] ) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-
-    return this.http.post(this.env.apiurl() + 'UsuarioPortal/GuardarUsuario', model, { headers });
+    return this.http.post(this.env.apiurl() + 'UsuarioPortal/GuardarUsuario', model, { headers: this.headers });
 
   }
 
@@ -85,5 +79,4 @@ export class UsuariosService {
     });
     return this.http.delete( this.env.apiurl()+ 'UsuarioPortal/BorrarUsuario/' + id, {headers} );
   }
-
 }

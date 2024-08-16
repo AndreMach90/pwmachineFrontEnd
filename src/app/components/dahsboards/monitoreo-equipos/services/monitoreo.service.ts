@@ -6,39 +6,28 @@ import { Environments } from 'src/app/components/environments/environments';
   providedIn: 'root'
 })
 export class MonitoreoService {
-
   constructor( private http: HttpClient, private env: Environments ) { }
 
-  obtenerIndicadores(idTienda:string, tp: number) {
-    const headers = new HttpHeaders({
+  private get headers(): HttpHeaders {
+    return new HttpHeaders({
       'Authorization': `Bearer ${this.env.TokenJWT()}`,
       'Content-Type': 'application/json'
     });
-    return this.http.get(this.env.apiurl() + 'Indicadores/ObtenerIndicadores/'+ idTienda + '/' + tp, {headers} )
+  }
+
+  obtenerIndicadores(idTienda:string, tp: number) {
+    return this.http.get(this.env.apiurl() + 'Indicadores/ObtenerIndicadores/'+ idTienda + '/' + tp, { headers: this.headers } )
   }
 
   obtenerDetalleEquipos(idmaquina:string) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.get(this.env.apiurl() + 'EquipoDetalle/ObtenerDetalle/'+ idmaquina, {headers} );
+    return this.http.get(this.env.apiurl() + 'EquipoDetalle/ObtenerDetalle/'+ idmaquina, { headers: this.headers } );
   }
 
   obtenerValorUnico(idmaquina:string) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.get(this.env.apiurl() + 'CalculoTotal/Calculo/'+ idmaquina, {headers} );
+    return this.http.get(this.env.apiurl() + 'CalculoTotal/Calculo/'+ idmaquina, { headers: this.headers } );
   }
 
   guardarErroralerts(model:any []) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.post( this.env.apiurl() + 'alertError/GuardarErroralert', model, {headers} );
+    return this.http.post( this.env.apiurl() + 'alertError/GuardarErroralert', model, { headers: this.headers } );
   }
-
 }

@@ -148,12 +148,12 @@
                         <tr>
                             <td>
                                 <div class="rounded" 
-                                    [style]="'background:'+getColor(equipo.colorEsstado)+';width:10px;height:40px;'">
+                                    [style]="'background:'+getColor(equipo.estadoPing)+';width:10px;height:40px;'">
                                 </div>
                             </td>
                             <td>{{equipo.nombreTienda}} <small>{{"\n"+equipo.provincia}}</small> </td>
                             <td>{{equipo.tipoMaquinaria}} <small>{{"\n"+equipo.nombremarca+" "+equipo.nombremodelo}}</small> </td>
-                            <td [style]="'color:'+getColor(equipo.colorEsstado)+';'"><strong>{{equipo.serieEquipo}}</strong><small>{{"\n"+equipo.ipEquipo}}</small> </td>
+                            <td [style]="'color:'+getColor(equipo.estadoPing)+';'"><strong>{{equipo.serieEquipo}}</strong><small>{{"\n"+equipo.ipEquipo}}</small> </td>
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="progress shadow-sm me-2"
@@ -193,7 +193,14 @@
                                 <small>{{"$"+equipo.indicadorTotalAsegurado+" / "+"$"+equipo.indicadorTotalMaxAsegurado}}</small>
                             </td>
                             <td class="align-middle">{{equipo.tiempoSincronizacion | date: 'short'}}</td>
-                            <td class="align-middle">{{equipo.ultimaRecoleccion | date: 'short'}}</td>
+                            <td class="align-middle">
+                                <ng-container *ngIf="equipo.ultimaRecoleccion !== null; else vacioLastRec">
+                                    {{equipo.ultimaRecoleccion | date: 'short'}}
+                                </ng-container>
+                                <ng-template #vacioLastRec>
+                                    ---
+                                </ng-template>
+                            </td>
                             <td class="align-middle">
                                 <div class="d-flex justify-content-center">
                                     <ng-container *ngIf="equipo.tipoTrans !== null; else vacioNTrans">
