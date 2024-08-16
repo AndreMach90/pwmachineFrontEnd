@@ -3,7 +3,7 @@ import { ServicesSharedService } from '../../shared/services-shared/services-sha
 import { ClientesService } from '../cliente/services/clientes.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Environments } from '../../environments/environments';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { TiendaService } from './services/tienda.service';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import Swal from 'sweetalert2';
@@ -84,15 +84,14 @@ export class TiendaComponent implements OnInit {
   codcli:           any;
 
   public tiendaForm = new FormGroup({
-    codigoClienteidFk: new FormControl(''),
-    cuentaBanco:       new FormControl(''),
-    nombreTienda:      new FormControl(''),
-    telefono:          new FormControl(''),
-    direccion:         new FormControl(''),
-    nombreAdmin:       new FormControl(''),
-    telfAdmin:         new FormControl(''),
-    emailAdmin:        new FormControl(''),
-    codProv:           new FormControl('')
+    codigoClienteidFk: new FormControl('', [Validators.required]),
+    nombreTienda:      new FormControl('', [Validators.required, this.noWhitespaceValidator()]),
+    telefono:          new FormControl('', [Validators.required, this.noWhitespaceValidator()]),
+    direccion:         new FormControl('', [Validators.required, this.noWhitespaceValidator()]),
+    nombreAdmin:       new FormControl('', [Validators.required, this.noWhitespaceValidator()]),
+    telfAdmin:         new FormControl('', [Validators.required, this.noWhitespaceValidator()]),
+    emailAdmin:        new FormControl('', [Validators.required, this.noWhitespaceValidator()]),
+    codProv:           new FormControl('', [Validators.required])
   });
 
   public filtertienForm = new FormGroup({
@@ -128,14 +127,11 @@ export class TiendaComponent implements OnInit {
   }
 
   onSubmit() {
-    switch (this._action_butto) {
-      case 'Crear':
-        this.guardarTienda();
-        break;
-      case 'Editar':
-        this.editarTienda();
-        break;
+    if (this.tiendaForm.invalid) {
+      this.markFormGroupTouched(this.tiendaForm);
+      return;
     }
+    this._action_butto === 'Crear' ? this.guardarTienda() : this.editarTienda();
   }
 
   widthAutom() {
@@ -151,7 +147,6 @@ export class TiendaComponent implements OnInit {
     }
     this.tiendaForm.controls['codigoClienteidFk'].enable();
     this.tiendaForm.controls['codigoClienteidFk'].setValue('');
-    this.tiendaForm.controls['cuentaBanco'].setValue('');
     this.tiendaForm.controls['nombreTienda'].setValue('');
     this.tiendaForm.controls['telefono'].setValue('');
     this.tiendaForm.controls['direccion'].setValue('');
@@ -211,7 +206,6 @@ export class TiendaComponent implements OnInit {
 
   limpiar() {
     this.tiendaForm.controls['codigoClienteidFk'].setValue('');
-    this.tiendaForm.controls['cuentaBanco'].setValue('');
     this.tiendaForm.controls['nombreTienda'].setValue('');
     this.tiendaForm.controls['telefono'].setValue('');
     this.tiendaForm.controls['direccion'].setValue('');
@@ -230,78 +224,39 @@ export class TiendaComponent implements OnInit {
     this.dis_account_shop = false;
     this.viewForm = false;
     this._width_table = 'tabledata table-responsive w-100 p-2';
+    this.resetFormGroup(this.tiendaForm);
   }
 
   editarTienda() {
-    if (this.tiendaForm.controls['nombreTienda'].value == undefined ||
-      this.tiendaForm.controls['nombreTienda'].value == null ||
-      this.tiendaForm.controls['nombreTienda'].value == ''
-    )
-      Toast.fire({
-        icon: 'warning',
-        title: 'No puedes enviar el campo de nombre tienda vacío',
-      });
-    else if (
-      this.tiendaForm.controls['telefono'].value == undefined ||
-      this.tiendaForm.controls['telefono'].value == null ||
-      this.tiendaForm.controls['nombreTienda'].value == ''
-    )
-      Toast.fire({
-        icon: 'warning',
-        title: 'No puedes enviar el campo teléfono de tienda vacío',
-      });
-      else if (
-        this.tiendaForm.controls['codProv'].value == undefined ||
-        this.tiendaForm.controls['codProv'].value == null ||
-        this.tiendaForm.controls['codProv'].value == ''
-      )
-      Toast.fire({
-        icon: 'warning',
-        title: 'No puedes enviar el campo localidad de tienda vacío',
+    this._show_spinner = true;
+    this.modelTienda = {
+      codigoTienda:       this.codecTienda,
+      codigoClienteidFk:  this.tiendaForm.controls['codigoClienteidFk'].value,
+      nombreTienda:       this.tiendaForm.controls['nombreTienda'].value,
+      telefono:           this.tiendaForm.controls['telefono'].value!.replace(/[^0-9.]*/g,''),
+      direccion:          this.tiendaForm.controls['direccion'].value,
+      nombreAdmin:        this.tiendaForm.controls['nombreAdmin'].value?.toString().replace(/[^a-zA-Z ]/g, ''),
+      telfAdmin:          this.tiendaForm.controls['telfAdmin'].value?.replace(/[^0-9.]*/g,''),
+      emailAdmin:         this.tiendaForm.controls['emailAdmin'].value,
+      codProv:            this.tiendaForm.controls['codProv'].value?.toString().trim(),
+      idCentroProceso:    null,
+      Active:             'A',
+    };
+    this.tiendaservs.editarTiendas(this.modelTienda).subscribe({
+      next: (x) => {
+        Toast.fire({ icon: 'success', title: 'Tienda editar con éxito' });
+        this._show_spinner = false;
+      }, error: (e) => {
+        Toast.fire({
+          icon: 'error',
+          title: 'No hemos podido editar esta tienda',
         });
-    else if (
-      this.tiendaForm.controls['direccion'].value == undefined ||
-      this.tiendaForm.controls['direccion'].value == null ||
-      this.tiendaForm.controls['nombreTienda'].value == ''
-    )
-    Toast.fire({
-      icon: 'warning',
-      title: 'No puedes enviar el campo direcció de tienda vacío',
+        this._show_spinner = false;
+      }, complete: () => {
+        this.obtenerTiendas(1);
+        this.limpiar();
+      },
     });
-    else {
-      this._show_spinner = true;
-      this.modelTienda = {
-        codigoTienda:       this.codecTienda,
-        codigoClienteidFk:  this.tiendaForm.controls['codigoClienteidFk'].value,
-        cuentaBanco:        this.tiendaForm.controls['cuentaBanco'].value,
-        nombreTienda:       this.tiendaForm.controls['nombreTienda'].value,
-        telefono:           this.tiendaForm.controls['telefono'].value.replace(/[^0-9.]*/g,''),
-        direccion:          this.tiendaForm.controls['direccion'].value,
-        nombreAdmin:        this.tiendaForm.controls['nombreAdmin'].value?.toString().replace(/[^a-zA-Z ]/g, ''),
-        telfAdmin:          this.tiendaForm.controls['telfAdmin'].value?.replace(/[^0-9.]*/g,''),
-        emailAdmin:         this.tiendaForm.controls['emailAdmin'].value,
-        codProv:            this.tiendaForm.controls['codProv'].value?.toString().trim(),
-        idCentroProceso:    null,
-        Active:             'A',
-      };
-      this.tiendaservs.editarTiendas(this.modelTienda).subscribe({
-        next: (x) => {
-          Toast.fire({ icon: 'success', title: 'Tienda editar con éxito' });
-          this._show_spinner = false;
-        },
-        error: (e) => {
-          Toast.fire({
-            icon: 'error',
-            title: 'No hemos podido editar esta tienda',
-          });
-          this._show_spinner = false;
-        },
-        complete: () => {
-          this.obtenerTiendas(1);
-          this.limpiar();
-        },
-      });
-    }
   }
 
   generarCodectienda(): string {
@@ -312,88 +267,42 @@ export class TiendaComponent implements OnInit {
   }
 
   guardarTienda() {
-    if (this.tiendaForm.controls['nombreTienda'].value == undefined ||
-      this.tiendaForm.controls['nombreTienda'].value == null ||
-      this.tiendaForm.controls['nombreTienda'].value == ''
-    )
-      Toast.fire({
-        icon: 'warning',
-        title: 'No puedes enviar el campo de nombre tienda vacío',
+    this._show_spinner = true;
+    this._create_show = false;
+    this.modelTienda = {
+      codigoTienda:       this.generarCodectienda(),
+      codigoClienteidFk:  this.tiendaForm.controls['codigoClienteidFk'].value,
+      nombreTienda:       this.tiendaForm.controls['nombreTienda'].value,
+      telefono:           this.tiendaForm.controls['telefono'].value!.replace(/[^0-9.]*/g,''),
+      direccion:          this.tiendaForm.controls['direccion'].value,
+      nombreAdmin:        this.tiendaForm.controls['nombreAdmin'].value!.toString().replace(/[^a-zA-Z ]/g, ''),
+      telfAdmin:          this.tiendaForm.controls['telfAdmin'].value!.replace(/[^0-9.]*/g,''),
+      emailAdmin:         this.tiendaForm.controls['emailAdmin'].value,
+      codProv:            this.tiendaForm.controls['codProv'].value!.toString().trim(),
+      idCentroProceso:    null,
+      Active:             'A',
+    };
+    setTimeout(() => {
+      this.tiendaservs.guardarTiendas(this.modelTienda).subscribe({
+        next: (x) => {
+          Toast.fire({ icon: 'success', title: 'Tienda guardado con éxito' });
+          this._show_spinner = false;
+        }, error: (e) => {
+          Toast.fire({
+            icon: 'error',
+            title: 'No hemos podido guardar esta tienda',
+          });
+          this._show_spinner = false;
+        }, complete: () => {
+          this.obtenerTiendas(2);
+        },
       });
-    else if (
-      this.tiendaForm.controls['telefono'].value == undefined ||
-      this.tiendaForm.controls['telefono'].value == null ||
-      this.tiendaForm.controls['nombreTienda'].value == ''
-    )
-      Toast.fire({
-        icon: 'warning',
-        title: 'No puedes enviar el campo teléfono de tienda vacío',
-      });
-    else if (
-      this.tiendaForm.controls['codProv'].value == undefined ||
-      this.tiendaForm.controls['codProv'].value == null ||
-      this.tiendaForm.controls['codProv'].value == ''
-    )
-      Toast.fire({
-        icon: 'warning',
-        title: 'No puedes enviar el campo localidad de tienda vacío',
-      });
-      
-    else if (
-      this.tiendaForm.controls['direccion'].value == undefined ||
-      this.tiendaForm.controls['direccion'].value == null ||
-      this.tiendaForm.controls['nombreTienda'].value == ''
-    )
-    Toast.fire({
-      icon: 'warning',
-      title: 'No puedes enviar el campo direcció de tienda vacío',
-    });
-    else {
-
-      this._show_spinner = true;
-      this._create_show = false;
-      this.modelTienda = {
-        codigoTienda:       this.generarCodectienda(),
-        codigoClienteidFk:  this.tiendaForm.controls['codigoClienteidFk'].value,
-        cuentaBanco:        this.tiendaForm.controls['cuentaBanco'].value,
-        nombreTienda:       this.tiendaForm.controls['nombreTienda'].value,
-        telefono:           this.tiendaForm.controls['telefono'].value.replace(/[^0-9.]*/g,''),
-        direccion:          this.tiendaForm.controls['direccion'].value,
-        nombreAdmin:        this.tiendaForm.controls['nombreAdmin'].value?.toString().replace(/[^a-zA-Z ]/g, ''),
-        telfAdmin:          this.tiendaForm.controls['telfAdmin'].value?.replace(/[^0-9.]*/g,''),
-        emailAdmin:         this.tiendaForm.controls['emailAdmin'].value,
-        codProv:            this.tiendaForm.controls['codProv'].value?.toString().trim(),
-        idCentroProceso:    null,
-        Active:             'A',
-      };
-      
-      console.log(this.modelTienda);
-
-      setTimeout(() => {
-        this.tiendaservs.guardarTiendas(this.modelTienda).subscribe({
-          next: (x) => {
-            Toast.fire({ icon: 'success', title: 'Tienda guardado con éxito' });
-            this._show_spinner = false;
-          },
-          error: (e) => {
-            Toast.fire({
-              icon: 'error',
-              title: 'No hemos podido guardar esta tienda',
-            });
-            this._show_spinner = false;
-          },
-          complete: () => {
-            this.obtenerTiendas(2);
-          },
-        });
-      }, 1000);
-    }
+    }, 1000);
   }
 
   obtenerTiendas(type: number) {
     this.tiendaservs.obtenerTiendas().subscribe({
       next: (tienda) => {
-        console.log(tienda);
         this.tiendalista = tienda;
         this.tiendaListaGhost = tienda;
       },
@@ -429,15 +338,8 @@ export class TiendaComponent implements OnInit {
     });
   }
 
-  validateCatchData(data: any) {
-    for (let x = 0; x < 1; x++) {
-      this.catchData(data);
-    }
-  }
-
   catchData(data: any) {
     this.calwidth = true;
-    this.widthAutom();
     this.dis_account_shop = true;
     this.resultModal = [];
     this.viewForm = true;
@@ -445,9 +347,7 @@ export class TiendaComponent implements OnInit {
     this.idtienda = data.id;
     this.codecTienda = data.codigoTienda;
     this.tiendaForm.controls['codigoClienteidFk'].setValue(data.codigoCliente);
-    this.tiendaForm.controls['codigoClienteidFk'].setValue(data.codigoCliente);
-    this.obtenerCuentaBancariaCliente();
-    this.obtenerCuentasTienda(this.codecTienda);
+    this.obtenerLocalidad();
     this.editcatch = true;
     this.tiendaForm.controls['nombreTienda'].setValue(data.nombreTienda);
     this.tiendaForm.controls['telefono'].setValue(data.telefono);
@@ -456,13 +356,10 @@ export class TiendaComponent implements OnInit {
     this.tiendaForm.controls['telfAdmin'].setValue(data.telfAdmin);
     this.tiendaForm.controls['emailAdmin'].setValue(data.emailAdmin);
     this._action_butto = 'Editar';
-    this._cancel_button = true;
     setTimeout(() => {
-      this.localidadesGuardadasCliente.filter( (x:any) => {
-        x.codigo = x.codigo.toString().trim()
-        })
-        this.tiendaForm.controls['codigoClienteidFk'].disable();
-        this.tiendaForm.controls['codProv'].setValue(data.codProv.toString().trim());
+      this.localidadesGuardadasCliente.filter((x:any) => x.codigo = x.codigo.toString().trim());
+      this.tiendaForm.controls['codigoClienteidFk'].disable();
+      this.tiendaForm.controls['codProv'].setValue(data.codProv.toString().trim());
     }, 500);
   }
 
@@ -471,28 +368,13 @@ export class TiendaComponent implements OnInit {
     this._show_spinner = true;
     this.clienteserv.ObtenerClienteSelect().subscribe({
       next: (cliente) => {
-        console.log(cliente);
+        this.clientelista = cliente;
         this.clienteListaGhost = cliente;
         this._show_spinner = false;
       },
       error: (e) => {
         this._show_spinner = false;
         console.error(e);
-      },
-      complete: () => {
-        this.clienteListaGhost.filter((element: any) => {
-          let arr: any = {
-            id: element.id,
-            codigoCliente: element.codigoCliente,
-            nombreCliente: element.nombreCliente,
-            ruc: element.ruc,
-            direccion: element.direccion,
-            telefcontacto: element.telefcontacto,
-            emailcontacto: element.emailcontacto,
-            nombrecontacto: element.nombrecontacto,
-          };
-          this.clientelista.unshift(arr);
-        });
       },
     });
   }
@@ -552,7 +434,6 @@ export class TiendaComponent implements OnInit {
     this._show_spinner = true;
     this.loc.obtenerLocalidadesCliente(id).subscribe({
       next: (x) => {
-        console.log(x);
         this.localidadesGuardadasCliente = x;
       },
       complete: () => {
@@ -566,26 +447,16 @@ export class TiendaComponent implements OnInit {
   }
 
   openDialogCuentas(data: any): void {
+    console.log(data);
     this.obtenerCuentasTienda(data.codigoTienda);
-    let nombreCliente: string = '';
-    let idCLiente: number = 0;
-    const xuser: any = sessionStorage.getItem('usuario');
-    this.clienteListaGhost.filter((element: any) => {
-      if (data.codigoCliente == element.codigoCliente) {
-        console.log('data entrada');
-        console.log(element);
-        nombreCliente = element.nombreCliente;
-        idCLiente = element.codigoCliente;
-      }
-    });
     this._show_spinner = true;
     setTimeout(() => {
       const dialogRef = this.dialog.open(ModalTiendaCuentaComponent, {
         height: 'auto',
         width: '50%',
         data: {
-          nombreCliente: nombreCliente,
-          idCLiente: idCLiente,
+          nombreCliente: data.nombreCliente,
+          idCLiente: data.codigoCliente,
           res: this.listaCuentaTiendasBanc,
           type: 0,
           codigoTiendaEdicion: data.codigoTienda,
@@ -601,7 +472,7 @@ export class TiendaComponent implements OnInit {
           this.validationCtaBancarias();
         }
       });
-    }, 2000);
+    }, 1000);
   }
 
   validationCtaBancarias() {
@@ -644,18 +515,39 @@ export class TiendaComponent implements OnInit {
         this.tiendaservs.eliminarCuentasAsignadas(data.id).subscribe({
           next: (x) => {
             this._show_spinner = false;
-            Swal.fire('Eliminado!', 'Cuenta asignada, eliminada', 'success');
-          },
-          error: (e) => {
+            Swal.fire('Eliminado!', 'Cuenta eliminada', 'success');
+          }, error: (e) => {
             this._show_spinner = false;
             Swal.fire('Upps!', 'No hemos podido eliminar esta cuenta', 'error');
-          },
-          complete: () => {
+          }, complete: () => {
             this.eliminarCuentaBancaria(id);
             this.obtenerTiendas(1);
           },
         });
       }
+    });
+  }
+
+  noWhitespaceValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      const isValid = !isWhitespace;
+      return isValid ? null : { 'whitespace': true };
+    };
+  }
+
+  private markFormGroupTouched(formGroup: FormGroup): void {
+    Object.keys(formGroup.controls).forEach(field => {
+      const control = formGroup.get(field);
+      control?.markAsTouched({ onlySelf: true });
+    });
+  }
+
+  private resetFormGroup(formGroup: FormGroup): void {
+    Object.keys(formGroup.controls).forEach(field => {
+      const control = formGroup.get(field);
+      control?.markAsUntouched({ onlySelf: true });
+      control?.markAsPristine({ onlySelf: true });
     });
   }
 }

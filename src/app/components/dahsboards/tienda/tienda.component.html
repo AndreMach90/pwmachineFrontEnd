@@ -4,9 +4,10 @@
   </div>
 </div>
 
-<div class="dashworks p-2 rounded-3 d-flex w-100 h-100" [ngStyle]="{ 'background-color': 'white' }">
+<div class="dashworks p-2 rounded-3 d-flex w-100 h-100"
+  [ngStyle]="{ 'background-color': 'white' }">
   <div class="register d-flex justify-content-between w-100">
-    <div class="w-25 p-3" style="overflow-y: auto;" *ngIf="viewForm">
+    <div class="w-25 p-3" style="overflow-y: auto" *ngIf="viewForm">
       <div class="">
         <h1>Registro de Tiendas</h1>
         <hr />
@@ -18,32 +19,35 @@
             <span class="text-primary">Escoge el Cliente</span>
             <span class="text-danger">*</span>
           </label>
-          <select id="codigoClienteidFk"
+          <select #codigoClienteidFk
+            id="codigoClienteidFk"
             class="inpForms form-select w-100"
             formControlName="codigoClienteidFk"
-            #codigoClienteidFk
-            (change)="this.obtenerLocalidad();"
+            (change)="this.obtenerLocalidad()"
             aria-label="">
-            <option *ngFor="let cliente of clientelista"
-              [value]="cliente.codigoCliente">
+            <option *ngFor="let cliente of clientelista" [value]="cliente.codigoCliente">
               {{ cliente.nombreCliente | titlecase }}
             </option>
           </select>
+          <span *ngIf="tiendaForm.controls['codigoClienteidFk'].invalid && tiendaForm.controls['codigoClienteidFk'].touched" class="text-danger">
+            El cliente es requerido!.
+          </span>
         </div>
-        <div *ngIf="true"
-          class="animate_animated animate_backInLeft p-2 bg-light rounded-2">
+        <div *ngIf="true" class="animate_animated animate_backInLeft p-2 bg-light rounded-2">
           <div class="mb-3 w-100">
-            <label for="nombreTienda"
-                   class="form-label text-secondary">
-                   Nombre de tienda: 
-                   <span class="text-danger">*</span>
+            <label for="nombreTienda" class="form-label text-secondary">
+              Nombre de tienda:
+              <span class="text-danger">*</span>
             </label>
             <input type="text"
-                   class="form-control"
-                   formControlName="nombreTienda"
-                   #nombreTienda
-                   id="nombreTienda"
-                   placeholder="Tienda Carlitos..."/>
+              class="form-control"
+              formControlName="nombreTienda"
+              #nombreTienda
+              id="nombreTienda"
+              placeholder=""/>
+            <span *ngIf="tiendaForm.controls['nombreTienda'].invalid && tiendaForm.controls['nombreTienda'].touched" class="text-danger">
+              El nombre tienda es requerido!.
+            </span>
           </div>
           <div class="mb-3 w-100">
             <label for="RUC" class="form-label text-secondary">
@@ -55,8 +59,10 @@
               #telefono
               id="telefono"
               placeholder=""
-              (keyup)="validateInputNumber(telefono)"
-            />
+              (keyup)="validateInputNumber(telefono)"/>
+            <span *ngIf="tiendaForm.controls['telefono'].invalid && tiendaForm.controls['telefono'].touched" class="text-danger">
+              El teléfono tienda es requerido!.
+            </span>
           </div>
           <div class="mb-3 w-100">
             <label for="Direccion" class="form-label text-secondary">
@@ -67,69 +73,80 @@
               formControlName="direccion"
               #direccion
               id="direccion"
-              placeholder="Av. Carlos Julio...."
-            />
+              placeholder=""/>
+            <span *ngIf="tiendaForm.controls['direccion'].invalid && tiendaForm.controls['direccion'].touched" class="text-danger">
+              La dirección es requerido!.
+            </span>
           </div>
           <div class="mb-3 w-100">
-            <label for="nombre_contacto" class="form-label text-secondary"> Nombre de Administrador: </label>
+            <label for="nombre_contacto" class="form-label text-secondary">
+              Nombre de Administrador:<span class="text-danger">*</span>
+            </label>
             <input type="text"
               class="form-control"
               formControlName="nombreAdmin"
               #nombreAdmin
               id="nombreAdmin"
               placeholder=""
-              (keyup)="validateInputText(nombreAdmin)"
-            />
+              (keyup)="validateInputText(nombreAdmin)"/>
+            <span *ngIf="tiendaForm.controls['nombreAdmin'].invalid && tiendaForm.controls['nombreAdmin'].touched" class="text-danger">
+              El nombre administrador es requerido!.
+            </span>
           </div>
           <div class="mb-3 w-100">
-            <label for="Telefono" class="form-label text-secondary">Telefono del administrador: </label>
+            <label for="Telefono" class="form-label text-secondary">
+              Teléfono del administrador:<span class="text-danger">*</span>
+            </label>
             <input type="text"
               class="form-control"
               formControlName="telfAdmin"
               #telfAdmin
               id="telfAdmin"
               placeholder=""
-              (keyup)="validateInputNumber(telfAdmin)"
-            />
+              (keyup)="validateInputNumber(telfAdmin)"/>
+            <span *ngIf="tiendaForm.controls['telfAdmin'].invalid && tiendaForm.controls['telfAdmin'].touched" class="text-danger">
+              El teléfono administrador es requerido!.
+            </span>
           </div>
           <div class="mb-3 w-100">
-            <label for="email_contacto" class="form-label text-secondary">Email del administrador:</label>
+            <label for="email_contacto" class="form-label text-secondary">
+              Email del administrador:<span class="text-danger">*</span>
+            </label>
             <input type="text"
               class="form-control"
               formControlName="emailAdmin"
               #emailAdmin
               id="emailAdmin"
-              placeholder=""
-            />
+              placeholder=""/>
+            <span *ngIf="tiendaForm.controls['emailAdmin'].invalid && tiendaForm.controls['emailAdmin'].touched" class="text-danger">
+              El email administrador es requerido!.
+            </span>
           </div>
           <div class="mb-3 col-3 w-100">
-            <label for="codProv" class="form-label">Localidad: <span class="text-danger">*</span></label>
-            <select id="codProv"
-                    class="inpForms form-select w-100"
-                    formControlName="codProv"
-                    #codProv
-                    aria-label="">
-                    <option *ngFor="let tipo of localidadesGuardadasCliente"
-                      [value]="tipo.codigo">
-                      {{ tipo.nombre }}
-                    </option>
+            <label for="codProv" class="form-label">
+              Localidad: <span class="text-danger">*</span>
+            </label>
+            <select #codProv
+              id="codProv"
+              class="inpForms form-select w-100"
+              formControlName="codProv"
+              aria-label="">
+              <option *ngFor="let tipo of localidadesGuardadasCliente" [value]="tipo.codigo">
+                {{ tipo.nombre }}
+              </option>
             </select>
+            <span *ngIf="tiendaForm.controls['codProv'].invalid && tiendaForm.controls['codProv'].touched" class="text-danger">
+              La localidad es requerida!.
+            </span>
           </div>
           <div class="d-flex flex-wrap justify-content-between">
             <div class="floating-button">
-              <button type="button"
-                      class="btn btn-danger btn-sm"
-                      *ngIf="_cancel_button"
-                      (click)="limpiar()">
-                      <div class="icono" [style]="'background-image: url( ' + cancel + ' )'"></div>
+              <button type="button" class="btn btn-danger btn-sm me-1" (click)="limpiar()">
+                <div class="icono" [style]="'background-image: url( ' + cancel + ' )'"></div>
               </button>
-              <button type="submit"
-                      class="d-flex align-items-center btn btn-sm btn-primary"
-                      *ngIf="_create_show">
-                      <div class="icono"
-                           [style]="'background-image: url( ' + crear + ' )'">
-                      </div>
-                      <div>{{ _action_butto }} Tienda</div>
+              <button type="submit" class="d-flex align-items-center btn btn-sm btn-primary" *ngIf="_create_show">
+                <div class="icono" [style]="'background-image: url( ' + crear + ' )'"></div>
+                <div>{{ _action_butto }} Tienda</div>
               </button>
             </div>
           </div>
@@ -155,8 +172,7 @@
                   #filtertien
                   id="filtertien"
                   (keyup)="filterTienda()"
-                  placeholder="Búsqueda de tiendas registradas..."
-                />
+                  placeholder="Búsqueda de tiendas registradas..."/>
               </form>
             </div>
             <div *ngIf="permisonUsers">
@@ -181,23 +197,15 @@
               <th class="p-2">Email Administrador</th>
               <th class="p-2">Localidad</th>
               <th class="p-2">Dirección</th>
-              <th class="p-2" title="Agregar cuentas contables del cliente">
-                Cta.Cont.
-              </th>
+              <th class="p-2" title="Agregar cuentas contables del cliente">Cta.Cont.</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let tienda of tiendalista; let i = index">
               <td *ngIf="permisonUsers">
                 <div class="d-flex">
-                  <div class="icono-btn"
-                    [style]="'background-image: url( ' + edit + ' )'"
-                    (click)="validateCatchData(tienda)"
-                  ></div>
-                  <div class="icono-btn"
-                    [style]="'background-image: url( ' + delete + ' )'"
-                    (click)="eliminarTiendas(tienda, i)"
-                  ></div>
+                  <div class="icono-btn" [style]="'background-image: url( ' + edit + ' )'"(click)="catchData(tienda)"></div>
+                  <div class="icono-btn" [style]="'background-image: url( ' + delete + ' )'" (click)="eliminarTiendas(tienda, i)"></div>
                 </div>
               </td>
               <td>{{ tienda.nombreTienda }}</td>
@@ -205,7 +213,7 @@
               <td>{{ tienda.telefono }}</td>
               <td>
                 <span>{{ tienda.nombreAdmin }}</span>
-                <br>
+                <br />
                 <small class="text-secondary">telf: 0{{ tienda.telfAdmin }}</small>
               </td>
               <td>{{ tienda.emailAdmin }}</td>
@@ -218,15 +226,13 @@
                     matBadgePosition="before"
                     matBadgeColor="warn"
                     [disabled]="dis_account_shop"
-                    (click)="op.toggle($event);obtenerCuentasTienda(tienda.codigoTienda)">
+                    (click)="op.toggle($event); obtenerCuentasTienda(tienda.codigoTienda)">
                     <div [style]="'background-image: url( ' + search + ' )'" class="icono"></div>
                     <div>
                       <p-overlayPanel #op>
                         <span class="fs-4">
                           Cuentas bancarias asignadas:
-                          <strong>
-                            <span class="text-primary">({{ listaCuentaTiendasBanc.length }})</span>
-                          </strong>
+                          <strong><span class="text-primary">({{ listaCuentaTiendasBanc.length }})</span></strong>
                         </span>
                         <hr />
                         <div class="table-responsive">
@@ -234,21 +240,17 @@
                             <thead class="bg-black text-light">
                               <th class="p-1" *ngIf="permisonUsers"></th>
                               <th class="p-1">Banco</th>
-                              <th class="p-1" title="Número de Cuenta"> N. Cta.</th>
+                              <th class="p-1" title="Número de Cuenta">N. Cta.</th>
                             </thead>
                             <tbody>
-                              <tr *ngFor="let cuenta of listaCuentaTiendasBanc;let i = index">
+                              <tr *ngFor="let cuenta of listaCuentaTiendasBanc; let i = index">
                                 <td *ngIf="permisonUsers">
                                   <div class="d-flex">
-                                    <div [style]="'background-image: url('+delete+')'"
-                                      (click)="eliminarCuentaTienda(cuenta, i)"
-                                      class="icono-btn"
-                                    ></div>
+                                    <div [style]="'background-image: url(' + delete + ')'" (click)="eliminarCuentaTienda(cuenta, i)" class="icono-btn"></div>
                                   </div>
                                 </td>
                                 <td>{{ cuenta.nombanco }}</td>
-                                <td>{{ cuenta.numerocuenta }}
-                                </td>
+                                <td>{{ cuenta.numerocuenta }}</td>
                               </tr>
                             </tbody>
                           </table>

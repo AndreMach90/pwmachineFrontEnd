@@ -120,20 +120,10 @@ export class EquipoComponent implements OnInit {
     private userservs: UsuariosService,
     private sharedservs: ServicesSharedService) {
     this.usuarioTemporalHub = new HubConnectionBuilder()
-      .withUrl(this.urlHub+'usuarioTemporal')
-      .build();
+      .withUrl(this.urlHub+'usuarioTemporal').build();
     this.usuarioTemporalHub.on("SendUsuarioTemporal", message => {
-      console.log("Usuarios temporal",message);
       this.ObtenerUsuarioTemporalHub(message);
     });
-  }
-
-  ObtenerUsuarioTemporalHub(data:any) {
-    this.listaEsquipo.filter((element:any)=> {
-      if( element.ipEquipo == data.ipMachineSolicitud) {
-        element.capacidadUsuariosTemporales ++;
-      }
-    })
   }
 
   public equiposForm = new FormGroup({
@@ -184,6 +174,14 @@ export class EquipoComponent implements OnInit {
     this.obtenerIps();
     this.usuarioTemporalHub.start().then(()=>{})
       .catch( e => console.error('Algo ha pasado con el usuario temporal...', e))
+  }
+
+  ObtenerUsuarioTemporalHub(data:any) {
+    this.listaEsquipo.filter((element:any)=> {
+      if( element.ipEquipo == data.ipMachineSolicitud) {
+        element.capacidadUsuariosTemporales ++;
+      }
+    })
   }
 
   catchDataUserMaq(data:any) {
@@ -441,15 +439,10 @@ export class EquipoComponent implements OnInit {
   obtenerEquipos() {
     this.equiposerv.obtenerEquipo().subscribe({
       next: (equipo: any) => {
-        this.listaEsquipo = equipo;
-        if(this.isActive){
-          this.listaEsquipoGhost = this.listaEsquipo;
-        }else{
-          this.listaEsquipo = this.listaEsquipo.filter((element: any) => {
-            return element.active === "A";
-          });
-          this.listaEsquipoGhost = this.listaEsquipo;
-        }
+        this.listaEsquipo = equipo.filter((element: any) => {
+          return element.active === "A";
+        });
+        this.listaEsquipoGhost = equipo;
       }
     })
   }
@@ -547,14 +540,16 @@ export class EquipoComponent implements OnInit {
   }
 
   filterEquipos() {
-    let filter: any = this.filterForm.controls['filterequip'].value;
-    this.listaEsquipo = this.listaEsquipoGhost.filter( (item:any) =>
-      item.serieEquipo.toLowerCase().includes(filter.toLowerCase())    ||
-      item.nombreTienda.toLowerCase().includes(filter.toLowerCase())   ||
-      item.nombremarca.toLowerCase().includes(filter.toLowerCase())    ||
-      item.nombremodelo.toLowerCase().includes(filter.toLowerCase())   ||
-      item.tipoMaquinaria.toLowerCase().includes(filter.toLowerCase())
-    )
+    let filter = this.filterForm.controls['filterequip'].value?.toLowerCase();
+    const filterFunction = (item: any) => 
+      item.serieEquipo.toLowerCase().includes(filter) ||
+      item.nombreTienda.toLowerCase().includes(filter) ||
+      item.nombremarca.toLowerCase().includes(filter) ||
+      item.nombremodelo.toLowerCase().includes(filter) ||
+      item.tipoMaquinaria.toLowerCase().includes(filter);
+    this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) => 
+      filterFunction(item) && (this.isActive || item.active === "A")
+    );
   }
 
   limpiar() {
@@ -675,7 +670,13 @@ export class EquipoComponent implements OnInit {
 
   machineDesactive(){
     this.isActive = !this.isActive;
-    this.obtenerEquipos();
+    if(this.isActive){
+      this.listaEsquipo = this.listaEsquipoGhost;
+    } else {
+      this.listaEsquipo = this.listaEsquipoGhost.filter((element: any) => {
+        return element.active === "A";
+      });
+    }
   }
 
   getClientSelect() {
@@ -683,5 +684,17 @@ export class EquipoComponent implements OnInit {
       next: (clientes) => this.clientelista = clientes, 
       error: (e) => console.error(e)
     });
+  }
+
+  validateFechaInstalacion() {
+    const fechaInstalacionControl = this.equiposForm.get('fechaInstalacion');
+    if (fechaInstalacionControl) {
+      const fechaActual = new Date();
+      const fechaSeleccionada = new Date(fechaInstalacionControl.value!);
+      if (fechaSeleccionada > fechaActual) {
+        const fechaActualISO = fechaActual.toISOString().split('T')[0];
+        fechaInstalacionControl.setValue(fechaActualISO);
+      }
+    }
   }
 }

@@ -68,10 +68,14 @@ export class EquipoService {
   } 
 
   obtenerIPEquipos() {
-    return this.http.get( this.env.apiurl() + 'Equipo/EquipoNuevo', { headers: this.headers });
+    return this.http.get( this.env.apiurl() + 'Equipo/EquipoNuevo', { headers: this.headers } );
   }
 
   activarEquipo (id: number) {
     return this.http.put( this.env.apiurl() + 'Equipo/ActivarEquipo/' + id, id, { headers: this.headers });
+  }
+
+  obtenerHoraActual (){
+    return this.http.get(this.env.apiurl() + 'Servicios/HoraActual', { headers: this.headers, responseType: 'text' });
   }
 }

@@ -23,6 +23,9 @@
           id="nombanco"
           placeholder="Banco de ..."
           (keyup)="validateInputText(nombanco)" />
+        <span *ngIf="ctaBancariaForm.controls['nombanco'].invalid && ctaBancariaForm.controls['nombanco'].touched" class="text-danger">
+          Nombre del banco es requerido.
+        </span>
       </div>
       <div class="mb-3 w-100">
         <label for="numerocuenta" class="form-label text-secondary">
@@ -35,6 +38,9 @@
           id="numerocuenta"
           placeholder=""
           (keyup)="validateInputNumber(numerocuenta)" />
+        <span *ngIf="ctaBancariaForm.controls['numerocuenta'].invalid && ctaBancariaForm.controls['numerocuenta'].touched" class="text-danger">
+          Número de cuenta es requerido.
+        </span>
       </div>
       <div>
         <div class="d-flex">
@@ -55,6 +61,9 @@
             name="cuenta"
             (click)="seleccionarCuenta('corriente')" />
         </div>
+        <span *ngIf="ctaBancariaForm.controls['tipoCuenta'].invalid && ctaBancariaForm.controls['tipoCuenta'].touched" class="text-danger">
+          Seleccione un tipo de cuenta.
+        </span>
       </div>
       <div class="mt-2 mb-2">
         <label for="observacion" class="p-1">Observación</label>

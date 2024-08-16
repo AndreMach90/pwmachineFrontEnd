@@ -27,6 +27,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   authorizationdecision:        any;
   filterequip:                  any;
   fechaNotif:                   any;
+  fechaActual:                  any;
   listalertas:                  any = [];
   nuevoObjectalerts:            any[] = [];
   listaEsquipo:                 any = [];
@@ -63,10 +64,10 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     private clienteService: ClientesService){
     this.connectionSendPingEquipo = new HubConnectionBuilder().withUrl(this.urlHub+'PingHubEquipos').build();
     this.connectionSendPingEquipo.on("SendPingEquipo", message => {
-      this.PingHub(message); 
       this.alertHub(message);});
     this.manualTransactionHub = new HubConnectionBuilder().withUrl(this.urlHub+'manualTransaction').build();
     this.manualTransactionHub.on("SendTransaccionManual", message => {
+      console.log("Esto es transaccion", message);
       this.updateTransHub(message)});
   }
 
@@ -92,8 +93,8 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     } else if (xtokenDecript == null || xtokenDecript == undefined) {
       this.router.navigate(['login'])
     }
+    this.obtenerFechaActual();
     this.getClientes();
-    this.obtenerEquiposMoneq();
     this.connectionSendPingEquipo.start().then( ()=> {})
       .catch( e => console.error('Algo ha pasado con el ping...', e));
     this.manualTransactionHub.start().then( ()=> {})
@@ -144,29 +145,29 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   }
 
   async readTextAloud(textData: string) {
+    let voiceSelect;
     try {
       if (this.flagVoice == false) this.flagVoice = await EasySpeech.init({ maxTimeout: 5000, interval: 250 });
       if(this.flagVoice == true){
+        voiceSelect = EasySpeech.voices().find(voice => 
+          voice.name === 'Microsoft Laura - Spanish (Spain)' && 
+          voice.lang === 'es-ES'
+        );
+        if (!voiceSelect) {
+          voiceSelect = EasySpeech.voices().find(voice => 
+            voice.name === 'Microsoft Andrea Online (Natural) - Spanish (Ecuador)' && 
+            voice.lang === 'es-EC'
+          );
+        }
+        (voiceSelect) ? voiceSelect : EasySpeech.voices()[1];
         await EasySpeech.speak({ 
           text: textData,
-          voice: EasySpeech.voices()[1],
+          voice: voiceSelect,
         })
       }
     } catch (error) {
       console.log('Hubo un error en el speaker: ', error);
     }
-  }
-
-  private PingHub(data:any) {
-    data.forEach((element: any) => {
-      let equi = this.listaEsquipo.find((equi: any) => element.ip === equi.ipEquipo);
-      if (equi) {
-        equi.estadoPing = element.estadoPing;
-        if (element.estadoPing === 1) {
-          equi.tiempoSincronizacion = element.tiempoSincronizacion;
-        }
-      }
-    });
   }
 
   async obtenerEquiposMoneq() {
@@ -177,9 +178,14 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       const arrOnline = [];
       const arrOffline = [];
       for (const element of this.listaEsquipo) {
+        let dateEquipo = new Date(element.tiempoSincronizacion);
+        let diffInMinutes = (this.fechaActual - dateEquipo.getTime()) / 60000;
+        if (diffInMinutes >= 5) {
+          element.estadoPing = 0;
+        }
+        await this.obtenerIndicadores(element.serieEquipo);
         if (element.estadoPing == 1) arrOnline.push(element);
         if (element.estadoPing == 0) arrOffline.push(element);
-        await this.obtenerIndicadores(element.serieEquipo);
       }
       this.estadosMonitoreo[0].count = arrOnline.length;
       this.estadosMonitoreo[1].count = arrOffline.length;
@@ -192,13 +198,11 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.listaEsquipoIndicadores = [];
       this.equiposerv.obtenerTotalesMoneq(machine_sn).subscribe({
-        next: (equipo: any) => {
-          this.listaEsquipoIndicadores = equipo;
-        },
+        next: (equipo: any) => this.listaEsquipoIndicadores = equipo,
         error: (e) => {
           console.error(e);
           this.listaEsquipoIndicadores = [];
-          reject(false); // Rechaza la promesa en caso de error
+          reject(false);
         },
         complete: () => {
           if (this.listaEsquipoIndicadores.length){
@@ -213,7 +217,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
               }
             });
           }
-          resolve(true); // Resuelve la promesa cuando se complete la operación
+          resolve(true);
         }
       });
     });
@@ -234,7 +238,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
         this.listalertas  = [];
       } else {
         equipoFind.indicadorCapacidadBilletes = equipoFind.indicadorCapacidadBilletes + data.cant;
-        equipoFind.indicadorTotalAsegurado = equipoFind.indicadorTotalAsegurado + data.monto;
+        equipoFind.indicadorTotalAsegurado = parseFloat((equipoFind.indicadorTotalAsegurado + data.monto).toFixed(2));
         equipoFind.indicadorPorcentajeBilletes = Number(((equipoFind.indicadorCapacidadBilletes / equipoFind.indicadorCapacidadBilletesMax) * 100).toFixed(2));
         equipoFind.indicadorPorcentajeTotalMaxAsegurado = Number(((equipoFind.indicadorTotalAsegurado / equipoFind.indicadorTotalMaxAsegurado) * 100).toFixed(2));
         equipoFind.indicadorColorBarProgressBilletes = this.getColorClass(equipoFind.indicadorPorcentajeBilletes, 'Capacidad de piezas del equipo', data.machine_Sn);
@@ -292,14 +296,42 @@ export class MaquinariaMonitoreoComponent implements OnInit {
 
   alertHub(dataPingHub: any){
     let fecha = new Date();
+    this.updatePing(dataPingHub);
     if(this.contadorPing>=500){
       this.alertTrans();
       this.alertTimeSincro(dataPingHub);
       this.contadorPing = 0;
       this.fechaNotif = fecha.getTime();
     }
+    if(this.contadorPing===30 || this.contadorPing===100 || 
+      this.contadorPing===200 || this.contadorPing===300 || 
+      this.contadorPing===400) {
+      const arrOnline = [];
+      const arrOffline = [];
+      for (const element of this.listaEsquipo) {
+        if (element.estadoPing == 1) arrOnline.push(element);
+        if (element.estadoPing == 0) arrOffline.push(element);
+      }
+      this.estadosMonitoreo[0].count = arrOnline.length;
+      this.estadosMonitoreo[1].count = arrOffline.length;
+    }
     this.contadorPing++;
     console.log(this.contadorPing);
+  }
+
+  private updatePing(data: any) {
+    for (let equipo of this.listaEsquipo){
+      if (equipo.ipEquipo === data.ip) {
+        equipo.estadoPing = data.estadoPing;
+      } else {
+        const syncTime = new Date(data.tiempoSincronizacion);
+        const dateEquipo = new Date(equipo.tiempoSincronizacion);
+        const diffInMinutes = (syncTime.getTime() - dateEquipo.getTime()) / 60000;
+        if (diffInMinutes >= 5) {
+          equipo.estadoPing = 0;
+        }
+      }
+    }
   }
 
   alertTrans(){
@@ -430,5 +462,13 @@ export class MaquinariaMonitoreoComponent implements OnInit {
         this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId && item.estadoPing === color);
       }
     }
+  }
+  
+  obtenerFechaActual(){
+    this.equiposerv.obtenerHoraActual().subscribe({
+      next: (data: any) => this.fechaActual = new Date(data),
+      error: (e) => console.error('Error obteniendo la hora actual:', e),
+      complete: () => this.obtenerEquiposMoneq()
+    });
   }
 }

@@ -139,11 +139,10 @@ export class ModalUsuariosTemporalesComponent implements OnInit {
     }
     
     openDialogCuentasBancarias(data:any, action:string): void {
-
+    console.log(data);
     let modelData: any;
     switch( action ) {
       case 'C':
-
         modelData = {
           "id": data.id,
           "codigoCliente": data.codigoCliente,
@@ -155,20 +154,14 @@ export class ModalUsuariosTemporalesComponent implements OnInit {
           "nombrecontacto": data.nombrecontacto,
           "action": action
         }
-
         break;
-
       case 'E':
-
         let nombreCliente:any;
         this.clientelista.filter( (element:any) => {
-
           if( element.codigoCliente == data.codigoCliente) {
             nombreCliente = element.nombreCliente;
           }
-
         })
-
         modelData = {
           "id": data.id,
           "idCliente": this.cuentaslista[0].clienteID,
@@ -178,11 +171,11 @@ export class ModalUsuariosTemporalesComponent implements OnInit {
           "nombanco": data.nombanco,
           "numerocuenta": data.numerocuenta,
           "fecrea": new Date(),
+          "tipoCuenta": data.tipoCuenta,
+          "observacion": data.observacion,
           "action": action
         }
-
         break;
-
     }   
 
     const dialogRef = this.dialog.open( ModalClienteComponent, {
@@ -192,11 +185,7 @@ export class ModalUsuariosTemporalesComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe( result => {
-      // this.obtenerCliente();
       this.obtenerCuentaBancariaCliente();
     });
-
   }
-
-
 }

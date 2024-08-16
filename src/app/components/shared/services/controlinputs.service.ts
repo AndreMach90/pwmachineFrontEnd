@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl } from '@angular/forms';
+import { AbstractControl, FormGroup, ValidatorFn } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -24,21 +24,26 @@ export class ControlinputsService {
     }
   }
 
-  // validateAndCleanNumberInputData(input: any) {
-  //   let a = input.toString()
-  //   const cleanedValue = a.replace(/[^0-9.]*/g, '');
-  //   if (a !== cleanedValue) {
-  //     input.value = cleanedValue;
-  //   }
-  // }
+  noWhitespaceValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      const isValid = !isWhitespace;
+      return isValid ? null : { 'whitespace': true };
+    };
+  }
 
-  // validateAndCleanInputDataText(input:any) {
-  //   let a = input.toString()
-  //   const cleanedValue = a.replace(/[^a-zA-Z ]/g, '');
-  //   if (a !== cleanedValue) {
-  //     input.value = cleanedValue;
-  //   }
-  // }
+  markFormGroupTouched(formGroup: FormGroup): void {
+    Object.keys(formGroup.controls).forEach(field => {
+      const control = formGroup.get(field);
+      control?.markAsTouched({ onlySelf: true });
+    });
+  }
 
-
+  resetFormGroup(formGroup: FormGroup): void {
+    Object.keys(formGroup.controls).forEach(field => {
+      const control = formGroup.get(field);
+      control?.markAsUntouched({ onlySelf: true });
+      control?.markAsPristine({ onlySelf: true });
+    });
+  }
 }

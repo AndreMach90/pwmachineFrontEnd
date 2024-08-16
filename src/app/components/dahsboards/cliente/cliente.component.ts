@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Environments } from '../../environments/environments';
-import { FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalClienteComponent } from './modal-cliente/modal-cliente.component';
 import { ClientesService } from './services/clientes.service';
@@ -70,13 +70,13 @@ export class ClienteComponent implements OnInit {
   viewForm: boolean = false;
 
   public clienteForm = new FormGroup({
-    Nombre_Cliente:   new FormControl(''), 
-    Telefono:         new FormControl(''), 
-    Direccion:        new FormControl(''), 
-    RUC:              new FormControl(''), 
-    nombre_contacto:  new FormControl(''), 
-    email_contacto:   new FormControl(''), 
-    Active:           new FormControl(''), 
+    Nombre_Cliente:   new FormControl('', [Validators.required, this.noWhitespaceValidator()]), 
+    Telefono:         new FormControl('', [Validators.required, this.noWhitespaceValidator()]), 
+    Direccion:        new FormControl('', [Validators.required, this.noWhitespaceValidator()]), 
+    RUC:              new FormControl('', [Validators.required, this.noWhitespaceValidator()]), 
+    nombre_contacto:  new FormControl('', [Validators.required, this.noWhitespaceValidator()]), 
+    email_contacto:   new FormControl('', [Validators.required, this.noWhitespaceValidator()]), 
+    Active:           new FormControl('') 
   })
 
   public filterForm = new FormGroup({
@@ -106,6 +106,14 @@ export class ClienteComponent implements OnInit {
     this.secondary_a = this.env.appTheme.colorSecondary_A;
     this.secondary_b = this.env.appTheme.colorSecondary_B;
     this.obtenerCliente();
+  }
+
+  onSubmit() {  
+    if (this.clienteForm.invalid) {
+      this.markFormGroupTouched(this.clienteForm);
+      return;
+    }
+    this._action_butto === 'Crear' ? this.guardarClientes() : this.editarClientes();  
   }
   
   validateInputText(data:any) {
@@ -203,77 +211,26 @@ export class ClienteComponent implements OnInit {
     );
   }
 
-
-  onSubmit() {    
-    switch(this._action_butto) {
-      case 'Crear':
-        this.guardarClientes();
-        break;
-      case 'Editar':
-        this.editarClientes();
-        break;
-    }
-  } 
-
   guardarClientes() {
-    if( this.clienteForm.controls['Nombre_Cliente'].value == null || this.clienteForm.controls['Nombre_Cliente'].value == undefined || this.clienteForm.controls['Nombre_Cliente'].value == ''  ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de nombre cliente vacío' });
-    else if( this.clienteForm.controls['RUC'].value == null || this.clienteForm.controls['RUC'].value == undefined || this.clienteForm.controls['RUC'].value == ''  ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de RUC cliente vacío' });
-    else if( this.clienteForm.controls['Telefono'].value == null || this.clienteForm.controls['Telefono'].value == undefined || this.clienteForm.controls['Telefono'].value == ''  ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de Telefono cliente vacío' });
-    else {
-      this._show_spinner = true;
-      this._create_show = false;
-      let date = new Date();
-      const token: any = 'CLI-'+this.clienteForm.controls['Nombre_Cliente'].value?.slice(0,5).replace(' ', '_') +'-' + this.sharedservs.generateRandomString(10) + '-' + date.getFullYear() + '-' + date.getDay();
-      let arr: any = {
-        codigoCliente:   token,
-        nombreCliente:   this.clienteForm.controls['Nombre_Cliente'].value,
-        ruc:             this.clienteForm.controls['RUC'].value?.replace(/[^0-9.]*/g, ''),
-        Direccion:       this.clienteForm.controls['Direccion'].value,
-        telefcontacto:   this.clienteForm.controls['Telefono'].value?.replace(/[^0-9.]*/g, ''),
-        emailcontacto:   this.clienteForm.controls['email_contacto'].value,
-        nombrecontacto:  this.clienteForm.controls['nombre_contacto'].value?.replace(/[^a-zA-Z ]/g, ''),
-      }
-      setTimeout(() => {        
-        this.clienteserv.guardarClientes( arr ).subscribe({
-          next: (x) => Toast.fire({ icon: 'success', title: 'Cliente gaurdado con éxito' }), 
-          error: (e) => {
-            console.error(e);
-            Toast.fire({ icon: 'error', title: 'No se ha podido guardar' });
-            this._show_spinner = false;
-          },
-          complete: () => {
-            this._show_spinner = false;
-            this.obtenerCliente();
-            this.limpiar();
-          }
-        })
-      }, 1000);
+    this._show_spinner = true;
+    this._create_show = false;
+    let date = new Date();
+    const token: any = 'CLI-'+this.clienteForm.controls['Nombre_Cliente'].value?.slice(0,5).replace(' ', '_') +'-' + this.sharedservs.generateRandomString(10) + '-' + date.getFullYear() + '-' + date.getDay();
+    let arr: any = {
+      codigoCliente:   token,
+      nombreCliente:   this.clienteForm.controls['Nombre_Cliente'].value,
+      ruc:             this.clienteForm.controls['RUC'].value?.replace(/[^0-9.]*/g, ''),
+      Direccion:       this.clienteForm.controls['Direccion'].value,
+      telefcontacto:   this.clienteForm.controls['Telefono'].value?.replace(/[^0-9.]*/g, ''),
+      emailcontacto:   this.clienteForm.controls['email_contacto'].value,
+      nombrecontacto:  this.clienteForm.controls['nombre_contacto'].value?.replace(/[^a-zA-Z ]/g, ''),
     }
-  }
-
-  editarClientes() {
-    if( this.clienteForm.controls['Nombre_Cliente'].value == null || this.clienteForm.controls['Nombre_Cliente'].value == undefined || this.clienteForm.controls['Nombre_Cliente'].value == ''  ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de nombre cliente vacío' });
-    else if( this.clienteForm.controls['RUC'].value == null || this.clienteForm.controls['RUC'].value == undefined || this.clienteForm.controls['RUC'].value == ''  ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de RUC cliente vacío' });
-    else if( this.clienteForm.controls['Telefono'].value == null || this.clienteForm.controls['Telefono'].value == undefined || this.clienteForm.controls['Telefono'].value == ''  ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de Telefono cliente vacío' });
-    else {
-      let arr: any = {
-        id:              this.idlciente,
-        codigoCliente:   this.codigoCliente,
-        nombreCliente:   this.clienteForm.controls['Nombre_Cliente'].value,
-        ruc:             this.clienteForm.controls['RUC'].value?.replace(/[^0-9.]*/g, ''),
-        Direccion:       this.clienteForm.controls['Direccion'].value,
-        telefcontacto:   this.clienteForm.controls['Telefono'].value?.replace(/[^0-9.]*/g, ''),
-        emailcontacto:   this.clienteForm.controls['email_contacto'].value,
-        nombrecontacto:  this.clienteForm.controls['nombre_contacto'].value?.replace(/[^a-zA-Z ]/g, ''),
-      }
-      this._show_spinner = true;
-      this.clienteserv.actualizarCliente(arr).subscribe({
-        next: ( x ) => {
-          Toast.fire({ icon: 'success', title: 'Cliente actualizado con éxito' });
-          this._show_spinner = false;
-        }, error: (e) => {
-          console.error(e)
-          Toast.fire({ icon: 'error', title: 'Algo ha pasado' });
+    setTimeout(() => {        
+      this.clienteserv.guardarClientes( arr ).subscribe({
+        next: (x) => Toast.fire({ icon: 'success', title: 'Cliente gaurdado con éxito' }), 
+        error: (e) => {
+          console.error(e);
+          Toast.fire({ icon: 'error', title: 'No se ha podido guardar' });
           this._show_spinner = false;
         }, complete: () => {
           this._show_spinner = false;
@@ -281,7 +238,35 @@ export class ClienteComponent implements OnInit {
           this.limpiar();
         }
       })
+    }, 1000);
+  }
+
+  editarClientes() {
+    let arr: any = {
+      id:              this.idlciente,
+      codigoCliente:   this.codigoCliente,
+      nombreCliente:   this.clienteForm.controls['Nombre_Cliente'].value,
+      ruc:             this.clienteForm.controls['RUC'].value?.replace(/[^0-9.]*/g, ''),
+      Direccion:       this.clienteForm.controls['Direccion'].value,
+      telefcontacto:   this.clienteForm.controls['Telefono'].value?.replace(/[^0-9.]*/g, ''),
+      emailcontacto:   this.clienteForm.controls['email_contacto'].value,
+      nombrecontacto:  this.clienteForm.controls['nombre_contacto'].value?.replace(/[^a-zA-Z ]/g, ''),
     }
+    this._show_spinner = true;
+    this.clienteserv.actualizarCliente(arr).subscribe({
+      next: ( x ) => {
+        Toast.fire({ icon: 'success', title: 'Cliente actualizado con éxito' });
+        this._show_spinner = false;
+      }, error: (e) => {
+        console.error(e)
+        Toast.fire({ icon: 'error', title: 'Algo ha pasado' });
+        this._show_spinner = false;
+      }, complete: () => {
+        this._show_spinner = false;
+        this.obtenerCliente();
+        this.limpiar();
+      }
+    })
   }
 
   obtenerCuentaBancariaCliente(id:number) {
@@ -378,6 +363,7 @@ export class ClienteComponent implements OnInit {
     this.viewForm = false;
     this._width_table = 'tabledata table-responsive w-100 p-2';
     this._create_show = true;
+    this.resetFormGroup(this.clienteForm);
   }
 
   openDialogCrearCuentaBancaria(data:any, action:string): void {
@@ -439,5 +425,28 @@ export class ClienteComponent implements OnInit {
       data: data, 
     });
     dialogRef.afterClosed().subscribe( result => this.obtenerCliente());
+  }
+
+  noWhitespaceValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const isWhitespace = (control.value || '').trim().length === 0;
+      const isValid = !isWhitespace;
+      return isValid ? null : { 'whitespace': true };
+    };
+  }
+
+  private markFormGroupTouched(formGroup: FormGroup): void {
+    Object.keys(formGroup.controls).forEach(field => {
+      const control = formGroup.get(field);
+      control?.markAsTouched({ onlySelf: true });
+    });
+  }
+
+  private resetFormGroup(formGroup: FormGroup): void {
+    Object.keys(formGroup.controls).forEach(field => {
+      const control = formGroup.get(field);
+      control?.markAsUntouched({ onlySelf: true });
+      control?.markAsPristine({ onlySelf: true });
+    });
   }
 }
