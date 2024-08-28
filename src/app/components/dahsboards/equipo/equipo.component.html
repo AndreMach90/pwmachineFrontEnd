@@ -24,6 +24,9 @@
             {{ cliente.nombreCliente | titlecase }}
           </option>
         </select>
+        <span *ngIf="equiposForm.controls['codigoClienteidFk'].invalid && equiposForm.controls['codigoClienteidFk'].touched" class="text-danger">
+          El cliente es requerido!.
+        </span>
         <div class="mb-3">
           <label for="codigoClienteidFk" class="form-label">
             <span class="text-primary"> Escoge la Tienda </span>
@@ -38,12 +41,14 @@
               {{ tiendas.nombreTienda }}
             </option>
           </select>
+          <span *ngIf="equiposForm.controls['codigoTiendaidFk'].invalid && equiposForm.controls['codigoTiendaidFk'].touched" class="text-danger">
+            La tienda es requerida!.
+          </span>
         </div>
         <div *ngIf="equiposForm" class="animate__animated animate__backInLeft p-2 bg-light rounded-2">
           <div class="mb-3">
             <label for="tipomaq" class="form-label">
-              <span class="text-primary">Tipo de Equipo</span>
-              <span class="text-danger">*</span>
+              Tipo de Equipo <span class="text-danger">*</span>
             </label>
             <select #tipomaq
               class="inpForms form-select w-100"
@@ -55,6 +60,9 @@
                 {{ tipo.nombre | titlecase }}
               </option>
             </select>
+            <span *ngIf="equiposForm.controls['tipomaq'].invalid && equiposForm.controls['tipomaq'].touched" class="text-danger">
+              El tipo de equipo es requerido!.
+            </span>
           </div>
           <div class="mb-3">
             <label for="nomMarc" class="form-label">
@@ -73,8 +81,11 @@
                 {{ marca.nombremarca | titlecase }} / {{ marca.codmarca }}
               </option>
             </select>
+            <span *ngIf="equiposForm.controls['nomMarc'].invalid && equiposForm.controls['nomMarc'].touched" class="text-danger">
+              La marca es requerida!.
+            </span>
           </div>
-          <div class="mb-3" *ngIf="show_modelos">
+          <div class="mb-3">
             <label for="nomMod" class="form-label">
               <span class="text-primary">
                 Modelo:<strong class="text-primary">({{ listaModelos.length }})</strong>
@@ -90,6 +101,9 @@
                 {{ modelo.nombremodelo | titlecase }} / {{ modelo.codmodelo }}
               </option>
             </select>
+            <span *ngIf="equiposForm.controls['nomMod'].invalid && equiposForm.controls['nomMod'].touched" class="text-danger">
+              El modelo es requerido!.
+            </span>
           </div>
           <div class="mb-3 w-100">
             <label for="ipmaquina" class="form-label text-secondary">
@@ -108,10 +122,13 @@
                 <small class="text-secondary" style="font-size: 9pt">{{ ip.ipEquipo }}</small>
               </option>
             </select>
+            <span *ngIf="equiposForm.controls['ipmaquina'].invalid && equiposForm.controls['ipmaquina'].touched" class="text-danger">
+              El IP es requerido!.
+            </span>
           </div>
           <div class="mb-3 w-100">
             <label for="serieEquipo" class="form-label text-secondary">
-              Serie del equipo:
+              Serie del equipo: <span class="text-danger">*</span>
             </label>
             <input type="text"
               class="form-control"
@@ -121,21 +138,45 @@
               placeholder="N-0123..."
               readonly
               style="background-color: antiquewhite"/>
+            <span *ngIf="equiposForm.controls['serieEquipo'].invalid && equiposForm.controls['serieEquipo'].touched" class="text-danger">
+              La serie del equipo es requerido!.
+            </span>
           </div>
-          <div class="mb-3 w-100">
-            <label for="capacidadIni" class="form-label text-secondary">
-              Capacidad de unidades del billetes:
-            </label>
-            <input type="text"
-              class="form-control"
-              formControlName="capacidadIni"
-              #capacidadIni
-              id="capacidadIni"
-              placeholder=""/>
-          </div>
+          <ng-container *ngIf="tipoEquipo === '009'; else billetes">
+            <div class="mb-3 w-100">
+              <label for="capacidadIniSobres" class="form-label text-secondary">
+                Capacidad de unidades de monedas: <span class="text-danger">*</span>
+              </label>
+              <input type="text"
+                class="form-control"
+                formControlName="capacidadIniSobres"
+                #capacidadIniSobres
+                id="capacidadIniSobres"
+                (keyup)="validateInputNumber(capacidadIniSobres)"/>
+              <span *ngIf="equiposForm.controls['capacidadIniSobres'].invalid && equiposForm.controls['capacidadIniSobres'].touched" class="text-danger">
+                La capacidad es requerida!.
+              </span>
+            </div>
+          </ng-container>
+          <ng-template #billetes>
+            <div class="mb-3 w-100">
+              <label for="capacidadIni" class="form-label text-secondary">
+                Capacidad de unidades de billetes: <span class="text-danger">*</span>
+              </label>
+              <input type="text"
+                class="form-control"
+                formControlName="capacidadIni"
+                #capacidadIni
+                id="capacidadIni"
+                (keyup)="validateInputNumber(capacidadIni)"/>
+              <span *ngIf="equiposForm.controls['capacidadIni'].invalid && equiposForm.controls['capacidadIni'].touched" class="text-danger">
+                La capacidad es requerida!.
+              </span>
+            </div>
+          </ng-template>
           <div class="mb-3 w-100">
             <label for="capacidadAsegurada" class="form-label text-secondary">
-              Valor Asegurado:
+              Valor Asegurado: <span class="text-danger">*</span>
             </label>
             <input type="text"
               formControlName="capacidadAsegurada"
@@ -144,10 +185,13 @@
               class="form-control"
               placeholder=""
               (keyup)="validateInputNumber(capacidadAsegurada)"/>
+            <span *ngIf="equiposForm.controls['capacidadAsegurada'].invalid && equiposForm.controls['capacidadAsegurada'].touched" class="text-danger">
+              El valor asegurado es requerido!.
+            </span>
           </div>
           <div class="mb-3 w-100">
             <label for="Direccion" class="form-label text-secondary">
-              Fecha Instalación:
+              Fecha Instalación: <span class="text-danger">*</span>
             </label>
             <input type="date"
               class="form-control"
@@ -155,6 +199,9 @@
               #fechaInstalacion
               id="fechaInstalacion"
               (change)="validateFechaInstalacion()"/>
+            <span *ngIf="equiposForm.controls['fechaInstalacion'].invalid && equiposForm.controls['fechaInstalacion'].touched" class="text-danger">
+              La fecha de instalación es requerida!.
+            </span>
           </div>
           <div class="d-flex flex-wrap justify-content-between">
             <div class="floating-button">
@@ -215,7 +262,7 @@
               <th class="p-2">IP</th>
               <th class="p-2">Equipo</th>
               <th class="p-2">Tienda</th>
-              <th class="p-2">Capacidad de Billetes</th>
+              <th class="p-2">Capacidad Billetes / Monedas</th>
               <th class="p-2">Capacidad Asegurada</th>
               <th class="p-2">Tipo de Equipo</th>
               <th class="p-2">Marca</th>
@@ -243,8 +290,8 @@
               <td>{{ equipos.ipEquipo }}</td>
               <td>{{ equipos.serieEquipo }}</td>
               <td>{{ equipos.nombreTienda }}</td>
-              <td>{{ equipos.capacidadIni }}</td>
-              <td>{{ equipos.capacidadAsegurada }}</td>
+              <td align="center">{{ equipos.tipo === '009' ? equipos.capacidadIniSobres : equipos.capacidadIni }}</td>
+              <td align="center">{{ equipos.capacidadAsegurada }}</td>
               <td>{{ equipos.tipoMaquinaria }}</td>
               <td>{{ equipos.nombremarca }}</td>
               <td>{{ equipos.nombremodelo }}</td>

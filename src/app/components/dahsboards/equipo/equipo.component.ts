@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Environments } from '../../environments/environments';
 import { TiendaService } from '../tienda/services/tienda.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -37,16 +37,11 @@ export class EquipoComponent implements OnInit {
   private urlHub: any = this.env.apiUrlHub();
 
   modelDatosPersonales:      any = [];
-  tiendaListaGhost:          any = [];
   listaUsuariosMaquina:      any = [];
   listaUsuariosMaquinaGhost: any = [];
-  equiposlista:              any = [];
   tiendalista:               any = [];
-  selectedClientId:          any = [];
-
   modelUsers:                any = [];
   modeloEquipos:             any = [];
-  clienteListaGhost:         any = [];
   clientelista:              any = [];
   listaEsquipo:              any = [];
   listaEsquipoGhost:         any = [];
@@ -59,48 +54,33 @@ export class EquipoComponent implements OnInit {
   idusermaquina:        any;
   nombreUserMaquina:    any;
   idDatosPersonales:    any;
-  actividad:            any;
   observacion:          any;
   cuentasIdFk:          any;
   ipMachine:            any;
   _cedula:              any;
   _nombresx:            any;
   _telefono:            any;
-  primary:              any;
-  secondary:            any;
-  secondary_a:          any;
-  secondary_b:          any;
   ipmaquinaUserMaq:     any;
   codigoTiendaidFk:     any;
   ipeditar:             any;
-  marca:                any;
-  modelo:               any;
-  a:                    any;
+  ipEquipo:             any;
+  tipoEquipo:           any;
 
   isActive:           boolean = false;
-  show_modelos:       boolean = false;
   edit_temporal_user: boolean = false;
   viewForm:           boolean = false;
   _show_spinner:      boolean = false;
   _cancel_button:     boolean = false;
-  _edit_btn:          boolean = false;
   _cancel_button_us:  boolean = true;
-  _delete_show:       boolean = true;
-  _edit_show:         boolean = true;
   _create_show:       boolean = true;
-  _form_create:       boolean = true;
   permisonUsers:      boolean = true;
   calwidth:           boolean = true;
-  disabledIpEdit:     boolean = true;
 
   idEquipo:           number = 0;
-  idCliente:          number = 0;
   count:              number = 0;
 
-  namemodulo:         string = '';
-  _icon_button:       string = 'add';
-  _action_butto_us           = 'Editar';
-  _action_butto              = 'Crear';
+  _action_butto_us    = 'Editar';
+  _action_butto       = 'Crear';
   
   add:            any = this.env.apiUrlIcon()+'add.png';
   delete:         any = this.env.apiUrlIcon()+'delete.png';
@@ -110,6 +90,33 @@ export class EquipoComponent implements OnInit {
   search:         any = this.env.apiUrlIcon()+'search.png';
   users:          any = this.env.apiUrlIcon()+'usuarios.png';
   _width_table:   string = 'tabledata table-responsive w-100 p-2';
+
+  public equiposForm = new FormGroup({
+    codigoClienteidFk:    new FormControl('', [Validators.required, this.controlInputsService.noWhitespaceValidator()]),
+    codigoTiendaidFk:     new FormControl('', [Validators.required]), 
+    tipomaq:              new FormControl('', [Validators.required, this.controlInputsService.noWhitespaceValidator()]), 
+    nomMarc:              new FormControl('', [Validators.required, this.controlInputsService.noWhitespaceValidator()]),
+    nomMod:               new FormControl('', [Validators.required, this.controlInputsService.noWhitespaceValidator()]),
+    ipmaquina:            new FormControl({ value: '', disabled: false }, [Validators.required, this.controlInputsService.noWhitespaceValidator()]),
+    serieEquipo:          new FormControl('', [Validators.required, this.controlInputsService.noWhitespaceValidator()]), 
+    capacidadIni:         new FormControl('', [Validators.required]),
+    capacidadIniSobres:   new FormControl('', [Validators.required]),
+    capacidadAsegurada:   new FormControl('', [Validators.required]),
+    fechaInstalacion:     new FormControl('', [Validators.required, this.controlInputsService.noWhitespaceValidator()])
+  })
+
+  public filterForm = new FormGroup({
+    filterequip:          new FormControl('')
+  })
+
+  public filterUserEquiposForm = new FormGroup({
+    filterusermaq:        new FormControl('')
+  })
+
+  public filterEquiposForm = new FormGroup({
+    _nombres:             new FormControl(''),
+    _cedula:              new FormControl(''),
+  })
 
   constructor( private env: Environments,
     private clienteserv: ClientesService,
@@ -126,34 +133,6 @@ export class EquipoComponent implements OnInit {
     });
   }
 
-  public equiposForm = new FormGroup({
-    tipomaq:              new FormControl(''), 
-    codigoTiendaidFk:     new FormControl(''), 
-    serieEquipo:          new FormControl(''), 
-    capacidadIni:         new FormControl(''), 
-    fechaInstalacion:     new FormControl(''),
-    nomMarc:              new FormControl(''),
-    nomMod:               new FormControl(''),
-    nomModipmaquina:      new FormControl(''),
-    ipmaquina:            new FormControl({ value: '', disabled: false }),
-    capacidadAsegurada:   new FormControl(''),
-    capacidadIniSobres:   new FormControl(''),
-    codigoClienteidFk:    new FormControl('')
-  })
-
-  public filterForm = new FormGroup({
-    filterequip:          new FormControl('')
-  })
-
-  public filterUserEquiposForm = new FormGroup({
-    filterusermaq:        new FormControl('')
-  })
-
-  public filterEquiposForm = new FormGroup({
-    _nombres:             new FormControl(''),
-    _cedula:              new FormControl(''),
-  })
-
   ngOnInit(): void {
     this.getClientSelect();
     let x:any = this.sharedservs.validateRol();
@@ -165,10 +144,6 @@ export class EquipoComponent implements OnInit {
         this.permisonUsers = false; 
         break;
     }
-    this.primary     = this.env.appTheme.colorPrimary;
-    this.secondary   = this.env.appTheme.colorSecondary_C;
-    this.secondary_a = this.env.appTheme.colorSecondary_A;
-    this.secondary_b = this.env.appTheme.colorSecondary_B;
     this.obtenerEquipos();
     this.getDataMaster();
     this.obtenerIps();
@@ -176,10 +151,199 @@ export class EquipoComponent implements OnInit {
       .catch( e => console.error('Algo ha pasado con el usuario temporal...', e))
   }
 
+  onSubmit() {
+    if (this.equiposForm.invalid) {
+      this.controlInputsService.markFormGroupTouched(this.equiposForm);
+      return;
+    }
+    this._action_butto === 'Crear' ? this.guardarEquipos() : this.editarEquipos();
+  }
+
+  limpiar() {
+    this.obtenerIps();
+    this.equiposForm.controls['codigoClienteidFk'].setValue('');
+    this.equiposForm.controls['codigoTiendaidFk'].setValue('');
+    this.equiposForm.controls['tipomaq'].setValue('');
+    this.equiposForm.controls['nomMarc'].setValue('');
+    this.equiposForm.controls['nomMod'].setValue('');
+    this.equiposForm.controls['ipmaquina'].setValue('');
+    this.equiposForm.controls['serieEquipo'].setValue('');
+    this.equiposForm.controls['capacidadIni'].setValue('');
+    this.equiposForm.controls['capacidadIniSobres'].setValue('');
+    this.equiposForm.controls['capacidadAsegurada'].setValue('');
+    this.equiposForm.controls['fechaInstalacion'].setValue('');
+    this.tiendalista    = [];
+    this.listaMarcas    = [];
+    this.listaModelos   = [];
+    this.calwidth       = true;
+    this._create_show   = true;
+    this._cancel_button = false;
+    this.viewForm       = false;
+    this.ipeditar       = '';
+    this.tipoEquipo     = '';
+    this._action_butto  = 'Crear';
+    this._width_table   = 'tabledata table-responsive w-100 p-2';
+    this.equiposForm.controls['ipmaquina'].enable();
+    this.controlInputsService.resetFormGroup(this.equiposForm);
+  }
+
   ObtenerUsuarioTemporalHub(data:any) {
     this.listaEsquipo.filter((element:any)=> {
       if( element.ipEquipo == data.ipMachineSolicitud) {
-        element.capacidadUsuariosTemporales ++;
+        element.capacidadUsuariosTemporales++;
+      }
+    })
+  }
+
+  obtenerEquipos() {
+    this.equiposerv.obtenerEquipo().subscribe({
+      next: (equipo: any) => {
+        this.listaEsquipo = equipo.filter((element: any) => {
+          return element.active === "A";
+        });
+        this.listaEsquipoGhost = equipo;
+        console.log(equipo);
+      },
+      error: (e) => console.log(e)
+    })
+  }
+
+  getDataMaster() {
+    this.sharedservs.getTipoEquipo().subscribe({
+      next: (data) => this.tipomaqlista = data, 
+      error: (e) => console.error(e)
+    })
+  }
+
+  obtenerIps() {
+    this.equiposerv.obtenerIPEquipos().subscribe({
+      next: (x) => this.listaIps = x, 
+      error: (e) => console.error(e)
+    })
+  }
+
+  widthAutom() {
+    this._width_table = this.calwidth ? 'tabledata table-responsive w-75 p-2' : 'tabledata table-responsive w-100 p-2';
+    this.calwidth = !this.calwidth;
+    this.equiposForm.controls['codigoClienteidFk'].setValue('');
+    this.equiposForm.controls['codigoTiendaidFk'].setValue('');
+    this.equiposForm.controls['tipomaq'].setValue('');
+    this.equiposForm.controls['nomMarc'].setValue('');
+    this.equiposForm.controls['nomMod'].setValue('');
+    this.equiposForm.controls['ipmaquina'].enable();
+    this.equiposForm.controls['ipmaquina'].setValue('');
+    this.equiposForm.controls['serieEquipo'].setValue('');
+    this.equiposForm.controls['capacidadIni'].setValue('');
+    this.equiposForm.controls['capacidadIniSobres'].setValue('');
+    this.equiposForm.controls['capacidadAsegurada'].setValue('');
+    this.equiposForm.controls['fechaInstalacion'].setValue('');
+    this._action_butto  = 'Crear';
+    this.tipoEquipo     = '';
+    this.tiendalista    = [];
+    this.listaMarcas    = [];
+    this.listaModelos   = [];
+  }
+
+  guardarEquipos() {
+    this._show_spinner = true;
+    this._create_show = false;
+    let tiempoSincronizacion = new Date();
+    tiempoSincronizacion.setHours(0, 0, 0, 0);
+    this.modeloEquipos = {
+      codigoTiendaidFk:   this.equiposForm.controls['codigoTiendaidFk'].value,
+      tipo:               this.equiposForm.controls['tipomaq'].value,
+      marca:              this.equiposForm.controls['nomMarc'].value,
+      modelo:             this.equiposForm.controls['nomMod'].value,
+      serieEquipo:        this.equiposForm.controls['serieEquipo'].value,
+      active:             'A',
+      fechaInstalacion:   this.equiposForm.controls['fechaInstalacion'].value,
+      ipEquipo:           this.ipEquipo[0],
+      capacidadAsegurada: this.equiposForm.controls['capacidadAsegurada'].value?.toString().replace(/[^0-9.]*/g, ''),
+      tiempoSincronizacion: tiempoSincronizacion,
+      ...(this.tipoEquipo === '009' 
+        ? { capacidadIniSobres: this.equiposForm.controls['capacidadIniSobres'].value?.toString().replace(/[^0-9.]*/g, '') }
+        : { capacidadIni: this.equiposForm.controls['capacidadIni'].value?.toString().replace(/[^0-9.]*/g, '') })
+    }
+    this.equiposerv.guardarEquipo(this.modeloEquipos).subscribe({
+      next: (x) => Toast.fire({ icon: 'success', title: 'Equipo guardado' }), 
+      error: (e) => {
+        console.log(e);
+        Toast.fire({ icon: 'error', title: 'No se ha podido guardar este equipo' });
+      }, 
+      complete: () => {
+        this._show_spinner = false;
+        this.obtenerEquipos();
+        this.obtenerIps();
+        this.limpiar();
+      }
+    })
+  }
+
+  catchData(data:any) {
+    this.widthAutom();
+    this.idEquipo = data.id;
+    this.equiposForm.controls['ipmaquina'].disable();// Deshabilita el ip maquina para la edicion
+    this.equiposForm.controls['codigoClienteidFk'].setValue(data.codigoClienteidFk.toString());
+    this.validateTiendas();
+    setTimeout(() => {                                
+      this.equiposForm.controls['codigoTiendaidFk'].setValue(data.codigoTiendaidFk);
+    }, 1000);
+    this.equiposForm.controls['tipomaq'].setValue(data.tipo);
+    this.obtenerMarcas();
+    setTimeout(() => { 
+      this.equiposForm.controls['nomMarc'].setValue(data.marca.toString().trim());
+      this.obtenerModelos();
+    }, 1000);
+    setTimeout(() => { 
+    this.equiposForm.controls['nomMod'].setValue(data.modelo.toString().trim());
+    }, 1500);
+    let fechaA: any;
+    if( data.fechaInstalacion != null || data.fechaInstalacion != undefined ) {
+      let date: any = data.fechaInstalacion.toString().split('T');
+      fechaA = date[0];
+    }
+    this.arrIp = [];
+    this.arrIp = {
+      "serieEquipo": data.serieEquipo,
+      "ipEquipo":    data.ipEquipo
+    }
+    this.listaIps = [];
+    this.listaIps.push(this.arrIp);
+    this.equiposForm.controls['ipmaquina'].setValue(data.ipEquipo);
+    this.equiposForm.controls['serieEquipo'].setValue(data.serieEquipo);
+    this.equiposForm.controls['capacidadIni'].setValue(data.capacidadIni);
+    this.equiposForm.controls['capacidadIniSobres'].setValue(data.capacidadIniSobres);
+    this.equiposForm.controls['fechaInstalacion'].setValue(fechaA);
+    this.ipeditar = this.arrIp.ipEquipo;
+    this.equiposForm.controls['capacidadAsegurada'].setValue(data.capacidadAsegurada);
+    this._action_butto  = 'Editar';
+    this._cancel_button = true;
+    this.viewForm       = true;
+  }
+
+  editarEquipos() {
+    this.modeloEquipos = {
+      id:                 this.idEquipo,
+      codigoTiendaidFk:   this.equiposForm.controls['codigoTiendaidFk'].value,
+      tipo:               this.equiposForm.controls['tipomaq'].value,
+      marca:              this.equiposForm.controls['nomMarc'].value,
+      modelo:             this.equiposForm.controls['nomMod'].value,
+      serieEquipo:        this.equiposForm.controls['serieEquipo'].value,
+      active:             'A',
+      capacidadIni:       this.equiposForm.controls['capacidadIni'].value?.toString().replace(/[^0-9.]*/g, ''),
+      capacidadIniSobres: this.equiposForm.controls['capacidadIniSobres'].value?.toString().replace(/[^0-9.]*/g, ''),
+      fechaInstalacion:   this.equiposForm.controls['fechaInstalacion'].value,
+      ipEquipo :          this.ipeditar,
+      capacidadAsegurada: this.equiposForm.controls['capacidadAsegurada'].value?.toString().replace(/[^0-9.]*/g, ''),
+      tiempoSincronizacion: new Date()
+    }
+    this.equiposerv.actualizarEquipo(this.idEquipo, this.modeloEquipos).subscribe({
+      next: (x) => Toast.fire({ icon: 'success', title: 'Equipo actualizado' }),
+      error: (e) => Toast.fire({ icon: 'error', title: 'No se ha podido actualizar este equipo' }), 
+      complete: () => {
+        this.obtenerEquipos();
+        this.obtenerIps();
+        this.limpiar();
       }
     })
   }
@@ -257,25 +421,11 @@ export class EquipoComponent implements OnInit {
     this.codigoTiendaidFk = data.codigoTiendaidFk;
     this.equiposerv.obtenerUsuariosIp(data.ipEquipo).subscribe({
       next: (x) => {
-        console.log("Estos son los usuarios",x);
         this.listaUsuariosMaquina = x;
         this.listaUsuariosMaquinaGhost = x;
       }, 
       error: (e) => console.error(e)
     })
-  }
-
-  widthAutom() {
-    switch( this.calwidth ) {
-      case true:
-        this._width_table = 'tabledata table-responsive w-75 p-2';
-        this.calwidth = false;
-        break;
-      case false:        
-        this._width_table = 'tabledata table-responsive w-100 p-2';
-        this.calwidth = true;
-        break;
-    }
   }
 
   validateInputText(data:any) {
@@ -297,90 +447,30 @@ export class EquipoComponent implements OnInit {
     )
   }
 
-  onSubmit() {
-    if (this._action_butto === 'Crear') this.guardarEquipos();
-    if (this._action_butto === 'Editar') this.editarEquipos();
-  }
-
-  editarEquipos() {
-    if ( this.equiposForm.controls['codigoTiendaidFk'].value == undefined || this.equiposForm.controls['codigoTiendaidFk'].value == null || this.equiposForm.controls['codigoTiendaidFk'].value == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo tienda vacío' });
-    else if ( this.equiposForm.controls['tipomaq'].value     == undefined || this.equiposForm.controls['tipomaq'].value == null || this.equiposForm.controls['tipomaq'].value == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de tipo de máquina vacío' });
-    else if ( this.equiposForm.controls['nomMarc'].value     == undefined || this.equiposForm.controls['nomMarc'].value == null || this.equiposForm.controls['nomMarc'].value == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de marca vacío' });
-    else if ( this.equiposForm.controls['nomMod'].value      == undefined || this.equiposForm.controls['nomMod'].value == null || this.equiposForm.controls['nomMod'].value == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de modelo vacío' });
-    else if ( this.equiposForm.controls['serieEquipo'].value == undefined || this.equiposForm.controls['serieEquipo'].value == null || this.equiposForm.controls['serieEquipo'].value == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de número de serie vacío' });
-    else {
-      if ( this.a ) {
-        this.modeloEquipos = {
-          id: this.idEquipo,
-          codigoTiendaidFk:   this.equiposForm.controls['codigoTiendaidFk'].value,
-          tipo:               this.equiposForm.controls['tipomaq'].value,
-          marca:              this.equiposForm.controls['nomMarc'].value,
-          modelo:             this.equiposForm.controls['nomMod'].value,
-          serieEquipo:        this.equiposForm.controls['serieEquipo'].value,
-          active:             'A',
-          capacidadIni:       this.equiposForm.controls['capacidadIni'].value?.toString().replace(/[^0-9.]*/g, ''),
-          fechaInstalacion:   this.equiposForm.controls['fechaInstalacion'].value,
-          ipEquipo :          this.a[0],
-          capacidadAsegurada: this.equiposForm.controls['capacidadAsegurada'].value?.toString().replace(/[^0-9.]*/g, ''),
-          capacidadIniSobres: 5,
-          estadoPing: 0,
-          tiempoSincronizacion: new Date()
-        }  
-      }
-      else {
-        this.modeloEquipos = {
-          id: this.idEquipo,
-          codigoTiendaidFk:   this.equiposForm.controls['codigoTiendaidFk'].value,
-          tipo:               this.equiposForm.controls['tipomaq'].value,
-          marca:              this.equiposForm.controls['nomMarc'].value,
-          modelo:             this.equiposForm.controls['nomMod'].value,
-          serieEquipo:        this.equiposForm.controls['serieEquipo'].value,
-          active:             'A',
-          capacidadIni:       this.equiposForm.controls['capacidadIni'].value?.toString().replace(/[^0-9.]*/g, ''),
-          fechaInstalacion:   this.equiposForm.controls['fechaInstalacion'].value,
-          ipEquipo :          this.ipeditar,
-          capacidadAsegurada: this.equiposForm.controls['capacidadAsegurada'].value?.toString().replace(/[^0-9.]*/g, ''),
-          capacidadIniSobres: 5,
-          estadoPing:         0,
-          tiempoSincronizacion: new Date()
-        }
-      }
-      this.equiposerv.actualizarEquipo(this.idEquipo, this.modeloEquipos).subscribe({
-        next: (x) => Toast.fire({ icon: 'success', title: 'Equipo actualizado' }),
-        error: (e) => Toast.fire({ icon: 'error', title: 'No se ha podido actualizar este equipo' }), 
-        complete: () => {
-          this.obtenerEquipos();
-          this.obtenerIps();
-          this.limpiar();
-        }
-      })
-    }
-  }
-
   openDialogUserTemporales(data:any) {
     let arr: any = {
-        "idCliente":                   data.idCLiente,
-        "nombreCliente":               data.nombreCliente,
-        "nombreTienda":                data.nombreTienda,
-        "telfAdmin":                   data.telfAdmin,
-        "tipoMaquinaria":              data.tipoMaquinaria,
-        "nombremarca":                 data.nombremarca,
-        "nombremodelo":                data.nombremodelo,
-        "id":                          data.id,
-        "codigoTiendaidFk":            data.codigoTiendaidFk,
-        "capacidadAsegurada":          data.capacidadAsegurada,
-        "tipo":                        data.tipo,
-        "column1":                     data.column1,
-        "modelo":                      data.modelo,
-        "serieEquipo":                 data.serieEquipo,
-        "active":                      data.active,
-        "capacidadIni":                data.capacidadIni,
-        "fechaInstalacion":            data.fechaInstalacion,
-        "capacidadUsuariosTemporales": 1,
-        "capacidadUsuarios":           1,
-        "provincia":                   data.provincia,
-        "ipEquipo":                    data.ipEquipo,
-        "codigoTienda":                data.codigoTienda
+      "idCliente":                   data.idCLiente,
+      "nombreCliente":               data.nombreCliente,
+      "nombreTienda":                data.nombreTienda,
+      "telfAdmin":                   data.telfAdmin,
+      "tipoMaquinaria":              data.tipoMaquinaria,
+      "nombremarca":                 data.nombremarca,
+      "nombremodelo":                data.nombremodelo,
+      "id":                          data.id,
+      "codigoTiendaidFk":            data.codigoTiendaidFk,
+      "capacidadAsegurada":          data.capacidadAsegurada,
+      "tipo":                        data.tipo,
+      "column1":                     data.column1,
+      "modelo":                      data.modelo,
+      "serieEquipo":                 data.serieEquipo,
+      "active":                      data.active,
+      "capacidadIni":                data.capacidadIni,
+      "fechaInstalacion":            data.fechaInstalacion,
+      "capacidadUsuariosTemporales": 1,
+      "capacidadUsuarios":           1,
+      "provincia":                   data.provincia,
+      "ipEquipo":                    data.ipEquipo,
+      "codigoTienda":                data.codigoTienda
     }
     const dialogRef = this.dialog.open( UsuariosTemporalesMaquinaComponent, {
       height: 'auto',
@@ -388,105 +478,6 @@ export class EquipoComponent implements OnInit {
       data: arr,
     });
     dialogRef.afterClosed().subscribe( result => this.obtenerEquipos());
-  }
-
-  guardarEquipos() {
-    if ( this.equiposForm.controls['codigoTiendaidFk'].value == undefined || this.equiposForm.controls['codigoTiendaidFk'].value == null || this.equiposForm.controls['codigoTiendaidFk'].value == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo tienda vacío' });
-    else if ( this.equiposForm.controls['tipomaq'].value     == undefined || this.equiposForm.controls['tipomaq'].value          == null || this.equiposForm.controls['tipomaq'].value          == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de tipo de máquina vacío' });
-    else if ( this.equiposForm.controls['nomMarc'].value     == undefined || this.equiposForm.controls['nomMarc'].value          == null || this.equiposForm.controls['nomMarc'].value          == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de marca vacío' });
-    else if ( this.equiposForm.controls['nomMod'].value      == undefined || this.equiposForm.controls['nomMod'].value           == null || this.equiposForm.controls['nomMod'].value           == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de modelo vacío' });
-    else if ( this.equiposForm.controls['serieEquipo'].value == undefined || this.equiposForm.controls['serieEquipo'].value      == null || this.equiposForm.controls['serieEquipo'].value      == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de número de serie vacío' });
-    else if ( this.equiposForm.controls['ipmaquina'].value   == undefined || this.equiposForm.controls['ipmaquina'].value        == null || this.equiposForm.controls['ipmaquina'].value      == '' ) Toast.fire({ icon: 'warning', title: 'No puedes enviar el campo de ipmaquina vacío' });
-    else {
-      this._show_spinner = true;
-      this._create_show = false;
-      let tiempoSincronizacion = new Date();
-      tiempoSincronizacion.setHours(0, 0, 0, 0);
-      this.modeloEquipos = {
-        codigoTiendaidFk:   this.equiposForm.controls['codigoTiendaidFk'].value,
-        tipo:               this.equiposForm.controls['tipomaq'].value,
-        marca:              this.equiposForm.controls['nomMarc'].value,
-        modelo:             this.equiposForm.controls['nomMod'].value,
-        serieEquipo:        this.equiposForm.controls['serieEquipo'].value,
-        active:             'A',
-        capacidadIni:       this.equiposForm.controls['capacidadIni'].value?.toString().replace(/[^0-9.]*/g, ''),
-        fechaInstalacion:   this.equiposForm.controls['fechaInstalacion'].value,
-        ipEquipo:           this.a[0],
-        capacidadAsegurada: this.equiposForm.controls['capacidadAsegurada'].value?.toString().replace(/[^0-9.]*/g, ''),
-        capacidadIniSobres: 5,
-        estadoPing:         0,
-        tiempoSincronizacion: tiempoSincronizacion
-      }
-      setTimeout(() => {
-        this.equiposerv.guardarEquipo(this.modeloEquipos).subscribe({
-            next: (x) => Toast.fire({ icon: 'success', title: 'Equipo guardado' }), 
-            error: (e) => {
-              this._show_spinner = false;
-              Toast.fire({ icon: 'error', title: 'No se ha podido guardar este equipo' });
-            }, 
-            complete: () => {
-              this._show_spinner = false;
-              this.obtenerEquipos();
-              this.obtenerIps();
-              this.limpiar();
-            }
-          }
-        )
-      }, 1000);
-    }
-  }
-
-  obtenerEquipos() {
-    this.equiposerv.obtenerEquipo().subscribe({
-      next: (equipo: any) => {
-        this.listaEsquipo = equipo.filter((element: any) => {
-          return element.active === "A";
-        });
-        this.listaEsquipoGhost = equipo;
-      }
-    })
-  }
-
-  catchData(data:any) {
-    this.widthAutom();
-    this.idEquipo = data.id;
-    this.equiposForm.controls['ipmaquina'].disable();// Deshabilita el ip maquina para la edicion
-    this.equiposForm.controls['codigoClienteidFk'].setValue(data.codigoClienteidFk.toString());
-    this.validateTiendas();
-    setTimeout(() => {                                
-      this.equiposForm.controls['codigoTiendaidFk'].setValue(data.codigoTiendaidFk);
-    }, 1000);
-    this.equiposForm.controls['tipomaq'].setValue(data.tipo);
-    this.obtenerMarcas();
-    setTimeout(() => { 
-      this.equiposForm.controls['nomMarc'].setValue(data.marca.toString().trim());
-      this.obtenerModelos();
-    }, 1000);
-    setTimeout(() => { 
-    this.equiposForm.controls['nomMod'].setValue(data.modelo.toString().trim());
-    }, 1500);
-    let fechaA: any;
-    if( data.fechaInstalacion != null || data.fechaInstalacion != undefined ) {
-      let date: any = data.fechaInstalacion.toString().split('T');
-      fechaA = date[0];
-    }
-    this.arrIp = [];
-    this.arrIp = {
-      "serieEquipo": data.serieEquipo,
-      "ipEquipo":    data.ipEquipo
-    }
-    this.listaIps = [];
-    this.listaIps.push(this.arrIp);
-    this.equiposForm.controls['serieEquipo'].setValue(data.serieEquipo);
-    this.equiposForm.controls['capacidadIni'].setValue(data.capacidadIni);
-    this.equiposForm.controls['fechaInstalacion'].setValue(fechaA);
-    this.ipeditar = this.arrIp.ipEquipo;
-    this.equiposForm.controls['ipmaquina'].setValue(this.arrIp.ipEquipo);
-    this.equiposForm.controls['capacidadAsegurada'].setValue(data.capacidadAsegurada);
-    this.equiposForm.controls['capacidadIniSobres'].setValue(data.capacidadIniSobres);
-    this._action_butto  = 'Editar';
-    this._cancel_button = true;
-    this.viewForm       = true;
   }
 
   eliminarEquipos( data:any, i: number ) {
@@ -525,18 +516,11 @@ export class EquipoComponent implements OnInit {
     })
   }
 
-  obtenerIps() {
-    this.equiposerv.obtenerIPEquipos().subscribe({
-      next: (x) => this.listaIps = x, 
-      error: (e) => console.error(e)
-    })
-  }
-
   validateDataIP() {
     let x:any = this.equiposForm.controls['ipmaquina'].value;
-    this.a = x.split('/');
-    this.equiposForm.controls['serieEquipo'].setValue(this.a[1]);
-    this.ipeditar = this.a[0];
+    this.ipEquipo = x.split('/');
+    this.equiposForm.controls['serieEquipo'].setValue(this.ipEquipo[1]);
+    this.ipeditar = this.ipEquipo[0];
   }
 
   filterEquipos() {
@@ -550,32 +534,6 @@ export class EquipoComponent implements OnInit {
     this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) => 
       filterFunction(item) && (this.isActive || item.active === "A")
     );
-  }
-
-  limpiar() {
-    this.equiposForm.controls['codigoClienteidFk'].setValue('');
-    this.equiposForm.controls['codigoTiendaidFk'].setValue('');
-    this.equiposForm.controls['tipomaq'].setValue('');
-    this.equiposForm.controls['nomMarc'].setValue('');
-    this.equiposForm.controls['nomMod'].setValue('');
-    this.equiposForm.controls['serieEquipo'].setValue('');
-    this.equiposForm.controls['capacidadIni'].setValue('');
-    this.equiposForm.controls['fechaInstalacion'].setValue('');
-    this.equiposForm.controls['ipmaquina'].setValue('');
-    this.equiposForm.controls['ipmaquina'].setValue('');
-    this.equiposForm.controls['capacidadIniSobres'].setValue('');
-    this.equiposForm.controls['capacidadAsegurada'].setValue('');
-    this.listaMarcas    = [];
-    this.listaModelos   = [];
-    this.show_modelos   = false;
-    this._action_butto  = 'Crear';
-    this._cancel_button = false;
-    this.ipeditar       = '';
-    this.equiposForm.controls['ipmaquina'].enable()
-    this.obtenerIps();
-    this.viewForm       = false;
-    this._width_table   = 'tabledata table-responsive w-100 p-2';
-    this._create_show   = true;
   }
 
   validateTiendas() {
@@ -592,8 +550,11 @@ export class EquipoComponent implements OnInit {
   }
 
   obtenerMarcas() {
-    let tipoMaq = this.equiposForm.controls['tipomaq'].value!;
-    this.equiposerv.obtenerMarca(tipoMaq).subscribe({
+    this.tipoEquipo = this.equiposForm.controls['tipomaq'].value!;
+    (this.tipoEquipo === '009')
+      ? this.equiposForm.controls['capacidadIni'].setValue('0') 
+      : this.equiposForm.controls['capacidadIniSobres'].setValue('0');
+    this.equiposerv.obtenerMarca(this.tipoEquipo).subscribe({
       next: (marcas:any) => {
         this.listaMarcas = marcas.map((marca:any) => {
           return {
@@ -601,7 +562,6 @@ export class EquipoComponent implements OnInit {
             codmarca: marca.codmarca.trim()
           };
         });
-        this.show_modelos = this.listaMarcas.length > 0;
         if (this.listaMarcas.length > 0) {
           this.equiposForm.controls['nomMarc'].setValue(this.listaMarcas[0].codmarca);
           this.obtenerModelos();
@@ -633,13 +593,6 @@ export class EquipoComponent implements OnInit {
       },
       error: (e) => console.error(e)
     });
-  }
-
-  getDataMaster() {
-    this.sharedservs.getTipoEquipo().subscribe({
-      next: (data) => this.tipomaqlista = data, 
-      error: (e) => console.error(e)
-    })
   }
 
   updateActive(equipo: any){

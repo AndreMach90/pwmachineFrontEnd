@@ -15,6 +15,8 @@ import { ClientesService } from '../../dahsboards/cliente/services/clientes.serv
 })
 
 export class MaquinariaMonitoreoComponent implements OnInit {
+  numE:                         any;
+  codCli:                       any;
   listaCliente:                 any;
   nameidentifier:               any;
   sub:                          any;
@@ -67,7 +69,6 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       this.alertHub(message);});
     this.manualTransactionHub = new HubConnectionBuilder().withUrl(this.urlHub+'manualTransaction').build();
     this.manualTransactionHub.on("SendTransaccionManual", message => {
-      console.log("Esto es transaccion", message);
       this.updateTransHub(message)});
   }
 
@@ -93,7 +94,6 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     } else if (xtokenDecript == null || xtokenDecript == undefined) {
       this.router.navigate(['login'])
     }
-    this.obtenerFechaActual();
     this.getClientes();
     this.connectionSendPingEquipo.start().then( ()=> {})
       .catch( e => console.error('Algo ha pasado con el ping...', e));
@@ -172,7 +172,14 @@ export class MaquinariaMonitoreoComponent implements OnInit {
 
   async obtenerEquiposMoneq() {
     try {
-      const equipo = await this.equiposerv.obtenerEquipoMoneq().toPromise();
+      if (this.role === 'R005'){
+        this.numE = 2;
+        this.codCli = this.env.codCerveceria;
+      } else {
+        this.numE = 1;
+        this.codCli = null;
+      }
+      const equipo = await this.equiposerv.obtenerEquipoMoneq(this.numE,this.codCli).toPromise();
       this.listaEsquipo = equipo;
       this.listaEsquipoGhost = equipo;
       const arrOnline = [];
@@ -208,11 +215,11 @@ export class MaquinariaMonitoreoComponent implements OnInit {
           if (this.listaEsquipoIndicadores.length){
             this.listaEsquipo.filter((elementEq: any) => {
               if (machine_sn == elementEq.serieEquipo) {
-                elementEq.indicadorCapacidadBilletes = this.listaEsquipoIndicadores[0].totalCant;
-                elementEq.indicadorTotalAsegurado = this.listaEsquipoIndicadores[0].totalMont;
-                elementEq.indicadorPorcentajeBilletes = Number(((elementEq.indicadorCapacidadBilletes / elementEq.indicadorCapacidadBilletesMax) * 100).toFixed(2));
-                elementEq.indicadorPorcentajeTotalMaxAsegurado = Number(((elementEq.indicadorTotalAsegurado / elementEq.indicadorTotalMaxAsegurado) * 100).toFixed(2));
+                elementEq.indicadorCapacidadBilletes = elementEq.tipoMaquinaria === 'DEPOSITARIO DE MONEDAS' ? this.listaEsquipoIndicadores[0].totalCantMonedas : this.listaEsquipoIndicadores[0].totalCantBilletes;
+                elementEq.indicadorPorcentajeBilletes = Number(((elementEq.indicadorCapacidadBilletes / (elementEq.tipoMaquinaria === 'DEPOSITARIO DE MONEDAS' ? elementEq.indicadorCapacidadMaxMonedas : elementEq.indicadorCapacidadBilletesMax)) * 100).toFixed(2));
                 elementEq.indicadorColorBarProgressBilletes = this.getColorClass(elementEq.indicadorPorcentajeBilletes);
+                elementEq.indicadorTotalAsegurado = this.listaEsquipoIndicadores[0].totalMont;
+                elementEq.indicadorPorcentajeTotalMaxAsegurado = Number(((elementEq.indicadorTotalAsegurado / elementEq.indicadorTotalMaxAsegurado) * 100).toFixed(2));
                 elementEq.indicadorColorBarProgressAsegurado = this.getColorClass(elementEq.indicadorPorcentajeTotalMaxAsegurado);
               }
             });
@@ -228,20 +235,24 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     if(equipoFind){
       if (data.tipo === 'R') {
         equipoFind.ultimaRecoleccion = data.fechaTransaccion;
-        ('speechSynthesis' in window) ?
-          this.readTextAloud('Se realizó una recolección del equipo ' + data.machine_Sn ):
-          console.log('La API de Web Speech no está disponible en este navegador.');
+        ('speechSynthesis' in window)
+          ? this.readTextAloud('Se realizó una recolección del equipo ' + data.machine_Sn )
+          : console.log('La API de Web Speech no está disponible en este navegador.');
         equipoFind.indicadorCapacidadBilletes           = data.cant;
         equipoFind.indicadorTotalAsegurado              = data.monto;
         equipoFind.indicadorPorcentajeBilletes          = 0;
         equipoFind.indicadorPorcentajeTotalMaxAsegurado = 0;
         this.listalertas  = [];
       } else {
-        equipoFind.indicadorCapacidadBilletes = equipoFind.indicadorCapacidadBilletes + data.cant;
-        equipoFind.indicadorTotalAsegurado = parseFloat((equipoFind.indicadorTotalAsegurado + data.monto).toFixed(2));
-        equipoFind.indicadorPorcentajeBilletes = Number(((equipoFind.indicadorCapacidadBilletes / equipoFind.indicadorCapacidadBilletesMax) * 100).toFixed(2));
-        equipoFind.indicadorPorcentajeTotalMaxAsegurado = Number(((equipoFind.indicadorTotalAsegurado / equipoFind.indicadorTotalMaxAsegurado) * 100).toFixed(2));
+        if (equipoFind.tipoMaquinaria === 'DEPOSITARIO DE MONEDAS'){
+          if (data.tipo === 'M') equipoFind.indicadorCapacidadBilletes = equipoFind.indicadorCapacidadBilletes + data.cant;
+        } else {
+          if (data.tipo === 'A') equipoFind.indicadorCapacidadBilletes = equipoFind.indicadorCapacidadBilletes + data.cant;
+        }
+        equipoFind.indicadorPorcentajeBilletes = Number(((equipoFind.indicadorCapacidadBilletes / (equipoFind.tipoMaquinaria === 'DEPOSITARIO DE MONEDAS' ? equipoFind.indicadorCapacidadMaxMonedas : equipoFind.indicadorCapacidadBilletesMax)) * 100).toFixed(2));
         equipoFind.indicadorColorBarProgressBilletes = this.getColorClass(equipoFind.indicadorPorcentajeBilletes, 'Capacidad de piezas del equipo', data.machine_Sn);
+        equipoFind.indicadorTotalAsegurado = parseFloat((equipoFind.indicadorTotalAsegurado + data.monto).toFixed(2));
+        equipoFind.indicadorPorcentajeTotalMaxAsegurado = Number(((equipoFind.indicadorTotalAsegurado / equipoFind.indicadorTotalMaxAsegurado) * 100).toFixed(2));
         equipoFind.indicadorColorBarProgressAsegurado = this.getColorClass(equipoFind.indicadorPorcentajeTotalMaxAsegurado, 'Capacidad de Monto Asegurado', data.machine_Sn);
       }
       equipoFind.ultimaNoTrans = data.transaction_no;
@@ -294,6 +305,31 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     }
   }
 
+  filterCliente(idCliente: any, nameCliente: any) {
+    this.filterequip = '';
+    this.selectedCliente = nameCliente;
+    this.selectedClienteId = idCliente;
+    this.updateListaEsquipo();
+    this.eliminarAllAlerts();
+    if(this.selectedClienteId=='todoCliente'){
+      this.estadosMonitoreo[0].count = this.listaEsquipoGhost.filter((item: any) => item.estadoPing == 1).length;
+      this.estadosMonitoreo[1].count = this.listaEsquipoGhost.filter((item: any) => item.estadoPing == 0).length;
+    }else{
+      this.estadosMonitoreo[0].count = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId && item.estadoPing == 1).length;
+      this.estadosMonitoreo[1].count = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId && item.estadoPing == 0).length;
+    }
+    if (this.selectedMonitoreo == 'Online') this.selectedCount = this.estadosMonitoreo[0].count;
+    if (this.selectedMonitoreo == 'Offline') this.selectedCount = this.estadosMonitoreo[1].count;
+  }
+  
+  filterMonitoreo(estado: any, color: any, count: any) {
+    this.filterequip = '';
+    this.selectedMonitoreo = estado;
+    this.selectedMonitoreoColor = color;
+    this.selectedCount = count;
+    this.updateListaEsquipo();
+  }
+
   alertHub(dataPingHub: any){
     let fecha = new Date();
     this.updatePing(dataPingHub);
@@ -320,11 +356,12 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   }
 
   private updatePing(data: any) {
+    const syncTime = new Date(data.tiempoSincronizacion);
     for (let equipo of this.listaEsquipo){
       if (equipo.ipEquipo === data.ip) {
         equipo.estadoPing = data.estadoPing;
+        equipo.tiempoSincronizacion = data.tiempoSincronizacion;
       } else {
-        const syncTime = new Date(data.tiempoSincronizacion);
         const dateEquipo = new Date(equipo.tiempoSincronizacion);
         const diffInMinutes = (syncTime.getTime() - dateEquipo.getTime()) / 60000;
         if (diffInMinutes >= 5) {
@@ -419,31 +456,9 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   getClientes(){
     this.clienteService.ObtenerClienteSelect().subscribe({
       next: (cliente) => this.listaCliente = cliente,
-      error: (e) => console.log(e)
+      error: (e) => console.log(e),
+      complete: () => this.obtenerFechaActual()
     })
-  }
-
-  filterCliente(idCliente: any, nameCliente: any) {
-    this.selectedCliente = nameCliente;
-    this.selectedClienteId = idCliente;
-    this.updateListaEsquipo();
-    this.eliminarAllAlerts();
-    if(this.selectedClienteId=='todoCliente'){
-      this.estadosMonitoreo[0].count = this.listaEsquipoGhost.filter((item: any) => item.estadoPing == 1).length;
-      this.estadosMonitoreo[1].count = this.listaEsquipoGhost.filter((item: any) => item.estadoPing == 0).length;
-    }else{
-      this.estadosMonitoreo[0].count = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId && item.estadoPing == 1).length;
-      this.estadosMonitoreo[1].count = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId && item.estadoPing == 0).length;
-    }
-    if (this.selectedMonitoreo == 'Online') this.selectedCount = this.estadosMonitoreo[0].count;
-    if (this.selectedMonitoreo == 'Offline') this.selectedCount = this.estadosMonitoreo[1].count;
-  }
-  
-  filterMonitoreo(estado: any, color: any, count: any) {
-    this.selectedMonitoreo = estado;
-    this.selectedMonitoreoColor = color;
-    this.selectedCount = count;
-    this.updateListaEsquipo();
   }
 
   updateListaEsquipo() {

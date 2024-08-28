@@ -85,12 +85,12 @@ export class TiendaComponent implements OnInit {
 
   public tiendaForm = new FormGroup({
     codigoClienteidFk: new FormControl('', [Validators.required]),
-    nombreTienda:      new FormControl('', [Validators.required, this.noWhitespaceValidator()]),
-    telefono:          new FormControl('', [Validators.required, this.noWhitespaceValidator()]),
-    direccion:         new FormControl('', [Validators.required, this.noWhitespaceValidator()]),
-    nombreAdmin:       new FormControl('', [Validators.required, this.noWhitespaceValidator()]),
-    telfAdmin:         new FormControl('', [Validators.required, this.noWhitespaceValidator()]),
-    emailAdmin:        new FormControl('', [Validators.required, this.noWhitespaceValidator()]),
+    nombreTienda:      new FormControl('', [Validators.required, this.controlInputsService.noWhitespaceValidator()]),
+    telefono:          new FormControl('', [Validators.required, this.controlInputsService.noWhitespaceValidator()]),
+    direccion:         new FormControl('', [Validators.required, this.controlInputsService.noWhitespaceValidator()]),
+    nombreAdmin:       new FormControl('', [Validators.required, this.controlInputsService.noWhitespaceValidator()]),
+    telfAdmin:         new FormControl('', [Validators.required, this.controlInputsService.noWhitespaceValidator()]),
+    emailAdmin:        new FormControl('', [Validators.required, this.controlInputsService.noWhitespaceValidator()]),
     codProv:           new FormControl('', [Validators.required])
   });
 
@@ -128,23 +128,15 @@ export class TiendaComponent implements OnInit {
 
   onSubmit() {
     if (this.tiendaForm.invalid) {
-      this.markFormGroupTouched(this.tiendaForm);
+      this.controlInputsService.markFormGroupTouched(this.tiendaForm);
       return;
     }
     this._action_butto === 'Crear' ? this.guardarTienda() : this.editarTienda();
   }
 
   widthAutom() {
-    switch (this.calwidth) {
-      case true:
-        this._width_table = 'tabledata table-responsive w-75 p-2';
-        this.calwidth = false;
-        break;
-      case false:
-        this._width_table = 'tabledata table-responsive w-100 p-2';
-        this.calwidth = true;
-        break;
-    }
+    this._width_table = this.calwidth ? 'tabledata table-responsive w-75 p-2' : 'tabledata table-responsive w-100 p-2';
+    this.calwidth = !this.calwidth;
     this.tiendaForm.controls['codigoClienteidFk'].enable();
     this.tiendaForm.controls['codigoClienteidFk'].setValue('');
     this.tiendaForm.controls['nombreTienda'].setValue('');
@@ -154,15 +146,16 @@ export class TiendaComponent implements OnInit {
     this.tiendaForm.controls['telfAdmin'].setValue('');
     this.tiendaForm.controls['emailAdmin'].setValue('');
     this.tiendaForm.controls['codProv'].setValue('');
-    this._action_butto = 'Crear';
-    this.cuentaslista = [];
-    this.resultModal = [];
-    this._cancel_button = false;
-    this.tiendasForm = false;
-    this.tipoAccion = 0;
-    this.editcatch = false;
-    this._create_show = true;
+    this.localidadesGuardadasCliente = [];
+    this._action_butto    = 'Crear';
+    this._create_show     = true;
     this.dis_account_shop = false;
+    this._cancel_button   = false;
+    this.tiendasForm      = false;
+    this.editcatch        = false;
+    this.cuentaslista     = [];
+    this.resultModal      = [];
+    this.tipoAccion       = 0;
   }
 
   validateInputText(data: any) {
@@ -213,18 +206,20 @@ export class TiendaComponent implements OnInit {
     this.tiendaForm.controls['telfAdmin'].setValue('');
     this.tiendaForm.controls['emailAdmin'].setValue('');
     this.tiendaForm.controls['codProv'].setValue('');
-    this._action_butto = 'Crear';
-    this.cuentaslista = [];
-    this.resultModal = [];
-    this._cancel_button = false;
-    this.tiendasForm = false;
-    this.tipoAccion = 0;
-    this.editcatch = false;
-    this._create_show = true;
+    this.cuentaslista     = [];
+    this.resultModal      = [];
+    this.tipoAccion       = 0;
+    this._create_show     = true;
+    this.calwidth         = true;
+    this._cancel_button   = false;
+    this.tiendasForm      = false;
+    this.editcatch        = false;
     this.dis_account_shop = false;
-    this.viewForm = false;
-    this._width_table = 'tabledata table-responsive w-100 p-2';
-    this.resetFormGroup(this.tiendaForm);
+    this.viewForm         = false;
+    this._action_butto    = 'Crear';
+    this._width_table     = 'tabledata table-responsive w-100 p-2';
+    this.localidadesGuardadasCliente = [];
+    this.controlInputsService.resetFormGroup(this.tiendaForm);
   }
 
   editarTienda() {
@@ -339,7 +334,7 @@ export class TiendaComponent implements OnInit {
   }
 
   catchData(data: any) {
-    this.calwidth = true;
+    this.widthAutom();
     this.dis_account_shop = true;
     this.resultModal = [];
     this.viewForm = true;
@@ -525,29 +520,6 @@ export class TiendaComponent implements OnInit {
           },
         });
       }
-    });
-  }
-
-  noWhitespaceValidator(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const isWhitespace = (control.value || '').trim().length === 0;
-      const isValid = !isWhitespace;
-      return isValid ? null : { 'whitespace': true };
-    };
-  }
-
-  private markFormGroupTouched(formGroup: FormGroup): void {
-    Object.keys(formGroup.controls).forEach(field => {
-      const control = formGroup.get(field);
-      control?.markAsTouched({ onlySelf: true });
-    });
-  }
-
-  private resetFormGroup(formGroup: FormGroup): void {
-    Object.keys(formGroup.controls).forEach(field => {
-      const control = formGroup.get(field);
-      control?.markAsUntouched({ onlySelf: true });
-      control?.markAsPristine({ onlySelf: true });
     });
   }
 }

@@ -28,7 +28,10 @@ const Toast = Swal.mixin({
 })
 
 export class UsuariosTemporalesMaquinaComponent implements OnInit {
+  actividadSeleccionada:        string = '';
   ipMachine:                    any;
+  arr:                          any = [];
+  listaCuentaTiendasBanc:       any = [];
   modelUsers:                   any = [];
   listaUsuariosTemporales:      any = [];
   listaUsuariosTemporalesGhost: any = [];
@@ -48,15 +51,15 @@ export class UsuariosTemporalesMaquinaComponent implements OnInit {
     private tiendaservs: TiendaService, 
     private eqipserv: EquipoService ) { }
 
-  public filterUsuariosTemporalesForm = new FormGroup({
-    filterequip: new FormControl('')
-  })
-  
   ngOnInit(): void {
     this.obtenerUsuariosTemporales();
     this.obtenerCuentasTienda()
   }
-
+  
+  public filterUsuariosTemporalesForm = new FormGroup({
+    filterequip: new FormControl('')
+  })
+  
   validateInputText(event: Event) {
     const target = event.target as HTMLInputElement;
     if (target instanceof HTMLInputElement) {
@@ -80,13 +83,12 @@ export class UsuariosTemporalesMaquinaComponent implements OnInit {
       }
     )
   }
-  actividadSeleccionada: string = '';
+  
   onChangeActividad(event: any, index: number) {
     const actividadInput = <HTMLSelectElement>document.getElementById('cuentasbanc-' + index);
     this.actividadSeleccionada = actividadInput.value;
   }
 
-  arr:any = [];
   aceptarUsuario( usuario: any, index: number) {
     const nombresInput   = <HTMLInputElement>document.getElementById('nombres-'  + index);
     const cedulaInput    = <HTMLInputElement>document.getElementById('cedula-'   + index);
@@ -105,12 +107,10 @@ export class UsuariosTemporalesMaquinaComponent implements OnInit {
     this.guardarUsuario(usuario.id, usuario.usuario, nombres, cedula, telefono, actividad, this.actividadSeleccionada );
   }
 
-  listaCuentaTiendasBanc:any = [];
   obtenerCuentasTienda() {
     this.tiendaservs.obtenerCuentasAsignadas(this.data.codigoTienda).subscribe({
-      next: (cuentaTiendaBank) => {
-        this.listaCuentaTiendasBanc = cuentaTiendaBank;
-      }
+      next: (cuentaTiendaBank) => this.listaCuentaTiendasBanc = cuentaTiendaBank,
+      error: (e) => console.log(e)
     })
   }
 
@@ -128,24 +128,19 @@ export class UsuariosTemporalesMaquinaComponent implements OnInit {
       cuentasIdFk:   observacion,
       observacion:   actividad
     }
-    console.log('==================================')
-    console.log(this.modelUsers)
-    console.log('==================================')
     this._create_show   =  false;
     this._show_spinner = true;
     setTimeout(() => {
       this.userservs.guardarUsuarios(this.modelUsers).subscribe({
-        next: (x) => {
-          Toast.fire({ icon: 'success', title: 'Usuario temporal guardado con éxito' });
-        }, error: (e) => {
+        next: (x) => Toast.fire({ icon: 'success', title: 'Usuario temporal guardado con éxito' }),
+        error: (e) => {
           console.error(e);
           this._show_spinner = false;
           Toast.fire({ icon: 'error', title: 'No hemos podido guardar el usuario temporal' });
-        },complete: () => {
+        }, complete: () => {
           this._show_spinner = false;
           this.eliminarUsuarioTemporal(id);
           this.closeDialog();
-          // this.obtenerUsuariosTemporales();
         }
       }
     )}, 1000);

@@ -22,6 +22,7 @@ export class Environments {
   es: number = 5;
   hash: number = 10;
   encode: number = 99;
+  codCerveceria = "CLI-Cerve-YgWEL5ywHS-2024-4";
 
   apiurl(): string {
     const env: string = this.apingRok + '/api/';

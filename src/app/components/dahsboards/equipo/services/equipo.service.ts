@@ -21,8 +21,6 @@ export class EquipoService {
   }
 
   obtenerMarca( codtipomaq:string ) {
-    console.log(codtipomaq);
-    
     return this.http.get( this.env.apiurl() + 'MarcaModeloEquipo/ObtenerMarca/' + codtipomaq, { headers: this.headers } );
   }
 
@@ -38,8 +36,8 @@ export class EquipoService {
     return this.http.get(this.env.apiurl() + 'Equipo/ObtenerEquipo', { headers: this.headers });
   }
 
-  obtenerEquipoMoneq() {
-    return this.http.get(this.env.apiurl() + 'Equipo/ObtenerEquipoMoneq', { headers: this.headers });
+  obtenerEquipoMoneq(num: any, codCliente: any) {
+    return this.http.get(this.env.apiurl() + 'Equipo/ObtenerEquipoMoneq/' + num + '/' + codCliente, { headers: this.headers });
   }
 
   obtenerTotalesMoneq(machine_sn: any) {
@@ -59,7 +57,6 @@ export class EquipoService {
   }
 
   obtenerUsuariosIp(ip:string) {
-    console.log(ip);
     return this.http.get( this.env.apiurl() + 'Usuario/ObtenerUsuarioIP/'+ip, { headers: this.headers })
   }
 

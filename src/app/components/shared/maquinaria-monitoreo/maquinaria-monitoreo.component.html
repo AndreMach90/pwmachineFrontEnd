@@ -75,28 +75,30 @@
                     </ng-container>
                 </ul>
             </div>
-            <div class="dropdown d-flex p-0 m-0">
-                <button type="button" 
-                    class="btn-cliente dropdown-toggle" 
-                    data-bs-toggle="dropdown" 
-                    aria-expanded="false"
-                    [style]="'background:'+theme.bgTable+';margin-left:15px;'">
-                    {{selectedCliente}}
-                </button>
-                <ul class="dropdown-menu" [style]="'--bs-dropdown-link-hover-bg:'+theme.hoverTable+';'">
-                    <li class="dropdown-item" (click)="filterCliente('todoCliente', 'Todos los clientes')"
-                        [ngClass]="{'active': selectedClienteId === 'todoCliente'}">
-                        <strong>Todos los clientes</strong>
-                    </li>
-                    <li><hr class="dropdown-divider"></li>
-                    <ng-container *ngFor="let cliente of listaCliente">
-                        <li class="dropdown-item" (click)="filterCliente(cliente.codigoCliente, cliente.nombreCliente)"
-                            [ngClass]="{'active': selectedClienteId === cliente.codigoCliente}">
-                            {{cliente.nombreCliente}}
+            <ng-container *ngIf="role !== 'R005'">
+                <div class="dropdown d-flex p-0 m-0">
+                    <button type="button" 
+                        class="btn-cliente dropdown-toggle" 
+                        data-bs-toggle="dropdown" 
+                        aria-expanded="false"
+                        [style]="'background:'+theme.bgTable+';margin-left:15px;'">
+                        {{selectedCliente}}
+                    </button>
+                    <ul class="dropdown-menu" [style]="'--bs-dropdown-link-hover-bg:'+theme.hoverTable+';'">
+                        <li class="dropdown-item" (click)="filterCliente('todoCliente', 'Todos los clientes')"
+                            [ngClass]="{'active': selectedClienteId === 'todoCliente'}">
+                            <strong>Todos los clientes</strong>
                         </li>
-                    </ng-container>
-                </ul>
-            </div>
+                        <li><hr class="dropdown-divider"></li>
+                        <ng-container *ngFor="let cliente of listaCliente">
+                            <li class="dropdown-item" (click)="filterCliente(cliente.codigoCliente, cliente.nombreCliente)"
+                                [ngClass]="{'active': selectedClienteId === cliente.codigoCliente}">
+                                {{cliente.nombreCliente}}
+                            </li>
+                        </ng-container>
+                    </ul>
+                </div>
+            </ng-container>
         </div>
         <div class="d-flex p-0 m-0">
             <div class="input-group d-flex shadow-sm align-items-center"
@@ -135,7 +137,7 @@
                         <th scope="col">Tienda</th>
                         <th scope="col">Equipo</th>
                         <th scope="col">Nombre</th>
-                        <th scope="col">Capacidad de Piezas</th>
+                        <th scope="col">Capacidad Billetes/Monedas</th>
                         <th scope="col">Monto Asegurado</th>
                         <th scope="col">Tiempo Sincronización</th>
                         <th scope="col">Última Recolección</th>
@@ -171,7 +173,12 @@
                                     </div>
                                     <small>{{equipo.indicadorPorcentajeBilletes+"%"}} </small>
                                 </div>
-                                <small>{{equipo.indicadorCapacidadBilletes+" / "+equipo.indicadorCapacidadBilletesMax}}</small>
+                                <small>
+                                    {{equipo.indicadorCapacidadBilletes + " / " +
+                                        (equipo.tipoMaquinaria === 'DEPOSITARIO DE MONEDAS' 
+                                        ? equipo.indicadorCapacidadMaxMonedas 
+                                        : equipo.indicadorCapacidadBilletesMax)}}
+                                </small>
                             </td>
                             <td>
                                 <div class="d-flex align-items-center">
@@ -194,12 +201,7 @@
                             </td>
                             <td class="align-middle">{{equipo.tiempoSincronizacion | date: 'short'}}</td>
                             <td class="align-middle">
-                                <ng-container *ngIf="equipo.ultimaRecoleccion !== null; else vacioLastRec">
-                                    {{equipo.ultimaRecoleccion | date: 'short'}}
-                                </ng-container>
-                                <ng-template #vacioLastRec>
-                                    ---
-                                </ng-template>
+                                {{equipo.ultimaRecoleccion !== null ? (equipo.ultimaRecoleccion | date: 'short') : '---'}}
                             </td>
                             <td class="align-middle">
                                 <div class="d-flex justify-content-center">
@@ -215,12 +217,7 @@
                                 </div>
                             </td>
                             <td class="align-middle">
-                                <ng-container *ngIf="equipo.fechaUltimaTrans !== null; else vacioFTrans">
-                                    {{equipo.fechaUltimaTrans | date: 'short'}}
-                                </ng-container>
-                                <ng-template #vacioFTrans>
-                                    ---
-                                </ng-template>
+                                {{equipo.fechaUltimaTrans !== null ? (equipo.fechaUltimaTrans | date: 'short') : '---'}}
                             </td>
                         </tr>
                     </ng-container>

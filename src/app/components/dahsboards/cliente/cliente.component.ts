@@ -70,12 +70,12 @@ export class ClienteComponent implements OnInit {
   viewForm: boolean = false;
 
   public clienteForm = new FormGroup({
-    Nombre_Cliente:   new FormControl('', [Validators.required, this.noWhitespaceValidator()]), 
-    Telefono:         new FormControl('', [Validators.required, this.noWhitespaceValidator()]), 
-    Direccion:        new FormControl('', [Validators.required, this.noWhitespaceValidator()]), 
-    RUC:              new FormControl('', [Validators.required, this.noWhitespaceValidator()]), 
-    nombre_contacto:  new FormControl('', [Validators.required, this.noWhitespaceValidator()]), 
-    email_contacto:   new FormControl('', [Validators.required, this.noWhitespaceValidator()]), 
+    Nombre_Cliente:   new FormControl('', [Validators.required, this.controlInputsService.noWhitespaceValidator()]), 
+    Telefono:         new FormControl('', [Validators.required, this.controlInputsService.noWhitespaceValidator()]), 
+    Direccion:        new FormControl('', [Validators.required, this.controlInputsService.noWhitespaceValidator()]), 
+    RUC:              new FormControl('', [Validators.required, this.controlInputsService.noWhitespaceValidator()]), 
+    nombre_contacto:  new FormControl('', [Validators.required, this.controlInputsService.noWhitespaceValidator()]), 
+    email_contacto:   new FormControl('', [Validators.required, this.controlInputsService.noWhitespaceValidator()]), 
     Active:           new FormControl('') 
   })
 
@@ -110,7 +110,7 @@ export class ClienteComponent implements OnInit {
 
   onSubmit() {  
     if (this.clienteForm.invalid) {
-      this.markFormGroupTouched(this.clienteForm);
+      this.controlInputsService.markFormGroupTouched(this.clienteForm);
       return;
     }
     this._action_butto === 'Crear' ? this.guardarClientes() : this.editarClientes();  
@@ -158,18 +158,16 @@ export class ClienteComponent implements OnInit {
   }
   
   widthAutom() {
-    switch( this.calwidth ) {
-      case true:
-        this._width_table   = 'tabledata table-responsive w-75 p-2';
-        this.guardarControl = true;
-        this.calwidth       = false;
-        break;
-      case false:        
-        this._width_table   = 'tabledata table-responsive w-100 p-2';
-        this.guardarControl = false;
-        this.calwidth       = true;
-        break;
-    }
+    this._width_table = this.calwidth ? 'tabledata table-responsive w-75 p-2' : 'tabledata table-responsive w-100 p-2';
+    this.calwidth = !this.calwidth;
+    this.clienteForm.controls['Nombre_Cliente'].setValue('');
+    this.clienteForm.controls['RUC'].setValue('');
+    this.clienteForm.controls['Direccion'].setValue('');
+    this.clienteForm.controls['nombre_contacto'].setValue('');
+    this.clienteForm.controls['Telefono'].setValue('');
+    this.clienteForm.controls['email_contacto'].setValue('');
+    this.clienteForm.controls['Active'].setValue('');
+    this._action_butto  = 'Crear';
   }
 
   obtenerCliente() {
@@ -363,7 +361,7 @@ export class ClienteComponent implements OnInit {
     this.viewForm = false;
     this._width_table = 'tabledata table-responsive w-100 p-2';
     this._create_show = true;
-    this.resetFormGroup(this.clienteForm);
+    this.controlInputsService.resetFormGroup(this.clienteForm);
   }
 
   openDialogCrearCuentaBancaria(data:any, action:string): void {
@@ -425,28 +423,5 @@ export class ClienteComponent implements OnInit {
       data: data, 
     });
     dialogRef.afterClosed().subscribe( result => this.obtenerCliente());
-  }
-
-  noWhitespaceValidator(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const isWhitespace = (control.value || '').trim().length === 0;
-      const isValid = !isWhitespace;
-      return isValid ? null : { 'whitespace': true };
-    };
-  }
-
-  private markFormGroupTouched(formGroup: FormGroup): void {
-    Object.keys(formGroup.controls).forEach(field => {
-      const control = formGroup.get(field);
-      control?.markAsTouched({ onlySelf: true });
-    });
-  }
-
-  private resetFormGroup(formGroup: FormGroup): void {
-    Object.keys(formGroup.controls).forEach(field => {
-      const control = formGroup.get(field);
-      control?.markAsUntouched({ onlySelf: true });
-      control?.markAsPristine({ onlySelf: true });
-    });
   }
 }

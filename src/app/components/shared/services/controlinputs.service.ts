@@ -5,23 +5,16 @@ import { AbstractControl, FormGroup, ValidatorFn } from '@angular/forms';
   providedIn: 'root'
 })
 export class ControlinputsService {
-
-  constructor() { }
-
   validateAndCleanInput(input: HTMLInputElement) {
     const inputValue = input.value;
     const cleanedValue = inputValue.replace(/[^a-zA-Z ]/g, '');
-    if (inputValue !== cleanedValue) {
-      input.value = cleanedValue;
-    }
+    if (inputValue !== cleanedValue) input.value = cleanedValue;
   }
 
   validateAndCleanNumberInput(input: HTMLInputElement) {
     const inputValue   = input.value;
     const cleanedValue = inputValue.replace(/[^0-9.]*/g, '');
-    if (inputValue !== cleanedValue) {
-      input.value = cleanedValue;
-    }
+    if (inputValue !== cleanedValue) input.value = cleanedValue;
   }
 
   noWhitespaceValidator(): ValidatorFn {
