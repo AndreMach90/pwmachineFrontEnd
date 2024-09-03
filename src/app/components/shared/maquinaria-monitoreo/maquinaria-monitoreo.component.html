@@ -148,15 +148,18 @@
                 <tbody [style]="'--bs-table-bg:transparent;'">
                     <ng-container *ngFor="let equipo of listaEsquipo; let i = index">
                         <tr>
-                            <td>
+                            <td class="align-middle">
                                 <div class="rounded" 
                                     [style]="'background:'+getColor(equipo.estadoPing)+';width:10px;height:40px;'">
                                 </div>
                             </td>
-                            <td>{{equipo.nombreTienda}} <small>{{"\n"+equipo.provincia}}</small> </td>
-                            <td>{{equipo.tipoMaquinaria}} <small>{{"\n"+equipo.nombremarca+" "+equipo.nombremodelo}}</small> </td>
-                            <td [style]="'color:'+getColor(equipo.estadoPing)+';'"><strong>{{equipo.serieEquipo}}</strong><small>{{"\n"+equipo.ipEquipo}}</small> </td>
-                            <td>
+                            <td class="align-middle">{{equipo.nombreTienda}} <small>{{"\n"+equipo.provincia}}</small> </td>
+                            <td class="align-middle">{{equipo.tipoMaquinaria}} <small>{{"\n"+equipo.nombremarca+" "+equipo.nombremodelo}}</small> </td>
+                            <td class="align-middle" [style]="'color:'+getColor(equipo.estadoPing)+';'">
+                                <strong>{{equipo.serieEquipo}}</strong>
+                                <ng-container *ngIf="role !== 'R005'"><small>{{"\n"+equipo.ipEquipo}}</small></ng-container>
+                            </td>
+                            <td class="align-middle">
                                 <div class="d-flex align-items-center">
                                     <div class="progress shadow-sm me-2"
                                         style="width: 100px;"
@@ -180,7 +183,7 @@
                                         : equipo.indicadorCapacidadBilletesMax)}}
                                 </small>
                             </td>
-                            <td>
+                            <td class="align-middle">
                                 <div class="d-flex align-items-center">
                                     <div class="progress shadow-sm me-2"
                                         style="width: 100px;"
