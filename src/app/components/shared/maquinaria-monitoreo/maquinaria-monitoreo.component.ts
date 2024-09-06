@@ -35,8 +35,9 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   listaEsquipo:                 any = [];
   listaEsquipoGhost:            any = [];
   listaEsquipoIndicadores:      any = [];
-  numHorasAlertTrans:           any = 24;
+  numHorasAlertTrans:           any = 6;
   numHorasAlertTimeSincro:      any = 1;
+  numTopNotification:           any = 100;
   selectedCliente:              any = 'Todos los clientes';
   selectedClienteId:            any = 'todoCliente';
   selectedMonitoreo:            any = 'Mostrar todo';
@@ -53,12 +54,13 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   }
   estadosMonitoreo: any = [
     { estado: 'Online', color: 'green', count: 0 },
-    { estado: 'Offline', color: 'red', count: 0 }
+    { estado: 'Offline', color: 'red', count: 0 },
+    { estado: 'E. Transaccional', color: 'orange', count: 0 }
   ];
   private urlHub: any = this.env.apiUrlHub();
   private connectionSendPingEquipo: HubConnection;
   private manualTransactionHub: HubConnection;
-  
+
   constructor( private env: Environments,
     private ncrypt: EncryptService,
     private router: Router,
@@ -150,15 +152,13 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       if (this.flagVoice == false) this.flagVoice = await EasySpeech.init({ maxTimeout: 5000, interval: 250 });
       if(this.flagVoice == true){
         voiceSelect = EasySpeech.voices().find(voice => 
-          voice.name === 'Microsoft Laura - Spanish (Spain)' && 
-          voice.lang === 'es-ES'
+          voice.lang === 'es-EC' ||
+          voice.lang === 'es-ES' ||
+          voice.lang === 'es-MX' ||
+          voice.lang === 'es_EC' ||
+          voice.lang === 'es_ES' ||
+          voice.lang === 'es_MX'
         );
-        if (!voiceSelect) {
-          voiceSelect = EasySpeech.voices().find(voice => 
-            voice.name === 'Microsoft Andrea Online (Natural) - Spanish (Ecuador)' && 
-            voice.lang === 'es-EC'
-          );
-        }
         (voiceSelect) ? voiceSelect : EasySpeech.voices()[1];
         await EasySpeech.speak({ 
           text: textData,
@@ -166,7 +166,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
         })
       }
     } catch (error) {
-      console.log('Hubo un error en el speaker: ', error);
+      console.error('Hubo un error en el speaker: ', error);
     }
   }
 
@@ -184,20 +184,22 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       this.listaEsquipoGhost = equipo;
       const arrOnline = [];
       const arrOffline = [];
+      const arrMaqError = [];
       for (const element of this.listaEsquipo) {
         let dateEquipo = new Date(element.tiempoSincronizacion);
         let diffInMinutes = (this.fechaActual - dateEquipo.getTime()) / 60000;
-        if (diffInMinutes >= 5) {
-          element.estadoPing = 0;
-        }
+        let validarhora = this.calcularTiempoDesdeAhora(this.numHorasAlertTrans,element.fechaUltimaTrans);
+        if (diffInMinutes >= 5) element.estadoPing = 0;
         await this.obtenerIndicadores(element.serieEquipo);
         if (element.estadoPing == 1) arrOnline.push(element);
         if (element.estadoPing == 0) arrOffline.push(element);
+        if (validarhora) arrMaqError.push(element);
       }
       this.estadosMonitoreo[0].count = arrOnline.length;
       this.estadosMonitoreo[1].count = arrOffline.length;
+      this.estadosMonitoreo[2].count = arrMaqError.length;
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 
@@ -205,7 +207,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.listaEsquipoIndicadores = [];
       this.equiposerv.obtenerTotalesMoneq(machine_sn).subscribe({
-        next: (equipo: any) => this.listaEsquipoIndicadores = equipo,
+        next: (equipo: any) => {this.listaEsquipoIndicadores = equipo; console.log(machine_sn, equipo)},
         error: (e) => {
           console.error(e);
           this.listaEsquipoIndicadores = [];
@@ -237,7 +239,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
         equipoFind.ultimaRecoleccion = data.fechaTransaccion;
         ('speechSynthesis' in window)
           ? this.readTextAloud('Se realizó una recolección del equipo ' + data.machine_Sn )
-          : console.log('La API de Web Speech no está disponible en este navegador.');
+          : console.error('La API de Web Speech no está disponible en este navegador.');
         equipoFind.indicadorCapacidadBilletes           = data.cant;
         equipoFind.indicadorTotalAsegurado              = data.monto;
         equipoFind.indicadorPorcentajeBilletes          = 0;
@@ -314,12 +316,15 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     if(this.selectedClienteId=='todoCliente'){
       this.estadosMonitoreo[0].count = this.listaEsquipoGhost.filter((item: any) => item.estadoPing == 1).length;
       this.estadosMonitoreo[1].count = this.listaEsquipoGhost.filter((item: any) => item.estadoPing == 0).length;
+      this.estadosMonitoreo[2].count = this.listaEsquipoGhost.filter((item: any) => this.calcularTiempoDesdeAhora(this.numHorasAlertTrans, item.fechaUltimaTrans)).length;
     }else{
       this.estadosMonitoreo[0].count = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId && item.estadoPing == 1).length;
       this.estadosMonitoreo[1].count = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId && item.estadoPing == 0).length;
+      this.estadosMonitoreo[2].count = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId && this.calcularTiempoDesdeAhora(this.numHorasAlertTrans, item.fechaUltimaTrans)).length;
     }
     if (this.selectedMonitoreo == 'Online') this.selectedCount = this.estadosMonitoreo[0].count;
     if (this.selectedMonitoreo == 'Offline') this.selectedCount = this.estadosMonitoreo[1].count;
+    if (this.selectedMonitoreo == 'E. Transaccional') this.selectedCount = this.estadosMonitoreo[2].count;
   }
   
   filterMonitoreo(estado: any, color: any, count: any) {
@@ -330,26 +335,67 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     this.updateListaEsquipo();
   }
 
-  alertHub(dataPingHub: any){
-    let fecha = new Date();
-    this.updatePing(dataPingHub);
-    if(this.contadorPing>=500){
-      this.alertTrans();
-      this.alertTimeSincro(dataPingHub);
-      this.contadorPing = 0;
-      this.fechaNotif = fecha.getTime();
-    }
-    if(this.contadorPing===30 || this.contadorPing===100 || 
-      this.contadorPing===200 || this.contadorPing===300 || 
-      this.contadorPing===400) {
-      const arrOnline = [];
-      const arrOffline = [];
-      for (const element of this.listaEsquipo) {
-        if (element.estadoPing == 1) arrOnline.push(element);
-        if (element.estadoPing == 0) arrOffline.push(element);
+  updateListaEsquipo() {
+    let color: any;
+    if (this.selectedClienteId === 'todoCliente') {
+      if (this.selectedMonitoreo === 'Mostrar todo') {
+        this.listaEsquipo = this.listaEsquipoGhost;
+      } else {
+        if (this.selectedMonitoreo === 'Online' || this.selectedMonitoreo === 'Offline')  {
+          color = this.selectedMonitoreo === 'Online' ? 1 : 0;
+          this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) => item.estadoPing === color);
+        }
+        if (this.selectedMonitoreo === 'E. Transaccional') {
+          this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) => this.calcularTiempoDesdeAhora(this.numHorasAlertTrans, item.fechaUltimaTrans));
+        }
       }
-      this.estadosMonitoreo[0].count = arrOnline.length;
-      this.estadosMonitoreo[1].count = arrOffline.length;
+    } else {
+      if (this.selectedMonitoreo === 'Mostrar todo') {
+        this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId);
+      } else {
+        if (this.selectedMonitoreo === 'Online' || this.selectedMonitoreo === 'Offline')  {
+          color = this.selectedMonitoreo === 'Online' ? 1 : 0;
+          this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId && item.estadoPing === color);
+        }
+        if (this.selectedMonitoreo === 'E. Transaccional') {
+          this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId && this.calcularTiempoDesdeAhora(this.numHorasAlertTrans, item.fechaUltimaTrans));
+        }
+      }
+    }
+  }
+
+  alertHub(dataPingHub: any) {
+    this.updatePing(dataPingHub);
+    if (this.contadorPing >= this.numTopNotification) {
+      let equiposNow = (this.selectedClienteId === 'todoCliente') ? this.listaEsquipoGhost : this.listaEsquipoGhost.filter((item: any) => {return item.idCliente === this.selectedClienteId});
+      for (let item of equiposNow) {
+        this.alertTrans(item);
+        this.alertTimeSincro(item);
+      }
+      this.contadorPing = 0;
+      this.fechaNotif = this.fechaActual.getTime();
+      this.playAudio();
+    }
+    if (this.contadorPing === 25 || this.contadorPing === 50 || 
+        this.contadorPing === 75 || this.contadorPing === 98) {
+      this.equiposerv.obtenerHoraActual().subscribe({
+        next: (data: any) => this.fechaActual = new Date(data),
+        error: (e) => console.error('Error obteniendo la hora actual:', e),
+        complete: () => {
+          const arrOnline = [];
+          const arrOffline = [];
+          const arrMaqError = [];
+          for (const element of this.listaEsquipo) {
+            let validarhora = this.calcularTiempoDesdeAhora(this.numHorasAlertTrans,element.fechaUltimaTrans);
+            if (element.estadoPing === 1) arrOnline.push(element);
+            if (element.estadoPing === 0) arrOffline.push(element);
+            if (validarhora) arrMaqError.push(element);
+          }
+          this.estadosMonitoreo[0].count = arrOnline.length;
+          this.estadosMonitoreo[1].count = arrOffline.length;
+          this.estadosMonitoreo[2].count = arrMaqError.length;
+        }
+      });
     }
     this.contadorPing++;
     console.log(this.contadorPing);
@@ -364,68 +410,47 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       } else {
         const dateEquipo = new Date(equipo.tiempoSincronizacion);
         const diffInMinutes = (syncTime.getTime() - dateEquipo.getTime()) / 60000;
-        if (diffInMinutes >= 5) {
-          equipo.estadoPing = 0;
-        }
+        if (diffInMinutes >= 5) equipo.estadoPing = 0;
       }
     }
   }
 
-  alertTrans(){
-    let equiposNow = [];
-    (this.selectedClienteId == 'todoCliente') ? equiposNow = this.listaEsquipo : equiposNow = this.listaEsquipoGhost.filter((item: any) => {return item.idCliente === this.selectedClienteId});
-    for (let item of equiposNow) {
-      let validarhora = this.calcularTiempoDesdeAhora(this.numHorasAlertTrans,item.fechaUltimaTrans);
-      if(validarhora){
-        let tipo = 'Monitoreo Trans TimeSincro';
-        let msj  = 'No se ha realizado transacciones en 24h';
-        let colorbg = 'red';
-        let serie = item.serieEquipo;
-        this.playAudio();
-        this.controlalerts( tipo, msj, colorbg, serie);
-      }
+  alertTrans(item: any){
+    let validarhora = this.calcularTiempoDesdeAhora(this.numHorasAlertTrans,item.fechaUltimaTrans);
+    if(validarhora){
+      let tipo = 'Monitoreo Trans TimeSincro';
+      let msj  = 'No se ha realizado transacciones en ' + this.numHorasAlertTrans + 'h';
+      let colorbg = 'red';
+      let serie = item.serieEquipo;
+      this.controlalerts( tipo, msj, colorbg, serie);
     }
   }
-  
-  alertTimeSincro(dataPingHub: any){
-    let newMesj = `Ha estado desactivado por mas de ${this.numHorasAlertTimeSincro}h`;
-    let equipoFind: any;
+
+  alertTimeSincro(item: any){
+    let newMesj = `Ha estado desactivado por más de ${this.numHorasAlertTimeSincro}h`;
     let alerta: any;
-    dataPingHub = dataPingHub.filter((element: any) => {
-      return element.estadoPing == 0;
-    });
-    for (let item of dataPingHub) {
-      let validarhora = this.calcularTiempoDesdeAhora(this.numHorasAlertTimeSincro,item.tiempoSincronizacion);
-      if(validarhora){
-        let equiposNow = [];
-        equiposNow = (this.selectedClienteId == 'todoCliente') ? this.listaEsquipo : 
-          this.listaEsquipoGhost.filter((item: any) => {return item.idCliente === this.selectedClienteId});
-        equipoFind = equiposNow.find((itemEquipo:any) => itemEquipo.ipEquipo === item.ip);
-        if(equipoFind){
-          alerta = this.listalertas.find((itemAlerta:any) =>
-            itemAlerta.tipo === 'Monitoreo Trans TimeSincro' &&
-            itemAlerta.nserie === equipoFind.serieEquipo
-          );
-          if(alerta){
-            let arrayMsj = newMesj.split(" ");
-            let validateMsj = arrayMsj.every(palabra => alerta.msj.includes(palabra));
-            if(!validateMsj) alerta.msj = alerta.msj + '\n' +newMesj;
-          }
-          let tipo = 'Monitoreo Trans TimeSincro';
-          let msj  = newMesj;
-          let colorbg = 'red';
-          let serie = equipoFind.serieEquipo;
-          this.playAudio();
-          this.controlalerts( tipo, msj, colorbg, serie);
-        }
+    let validateTimeSincro = this.calcularTiempoDesdeAhora(this.numHorasAlertTimeSincro, item.tiempoSincronizacion);
+    if(validateTimeSincro){
+      alerta = this.listalertas.find((itemAlerta:any) =>
+        itemAlerta.tipo === 'Monitoreo Trans TimeSincro' &&
+        itemAlerta.nserie === item.serieEquipo
+      );
+      if(alerta) {
+        let arrayMsj = newMesj.split(" ");
+        let validateMsj = arrayMsj.every(palabra => alerta.msj.includes(palabra));
+        if(!validateMsj) alerta.msj = alerta.msj + '\n' + newMesj;
       }
+      let tipo = 'Monitoreo Trans TimeSincro';
+      let msj  = newMesj;
+      let colorbg = 'red';
+      let serie = item.serieEquipo;
+      this.controlalerts( tipo, msj, colorbg, serie);
     }
   }
 
   calcularTiempoDesdeAhora(horas: any, date: any): boolean {
-    const ahora = new Date();
     const fecha = new Date(date);
-    const diferenciaEnMilisegundos = ahora.getTime() - fecha.getTime();
+    const diferenciaEnMilisegundos = this.fechaActual.getTime() - fecha.getTime();
     const diferenciaEnHoras = diferenciaEnMilisegundos / (1000 * 60 * 60);
     return diferenciaEnHoras > horas;
   }
@@ -456,27 +481,9 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   getClientes(){
     this.clienteService.ObtenerClienteSelect().subscribe({
       next: (cliente) => this.listaCliente = cliente,
-      error: (e) => console.log(e),
+      error: (e) => console.error(e),
       complete: () => this.obtenerFechaActual()
     })
-  }
-
-  updateListaEsquipo() {
-    if (this.selectedClienteId === 'todoCliente') {
-      if (this.selectedMonitoreo === 'Mostrar todo') {
-        this.listaEsquipo = this.listaEsquipoGhost;
-      } else {
-        let color = this.selectedMonitoreo === 'Online' ? 1 : 0;
-        this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) => item.estadoPing === color);
-      }
-    } else {
-      if (this.selectedMonitoreo === 'Mostrar todo') {
-        this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId);
-      } else {
-        let color = this.selectedMonitoreo === 'Online' ? 1 : 0;
-        this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId && item.estadoPing === color);
-      }
-    }
   }
   
   obtenerFechaActual(){
