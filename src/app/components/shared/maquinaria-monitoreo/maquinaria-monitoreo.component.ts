@@ -37,7 +37,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   listaEsquipoIndicadores:      any = [];
   numHorasAlertTrans:           any = 6;
   numHorasAlertTimeSincro:      any = 1;
-  numTopNotification:           any = 100;
+  numTopNotification:           any = 300;
   selectedCliente:              any = 'Todos los clientes';
   selectedClienteId:            any = 'todoCliente';
   selectedMonitoreo:            any = 'Mostrar todo';
@@ -207,7 +207,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.listaEsquipoIndicadores = [];
       this.equiposerv.obtenerTotalesMoneq(machine_sn).subscribe({
-        next: (equipo: any) => {this.listaEsquipoIndicadores = equipo; console.log(machine_sn, equipo)},
+        next: (equipo: any) => this.listaEsquipoIndicadores = equipo,
         error: (e) => {
           console.error(e);
           this.listaEsquipoIndicadores = [];
@@ -295,7 +295,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
         item.tipoMaquinaria.toString().toLowerCase().includes(this.filterequip.toLowerCase()) || 
         item.provincia.toString().toLowerCase().includes(this.filterequip.toLowerCase())      ||
         item.nombreTienda.toLowerCase().includes(this.filterequip.toLowerCase())
-      )
+      );
     } else {
       this.listaEsquipo = this.listaEsquipoGhost.filter((item:any) => 
         (item.serieEquipo.toString().toLowerCase().includes(this.filterequip.toLowerCase())   || 
@@ -303,7 +303,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
         item.provincia.toString().toLowerCase().includes(this.filterequip.toLowerCase())      ||    
         item.nombreTienda.toLowerCase().includes(this.filterequip.toLowerCase()))             &&
         item.idCliente == this.selectedClienteId
-      )
+      );
     }
   }
 
@@ -365,7 +365,24 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   }
 
   alertHub(dataPingHub: any) {
+    console.log(this.fechaActual);
     this.updatePing(dataPingHub);
+    let horas = this.fechaActual.getHours();
+    // Validar si la hora actual está en el rango de 12 AM a 7 AM
+    if (horas >= 0 && horas < 7) {
+      if (this.contadorPing >= this.numTopNotification) {
+        // this.equiposerv.obtenerHoraActual().subscribe({
+        //   next: (data: any) => this.fechaActual = new Date(data),
+        //   error: (e) => console.error('Error obteniendo la hora actual: ', e),
+        //   complete: () => this.numHorasAlertTrans = 12
+        // });
+        this.obtenerFechaActual('rangoHora');
+        this.contadorPing = 0;
+      }
+      return;
+    }
+    if (horas >= 7 && horas < 10) this.numHorasAlertTrans = 12;
+    if (horas >= 10 && horas < 0) this.numHorasAlertTrans = 6;
     if (this.contadorPing >= this.numTopNotification) {
       let equiposNow = (this.selectedClienteId === 'todoCliente') ? this.listaEsquipoGhost : this.listaEsquipoGhost.filter((item: any) => {return item.idCliente === this.selectedClienteId});
       for (let item of equiposNow) {
@@ -376,26 +393,27 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       this.fechaNotif = this.fechaActual.getTime();
       this.playAudio();
     }
-    if (this.contadorPing === 25 || this.contadorPing === 50 || 
-        this.contadorPing === 75 || this.contadorPing === 98) {
-      this.equiposerv.obtenerHoraActual().subscribe({
-        next: (data: any) => this.fechaActual = new Date(data),
-        error: (e) => console.error('Error obteniendo la hora actual:', e),
-        complete: () => {
-          const arrOnline = [];
-          const arrOffline = [];
-          const arrMaqError = [];
-          for (const element of this.listaEsquipo) {
-            let validarhora = this.calcularTiempoDesdeAhora(this.numHorasAlertTrans,element.fechaUltimaTrans);
-            if (element.estadoPing === 1) arrOnline.push(element);
-            if (element.estadoPing === 0) arrOffline.push(element);
-            if (validarhora) arrMaqError.push(element);
-          }
-          this.estadosMonitoreo[0].count = arrOnline.length;
-          this.estadosMonitoreo[1].count = arrOffline.length;
-          this.estadosMonitoreo[2].count = arrMaqError.length;
-        }
-      });
+    if (this.contadorPing === 100 || this.contadorPing === 200 || 
+        this.contadorPing === 298) {
+      // this.equiposerv.obtenerHoraActual().subscribe({
+      //   next: (data: any) => this.fechaActual = new Date(data),
+      //   error: (e) => console.error('Error obteniendo la hora actual:', e),
+      //   complete: () => {
+      //     const arrOnline = [];
+      //     const arrOffline = [];
+      //     const arrMaqError = [];
+      //     for (const element of this.listaEsquipo) {
+      //       let validarhora = this.calcularTiempoDesdeAhora(this.numHorasAlertTrans,element.fechaUltimaTrans);
+      //       if (element.estadoPing === 1) arrOnline.push(element);
+      //       if (element.estadoPing === 0) arrOffline.push(element);
+      //       if (validarhora) arrMaqError.push(element);
+      //     }
+      //     this.estadosMonitoreo[0].count = arrOnline.length;
+      //     this.estadosMonitoreo[1].count = arrOffline.length;
+      //     this.estadosMonitoreo[2].count = arrMaqError.length;
+      //   }
+      // });
+      this.obtenerFechaActual('updateCounter');
     }
     this.contadorPing++;
     console.log(this.contadorPing);
@@ -482,15 +500,34 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     this.clienteService.ObtenerClienteSelect().subscribe({
       next: (cliente) => this.listaCliente = cliente,
       error: (e) => console.error(e),
-      complete: () => this.obtenerFechaActual()
+      complete: () => this.obtenerFechaActual('moneq')
     })
   }
   
-  obtenerFechaActual(){
+  // obtenerFechaActual(){
+  obtenerFechaActual(action: any){
     this.equiposerv.obtenerHoraActual().subscribe({
       next: (data: any) => this.fechaActual = new Date(data),
       error: (e) => console.error('Error obteniendo la hora actual:', e),
-      complete: () => this.obtenerEquiposMoneq()
+      complete: () => {
+        // this.obtenerEquiposMoneq();
+        if (action === 'moneq') this.obtenerEquiposMoneq();
+        if (action === 'rangoHora') this.numHorasAlertTrans = 12;
+        if (action === 'updateCounter') {
+          const arrOnline = [];
+          const arrOffline = [];
+          const arrMaqError = [];
+          for (const element of this.listaEsquipo) {
+            let validarhora = this.calcularTiempoDesdeAhora(this.numHorasAlertTrans,element.fechaUltimaTrans);
+            if (element.estadoPing === 1) arrOnline.push(element);
+            if (element.estadoPing === 0) arrOffline.push(element);
+            if (validarhora) arrMaqError.push(element);
+          }
+          this.estadosMonitoreo[0].count = arrOnline.length;
+          this.estadosMonitoreo[1].count = arrOffline.length;
+          this.estadosMonitoreo[2].count = arrMaqError.length;
+        }
+      }
     });
   }
 }

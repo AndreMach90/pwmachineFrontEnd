@@ -202,9 +202,8 @@ export class EquipoComponent implements OnInit {
           return element.active === "A";
         });
         this.listaEsquipoGhost = equipo;
-        console.log(equipo);
       },
-      error: (e) => console.log(e)
+      error: (e) => console.error(e)
     })
   }
 
@@ -261,13 +260,15 @@ export class EquipoComponent implements OnInit {
       capacidadAsegurada: this.equiposForm.controls['capacidadAsegurada'].value?.toString().replace(/[^0-9.]*/g, ''),
       tiempoSincronizacion: tiempoSincronizacion,
       ...(this.tipoEquipo === '009' 
-        ? { capacidadIniSobres: this.equiposForm.controls['capacidadIniSobres'].value?.toString().replace(/[^0-9.]*/g, '') }
-        : { capacidadIni: this.equiposForm.controls['capacidadIni'].value?.toString().replace(/[^0-9.]*/g, '') })
+        ? { capacidadIniSobres: this.equiposForm.controls['capacidadIniSobres'].value?.toString().replace(/[^0-9.]*/g, ''),
+            capacidadIni: '0' } 
+        : { capacidadIni: this.equiposForm.controls['capacidadIni'].value?.toString().replace(/[^0-9.]*/g, ''),
+            capacidadIniSobres: '0' })
     }
     this.equiposerv.guardarEquipo(this.modeloEquipos).subscribe({
       next: (x) => Toast.fire({ icon: 'success', title: 'Equipo guardado' }), 
       error: (e) => {
-        console.log(e);
+        console.error(e);
         Toast.fire({ icon: 'error', title: 'No se ha podido guardar este equipo' });
       }, 
       complete: () => {
@@ -311,8 +312,10 @@ export class EquipoComponent implements OnInit {
     this.listaIps.push(this.arrIp);
     this.equiposForm.controls['ipmaquina'].setValue(data.ipEquipo);
     this.equiposForm.controls['serieEquipo'].setValue(data.serieEquipo);
-    this.equiposForm.controls['capacidadIni'].setValue(data.capacidadIni);
-    this.equiposForm.controls['capacidadIniSobres'].setValue(data.capacidadIniSobres);
+    let capacidadIni = (data.capacidadIni) ? data.capacidadIni : 0;
+    this.equiposForm.controls['capacidadIni'].setValue(capacidadIni);
+    let capacidadIniSobres = (data.capacidadIniSobres) ? data.capacidadIniSobres : 0;
+    this.equiposForm.controls['capacidadIniSobres'].setValue(capacidadIniSobres);
     this.equiposForm.controls['fechaInstalacion'].setValue(fechaA);
     this.ipeditar = this.arrIp.ipEquipo;
     this.equiposForm.controls['capacidadAsegurada'].setValue(data.capacidadAsegurada);
