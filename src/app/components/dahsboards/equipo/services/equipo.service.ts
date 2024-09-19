@@ -7,61 +7,77 @@ import { Environments } from 'src/app/components/environments/environments';
 })
 
 export class EquipoService {
+  constructor(private env: Environments, private http: HttpClient) { }
 
-  constructor( private env: Environments, 
-               private http: HttpClient ) { }
-
-  obtenerModelo( codtipomaq: any, codmarca: any ) {
-    return this.http.get( this.env.apiurl() + 'MarcaModeloEquipo/ObtenerModelo/' + codtipomaq + '/' + codmarca );
-  }
-
-  obtenerMarca( codtipomaq:string ) {
-    return this.http.get( this.env.apiurl() + 'MarcaModeloEquipo/ObtenerMarca/' + codtipomaq );
-  }
-
-  guardarEquipo(model: any []) {
-    const headers = new HttpHeaders({
+  private get headers(): HttpHeaders {
+    return new HttpHeaders({
       'Authorization': `Bearer ${this.env.TokenJWT()}`,
       'Content-Type': 'application/json'
     });
-    return this.http.post(this.env.apiurl() + 'Equipo/GuardarEquipo', model, { headers });
   }
 
-  actualizarEquipo( id:number, model:any [] ) {
-    return this.http.put(this.env.apiurl() + 'Equipo/ActualizarEquipo/' + id, model);
+  obtenerModelo(codtipomaq: any, codmarca: any) {
+    return this.http.get(this.env.apiurl() + 'MarcaModeloEquipo/ObtenerModelo/' + codtipomaq + '/' + codmarca, { headers: this.headers });
   }
 
-  obtenerEquipo( tp:number, ctienda:string ) {
-    return this.http.get(this.env.apiurl() + 'Equipo/ObtenerEquipo/'+ tp + '/' + ctienda);
+  obtenerEquipoMoneq(num: any, codCliente: any) {
+    return this.http.get(this.env.apiurl() + 'Equipo/ObtenerEquipoMoneq/' + num + '/' + codCliente, { headers: this.headers });
   }
 
-  obtenerEquipoConteoTran( option:any, model:any [] ) {
-    console.log(this.env.apiurl() + 'EquiposNoTransaccion/Conteo/'+option, model);
-    return this.http.post(this.env.apiurl() + 'EquiposNoTransaccion/Conteo/'+option, model);
+  obtenerMarca(codtipomaq: string) {
+    return this.http.get(this.env.apiurl() + 'MarcaModeloEquipo/ObtenerMarca/' + codtipomaq, { headers: this.headers });
   }
 
-  eliminarEquipos(id:number) {
-    return this.http.delete(this.env.apiurl() + 'Equipo/BorrarEquipo/'+id);
+  guardarEquipo(model: any[]) {
+    return this.http.post(this.env.apiurl() + 'Equipo/GuardarEquipo', model, { headers: this.headers });
   }
 
-  obtenerUsuariosTemporales(ip:string) {
-    return this.http.get( this.env.apiurl() + 'UsuarioTemporal/Usuario/'+ip )
+  actualizarEquipo(id: number, model: any[]) {
+    return this.http.put(this.env.apiurl() + 'Equipo/ActualizarEquipo/' + id, model, { headers: this.headers });
   }
 
-  obtenerUsuariosIp(ip:string) {
-    return this.http.get( this.env.apiurl() + 'Usuario/ObtenerUsuarioIP/'+ip )
+  obtenerEquipo() {
+    return this.http.get(this.env.apiurl() + 'Equipo/ObtenerEquipo', { headers: this.headers });
   }
 
-  eliminarUsuarioTemporal(id:number) {
-    return this.http.get( this.env.apiurl() + 'UsuarioTemporal/UsuarioDelete/' + id );
-  } 
+  obtenerTotalesMoneq(machine_sn: any) {
+    return this.http.get(this.env.apiurl() + 'Equipo/ObtenerTotalesMoneq/' + machine_sn, { headers: this.headers });
+  }
+
+  obtenerEquipoConteoTran(option: any, model: any[]) {
+    // console.warn('==========================================================================')
+    // console.warn('MI API REPORTE SIN ACREDITAR')
+    // console.warn(this.env.apiurl() + 'EquiposNoTransaccion/Conteo/' + option, model)
+    // console.warn('==========================================================================')
+    return this.http.post(this.env.apiurl() + 'EquiposNoTransaccion/Conteo/' + option, model, { headers: this.headers });
+  }
+
+  eliminarEquipos(id: number) {
+    return this.http.delete(this.env.apiurl() + 'Equipo/BorrarEquipo/' + id, { headers: this.headers });
+  }
+
+  obtenerUsuariosTemporales(ip: string) {
+    return this.http.get(this.env.apiurl() + 'UsuarioTemporal/Usuario/' + ip, { headers: this.headers })
+  }
+
+  obtenerUsuariosIp(ip: string) {
+    // console.warn('API: ' + this.env.apiurl() + 'Usuario/ObtenerUsuarioIP/' + ip)
+    return this.http.get(this.env.apiurl() + 'Usuario/ObtenerUsuarioIP/' + ip, { headers: this.headers })
+  }
+
+  eliminarUsuarioTemporal(id: number) {
+    return this.http.get(this.env.apiurl() + 'UsuarioTemporal/UsuarioDelete/' + id, { headers: this.headers });
+  }
 
   obtenerIPEquipos() {
-    return this.http.get( this.env.apiurl() + 'Equipo/EquipoNuevo' );
+    return this.http.get(this.env.apiurl() + 'Equipo/EquipoNuevo', { headers: this.headers });
   }
 
-  activarEquipo (id: number) {
-    return this.http.put( this.env.apiurl() + 'Equipo/ActivarEquipo/' + id, id);
-  } 
+  activarEquipo(id: number) {
+    return this.http.put(this.env.apiurl() + 'Equipo/ActivarEquipo/' + id, id, { headers: this.headers });
+  }
 
+  obtenerHoraActual() {
+    return this.http.get(this.env.apiurl() + 'Servicios/HoraActual', { headers: this.headers, responseType: 'text' });
+  }
 }

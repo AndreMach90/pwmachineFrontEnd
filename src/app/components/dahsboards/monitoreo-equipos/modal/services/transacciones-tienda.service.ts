@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Environments } from 'src/app/components/environments/environments';
 
@@ -6,24 +6,37 @@ import { Environments } from 'src/app/components/environments/environments';
   providedIn: 'root'
 })
 export class TransaccionesTiendaService {
+  constructor(private env: Environments, private http: HttpClient) { }
 
-  constructor( private env: Environments, private http: HttpClient ) { }
-
-  obtenerTransaccionesTienda(id:any, tp: number) {
-    return this.http.get( this.env.apiurl()+'Transacciones/ObtenerTransacciones/'+id + '/' + tp );
-  }  
-
-  filtroTransaccionesRango( model:any [] ) {
-    console.log( this.env.apiurl() + 'FiltroFechas/Filtrar' )
-    return this.http.post( this.env.apiurl() + 'FiltroFechas/Filtrar', model );
+  private get headers(): HttpHeaders {
+    return new HttpHeaders({
+      'Authorization': `Bearer ${this.env.TokenJWT()}`,
+      'Content-Type': 'application/json'
+    });
   }
 
-  GuardarTransaccionesAcreditadas( model:any [] ) {
-    return this.http.post( this.env.apiurl() + 'TransAcreditada/GuardarTransacciones', model );
+  obtenerTransaccionesTienda(id: any, tp: number) {
+    return this.http.get(this.env.apiurl() + 'Transacciones/ObtenerTransacciones/' + id + '/' + tp, { headers: this.headers });
   }
 
-  ObtenerEquiposSaldo( machineSn: any ) {
-    return this.http.get( this.env.apiurl() + 'EquipoDetalle/ObtenerTotales/' + machineSn );
+  obtenerTransaccionesTienda2(model: any) {
+    return this.http.post(this.env.apiurl() + 'FiltroFechas/Filtrar/', model, { headers: this.headers });
   }
 
+  filtroTransaccionesRango(model: any[]) {
+    // console.warn(this.env.apiurl() + 'FiltroFechas/Filtrar', model);
+    return this.http.post(this.env.apiurl() + 'FiltroFechas/Filtrar', model, { headers: this.headers });
+  }
+
+  GuardarTransaccionesAcreditadas(model: any[]) {
+    return this.http.post(this.env.apiurl() + 'TransAcreditada/GuardarTransacciones', model, { headers: this.headers });
+  }
+
+  ObtenerEquiposSaldo(machineSn: any) {
+    return this.http.get(this.env.apiurl() + 'EquipoDetalle/ObtenerTotales/' + machineSn, { headers: this.headers });
+  }
+
+  obtenerCuadre(machineSn: any) {
+    return this.http.get(this.env.apiurl() + 'EquiposNoTransaccion/Cuadre/' + machineSn, { headers: this.headers });
+  }
 }

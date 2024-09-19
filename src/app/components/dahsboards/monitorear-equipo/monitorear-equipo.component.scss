@@ -1,0 +1,91 @@
+.overlay-custom {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.boxequip {
+  background-color: whitesmoke;
+  border-radius: 10px;
+  margin-bottom: 5px;
+}
+
+.box-f {
+  padding: 5px;
+}
+
+.monitoreo-box-a {
+  background-color: aliceblue;
+  padding: 10px;
+  border-radius: 7px;
+  margin: 5px;
+  height: 140px;
+}
+
+.tabla-datos {
+  height: 80vh;
+  overflow-y: auto;
+}
+
+// Tabla
+.bordeTabla {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: auto;
+}
+
+.bordeTabla thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #0D6EFD;
+  color: white;
+}
+
+thead {
+  box-shadow: 0px 10px 10px rgba($color: #000000, $alpha: 0.4);
+}
+
+tbody,
+tr,
+td {
+  z-index: 0;
+}
+
+td {
+  font-size: 13pt;
+  font-weight: bold;
+}
+
+.box-total-tran {
+  transition: ease all 0.5s;
+  cursor: pointer;
+}
+
+.box-total-tran:hover {
+  transition: ease all 0.5s;
+}
+
+#tabsum {
+  cursor: pointer;
+  transition: ease all 0.5s;
+}
+
+#tabsum:hover {
+  transition: ease all 0.5s;
+  background-color: rgb(215, 228, 179) !important;
+  transform: scale(1.05);
+}
+
+.box-subtotales {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  color: white;
+}
+
+.icono {
+  height: 20px !important;
+  width: 20px !important;
+}

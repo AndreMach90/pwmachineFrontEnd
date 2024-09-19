@@ -19,7 +19,10 @@ export interface Modulo {
 
 export class NavsideWorksComponent implements OnInit {
   @Output() modulo: EventEmitter<Modulo> = new EventEmitter<Modulo>();
-  /** TEMPORAL */
+  primary: any;
+  secondary: any;
+  secondary_a: any;
+  secondary_b: any;
   modelModules: any = [
     {
       nombre_module: 'Home',
@@ -55,25 +58,11 @@ export class NavsideWorksComponent implements OnInit {
       icon_module: 'group',
       permison: 1,
       state: 1,
-    },
-    // {
-    //   nombre_module: 'Monitoreo de Equipos',
-    //   description_module: 'Monitorea los estados de los equipos adquiridos por tienda ',
-    //   icon_module: this.env.apiUrlIcon()+'cmachine.png',
-    //   permison: 1,
-    //   state: 1
-    // },
+    }
   ];
 
-  constructor(
-    private log: LoginService,
-    private router: Router,
-    private env: Environments
-  ) {}
-  primary: any;
-  secondary: any;
-  secondary_a: any;
-  secondary_b: any;
+  constructor( private env: Environments ) {}
+  
   ngOnInit(): void {
     this.primary = this.env.appTheme.colorPrimary;
     this.secondary = this.env.appTheme.colorSecondary_C;

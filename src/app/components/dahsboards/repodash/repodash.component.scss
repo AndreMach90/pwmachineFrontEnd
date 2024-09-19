@@ -1,20 +1,42 @@
+
 .box {
   display: flex;
   justify-content: space-between;
 }
 
+.boxMenu {
+  width:         300px;
+  height:        auto;
+  padding:       15px;
+  border-radius: 0px;
+  border:        groove 1px rgb(210, 210, 210);
+  transition: ease all 1.5s;
+  color: whitesmoke;
+  background-color: rgba(0, 179, 255, 0.055);
+}
+
+.boxMenu:hover {
+  transition:        ease all 0.5s;
+  cursor:            pointer;
+  background-color:#eacc0ad0;
+  color:           #444 !important;
+  border-radius:     10px;
+  transform:         scale(0.95);
+  box-shadow:        10px 10px 10px rgba(0, 0, 0, 0.12);
+}
+
 #a {
   border-radius: 6px;
-  border: solid 1px rgb(194, 194, 194);
-  height: 86.5vh;
-  overflow: auto;
+  border:        solid 1px rgb(194, 194, 194);
+  height:        86.5vh;
+  overflow:      auto;
 }
 
 #b {
   border-radius: 6px;
-  border: solid 1px rgb(194, 194, 194);
-  height: 86.5vh;
-  overflow: auto;
+  border:        solid 1px rgb(194, 194, 194);
+  height:        86.5vh;
+  overflow:      auto;
 }
 
 .chips-alert {
@@ -64,8 +86,9 @@
   position: relative;
   z-index: 2;
   transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
-  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+              0 2px 2px 0 rgba(0, 0, 0, 0.14),
+              0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 
 .example-box:active {

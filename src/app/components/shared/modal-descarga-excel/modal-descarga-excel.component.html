@@ -1,0 +1,29 @@
+<div class="dashworks rounded-2 p-3" style="background-color: whitesmoke;">
+    <span class="fs-5 d-flex align-item-center ">
+        <mat-icon>download</mat-icon> Localidades detectadas:
+    </span>
+    <hr>
+    <div>
+        <div class="d-flex justify-content-end ">
+            <div class="bg-black text-light p-2 rounded-2 shadow-sm " >
+                Transacciones Normales.
+            </div>
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item" *ngFor="let localidadDentro of localidadDentroRango"> 
+                {{ localidadDentro }}
+            </li>
+        </ul>
+        <hr>
+        <div class="d-flex justify-content-end ">
+            <div class="bg-warning text-black p-2 rounded-2 shadow-sm " >
+                Transacciones Rezagadas
+            </div>
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item" *ngFor="let localidadFuera of localidadFueraRango"> 
+                {{ localidadFuera }}
+            </li>
+        </ul>        
+    </div>
+</div>

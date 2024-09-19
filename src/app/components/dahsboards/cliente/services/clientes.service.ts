@@ -9,39 +9,38 @@ export class ClientesService {
 
   constructor( private env: Environments, private http: HttpClient ) { }
 
-  guardarClientes( model:any[] ) {
-    const headers = new HttpHeaders({
+  private get headers(): HttpHeaders {
+    return new HttpHeaders({
       'Authorization': `Bearer ${this.env.TokenJWT()}`,
       'Content-Type': 'application/json'
     });
+  }
 
-    return this.http.post(this.env.apiurl() + 'Cliente/GuardarCliente', model, { headers });
+  guardarClientes( model:any[] ) {
+    return this.http.post(this.env.apiurl() + 'Cliente/GuardarCliente', model, { headers: this.headers });
   }
 
   actualizarCliente (model:any[]) {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.env.TokenJWT()}`,
-      'Content-Type': 'application/json'
-    });
-    return this.http.put( this.env.apiurl()+'Cliente/ActualizarCliente', model, {headers} );
+    return this.http.put( this.env.apiurl()+'Cliente/ActualizarCliente', model, { headers: this.headers } );
   }
 
   obtenerCliente() {    
-    return this.http.get( this.env.apiurl()+'Cliente/obtenerCliente');
+    return this.http.get( this.env.apiurl()+'Cliente/obtenerCliente', { headers: this.headers });
   }
 
-  obtenerCuentaCliente(id:number) {    
-    console.log(this.env.apiurl()+'Cliente/ObtenerCuentaCliente/'+id)
-    return this.http.get( this.env.apiurl()+'Cliente/ObtenerCuentaCliente/'+id);
+  ObtenerClienteSelect() {
+    return this.http.get( this.env.apiurl()+'Cliente/ObtenerClienteSelect', { headers: this.headers });
   }
 
-  obtenerCuentaTransacCant(id:number) {    
-    return this.http.get( this.env.apiurl()+'Cuenta/NTransacciones/'+id);
+  obtenerCuentaCliente(id:number) {
+    return this.http.get( this.env.apiurl()+'Cliente/ObtenerCuentaCliente/'+id, { headers: this.headers });
   }
 
+  obtenerCuentaTransacCant(id:number) {
+    return this.http.get( this.env.apiurl()+'Cuenta/NTransacciones/'+id, { headers: this.headers });
+  }
 
   eliminarCliente( codigoCliente:string ) {
-    return this.http.delete( this.env.apiurl() + 'Cliente/BorrarCliente/' + codigoCliente );
+    return this.http.delete( this.env.apiurl() + 'Cliente/BorrarCliente/' + codigoCliente, { headers: this.headers } );
   }
-
 }

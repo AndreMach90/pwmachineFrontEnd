@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { GraficasService } from './graficas.service';
+import { TokenJWTService } from './token-jwt.service';
 
-describe('GraficasService', () => {
-  let service: GraficasService;
+describe('TokenJWTService', () => {
+  let service: TokenJWTService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(GraficasService);
+    service = TestBed.inject(TokenJWTService);
   });
 
   it('should be created', () => {

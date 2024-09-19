@@ -15,17 +15,22 @@
       <form [formGroup]="clienteForm" class="mb-2" (ngSubmit)="onSubmit()">
         <div class="mb-3 w-100">
           <label for="Nombre_Cliente" class="form-label text-secondary">
-            Nombre de la empresa cliente:
+            Nombre de la empresa cliente: <span class="text-danger">*</span>
           </label>
           <input type="text"
             class="form-control"
             formControlName="Nombre_Cliente"
             #Nombre_Cliente
             id="Nombre_Cliente"
-            placeholder="José Villalba..."/>
+            placeholder=""/>
+          <span *ngIf="clienteForm.controls['Nombre_Cliente'].invalid && clienteForm.controls['Nombre_Cliente'].touched" class="text-danger">
+            El nombre de la empresa es requerido!.
+          </span>
         </div>
         <div class="mb-3 w-100">
-          <label for="RUC" class="form-label text-secondary"> RUC: </label>
+          <label for="RUC" class="form-label text-secondary">
+            RUC: <span class="text-danger">*</span>
+          </label>
           <input type="text"
             class="form-control"
             formControlName="RUC"
@@ -33,21 +38,27 @@
             id="RUC"
             (keyup)="validateInputNumber(RUC)"
             placeholder=""/>
+          <span *ngIf="clienteForm.controls['RUC'].invalid && clienteForm.controls['RUC'].touched" class="text-danger">
+            El RUC es requerido!.
+          </span>
         </div>
         <div class="mb-3 w-100">
           <label for="Direccion" class="form-label text-secondary">
-            Dirección:
+            Dirección: <span class="text-danger">*</span>
           </label>
           <input type="text"
             class="form-control"
             formControlName="Direccion"
             #Direccion
             id="Direccion"
-            placeholder="Av. Carlos Julio...."/>
+            placeholder=""/>
+          <span *ngIf="clienteForm.controls['Direccion'].invalid && clienteForm.controls['Direccion'].touched" class="text-danger">
+            La dirección es requerida!.
+          </span>
         </div>
         <div class="mb-3 w-100">
           <label for="nombre_contacto" class="form-label text-secondary">
-            Nombre contacto:
+            Nombre contacto: <span class="text-danger">*</span>
           </label>
           <input type="text"
             class="form-control"
@@ -56,10 +67,13 @@
             id="nombre_contacto"
             placeholder=""
             (keyup)="validateInputText(nombre_contacto)"/>
+          <span *ngIf="clienteForm.controls['nombre_contacto'].invalid && clienteForm.controls['nombre_contacto'].touched" class="text-danger">
+            El nombre contacto es requerida!.
+          </span>
         </div>
         <div class="mb-3 w-100">
           <label for="Telefono" class="form-label text-secondary">
-            Telefono del contacto:
+            Teléfono del contacto: <span class="text-danger">*</span>
           </label>
           <input type="text"
             class="form-control"
@@ -68,10 +82,13 @@
             id="Telefono"
             (keyup)="validateInputNumber(Telefono)"
             placeholder=""/>
+          <span *ngIf="clienteForm.controls['Telefono'].invalid && clienteForm.controls['Telefono'].touched" class="text-danger">
+            El teléfono contacto es requerido!.
+          </span>
         </div>
         <div class="mb-3 w-100">
           <label for="email_contacto" class="form-label text-secondary">
-            Email contacto:
+            Email contacto: <span class="text-danger">*</span>
           </label>
           <input type="text"
             class="form-control"
@@ -79,12 +96,14 @@
             #email_contacto
             id="email_contacto"
             placeholder=""/>
+          <span *ngIf="clienteForm.controls['email_contacto'].invalid && clienteForm.controls['email_contacto'].touched" class="text-danger">
+            El email contacto es requerido!.
+          </span>
         </div>
         <div class="d-flex flex-wrap justify-content-between">
           <div class="floating-button">
             <button type="button"
-              class="btn btn-danger btn-sm"
-              *ngIf="_cancel_button"
+              class="btn btn-danger btn-sm me-1"
               (click)="limpiar()">
               <div class="icono" [style]="'background-image: url( ' + cancel + ' )'"></div>
             </button>
@@ -103,9 +122,7 @@
         <div class="w-25">
           <h1 class="m-0">
             Clientes Registrados
-            <span class="text-secondary"> 
-              ({{ clientelista.length }})
-            </span>
+            <span class="text-secondary">({{ clientelista.length }})</span>
           </h1>
         </div>
         <div class="w-75">
@@ -113,13 +130,13 @@
             <div class="mb-2 d-flex w-100">
               <form [formGroup]="filterForm" class="w-100">
                 <input type="text"
-                       class="w-100 shadow-sm form-control rounded-pill"
-                       fxFlex="auto"
-                       formControlName="filterCli"
-                       #filterCli
-                       id="filterCli"
-                       (keyup)="filterCliente()"
-                       placeholder="Búsqueda de clientes registrados..."/>
+                  class="w-100 shadow-sm form-control rounded-pill"
+                  fxFlex="auto"
+                  formControlName="filterCli"
+                  #filterCli
+                  id="filterCli"
+                  (keyup)="filterCliente()"
+                  placeholder="Búsqueda de clientes registrados..."/>
               </form>
             </div>
             <div *ngIf="permisonUsers">
@@ -137,13 +154,13 @@
           <thead class="bg-primary text-light">
             <th class="p-2" *ngIf="permisonUsers"></th>
             <th class="p-2">RUC</th>
-            <th class="p-2">CLiente</th>
+            <th class="p-2">Cliente</th>
             <th class="p-2">Contacto</th>
             <th class="p-2">Email</th>
             <th class="p-2">Teléfono</th>
             <th class="p-2">Dirección</th>
             <th class="p-2" title="Agregar cuentas contables del cliente">Cta.Cont.</th>
-            <th class="p-2" title="Agregar cuentas contables del cliente">Localidades</th>
+            <th class="p-2">Localidades</th>
           </thead>
           <tbody>
             <tr *ngFor="let usuarios of clientelista; let i = index">
@@ -159,58 +176,46 @@
                   </div>
                 </div>
               </td>
-              <td>
-                {{ usuarios.ruc }}
-              </td>
-              <td>
-                {{ usuarios.nombreCliente }}
-              </td>
-              <td>
-                {{ usuarios.nombrecontacto }}
-              </td>
-              <td>
-                {{ usuarios.emailcontacto }}
-              </td>
-              <td>
-                {{ usuarios.telefcontacto }}
-              </td>
-              <td>
-                {{ usuarios.direccion }}
-              </td>
+              <td> {{ usuarios.ruc }} </td>
+              <td> {{ usuarios.nombreCliente }} </td>
+              <td> {{ usuarios.nombrecontacto }} </td>
+              <td> {{ usuarios.emailcontacto }} </td>
+              <td> {{ usuarios.telefcontacto }} </td>
+              <td> {{ usuarios.direccion }} </td>
               <td>
                 <div class="d-flex">
                   <div style="width: 30px; height: 30px"
-                       (click)="openDialogUsuariosAsignados(usuarios)"
-                       class="btn btn-warning btn-sm d-flex justify-content-center align-items-center p-1">
+                    (click)="openDialogUsuariosAsignados(usuarios)"
+                    class="btn btn-warning btn-sm d-flex justify-content-center align-items-center p-1 shadow-sm">
                     <span matBadgeColor="warn"
-                          [matBadge]="usuarios.cantidadCuntasBancarias"
-                          matBadgePosition="before">
-                      <strong> o </strong>
+                      [matBadge]="usuarios.cantidadCuntasBancarias"
+                      matBadgePosition="before"
+                      class="d-flex align-items-center">
+                      <mat-icon>account_balance</mat-icon>
                     </span>
                   </div>
                   <div *ngIf="permisonUsers"
-                       class="btn btn-primary btn-sm d-flex justify-content-center align-items-center p-1"
-                       style="width: 30px; height: 30px"
-                       (click)="obtenerCuentaBancariaCliente(usuarios.id); openDialogCrearCuentaBancaria(usuarios, 'C')">
-                       <span class="">
-                         <strong>+</strong>
-                       </span>
+                    class="btn btn-primary btn-sm d-flex justify-content-center align-items-center p-1 shadow-sm"
+                    style="width: 30px; height: 30px"
+                    (click)="obtenerCuentaBancariaCliente(usuarios.id); openDialogCrearCuentaBancaria(usuarios, 'C')">
+                    <span class="d-flex align-items-center">
+                      <mat-icon>add</mat-icon>
+                    </span>
                   </div>
                 </div>
               </td>
               <td *ngIf="permisonUsers">
                 <div class="d-flex">
                   <span [style]="'background-image: url( ' + localidad2 + ' )'"
-                        class="icono-btn"
-                        [matBadge]="usuarios.cantidadLocalidades"
-                        matBadgePosition="before"
-                        matBadgeColor="warn"
-                        (click)=" op.toggle($event); obtenerLocalidad(usuarios.codigoCliente) "
-                        style="background-color: rgb(80, 37, 149) !important;
-                               background-size: 65% 65%;
-                               background-repeat: no-repeat !important;
-                               border: solid 2px rgb(225, 202, 254);
-                               background-position: 5px 4px; ">
+                    class="icono-btn"
+                    [matBadge]="usuarios.cantidadLocalidades"
+                    matBadgePosition="before"
+                    matBadgeColor="warn"
+                    (click)=" op.toggle($event); obtenerLocalidad(usuarios.codigoCliente) "
+                    style="background-color: rgb(80, 37, 149) !important;                               background-size: 65% 65%;
+                      background-repeat: no-repeat !important;
+                      border: solid 2px rgb(225, 202, 254);
+                      background-position: 5px 4px; ">
                     <p-overlayPanel #op>
                       <div *ngFor="let loc of localidadesGuardadasCliente; let i = index"
                         class="d-flex justify-content-start align-items-center"
@@ -226,13 +231,13 @@
                     </p-overlayPanel>
                   </span>
                   <div class="icono-btn"
-                       [style]="'background-image: url( ' + localidad1 + ' )'"
-                       (click)="openDialogAsignarLocalidad(usuarios)"
-                       style="background-color: rgb(80, 37, 149) !important;
-                              background-size: 65% 65%;
-                              background-repeat: no-repeat !important;
-                              border: solid 2px rgb(225, 202, 254);
-                              background-position: 5px 4px;">
+                    [style]="'background-image: url( ' + localidad1 + ' )'"
+                    (click)="openDialogAsignarLocalidad(usuarios)"
+                    style="background-color: rgb(80, 37, 149) !important;
+                      background-size: 65% 65%;
+                      background-repeat: no-repeat !important;
+                      border: solid 2px rgb(225, 202, 254);
+                      background-position: 5px 4px;">
                   </div>
                 </div>
               </td>

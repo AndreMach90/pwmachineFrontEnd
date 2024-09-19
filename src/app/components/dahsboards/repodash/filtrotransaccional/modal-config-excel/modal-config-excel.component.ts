@@ -15,40 +15,40 @@ import { TransaccionesTiendaService } from '../../../monitoreo-equipos/modal/ser
   styleUrls: ['./modal-config-excel.component.scss']
 })
 export class ModalConfigExcelComponent implements OnInit {
-  checktiendas:boolean= false;
-  choicetiendas:boolean= false;
-  _show_spinner:boolean = false;
+  checktiendas: boolean = false;
+  choicetiendas: boolean = false;
+  _show_spinner: boolean = false;
   // public exportconForm = new FormGroup({
 
   // })
 
   public exportdateform = new FormGroup({
-    dateini:   new FormControl(''),
-    datefin:   new FormControl(''),
-    horaini:   new FormControl(''),
-    horafin:   new FormControl(''),
-    codigoClienteidFk:  new FormControl(),
-    codigoTiendaidFk:   new FormControl()
+    dateini: new FormControl(''),
+    datefin: new FormControl(''),
+    horaini: new FormControl(''),
+    horafin: new FormControl(''),
+    codigoClienteidFk: new FormControl(),
+    codigoTiendaidFk: new FormControl()
   })
 
   transac: FormGroup;
 
-  constructor( private formBuilder: FormBuilder, 
-               private clienteserv: ClientesService,
-               private tiendaservs: TiendaService,
-               private monitoreo: MonitoreoService,
-               private transacciones: TransaccionesTiendaService,
-               public dialog: MatDialog,
-              //  public dialogRef: MatDialogRef<FiltrotransaccionalComponent>,
-               @Inject(MAT_DIALOG_DATA) public data: any, private env: Environments ) { 
+  constructor(private formBuilder: FormBuilder,
+    private clienteserv: ClientesService,
+    private tiendaservs: TiendaService,
+    private monitoreo: MonitoreoService,
+    private transacciones: TransaccionesTiendaService,
+    public dialog: MatDialog,
+    //  public dialogRef: MatDialogRef<FiltrotransaccionalComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any, private env: Environments) {
 
-                this.transac = this.formBuilder.group({
-                  manualTransactions: true,
-                  automaticTransactions: true,
-                  recolecciones: true
-                });
+    this.transac = this.formBuilder.group({
+      manualTransactions: true,
+      automaticTransactions: true,
+      recolecciones: true
+    });
 
-               }
+  }
 
   dataTablefilter: any = [];
   ngOnInit(): void {
@@ -57,11 +57,11 @@ export class ModalConfigExcelComponent implements OnInit {
     this.obtenerCliente();
   }
 
-  onSubmitHora() {}
-  onSubmitDate() {}
+  onSubmitHora() { }
+  onSubmitDate() { }
 
   submitTransacFilter() {
-    ////console.log(this.transac.value);
+    //////// console.log(this.transac.value);
   }
 
   dataExportarExcel: any = [];
@@ -70,7 +70,7 @@ export class ModalConfigExcelComponent implements OnInit {
     // this.dataExportarExcel      = [];
     // this.dataExportarExcelGhost = [];
     let arr: any = []
-    if( this.dataExportarExcel ) {
+    if (this.dataExportarExcel) {
       arr = {
         codigocliente: this.exportdateform.controls['codigoClienteidFk'].value,
         codigoTienda: this.exportdateform.controls['codigoTiendaidFk'].value,
@@ -84,18 +84,18 @@ export class ModalConfigExcelComponent implements OnInit {
       }
     }
 
-    const dialogRef = this.dialog.open( ModalDataEquiposComponent, {
+    const dialogRef = this.dialog.open(ModalDataEquiposComponent, {
       height: 'auto',
-      width:  '300px',
-      data:   arr, 
+      width: '300px',
+      data: arr,
     });
 
-    dialogRef.afterClosed().subscribe( (result:any) => {      
-      if( result ) {         
-        result.filter( (element:any) => {
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result) {
+        result.filter((element: any) => {
           this.dataExportarExcel.push(element);
           this.dataExportarExcelGhost.push(element);
-          ////console.log(this.dataExportarExcel)
+          //////// console.log(this.dataExportarExcel)
         });
       }
       this.obtenerTransacTabla();
@@ -106,9 +106,9 @@ export class ModalConfigExcelComponent implements OnInit {
   obetenerDetalleDeEquipos() {
     // this.monitoreo.obtenerDetalleEquipos(  )
   }
-  
+
   clienteListaGhost: any = [];
-  clientelista:any = []
+  clientelista: any = []
   obtenerCliente() {
     this.clientelista = [];
     this._show_spinner = true;
@@ -120,7 +120,7 @@ export class ModalConfigExcelComponent implements OnInit {
         this._show_spinner = false;
         console.error(e);
       }, complete: () => {
-        this.clienteListaGhost.filter((element:any) => {
+        this.clienteListaGhost.filter((element: any) => {
 
           let arr: any = {
             "id": element.id,
@@ -136,6 +136,9 @@ export class ModalConfigExcelComponent implements OnInit {
           this.clientelista.unshift(arr);
 
         })
+
+        // this.obtenerCuadreEquipos('');
+
       }
     })
   }
@@ -143,8 +146,8 @@ export class ModalConfigExcelComponent implements OnInit {
   idcliente: number = 0;
   obtenerIDCLiente() {
 
-    if ( this.exportdateform.controls['codigoClienteidFk'].value == undefined || this.exportdateform.controls['codigoClienteidFk'].value == null ) {
-      ////console.warn('No hay un id');
+    if (this.exportdateform.controls['codigoClienteidFk'].value == undefined || this.exportdateform.controls['codigoClienteidFk'].value == null) {
+      //////// console.warn('No hay un id');
       this.idcliente = this.clientelista[0].id;
     }
     else {
@@ -163,8 +166,8 @@ export class ModalConfigExcelComponent implements OnInit {
         this.tiendaListaGhost = tienda;
       }, complete: () => {
         this.obtenerIDCLiente();
-        this.tiendaListaGhost.filter((element:any) => {
-          if( element.codigoClienteidFk == this.idcliente ) {
+        this.tiendaListaGhost.filter((element: any) => {
+          if (element.codigoClienteidFk == this.idcliente) {
             this.tiendalista.push(element);
           }
         })
@@ -175,14 +178,14 @@ export class ModalConfigExcelComponent implements OnInit {
 
   obtenerTransacTabla() {
     this._show_spinner = true;
-    this.dataExportarExcel.filter( (element:any) => {
+    this.dataExportarExcel.filter((element: any) => {
       this.transacciones.obtenerTransaccionesTienda(element.nserie, 2).subscribe({
-        next: ( transacciones ) => {
+        next: (transacciones) => {
           element.transacciones = transacciones;
-          element.transacciones.filter((elementtr:any)=> {
+          element.transacciones.filter((elementtr: any) => {
             let xdate = elementtr.fechaTransaccion.toString().split('T');
             elementtr.fechaTransaccion = xdate[0];
-            elementtr.hora = xdate[1].slice(0,8);
+            elementtr.hora = xdate[1].slice(0, 8);
           })
           this._show_spinner = false;
         }, error: (e) => {
@@ -195,14 +198,14 @@ export class ModalConfigExcelComponent implements OnInit {
 
   respladoDataTran() {
     this._show_spinner = true;
-    this.dataExportarExcelGhost.filter( (element:any) => {
+    this.dataExportarExcelGhost.filter((element: any) => {
       this.transacciones.obtenerTransaccionesTienda(element.nserie, 2).subscribe({
-        next: ( transacciones ) => {
+        next: (transacciones) => {
           element.transacciones = transacciones;
-          element.transacciones.filter((elementtr:any)=> {
+          element.transacciones.filter((elementtr: any) => {
             let xdate = elementtr.fechaTransaccion.toString().split('T');
             elementtr.fechaTransaccion = xdate[0];
-            elementtr.hora = xdate[1].slice(0,8);
+            elementtr.hora = xdate[1].slice(0, 8);
           })
           this._show_spinner = false;
         }, error: (e) => {
@@ -221,59 +224,59 @@ export class ModalConfigExcelComponent implements OnInit {
   }
 
   busquedaPorRango() {
-  
+
     const fechaInicial = this.exportdateform.controls['dateini'].value;
-    const fechaFinal   = this.exportdateform.controls['datefin'].value;
-  
+    const fechaFinal = this.exportdateform.controls['datefin'].value;
+
     if (fechaInicial && fechaFinal) {
       this.dataExportarExcel = this.dataExportarExcel.map((element: any) => {
-      element.transacciones = element.transacciones.filter((transaccion: any) => {
-        const fechaTransaccion = new Date(transaccion.fechaTransaccion).toISOString().split('T')[0];
-        return fechaTransaccion >= fechaInicial && fechaTransaccion <= fechaFinal;
-      });
-      
-      return element;
+        element.transacciones = element.transacciones.filter((transaccion: any) => {
+          const fechaTransaccion = new Date(transaccion.fechaTransaccion).toISOString().split('T')[0];
+          return fechaTransaccion >= fechaInicial && fechaTransaccion <= fechaFinal;
+        });
 
-    });
+        return element;
+
+      });
     } else {
       console.error("Ingrese ambas fechas para filtrar.");
     }
 
-    ////console.warn(this.dataExportarExcel);
+    //////// console.warn(this.dataExportarExcel);
 
   }
 
   filtrarPorRangoDeHoras(data: any, horaInicial: string, horaFinal: string): any {
     // Iterar sobre cada elemento en el array
     return data.map((element: any) => {
-        // Filtrar las transacciones dentro del rango de horas
-        element.transacciones = element.transacciones.filter((transaccion: any) => {
-            const horaTransaccion = transaccion.hora;
+      // Filtrar las transacciones dentro del rango de horas
+      element.transacciones = element.transacciones.filter((transaccion: any) => {
+        const horaTransaccion = transaccion.hora;
 
-            // Verificar si la hora de la transacción está en el rango especificado
-            return this.estaEnRangoDeHoras(horaTransaccion, horaInicial, horaFinal);
-        });
-        return element;
+        // Verificar si la hora de la transacción está en el rango especificado
+        return this.estaEnRangoDeHoras(horaTransaccion, horaInicial, horaFinal);
+      });
+      return element;
     });
   }
 
   estaEnRangoDeHoras(hora: string, horaInicial: string, horaFinal: string): boolean {
-      // Convertir las horas a objetos Date para facilitar la comparación
-      const horaTransaccion = new Date(`1970-01-01T${hora}`);
-      const horaInicio      = new Date(`1970-01-01T${horaInicial}`);
-      const horaFin         = new Date(`1970-01-01T${horaFinal}`);
-      // Verificar si la hora de la transacción está en el rango especificado
-      return horaTransaccion >= horaInicio && horaTransaccion <= horaFin;
+    // Convertir las horas a objetos Date para facilitar la comparación
+    const horaTransaccion = new Date(`1970-01-01T${hora}`);
+    const horaInicio = new Date(`1970-01-01T${horaInicial}`);
+    const horaFin = new Date(`1970-01-01T${horaFinal}`);
+    // Verificar si la hora de la transacción está en el rango especificado
+    return horaTransaccion >= horaInicio && horaTransaccion <= horaFin;
   }
-  
+
   filtrarPorHoras() {
     // Supongamos que tienes las variables horaInicial y horaFinal desde tu formulario
-    const horaInicial:any = this.exportdateform.controls['horaini'].value;
-    const horaFinal:any = this.exportdateform.controls['horafin'].value;
+    const horaInicial: any = this.exportdateform.controls['horaini'].value;
+    const horaFinal: any = this.exportdateform.controls['horafin'].value;
     // Llamar a la función de filtrado por rango de horas
     this.dataExportarExcel = this.filtrarPorRangoDeHoras(this.dataExportarExcel, horaInicial, horaFinal);
   }
 
-  
+
 
 }

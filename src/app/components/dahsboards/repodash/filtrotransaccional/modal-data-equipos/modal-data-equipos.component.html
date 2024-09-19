@@ -3,7 +3,7 @@
       <span><h2 class="m-0">Data de equipos a importar:</h2></span>
       <span class=" shadow-sm p-3 d-flex justify-content-center align-items-center bg-warning text-dark "
       style="width: 45px; height: 45px; border-radius: 100%; " > 
-      <strong class="fs-6"> {{localidadesEncontradas.length}}  </strong>
+      <strong class="fs-6"> {{listaEsquipo.length}}  </strong>
     </span>
   </div>
   <hr>
@@ -23,6 +23,12 @@
   </div>
   <div>
   <div>
+      <div class="d-flex align-items-center">
+        <span class="m-1">
+          <input type="checkbox" (change)="selectAllAll($event)">
+        </span>
+        <span class="m-1"> Seleccionar todo </span>
+      </div>
       <div *ngFor="let local of localidadesEncontradas; let i = index;">
         <div [class]="local.bgloc + ' rounded-1 p-2 shadow-sm m-1 w-75 d-flex justify-content-between'">
           <strong>{{ i + 1 }}.- {{ local.loc }}</strong>
@@ -34,7 +40,8 @@
         <table class="table table-striped table-bordered table-responsive-lg shadow-sm table-dark">
           <thead class="bg-dark text-light">
               <th>
-                <input type="checkbox" (change)="selectAll($event, local)">
+                <input type="checkbox" 
+                       (change)="selectAll($event, local)">
               </th>
               <th title="Nombre de Equipo">
                 N. Equipo
@@ -51,17 +58,23 @@
               <th title="Conteo de transacciones Automáticas">
                 Conteo Aut.
               </th>
-              <th title="Conteo de transacciones Resagadas Manuales">
+              <th title="Conteo de transacciones Rezagadas Manuales">
                 Conteo MR
               </th>
-              <th title="Conteo de transacciones Resagadas Automáticas">
+              <th title="Conteo de transacciones Rezagadas Automáticas">
                 Conteo AR
               </th>
           </thead>
           <tbody>
-            <tr *ngFor="let equipo of local.equiposTrans; let j = index">
-              <td>
-                <input type="checkbox" [formControl]="selectedEquiposControl" (change)="toggleSelection(equipo, local)" [id]=" local.loc + '-' + j">
+            <tr *ngFor="let equipo of local.equiposTrans; let j = index" [style]=" 'border: solid 3px ' +  equipo.color + ';'" >
+              <td >
+                
+                <input type="checkbox"
+                        *ngIf="equipo.disabled_check"
+                       [formControl]="selectedEquiposControl" 
+                       (change)=" toggleSelection(equipo, local) "
+                       [id]=" local.loc + '-' + j ">
+                
               </td>
               <td>
                 {{ equipo.machine_Sn }}
@@ -90,8 +103,7 @@
       </div>
     </div>
   </div>
-
-</div  >
+  </div>
   <div class="mt-2" style="background-color: whitesmoke;" >
     <small class="text-secondary" >Número total de transacciones visualizando:</small>
     <div>
@@ -99,12 +111,12 @@
         <span class="d-flex justify-content-between" style="width: 170px;">
           <span> T. Tr. A.</span> <strong> {{totalAutomaticas}}</strong></span>
         <span class="d-flex justify-content-between" style="width: 170px;"><span> T. Tr. Rez. A.</span> 
-          <strong> {{totalResagadasAutomaticas}}</strong>
+          <strong> {{totalRezagadasAutomaticas}}</strong>
         </span>
       </div>
       <div class="d-flex justify-content-between">
         <span class="d-flex justify-content-between" style="width: 170px;"><span> T. Tr. M.</span> <span style="border-bottom: solid 2px gray;" > <strong> {{totalManuales}}</strong> </span> </span>
-        <span class="d-flex justify-content-between" style="width: 170px;"><span> T. Tr. Rez. M. </span><span style="border-bottom: solid 2px gray;" ><strong> {{totalResagadasManuales}}</strong></span></span>
+        <span class="d-flex justify-content-between" style="width: 170px;"><span> T. Tr. Rez. M. </span><span style="border-bottom: solid 2px gray;" ><strong> {{totalRezagadasManuales}}</strong></span></span>
       </div>
       <div class="d-flex justify-content-between" style="background-color: rgb(225, 225, 225);" >
         <span class="d-flex justify-content-between" style="width: 170px;"><span> T. Tr.</span> <strong> {{SumatotalTransac}}</strong></span>

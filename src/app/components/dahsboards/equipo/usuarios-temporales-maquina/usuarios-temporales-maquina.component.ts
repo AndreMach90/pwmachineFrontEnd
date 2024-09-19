@@ -28,34 +28,37 @@ const Toast = Swal.mixin({
 })
 
 export class UsuariosTemporalesMaquinaComponent implements OnInit {
-  ipMachine:                    any;
-  modelUsers:                   any = [];
-  listaUsuariosTemporales:      any = [];
+  actividadSeleccionada: string = '';
+  ipMachine: any;
+  arr: any = [];
+  listaCuentaTiendasBanc: any = [];
+  modelUsers: any = [];
+  listaUsuariosTemporales: any = [];
   listaUsuariosTemporalesGhost: any = [];
-  delete:                       any = this.env.apiUrlIcon()+'delete.png';
-  accept:                       any = this.env.apiUrlIcon()+'accept.png';
-  edit:                         any = this.env.apiUrlIcon()+'edit.png';
-  crear:                        any = this.env.apiUrlIcon()+'accept.png';
-  cancel:                       any = this.env.apiUrlIcon()+'cancel.png';
-  search:                       any = this.env.apiUrlIcon()+'search.png';
-  _show_spinner:                boolean = false;
-  _create_show:                 boolean = true;
-  
-  constructor( public dialogRef: MatDialogRef<EquipoComponent>,
+  delete: any = this.env.apiUrlIcon() + 'delete.png';
+  accept: any = this.env.apiUrlIcon() + 'accept.png';
+  edit: any = this.env.apiUrlIcon() + 'edit.png';
+  crear: any = this.env.apiUrlIcon() + 'accept.png';
+  cancel: any = this.env.apiUrlIcon() + 'cancel.png';
+  search: any = this.env.apiUrlIcon() + 'search.png';
+  _show_spinner: boolean = false;
+  _create_show: boolean = true;
+
+  constructor(public dialogRef: MatDialogRef<EquipoComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any, private env: Environments,
     private userservs: UsuariosService,
     private controlInputsService: ControlinputsService,
-    private tiendaservs: TiendaService, 
-    private eqipserv: EquipoService ) { }
+    private tiendaservs: TiendaService,
+    private eqipserv: EquipoService) { }
 
-  public filterUsuariosTemporalesForm = new FormGroup({
-    filterequip: new FormControl('')
-  })
-  
   ngOnInit(): void {
     this.obtenerUsuariosTemporales();
     this.obtenerCuentasTienda()
   }
+
+  public filterUsuariosTemporalesForm = new FormGroup({
+    filterequip: new FormControl('')
+  })
 
   validateInputText(event: Event) {
     const target = event.target as HTMLInputElement;
@@ -63,7 +66,7 @@ export class UsuariosTemporalesMaquinaComponent implements OnInit {
       this.controlInputsService.validateAndCleanInput(target);
     }
   }
-  
+
   validateInputNumber(event: Event) {
     const target = event.target as HTMLInputElement;
     if (target instanceof HTMLInputElement) {
@@ -73,91 +76,84 @@ export class UsuariosTemporalesMaquinaComponent implements OnInit {
 
   obtenerUsuariosTemporales() {
     this.eqipserv.obtenerUsuariosTemporales(this.data.ipEquipo).subscribe({
-        next: (x) => {
-          this.listaUsuariosTemporales = x;
-          this.listaUsuariosTemporalesGhost = x;
-        }, error: (e) => { console.error(e); }
-      }
+      next: (x) => {
+        this.listaUsuariosTemporales = x;
+        this.listaUsuariosTemporalesGhost = x;
+      }, error: (e) => { console.error(e); }
+    }
     )
   }
-  actividadSeleccionada: string = '';
+
   onChangeActividad(event: any, index: number) {
     const actividadInput = <HTMLSelectElement>document.getElementById('cuentasbanc-' + index);
     this.actividadSeleccionada = actividadInput.value;
   }
 
-  arr:any = [];
-  aceptarUsuario( usuario: any, index: number) {
-    const nombresInput   = <HTMLInputElement>document.getElementById('nombres-'  + index);
-    const cedulaInput    = <HTMLInputElement>document.getElementById('cedula-'   + index);
-    const actividadInput = <HTMLInputElement>document.getElementById('tipo-'     + index);
-    const nombres   = nombresInput.value.trim();
-    const cedula    = cedulaInput.value.trim();
-    const telefono  = '';
+  aceptarUsuario(usuario: any, index: number) {
+    const nombresInput = <HTMLInputElement>document.getElementById('nombres-' + index);
+    const cedulaInput = <HTMLInputElement>document.getElementById('cedula-' + index);
+    const actividadInput = <HTMLInputElement>document.getElementById('tipo-' + index);
+    const nombres = nombresInput.value.trim();
+    const cedula = cedulaInput.value.trim();
+    const telefono = '';
     const actividad = actividadInput.value.trim();
     if (nombres === '' || cedula === '') {
       Toast.fire({ icon: 'warning', title: 'Necesitas llenar todos los campos de la fila en cuestión.', timer: 3000, position: 'bottom' });
       return;
     }
-    if ( this.actividadSeleccionada == ""  || this.actividadSeleccionada == null || this.actividadSeleccionada == undefined ) {
+    if (this.actividadSeleccionada == "" || this.actividadSeleccionada == null || this.actividadSeleccionada == undefined) {
       this.actividadSeleccionada = this.listaCuentaTiendasBanc[0].idcuentabancaria;
     }
-    this.guardarUsuario(usuario.id, usuario.usuario, nombres, cedula, telefono, actividad, this.actividadSeleccionada );
+    this.guardarUsuario(usuario.id, usuario.usuario, nombres, cedula, telefono, actividad, this.actividadSeleccionada);
   }
 
-  listaCuentaTiendasBanc:any = [];
   obtenerCuentasTienda() {
     this.tiendaservs.obtenerCuentasAsignadas(this.data.codigoTienda).subscribe({
-      next: (cuentaTiendaBank) => {
-        this.listaCuentaTiendasBanc = cuentaTiendaBank;
-      }
+      next: (cuentaTiendaBank) => this.listaCuentaTiendasBanc = cuentaTiendaBank,
+      error: (e) => console.error(e)
     })
   }
 
-  guardarUsuario( id:number, usuario:string, nombres:string, cedula:string, telefono:string, actividad:any, observacion: any ) {
+  guardarUsuario(id: number, usuario: string, nombres: string, cedula: string, telefono: string, actividad: any, observacion: any) {
     this.modelUsers = {
-      Usuario:      usuario,
-      Contrasenia:  null,
-      IpMachine:    this.data.ipEquipo,    
-      Rol:          this.data.codigoTiendaidFk,
-      Nombres:      nombres,
-      Apellidos:    ' ',
-      Cedula:       cedula,
-      Telefono:     '',
-      active:       'A',
-      cuentasIdFk:   observacion,
-      observacion:   actividad
+      Usuario: usuario,
+      Contrasenia: null,
+      IpMachine: this.data.ipEquipo,
+      Rol: this.data.codigoTiendaidFk,
+      Nombres: nombres,
+      Apellidos: ' ',
+      Cedula: cedula,
+      Telefono: '',
+      active: 'A',
+      cuentasIdFk: observacion,
+      observacion: actividad
     }
-    console.log('==================================')
-    console.log(this.modelUsers)
-    console.log('==================================')
-    this._create_show   =  false;
+    this._create_show = false;
     this._show_spinner = true;
     setTimeout(() => {
       this.userservs.guardarUsuarios(this.modelUsers).subscribe({
-        next: (x) => {
-          Toast.fire({ icon: 'success', title: 'Usuario temporal guardado con éxito' });
-        }, error: (e) => {
+        next: (x) => Toast.fire({ icon: 'success', title: 'Usuario temporal guardado con éxito' }),
+        error: (e) => {
           console.error(e);
           this._show_spinner = false;
           Toast.fire({ icon: 'error', title: 'No hemos podido guardar el usuario temporal' });
-        },complete: () => {
+        }, complete: () => {
           this._show_spinner = false;
           this.eliminarUsuarioTemporal(id);
           this.closeDialog();
-          // this.obtenerUsuariosTemporales();
         }
       }
-    )}, 1000);
+      )
+    }, 1000);
   }
 
   closeDialog() {
     this.dialogRef.close(true);
   }
 
-  eliminarUsuarioTemporal(id:number) {
+  eliminarUsuarioTemporal(id: number) {
     this.eqipserv.eliminarUsuarioTemporal(id).subscribe({
-      next: (x) => { }, 
+      next: (x) => { },
       error: (e) => { console.error(e); },
       complete: () => {
         this.obtenerUsuariosTemporales();
@@ -167,8 +163,8 @@ export class UsuariosTemporalesMaquinaComponent implements OnInit {
 
   filterUsuariosTemporales() {
     let filter: any = this.filterUsuariosTemporalesForm.controls['filterequip'].value;
-    this.listaUsuariosTemporales = this.listaUsuariosTemporalesGhost.filter((item:any) =>  
-      item.usuario.toLowerCase().includes(  filter.toLowerCase()) || item.ipMachineSolicitud.toLowerCase().includes(filter.toLowerCase()  )
+    this.listaUsuariosTemporales = this.listaUsuariosTemporalesGhost.filter((item: any) =>
+      item.usuario.toLowerCase().includes(filter.toLowerCase()) || item.ipMachineSolicitud.toLowerCase().includes(filter.toLowerCase())
     )
   }
 }
