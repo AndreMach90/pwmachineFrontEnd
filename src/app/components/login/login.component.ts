@@ -71,8 +71,6 @@ export class LoginComponent implements OnInit {
     this._show_spinner = true;
     this.log.login(this.loginModel).subscribe({
       next: (x: any) => {
-        // console.warn('Datos token>>>>>>>>>>>>>>>...')
-        // console.warn(x)
         const tokenEn: any = this.ncrypt.encryptWithAsciiSeed(x.token, 5, 10);
         sessionStorage.setItem('token', tokenEn);
         let xuser: any = this.loginForm.controls['email'].value;
@@ -84,7 +82,6 @@ export class LoginComponent implements OnInit {
         })
         this._show_spinner = false;
       }, error: (error) => {
-        //// console.log(error);
         if (error.status == 404) {
           Swal.fire({
             icon: "error",

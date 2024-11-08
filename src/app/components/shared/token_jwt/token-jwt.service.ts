@@ -1,30 +1,29 @@
-import { Injectable } from '@angular/core';
-import { EncryptService } from '../services/encrypt.service';
-import { Router } from '@angular/router';
 import { Environments } from '../../environments/environments';
+import { EncryptService } from '../services/encrypt.service';
 import { SharedService } from '../services/shared.service';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import jwt_decode from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class TokenJWTService {
-
-  sub: any;
-  nameidentifier: any;
-  name: any;
-  role: any;
-  authorizationdecision: any;
-  exp: any;
-  iss: any;
-  aud: any;
-  horaCierre: any;
-  clienteCerveceriaNacional: boolean = false;
-
+  authorizationdecision:  any;
+  nameidentifier:         any;
+  horaCierre:             any;
+  sub:                    any;
+  name:                   any;
+  role:                   any;
+  exp:                    any;
+  iss:                    any;
+  aud:                    any;
+  clienteCerveceriaNacional:  boolean = false;
+  
   constructor(private ncrypt: EncryptService,
     private router: Router,
-    private env: Environments,
-    private shar: SharedService,) { }
+    private env: Environments) { }
 
   validateRolJWT() {
     let xtoken: any = sessionStorage.getItem('token');
@@ -41,7 +40,6 @@ export class TokenJWTService {
       this.iss = decoded['iss'];
       this.aud = decoded['aud'];
       this.horaCierre = this.convertTimestampToReadableDate(this.exp);
-
       const rolEncrypt: any = this.ncrypt.encryptWithAsciiSeed(this.role, this.env.es, this.env.hash);
       sessionStorage.setItem('PR', rolEncrypt);
       if (this.role == 'R003') {
@@ -52,16 +50,11 @@ export class TokenJWTService {
         this.clienteCerveceriaNacional = true;
       }
     }
-
   }
 
   convertTimestampToReadableDate(timestamp: number): string {
-    // Convertir el timestamp a milisegundos
-    const date = new Date(timestamp * 1000);
-
-    // Formatear la fecha a una cadena legible
-    const readableDate = date.toLocaleString();
-
+    const date = new Date(timestamp * 1000);    // Convertir el timestamp a milisegundos
+    const readableDate = date.toLocaleString(); // Formatear la fecha a una cadena legible
     return readableDate;
   }
 }

@@ -1,13 +1,16 @@
-import { Injectable } from '@angular/core';
 import { Environments } from '../../environments/environments';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EncryptService } from '../services/encrypt.service';
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class ServicesSharedService {
-  constructor( private env: Environments, private http: HttpClient, private ncrypt: EncryptService ) { }
+  constructor( private env: Environments, 
+    private http: HttpClient, 
+    private ncrypt: EncryptService ) { }
 
   private get headers(): HttpHeaders {
     return new HttpHeaders({
@@ -21,7 +24,7 @@ export class ServicesSharedService {
     let result1= '';
     const charactersLength = characters.length;
     for ( let i = 0; i < num; i++ ) {
-        result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
+      result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result1;
   }

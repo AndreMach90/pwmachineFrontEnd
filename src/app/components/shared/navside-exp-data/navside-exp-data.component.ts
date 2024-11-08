@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Environments } from '../../environments/environments';
 import { Router } from '@angular/router';
 
@@ -8,27 +8,22 @@ import { Router } from '@angular/router';
   styleUrls: ['./navside-exp-data.component.scss']
 })
 export class NavsideExpDataComponent implements OnInit {
-
-
   @Output() sendModule: EventEmitter<string> = new EventEmitter<string>();
+  modimagen:      any = this.env.apiUrlIcon() + 'modulos.png';
+  regresarIcon:   any = this.env.apiUrlIcon() + 'regresar.png';
+  _show_spinner:  boolean = false;
+  estadow:        boolean = true;
+  width_menu:     any = '250px';
+  height_app:     any = '90vh';
   
-  estadow: boolean = true;
-  height_app: any = '90vh';
-
-  _show_spinner: boolean = false;
-  modimagen: any = this.env.apiUrlIcon()+'modulos.png';
-  width_menu: any = '250px';
-
-  regresarIcon: any = this.env.apiUrlIcon() + 'regresar.png';
-
   modulosNavSide = [
     {
       nombre: "Exportar datos",
-      icon: this.env.apiUrlIcon()+"export-data.png"
+      icon: this.env.apiUrlIcon() + "export-data.png"
     },
     {
       nombre: "Historial de Acreditación",
-      icon: this.env.apiUrlIcon()+"acreditacion.png"
+      icon: this.env.apiUrlIcon() + "acreditacion.png"
     }
   ]
 
@@ -60,5 +55,4 @@ export class NavsideExpDataComponent implements OnInit {
     this._show_spinner = true;
     setTimeout(() => {this.router.navigate(['/dashboard']), this._show_spinner = false }, 1000);
   }
-
 }

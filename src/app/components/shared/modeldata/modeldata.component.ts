@@ -1,21 +1,21 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ClientesService } from '../../dahsboards/cliente/services/clientes.service';
-import { TiendaService } from '../../dahsboards/tienda/services/tienda.service';
-import { TransaccionesTiendaService } from '../../dahsboards/monitoreo-equipos/modal/services/transacciones-tienda.service';
-import { MatDialog } from '@angular/material/dialog';
-import { Environments } from '../../environments/environments';
 import { ModalDataEquiposComponent } from '../../dahsboards/repodash/filtrotransaccional/modal-data-equipos/modal-data-equipos.component';
-import { MenuItem } from 'primeng/api';
-import { interval } from 'rxjs';
-import { Router } from '@angular/router';
-import { takeWhile, finalize } from 'rxjs/operators';
-import * as ExcelJS from 'exceljs';
-import Swal from 'sweetalert2'
-import { format } from 'date-fns';
-import { ConsolidadoService } from './services/consolidado.service';
+import { TransaccionesTiendaService } from '../../dahsboards/monitoreo-equipos/modal/services/transacciones-tienda.service';
 import { MonitoreoIndividualService } from '../../dahsboards/monitorear-equipo/services/monitoreo-individual.service';
 import { ModalDescargaExcelComponent } from '../modal-descarga-excel/modal-descarga-excel.component';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { ClientesService } from '../../dahsboards/cliente/services/clientes.service';
+import { EquipoService } from '../../dahsboards/equipo/services/equipo.service';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { ConsolidadoService } from './services/consolidado.service';
+import { Environments } from '../../environments/environments';
+import { MatDialog } from '@angular/material/dialog';
+import { takeWhile, finalize } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { MenuItem } from 'primeng/api';
+import * as ExcelJS from 'exceljs';
+import { format } from 'date-fns';
+import { interval } from 'rxjs';
+import Swal from 'sweetalert2';
 
 const Toast = Swal.mixin({
   toast: true,
@@ -41,91 +41,90 @@ export class ModeldataComponent implements OnInit {
   @ViewChild('datefin') datefin: ElementRef | undefined;
   @ViewChild('horaini') horaini: ElementRef | undefined;
   @ViewChild('horafin') horafin: ElementRef | undefined;
-
-  cantidadTransacciones: number = 0;
-  listamaquinasTemporales: any = [];
-  RezagadasTran: any = [];
-  transaccionesDentroDeRango: any = [];
-  cantidadRezagadas: number = 0;
-  sumtran: number = 0;
-  dini: any;
-  dfin: any;
-  disbutton_obtener: boolean = false;
-  totalSubstract: number = 0;
-  _cancel_button: boolean = false;
-  barprogress: boolean = false;
-  modelTransaccionesAc: any = [];
-  countTransaction: number = 0;
-  porcentaje: number = 0;
-  validExportExcel: boolean = false;
-  tran: any = [];
+  dini:                             any;
+  dfin:                             any;
+  fechaActual:                      any;
+  listamaquinasTemporales:          any = [];
+  RezagadasTran:                    any = [];
+  transaccionesDentroDeRango:       any = [];
+  modelTransaccionesAc:             any = [];
+  tran:                             any = [];
+  maquinasEscogidasDialog:          any = [];
+  clienteListaGhost:                any = [];
+  clientelista:                     any = [];
+  transaccionesRecolecciones:       any = [];
+  dataTablefilter:                  any = [];
+  listaDataExportExcelNewFormat:    any = [];
   listaDatosTransaccionesAcreditar: any = [];
-  maquinasEscogidasDialog: any = [];
-  transaccionesAutomaticas: any[] = [];
-  transaccionesManuales: any[] = [];
-  colorguia: boolean = false;
-  items: MenuItem[] | undefined;
-  clienteListaGhost: any = [];
-  clientelista: any = [];
-  mostrarCiclo: boolean = false;
-  listaDataExportExcelNewFormat: any = [];
-  _transaction_show: boolean = false;
-  checked: boolean = false;
-  delete: any = this.env.apiUrlIcon() + 'delete.png';
-  edit: any = this.env.apiUrlIcon() + 'edit.png';
-  crear: any = this.env.apiUrlIcon() + 'accept.png';
-  cancel: any = this.env.apiUrlIcon() + 'cancel.png';
-  search: any = this.env.apiUrlIcon() + 'search.png';
-  calendar: any = this.env.apiUrlIcon() + 'calendar.png';
-  excel: any = this.env.apiUrlIcon() + 'excel.png';
-  configblack: any = this.env.apiUrlIcon() + 'configblack.png';
-  menuicon: any = this.env.apiUrlIcon() + 'menu.png';
-  transaccionesRecolecciones: any = [];
-  dataTablefilter: any = [];
-  sumatoriaTransacciones: number = 0;
-  indices_show: boolean = false;
-  checktiendas: boolean = false;
-  choicetiendas: boolean = false;
-  _show_spinner: boolean = false;
-  transac: FormGroup;
-  dataExportarExcel: any = [];
-  dataExportarExcel1: any = [];
-  dataExportarExcel2: any = [];
-  dataExportarExcelGhost: any = [];
-  idcliente: number = 0;
-  tiendalista: any = [];
-  tiendaListaGhost: any = [];
-  reportVisible: boolean = true;
-  dis_exp_excel: boolean = true;
-  conttransaccion: boolean = false;
-
-  listaEquipo: any = [];
-  listaEquipoGhost: any = [];
-  listaCuadreEquipos: any = [];
-  cantCuadrada: number = 0;
-
-  show_cuadre: boolean = false;
-  modelConsolidadoSend: any = [];
-  listaConsolidados: any = [];
-  listaConsolidadosRezagadas: any = [];
-
-  procesados: number = 0;
-  listaCuadradas: any = [];
-  listaRepetidas: any = [];
-  listaResagadas: any = [];
-  idCli: number = 0;
-
-  maquinasEscogidasDialogGhost: any = [];
-  _show_fecha: boolean = false;
+  dataExportarExcel:                any = [];
+  dataExportarExcel1:               any = [];
+  dataExportarExcel2:               any = [];
+  dataExportarExcelGhost:           any = [];
+  tiendalista:                      any = [];
+  tiendaListaGhost:                 any = [];
+  listaEquipo:                      any = [];
+  listaEquipoGhost:                 any = [];
+  listaCuadreEquipos:               any = [];
+  modelConsolidadoSend:             any = [];
+  listaConsolidados:                any = [];
+  listaConsolidadosRezagadas:       any = [];
+  listaCuadradas:                   any = [];
+  listaRepetidas:                   any = [];
+  listaResagadas:                   any = [];
+  maquinasEscogidasDialogGhost:     any = [];
+  transaccionesAutomaticas:         any[] = [];
+  transaccionesManuales:            any[] = [];
+  
+  delete:       any = this.env.apiUrlIcon() + 'delete.png';
+  edit:         any = this.env.apiUrlIcon() + 'edit.png';
+  crear:        any = this.env.apiUrlIcon() + 'accept.png';
+  cancel:       any = this.env.apiUrlIcon() + 'cancel.png';
+  search:       any = this.env.apiUrlIcon() + 'search.png';
+  calendar:     any = this.env.apiUrlIcon() + 'calendar.png';
+  excel:        any = this.env.apiUrlIcon() + 'excel.png';
+  configblack:  any = this.env.apiUrlIcon() + 'configblack.png';
+  menuicon:     any = this.env.apiUrlIcon() + 'menu.png';
+  items:        MenuItem[] | undefined;
+  transac:      FormGroup;
+  
+  cantidadTransacciones:      number = 0;
+  cantidadRezagadas:          number = 0;
+  sumtran:                    number = 0;
+  countTransaction:           number = 0;
+  porcentaje:                 number = 0;
+  totalSubstract:             number = 0;
+  sumatoriaTransacciones:     number = 0;
+  idcliente:                  number = 0;
+  cantCuadrada:               number = 0;
+  procesados:                 number = 0;  
+  idCli:                      number = 0;
+  val:                        number = 0;
+  diasEncontrar:              number = 31;
+  dias_estimados:             string = '';
+  reportVisible:              boolean = true;
+  dis_exp_excel:              boolean = true;
+  disButton:                  boolean = true;
+  indices_show:               boolean = false;
+  checktiendas:               boolean = false;
+  choicetiendas:              boolean = false;
+  checked:                    boolean = false;
+  barprogress:                boolean = false;
+  disbutton_obtener:          boolean = false;
+  validExportExcel:           boolean = false;
+  colorguia:                  boolean = false;
+  mostrarCiclo:               boolean = false;
+  conttransaccion:            boolean = false;
+  show_cuadre:                boolean = false;
+  _transaction_show:          boolean = false;
+  _cancel_button:             boolean = false;
+  _show_spinner:              boolean = false;
+  _show_fecha:                boolean = false;
+  
   numericColumns: any = [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28];
   headerExcel: any = ['Localidad', 'Fecha', 'Hora', 'Cliente', 'Tienda', 'N. Trans.', 'N. Serie Equipo',
     'Usuario', 'Establecimiento', 'Actividad', 'Cod. Establ.', 'Nom. Banco', 'T. Cuenta',
     'Cta. Bancaria', '$1', '$2', '$5', '$10', '$20', '$50', '$100', '$0.01', '$0.05', '$0.10',
     '$0.25', '$0.50', '$1.00', 'Total', 'T. T.'];
-  dias_estimados: string = '';
-  disButton: boolean = true;
-  diasEncontrar: number = 31;
-  val: number = 0;
 
   public filterTransaccForm = new FormGroup({
     filterTransacc: new FormControl('')
@@ -153,30 +152,27 @@ export class ModeldataComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
     private mequipo: MonitoreoIndividualService,
     private clienteserv: ClientesService,
-    private tiendaservs: TiendaService,
     public router: Router,
     private transacciones: TransaccionesTiendaService,
     private consolidado: ConsolidadoService,
     public dialog: MatDialog,
-    private env: Environments) {
-
+    private env: Environments,
+    private equiposerv: EquipoService) {
     this.transac = this.formBuilder.group({
       manualTransactions: true,
       automaticTransactions: true,
       recolecciones: false
     });
-
   }
 
   ngOnInit(): void {
+    this.obtenerFechaActual();
     this.validateSesion();
     this.obtenerCliente();
   }
 
-
   onSubmitHora() { }
   onSubmitDate() { }
-
   submitTransacFilter() { }
 
   validateSesion() {
@@ -254,27 +250,25 @@ export class ModeldataComponent implements OnInit {
     fin.setDate(fin.getDate() + 1);
 
     this.filtrarTransaccionesFuera(inicio, fin);
-}
+  }
 
-filtrarTransaccionesFuera(inicio: Date, fin: Date): void {
+  filtrarTransaccionesFuera(inicio: Date, fin: Date): void {
     this.RezagadasTran = [];
     this.dataExportarExcel2.forEach((machine: any) => {
-        const transaccionesFueraDeRango = machine.transacciones.filter((transaccion: any) => {
-            const fechaTransaccion = new Date(transaccion.fechaTransaccion);
-            return fechaTransaccion < inicio || fechaTransaccion > fin;
+      const transaccionesFueraDeRango = machine.transacciones.filter((transaccion: any) => {
+        const fechaTransaccion = new Date(transaccion.fechaTransaccion);
+        return fechaTransaccion < inicio || fechaTransaccion > fin;
+      });
+      if (transaccionesFueraDeRango.length > 0) {
+        this.RezagadasTran.push({
+          machine_Sn: machine.machine_Sn,
+          localidad: machine.localidad,
+          transacciones: transaccionesFueraDeRango
         });
-        if (transaccionesFueraDeRango.length > 0) {
-            this.RezagadasTran.push({
-                machine_Sn: machine.machine_Sn,
-                localidad: machine.localidad,
-                transacciones: transaccionesFueraDeRango
-            });
-        }
+      }
     });
-
     this.exportToExcelRezagadas();
-}
-
+  }
 
   limpiarListas() {
     this.listaCuadradas = [];
@@ -293,7 +287,6 @@ filtrarTransaccionesFuera(inicio: Date, fin: Date): void {
           this.idCli = cli.id;
         }
       });
-
       this.mequipo.obtenerEquiposCliente(idcli).subscribe({
         next: (x: any) => {
           this.listaEquipo = x;
@@ -304,16 +297,13 @@ filtrarTransaccionesFuera(inicio: Date, fin: Date): void {
             equipo.cuadreData = { diferencia: null, icon_data: '', color_data: '' };
           });
         },
-        error: (e) => {
-          console.error(e);
-        },
+        error: (e) => console.error(e),
         complete: () => {
           let cuadrePromises: Promise<any>[] = this.listaEquipo.map((x: any) => {
             return new Promise((resolve, reject) => {
               this.obtenerCuadreEquipos(x.serieEquipo.toString().trim(), resolve, reject);
             });
           });
-
           Promise.all(cuadrePromises).then(() => {
             this.listaCuadreEquipos.filter((x: any) => {
               if (x.cuadreData.resultado == 1) {
@@ -431,17 +421,16 @@ filtrarTransaccionesFuera(inicio: Date, fin: Date): void {
         });
         break;
     }
-
   }
 
   exportarToExcelComplete() {
+    const fecha = (this.fechaActual) ? this.fechaActual : new Date();
     this.obtenerConsolidado(1);
     this.obtenerConsolidado(2);
     this.exportToExcelConsolidadoGeneral();
-    let dt: any = new Date();
     this._show_spinner = true;
     setTimeout(() => {
-      this.transPush(`CFI_${dt.getDate()}${dt.getMonth() + 1}${dt.getFullYear()}.xlsx`);
+      this.transPush(`CFI_${fecha.getDate()}${fecha.getMonth() + 1}${fecha.getFullYear()}_${fecha.getHours()}${fecha.getMinutes()}${fecha.getSeconds()}.xlsx`);
       this._show_spinner = false;
     }, 4500);
   }
@@ -468,26 +457,24 @@ filtrarTransaccionesFuera(inicio: Date, fin: Date): void {
     fin.setDate(fin.getDate() + 1);
 
     this.filtrarTransacciones(inicio, fin);
-}
+  }
 
-filtrarTransacciones(inicio: Date, fin: Date): void {
+  filtrarTransacciones(inicio: Date, fin: Date): void {
     this.dataExportarExcel1.forEach((machine: any) => {
-        const transaccionesEnRango = machine.transacciones.filter((transaccion: any) => {
-            const fechaTransaccion = new Date(transaccion.fechaTransaccion);
-            return fechaTransaccion >= inicio && fechaTransaccion <= fin;
+      const transaccionesEnRango = machine.transacciones.filter((transaccion: any) => {
+        const fechaTransaccion = new Date(transaccion.fechaTransaccion);
+        return fechaTransaccion >= inicio && fechaTransaccion <= fin;
+      });
+      if (transaccionesEnRango.length > 0) {
+        this.transaccionesDentroDeRango.push({
+          machine_Sn: machine.machine_Sn,
+          localidad: machine.localidad,
+          transacciones: transaccionesEnRango
         });
-        if (transaccionesEnRango.length > 0) {
-            this.transaccionesDentroDeRango.push({
-                machine_Sn: machine.machine_Sn,
-                localidad: machine.localidad,
-                transacciones: transaccionesEnRango
-            });
-        }
+      }
     });
-
     this.exportToExcel();
-}
-
+  }
 
   bodyExcel = (item: any, transaccion: any) => {
     return [item.localidad,
@@ -524,7 +511,7 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
 
   async exportToExcelConsolidadoGeneral(): Promise<void> {
     try {
-      const fecha = new Date();
+      const fecha = (this.fechaActual) ? this.fechaActual : new Date();
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet('Base'); //Agregar una nueva hoja al libro
       const dateIniString = this.exportdateform.controls['dateini'].value;
@@ -596,39 +583,34 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
         }
       });
       const buf = await workbook.xlsx.writeBuffer();
-      this.downloadExcelFile(buf, `CFI_${fecha.getDate()}${fecha.getMonth() + 1}${fecha.getFullYear()}.xlsx`);
-    } catch (error) {
-      ////// console.log("No se puede crear el archivo Excel: "+error);
-    }
+      const nombreArchivo = `CFI_${fecha.getDate()}${fecha.getMonth() + 1}${fecha.getFullYear()}_${fecha.getHours()}${fecha.getMinutes()}${fecha.getSeconds()}.xlsx`;
+      this.downloadExcelFile(buf, nombreArchivo);
+    } catch (error) { }
   }
 
   openDataExcelDialog() {
     let arr: any = [{
-        'FechaIni':    this.exportdateform.controls['dateini'].value,
-        'FechaFin':    this.exportdateform.controls['datefin'].value,
-        'HoraIni':     this.exportdateform.controls['horaini'].value,
-        'HoraFin':     this.exportdateform.controls['horafin'].value,
-        'DentroRango': this.transaccionesDentroDeRango,
-        'FueraRango':  this.RezagadasTran
+      'FechaIni':    this.exportdateform.controls['dateini'].value,
+      'FechaFin':    this.exportdateform.controls['datefin'].value,
+      'HoraIni':     this.exportdateform.controls['horaini'].value,
+      'HoraFin':     this.exportdateform.controls['horafin'].value,
+      'DentroRango': this.transaccionesDentroDeRango,
+      'FueraRango':  this.RezagadasTran
     }];
 
     const dialogRef = this.dialog.open(ModalDescargaExcelComponent, {
-        height: '100%',
-        width: '60%',
-        data: arr
+      height: '100%',
+      width: '60%',
+      data: arr
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
-        if (result) {
-            this._cancel_button = true;
-        } else {
-            this._show_spinner = false;
-        }
+      (result) ? this._cancel_button = true : this._show_spinner = false;
     });
-}
+  }
 
   async exportToExcel(): Promise<void> {
-    console.log('Exutando exportToExcel!');
+    console.log('Executando exportToExcel!');
     console.log(1)
     console.log(2)
     console.log(3)
@@ -644,7 +626,6 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
     const fin = new Date(df);
     let formatNumber: any;
     console.log(7)
-
     console.log('---------------------------------------------')
     console.log(di)
     console.log(df)
@@ -654,7 +635,6 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
     console.log(fin)
     console.log('---------------------------------------------')
     console.log(8)
-
     // this.transaccionesRecoleccionesSolo();
     console.log(9)
     // Crear un objeto para agrupar las localidades con sus equipos y transacciones
@@ -692,7 +672,6 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
       const workbook = new ExcelJS.Workbook();
       console.log(11.5)
       const transaccionesSheet = workbook.addWorksheet(`Base ${localidad}`);
-      
       console.log(11.6)
       // Agregar encabezados de columnas para transacciones
       const transaccionesHeaderRow = transaccionesSheet.addRow(this.headerExcel);
@@ -723,7 +702,6 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
           });
         }
       });
-
       console.log('Crear la hoja para los consolidados')
       console.log(14)
       // Crear la hoja para los consolidados
@@ -904,16 +882,12 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
         // Si no hay datos de consolidados, agregar un mensaje
         consolidadosSheet.addRow(['No hay datos consolidados para esta localidad.']);
       }
-
       console.log(29)
       const buffer = await workbook.xlsx.writeBuffer();
       // Descargar el archivo Excel con el nombre de la localidad
       this.downloadExcelFile(buffer, `transacciones_${localidad}.xlsx`);
-
       console.log(30)
-      
     }
-
   }
 
   private downloadExcelFile(buffer: any, fileName: string): void {
@@ -969,7 +943,6 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
       }
       consolidadosMap[localidad].push(item);
     });
-
 
     // Iterar sobre las localidades para crear un archivo por cada una
     for (const [localidad, items] of Object.entries(localidadesMap)) {
@@ -1103,10 +1076,8 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
             totalGeneral += currentTotal;
             currentTotal = 0;
           }
-
           currentTienda = item.nombreTienda;
           currentTotal += item.total;
-
           const rowValues = [
             item.nombreTienda,
             item.machine_Sn,
@@ -1116,9 +1087,7 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
             item.observacion,
             item.total
           ];
-
           const row = consolidadosSheet.addRow(rowValues);
-
           // Aplicar estilo a la primera columna
           row.getCell(1).fill = {
             type: 'pattern',
@@ -1190,7 +1159,6 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
       this.tran = [];
       this.dataExportarExcel.forEach((element: any) => {
         element.transacciones.filter((transaccion: any) => {
-
           const arr = {
             noTransaction: transaccion.transaccion_No,
             machine_Sn: transaccion.machine_Sn,
@@ -1203,9 +1171,7 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
           this.tran.push(arr);
         });
         totalTransacciones = this.tran.length;
-      }
-
-      );
+      });
       if (totalTransacciones > 0) {
         interval(5).pipe(
           takeWhile(() => this.countTransaction < totalTransacciones),
@@ -1230,7 +1196,6 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
   }
 
   guardarTransaccionesAc(model: any[]) {
-
     this._show_spinner = true;
     this.conttransaccion = true;
     this.transacciones.GuardarTransaccionesAcreditadas(model).subscribe({
@@ -1331,7 +1296,6 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
       this.cantidadTransacciones = this.cantidadTransacciones - this.totalSubstract;
     }
     if (this.maquinasEscogidasDialog.length == 0) this.limpiar();
-
   }
 
   getHeaderRow(): string[] {
@@ -1352,7 +1316,6 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
     } else {
       excelData = null;
     }
-
     arr = {
       acreditado: this.acredit(),
       fecchaIni: this.exportdateform.controls['dateini'].value + ' ' + this.exportdateform.controls['horaini'].value,
@@ -1364,17 +1327,15 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
       repetidas: this.listaRepetidas,
       noRegistradas: this.listaResagadas
     }
-
-    // console.warn('datos enviados al modal');
+    // console.warn('Datos enviados al modal');
     // console.warn(arr);
-
     const dialogRef = this.dialog.open(ModalDataEquiposComponent, {
       height: '100%',
       width: '60%',
       data: arr,
     });
-
     dialogRef.afterClosed().subscribe((result: any) => {
+      // console.log("Result", result);
       if (result) {
         this.exportdateform.controls['acreditada'].disable();
         this._cancel_button = true;
@@ -1391,42 +1352,35 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
         this.maquinasEscogidasDialog.filter((element: any) => {
           this.dataExportarExcel.push(element);
           this.dataExportarExcelGhost.push(element);
-
         });
       } else {
         this._show_spinner = false;
       }
       this.obtenerTransacTabla();
-
     });
   }
 
   filterTransaccos() {
-    
     let filtertTrans: any = this.filterTransaccForm.controls['filterTransacc'].value;
     this.maquinasEscogidasDialog = this.maquinasEscogidasDialogGhost.filter((item: any) =>
       item.machine_Sn.toLowerCase().includes(filtertTrans.toLowerCase()) ||
       item.localidad.toLowerCase().includes(filtertTrans.toLowerCase())
     )
-    
     this.cantidadTransacciones = 0;
     this.sumatoriaTransacciones = 0;
     this.maquinasEscogidasDialog.filter((element: any) => {
-  
       if ( element.transacciones != null || element.transacciones != undefined ) {
-           element.transacciones = element.transacciones.filter( (x: any) => {
-            x.tipoTransaccion !== 'Recolección'
-           });
-           element.longitud = element.transacciones.length;
-           element.transacciones.filter((y: any) => {
-             if (y.total == null || y.total == undefined) y.total = 0;
-             this.cantidadTransacciones += y.total;
-           })
-           this.sumatoriaTransacciones += element.longitud;
+        element.transacciones = element.transacciones.filter( (x: any) => {
+          x.tipoTransaccion !== 'Recolección'
+        });
+        element.longitud = element.transacciones.length;
+        element.transacciones.filter((y: any) => {
+        if (y.total == null || y.total == undefined) y.total = 0;
+          this.cantidadTransacciones += y.total;
+        })
+        this.sumatoriaTransacciones += element.longitud;
       }
-  
     })
-  
   }
 
   eliminarObjetosDuplicados() {
@@ -1451,7 +1405,6 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
   obtenerCliente() {
     this.clientelista = [];
     this._show_spinner = true;
-
     this.clienteserv.ObtenerClienteSelect().subscribe({
       next: (cliente) => {
         this.clientelista = cliente;
@@ -1541,14 +1494,13 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
       let dfin = this.exportdateform.controls['datefin'].value + ' ' + this.exportdateform.controls['horafin'].value;
       Promise.all(this.dataExportarExcel.map((element: any) => {
         return new Promise<void>( (resolve, reject) => {          
-          
           let modelRange: any = {
             "tipo": x,
             "Machine_Sn": element.machine_Sn,
             "FechaInicio": dini,
             "FechaFin": dfin
           };
-
+          console.log("ObtenerTranscTabla",modelRange);
           this.transacciones.filtroTransaccionesRango(modelRange).subscribe({
             next: (z) => {
               element.transacciones = z;
@@ -1557,7 +1509,6 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
             },
             error: (e) => reject(e),
           });
-
         });
       })).then(() => {
         this.sumatoriaTotalTransacciones()
@@ -1578,7 +1529,6 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
       });
     }
   }
-
 
   // ========================================================================================================== 
   /** CALCULO DE SUMATORIAS */
@@ -1612,27 +1562,19 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
         this.transac.controls['recolecciones'].disable()
         break;
     }
-
     if ( this.sumatoriaTransacciones > 0 ) {
-         this.dis_exp_excel = false;
-         this.exportdateform
-             .controls['dateini'].disable();
-         this.exportdateform
-             .controls['datefin'].disable();
-         this.exportdateform
-             .controls['horaini'].disable();
-         this.exportdateform
-             .controls['horafin'].disable();
-         this.exportdateform
-             .controls['codigoClienteidFk'].disable();
+      this.dis_exp_excel = false;
+      this.exportdateform.controls['dateini'].disable();
+      this.exportdateform.controls['datefin'].disable();
+      this.exportdateform.controls['horaini'].disable();
+      this.exportdateform.controls['horafin'].disable();
+      this.exportdateform.controls['codigoClienteidFk'].disable();
     }
-
   }
+
   //#endregion
-
   // ========================================================================================================== 
   // ========================================================================================================== 
-
   /** CAMBIO DE COLOR EN LA TABLA DE PREVISUALIZACION POR EL TIPO DE TRANSACCIONES, 
    * TABLA QUE PUEDES RENDERIZAR ANTES DE ACREDITAR */
   // #region [INI COLOR PREVISU]
@@ -1676,8 +1618,6 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
 
   // ========================================================================================================== 
   // ========================================================================================================== 
-
-
   busquedaPorRango() {
     const fechaInicial = this.exportdateform.controls['dateini'].value;
     const fechaFinal = this.exportdateform.controls['datefin'].value;
@@ -1750,5 +1690,10 @@ filtrarTransacciones(inicio: Date, fin: Date): void {
     }
   }
 
-
+  obtenerFechaActual(){
+    this.equiposerv.obtenerHoraActual().subscribe({
+      next: (data: any) => this.fechaActual = new Date(data),
+      error: (e) => console.error('Error obteniendo la hora actual:', e),
+    });
+  }
 }

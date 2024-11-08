@@ -1,23 +1,20 @@
-import { NgModule, isDevMode } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { MatIconModule } from '@angular/material/icon';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { ComponentsAppsModuModule } from './components/components-apps-modu/components-apps-modu.module';
-// import { ModalTransaccionesComponent } from './components/dahsboards/monitoreo-equipos/modal/modal-transacciones/modal-transacciones.component';
-import { ModalDetalleMaquinaTranComponent } from './components/dahsboards/monitoreo-equipos/modal-detalle-maquina-tran/modal-detalle-maquina-tran.component';
-import { MatFormFieldModule } from '@angular/material/form-field';
-
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MaquinariaMonitoreoComponent } from './components/shared/maquinaria-monitoreo/maquinaria-monitoreo.component';
+import { ModalDetalleMaquinaTranComponent } from './components/dahsboards/monitoreo-equipos/modal-detalle-maquina-tran/modal-detalle-maquina-tran.component';
+import { ComponentsAppsModuModule } from './components/components-apps-modu/components-apps-modu.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppRoutingModule } from './app-routing.module';
+import { HttpClientModule } from '@angular/common/http';
+import { MatIconModule } from '@angular/material/icon';
+import { NgModule, isDevMode } from '@angular/core';
+import { AppComponent } from './app.component';
 
 //#region Angular Material
-
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { PortalModule } from '@angular/cdk/portal';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -33,7 +30,6 @@ import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatStepperModule } from '@angular/material/stepper';
-// import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -86,7 +82,6 @@ import { DividerModule } from 'primeng/divider';
 import { DockModule } from 'primeng/dock';
 import { DropdownModule } from 'primeng/dropdown';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
-// import { EditorModule } from 'primeng/editor';
 import { FieldsetModule } from 'primeng/fieldset';
 import { FileUploadModule } from 'primeng/fileupload';
 import { GalleriaModule } from 'primeng/galleria';
@@ -155,7 +150,6 @@ import { ModalDescargaExcelComponent } from './components/shared/modal-descarga-
 @NgModule({
   declarations: [
     AppComponent,
-    // ModalTransaccionesComponent,
     ModalTransaccionesComponent,
     ModalDetalleMaquinaTranComponent,
     MaquinariaMonitoreoComponent,
@@ -257,7 +251,6 @@ import { ModalDescargaExcelComponent } from './components/shared/modal-descarga-
     TreeTableModule,
     AnimateModule,
     CardModule,
-
     //angular material
     MatListModule,
     MatMenuModule,

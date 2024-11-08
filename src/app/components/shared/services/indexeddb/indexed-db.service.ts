@@ -7,7 +7,6 @@ export class IndexedDbService {
   constructor() { }
 
   crearIndexedDB(nombreDB: string, datosAGuardar: any[]) {
-
     const request = window.indexedDB.open(nombreDB, 1);
 
     request.onupgradeneeded = (event: any) => {
@@ -23,17 +22,10 @@ export class IndexedDbService {
         const request = store.get(dato.ip);
         request.onsuccess = (event: any) => {
           const result = event.target.result;
-          if (!result) {
-            store.add(dato);
-          }
-          ////////////// console.warn(8)
+          if (!result) store.add(dato);
         }
       })
-
-      transaction.oncomplete = () => {
-        //////////// console.log('Datos guardados en IndexedDB.');
-      };
-
+      transaction.oncomplete = () => { };
       transaction.onerror = (event: any) => {
         console.error('Error al guardar datos en IndexedDB: ' + event.target.error);
       };
@@ -43,11 +35,4 @@ export class IndexedDbService {
       console.error('Error al abrir la base de datos: ' + event.target.error);
     };
   }
-
-
-
-
 }
-
-
-

@@ -1,12 +1,12 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Environments } from '../../environments/environments';
+import { ClientesService } from '../../dahsboards/cliente/services/clientes.service';
 import { EquipoService } from '../../dahsboards/equipo/services/equipo.service';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
+import { Environments } from '../../environments/environments';
 import { EncryptService } from '../services/encrypt.service';
 import { Router } from '@angular/router';
+import EasySpeech from 'easy-speech';
 import jwt_decode from "jwt-decode";
-import EasySpeech from 'easy-speech'
-import { ClientesService } from '../../dahsboards/cliente/services/clientes.service';
 
 @Component({
   selector: 'app-maquinaria-monitoreo',
@@ -15,36 +15,36 @@ import { ClientesService } from '../../dahsboards/cliente/services/clientes.serv
 })
 
 export class MaquinariaMonitoreoComponent implements OnInit {
-  numE: any;
-  codCli: any;
-  listaCliente: any;
-  nameidentifier: any;
-  sub: any;
-  name: any;
-  role: any;
-  exp: any;
-  iss: any;
-  aud: any;
-  usuario: any;
-  authorizationdecision: any;
-  filterequip: any;
-  fechaNotif: any;
-  fechaActual: any;
-  listalertas: any = [];
-  nuevoObjectalerts: any[] = [];
-  listaEsquipo: any = [];
-  listaEsquipoGhost: any = [];
-  listaEsquipoIndicadores: any = [];
-  numHorasAlertTrans: any = 6;
-  numHorasAlertTimeSincro: any = 1;
-  numTopNotification: any = 300;
-  selectedCliente: any = 'Todos los clientes';
-  selectedClienteId: any = 'todoCliente';
-  selectedMonitoreo: any = 'Mostrar todo';
-  selectedMonitoreoColor: any = 'White';
-  flagVoice = false;
-  contadorPing: number = 0;
-  selectedCount: number = 0;
+  numE:                         any;
+  codCli:                       any;
+  listaCliente:                 any;
+  nameidentifier:               any;
+  sub:                          any;
+  name:                         any;
+  role:                         any;
+  exp:                          any;
+  iss:                          any;
+  aud:                          any;
+  usuario:                      any;
+  authorizationdecision:        any;
+  filterequip:                  any;
+  fechaNotif:                   any;
+  fechaActual:                  any;
+  listalertas:                  any = [];
+  nuevoObjectalerts:            any[] = [];
+  listaEsquipo:                 any = [];
+  listaEsquipoGhost:            any = [];
+  listaEsquipoIndicadores:      any = [];
+  numHorasAlertTrans:           any = 6;
+  numHorasAlertTimeSincro:      any = 1;
+  numTopNotification:           any = 300;
+  selectedCliente:              any = 'Todos los clientes';
+  selectedClienteId:            any = 'todoCliente';
+  selectedMonitoreo:            any = 'Mostrar todo';
+  selectedMonitoreoColor:       any = 'White';
+  flagVoice                     = false;
+  contadorPing:                 number = 0;
+  selectedCount:                number = 0;
   theme: any = {
     bgTheme: '#11264a',
     bgSelectColor: '#F6FAFD',
@@ -61,48 +61,46 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   private connectionSendPingEquipo: HubConnection;
   private manualTransactionHub: HubConnection;
 
-  constructor(private env: Environments,
+  constructor( private env: Environments,
     private ncrypt: EncryptService,
     private router: Router,
     private equiposerv: EquipoService,
-    private clienteService: ClientesService) {
-    this.connectionSendPingEquipo = new HubConnectionBuilder().withUrl(this.urlHub + 'PingHubEquipos').build();
+    private clienteService: ClientesService){
+    this.connectionSendPingEquipo = new HubConnectionBuilder().withUrl(this.urlHub+'PingHubEquipos').build();
     this.connectionSendPingEquipo.on("SendPingEquipo", message => {
-      this.alertHub(message);
-    });
-    this.manualTransactionHub = new HubConnectionBuilder().withUrl(this.urlHub + 'manualTransaction').build();
+      this.alertHub(message);});
+    this.manualTransactionHub = new HubConnectionBuilder().withUrl(this.urlHub+'manualTransaction').build();
     this.manualTransactionHub.on("SendTransaccionManual", message => {
-      this.updateTransHub(message)
-    });
+      this.updateTransHub(message)});
   }
 
   ngOnInit(): void {
     this.validateSesion();
     let xuser: any = sessionStorage.getItem('usuario');
     this.usuario = xuser;
-    let xtoken: any = sessionStorage.getItem('token');
+    let xtoken:any = sessionStorage.getItem('token');
     const xtokenDecript: any = this.ncrypt.decryptWithAsciiSeed(xtoken, this.env.es, this.env.hash);
     if (xtokenDecript != null || xtokenDecript != undefined) {
-      var decoded: any = jwt_decode(xtokenDecript);
-      this.sub = decoded["sub"];
-      this.nameidentifier = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
-      this.name = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
-      this.role = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+      var decoded:any = jwt_decode(xtokenDecript);
+      this.sub                   = decoded["sub"];
+      this.nameidentifier        = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+      this.name                  = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+      this.role                  = decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
       this.authorizationdecision = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/authorizationdecision"];
-      this.exp = decoded["exp"];
-      this.iss = decoded["iss"];
-      this.aud = decoded["aud"];
+      this.exp                   = decoded["exp"];
+      this.iss                   = decoded["iss"];
+      this.aud                   = decoded["aud"];
       const rolEncrypt: any = this.ncrypt.encryptWithAsciiSeed(this.role, this.env.es, this.env.hash);
       sessionStorage.setItem('PR', rolEncrypt);
-      if (this.role == 'R003') this.router.navigate(['moneq']);
+      if(this.role == 'R003') this.router.navigate(['moneq']);
     } else if (xtokenDecript == null || xtokenDecript == undefined) {
       this.router.navigate(['login'])
     }
     this.getClientes();
-    this.connectionSendPingEquipo.start().then(() => { })
-      .catch(e => console.error('Algo ha pasado con el ping...', e));
-    this.manualTransactionHub.start().then(() => { })
-      .catch(e => console.error('Algo ha pasado con th...', e));
+    this.connectionSendPingEquipo.start().then( ()=> {})
+      .catch( e => console.error('Algo ha pasado con el ping...', e));
+    this.manualTransactionHub.start().then( ()=> {})
+      .catch( e => console.error('Algo ha pasado con th...', e));
   }
 
   @ViewChild('audioPlayer') audioPlayer!: ElementRef;
@@ -114,16 +112,16 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     let xmsj = msj;
     if (xmsj == '') xmsj = 'void';
     let arr: any = {
-      tipo: tipo,
-      msj: msj,
+      tipo:    tipo,
+      msj:     msj,
       colorbg: colorbg,
-      nserie: nserie
+      nserie:  nserie
     }
-    if (xmsj != 'void') this.listalertas.push(arr);
+    if( xmsj != 'void' ) this.listalertas.push(arr);
     const uniqueData = new Map();
     let key = JSON.stringify({});
     for (const item of this.listalertas) {
-      if (item.tipo == "Monitoreo Trans TimeSincro") {
+      if(item.tipo == "Monitoreo Trans TimeSincro"){        
         key = JSON.stringify({
           tipo: item.tipo,
           nserie: item.nserie
@@ -144,7 +142,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
   }
 
   validateSesion() {
-    let xtoken: any = sessionStorage.getItem('token');
+    let xtoken:any = sessionStorage.getItem('token');
     if (xtoken == null || xtoken == undefined || xtoken == '') this.router.navigate(['login']);
   }
 
@@ -152,8 +150,8 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     let voiceSelect;
     try {
       if (this.flagVoice == false) this.flagVoice = await EasySpeech.init({ maxTimeout: 5000, interval: 250 });
-      if (this.flagVoice == true) {
-        voiceSelect = EasySpeech.voices().find(voice =>
+      if(this.flagVoice == true){
+        voiceSelect = EasySpeech.voices().find(voice => 
           voice.lang === 'es-EC' ||
           voice.lang === 'es-ES' ||
           voice.lang === 'es-MX' ||
@@ -162,7 +160,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
           voice.lang === 'es_MX'
         );
         (voiceSelect) ? voiceSelect : EasySpeech.voices()[1];
-        await EasySpeech.speak({
+        await EasySpeech.speak({ 
           text: textData,
           voice: voiceSelect,
         })
@@ -174,14 +172,14 @@ export class MaquinariaMonitoreoComponent implements OnInit {
 
   async obtenerEquiposMoneq() {
     try {
-      if (this.role === 'R005') {
+      if (this.role === 'R005'){
         this.numE = 2;
         this.codCli = this.env.codCerveceria;
       } else {
         this.numE = 1;
         this.codCli = null;
       }
-      const equipo = await this.equiposerv.obtenerEquipoMoneq(this.numE, this.codCli).toPromise();
+      const equipo = await this.equiposerv.obtenerEquipoMoneq(this.numE,this.codCli).toPromise();
       this.listaEsquipo = equipo;
       this.listaEsquipoGhost = equipo;
       const arrOnline = [];
@@ -190,7 +188,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       for (const element of this.listaEsquipo) {
         let dateEquipo = new Date(element.tiempoSincronizacion);
         let diffInMinutes = (this.fechaActual - dateEquipo.getTime()) / 60000;
-        let validarhora = this.calcularTiempoDesdeAhora(this.numHorasAlertTrans, element.fechaUltimaTrans);
+        let validarhora = this.calcularTiempoDesdeAhora(this.numHorasAlertTrans,element.fechaUltimaTrans);
         if (diffInMinutes >= 5) element.estadoPing = 0;
         await this.obtenerIndicadores(element.serieEquipo);
         if (element.estadoPing == 1) arrOnline.push(element);
@@ -209,14 +207,14 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.listaEsquipoIndicadores = [];
       this.equiposerv.obtenerTotalesMoneq(machine_sn).subscribe({
-        next: (equipo: any) => { this.listaEsquipoIndicadores = equipo;  },
+        next: (equipo: any) => this.listaEsquipoIndicadores = equipo,
         error: (e) => {
           console.error(e);
           this.listaEsquipoIndicadores = [];
           reject(false);
         },
         complete: () => {
-          if (this.listaEsquipoIndicadores.length) {
+          if (this.listaEsquipoIndicadores.length){
             this.listaEsquipo.filter((elementEq: any) => {
               if (machine_sn == elementEq.serieEquipo) {
                 elementEq.indicadorCapacidadBilletes = elementEq.tipoMaquinaria === 'DEPOSITARIO DE MONEDAS' ? this.listaEsquipoIndicadores[0].totalCantMonedas : this.listaEsquipoIndicadores[0].totalCantBilletes;
@@ -234,21 +232,21 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     });
   }
 
-  updateTransHub(data: any) {
-    const equipoFind = this.listaEsquipo.find((item: any) => item.serieEquipo === data.machine_Sn);
-    if (equipoFind) {
+  updateTransHub(data: any){
+    const equipoFind = this.listaEsquipo.find((item:any) => item.serieEquipo === data.machine_Sn);
+    if(equipoFind){
       if (data.tipo === 'R') {
         equipoFind.ultimaRecoleccion = data.fechaTransaccion;
         ('speechSynthesis' in window)
-          ? this.readTextAloud('Se realizó una recolección del equipo ' + data.machine_Sn)
+          ? this.readTextAloud('Se realizó una recolección del equipo ' + data.machine_Sn )
           : console.error('La API de Web Speech no está disponible en este navegador.');
-        equipoFind.indicadorCapacidadBilletes = data.cant;
-        equipoFind.indicadorTotalAsegurado = data.monto;
-        equipoFind.indicadorPorcentajeBilletes = 0;
+        equipoFind.indicadorCapacidadBilletes           = data.cant;
+        equipoFind.indicadorTotalAsegurado              = data.monto;
+        equipoFind.indicadorPorcentajeBilletes          = 0;
         equipoFind.indicadorPorcentajeTotalMaxAsegurado = 0;
-        this.listalertas = [];
+        this.listalertas  = [];
       } else {
-        if (equipoFind.tipoMaquinaria === 'DEPOSITARIO DE MONEDAS') {
+        if (equipoFind.tipoMaquinaria === 'DEPOSITARIO DE MONEDAS'){
           if (data.tipo === 'M') equipoFind.indicadorCapacidadBilletes = equipoFind.indicadorCapacidadBilletes + data.cant;
         } else {
           if (data.tipo === 'A') equipoFind.indicadorCapacidadBilletes = equipoFind.indicadorCapacidadBilletes + data.cant;
@@ -286,26 +284,26 @@ export class MaquinariaMonitoreoComponent implements OnInit {
         this.playAudio();
       }
     }
-    if (tipo && serieEquipo) this.controlalerts(tipo, msj, colorbg, serieEquipo);
+    if(tipo && serieEquipo) this.controlalerts(tipo, msj, colorbg, serieEquipo);
     return colorClass;
   }
 
   filterEquipos(): void {
-    if (this.selectedClienteId == 'todoCliente') {
-      this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) =>
-        item.serieEquipo.toString().toLowerCase().includes(this.filterequip.toLowerCase()) ||
-        item.tipoMaquinaria.toString().toLowerCase().includes(this.filterequip.toLowerCase()) ||
-        item.provincia.toString().toLowerCase().includes(this.filterequip.toLowerCase()) ||
+    if(this.selectedClienteId == 'todoCliente'){
+      this.listaEsquipo = this.listaEsquipoGhost.filter((item:any) => 
+        item.serieEquipo.toString().toLowerCase().includes(this.filterequip.toLowerCase())    ||  
+        item.tipoMaquinaria.toString().toLowerCase().includes(this.filterequip.toLowerCase()) || 
+        item.provincia.toString().toLowerCase().includes(this.filterequip.toLowerCase())      ||
         item.nombreTienda.toLowerCase().includes(this.filterequip.toLowerCase())
-      )
+      );
     } else {
-      this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) =>
-        (item.serieEquipo.toString().toLowerCase().includes(this.filterequip.toLowerCase()) ||
-          item.tipoMaquinaria.toString().toLowerCase().includes(this.filterequip.toLowerCase()) ||
-          item.provincia.toString().toLowerCase().includes(this.filterequip.toLowerCase()) ||
-          item.nombreTienda.toLowerCase().includes(this.filterequip.toLowerCase())) &&
+      this.listaEsquipo = this.listaEsquipoGhost.filter((item:any) => 
+        (item.serieEquipo.toString().toLowerCase().includes(this.filterequip.toLowerCase())   || 
+        item.tipoMaquinaria.toString().toLowerCase().includes(this.filterequip.toLowerCase()) || 
+        item.provincia.toString().toLowerCase().includes(this.filterequip.toLowerCase())      ||    
+        item.nombreTienda.toLowerCase().includes(this.filterequip.toLowerCase()))             &&
         item.idCliente == this.selectedClienteId
-      )
+      );
     }
   }
 
@@ -315,11 +313,11 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     this.selectedClienteId = idCliente;
     this.updateListaEsquipo();
     this.eliminarAllAlerts();
-    if (this.selectedClienteId == 'todoCliente') {
+    if(this.selectedClienteId=='todoCliente'){
       this.estadosMonitoreo[0].count = this.listaEsquipoGhost.filter((item: any) => item.estadoPing == 1).length;
       this.estadosMonitoreo[1].count = this.listaEsquipoGhost.filter((item: any) => item.estadoPing == 0).length;
       this.estadosMonitoreo[2].count = this.listaEsquipoGhost.filter((item: any) => this.calcularTiempoDesdeAhora(this.numHorasAlertTrans, item.fechaUltimaTrans)).length;
-    } else {
+    }else{
       this.estadosMonitoreo[0].count = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId && item.estadoPing == 1).length;
       this.estadosMonitoreo[1].count = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId && item.estadoPing == 0).length;
       this.estadosMonitoreo[2].count = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId && this.calcularTiempoDesdeAhora(this.numHorasAlertTrans, item.fechaUltimaTrans)).length;
@@ -328,7 +326,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     if (this.selectedMonitoreo == 'Offline') this.selectedCount = this.estadosMonitoreo[1].count;
     if (this.selectedMonitoreo == 'E. Transaccional') this.selectedCount = this.estadosMonitoreo[2].count;
   }
-
+  
   filterMonitoreo(estado: any, color: any, count: any) {
     this.filterequip = '';
     this.selectedMonitoreo = estado;
@@ -343,7 +341,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       if (this.selectedMonitoreo === 'Mostrar todo') {
         this.listaEsquipo = this.listaEsquipoGhost;
       } else {
-        if (this.selectedMonitoreo === 'Online' || this.selectedMonitoreo === 'Offline') {
+        if (this.selectedMonitoreo === 'Online' || this.selectedMonitoreo === 'Offline')  {
           color = this.selectedMonitoreo === 'Online' ? 1 : 0;
           this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) => item.estadoPing === color);
         }
@@ -355,7 +353,7 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       if (this.selectedMonitoreo === 'Mostrar todo') {
         this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId);
       } else {
-        if (this.selectedMonitoreo === 'Online' || this.selectedMonitoreo === 'Offline') {
+        if (this.selectedMonitoreo === 'Online' || this.selectedMonitoreo === 'Offline')  {
           color = this.selectedMonitoreo === 'Online' ? 1 : 0;
           this.listaEsquipo = this.listaEsquipoGhost.filter((item: any) => item.idCliente === this.selectedClienteId && item.estadoPing === color);
         }
@@ -368,8 +366,18 @@ export class MaquinariaMonitoreoComponent implements OnInit {
 
   alertHub(dataPingHub: any) {
     this.updatePing(dataPingHub);
+    let horas = this.fechaActual.getHours();
+    // Validar si la hora actual está en el rango de 12 AM a 7 AM
+    if (horas >= 0 && horas < 7) {
+      if (this.contadorPing >= this.numTopNotification) {
+        this.obtenerFechaActual('rangoHora');
+        this.contadorPing = 0;
+      }
+    }
+    if (horas >= 7 && horas < 10) this.numHorasAlertTrans = 12;
+    if (horas >= 10 && horas < 0) this.numHorasAlertTrans = 6;
     if (this.contadorPing >= this.numTopNotification) {
-      let equiposNow = (this.selectedClienteId === 'todoCliente') ? this.listaEsquipoGhost : this.listaEsquipoGhost.filter((item: any) => { return item.idCliente === this.selectedClienteId });
+      let equiposNow = (this.selectedClienteId === 'todoCliente') ? this.listaEsquipoGhost : this.listaEsquipoGhost.filter((item: any) => {return item.idCliente === this.selectedClienteId});
       for (let item of equiposNow) {
         this.alertTrans(item);
         this.alertTimeSincro(item);
@@ -378,34 +386,17 @@ export class MaquinariaMonitoreoComponent implements OnInit {
       this.fechaNotif = this.fechaActual.getTime();
       this.playAudio();
     }
-    if (this.contadorPing === 25 || this.contadorPing === 50 ||
-      this.contadorPing === 75 || this.contadorPing === 98) {
-      this.equiposerv.obtenerHoraActual().subscribe({
-        next: (data: any) => this.fechaActual = new Date(data),
-        error: (e) => console.error('Error obteniendo la hora actual:', e),
-        complete: () => {
-          const arrOnline = [];
-          const arrOffline = [];
-          const arrMaqError = [];
-          for (const element of this.listaEsquipo) {
-            let validarhora = this.calcularTiempoDesdeAhora(this.numHorasAlertTrans, element.fechaUltimaTrans);
-            if (element.estadoPing === 1) arrOnline.push(element);
-            if (element.estadoPing === 0) arrOffline.push(element);
-            if (validarhora) arrMaqError.push(element);
-          }
-          this.estadosMonitoreo[0].count = arrOnline.length;
-          this.estadosMonitoreo[1].count = arrOffline.length;
-          this.estadosMonitoreo[2].count = arrMaqError.length;
-        }
-      });
+    if (this.contadorPing === 100 || this.contadorPing === 200 || 
+        this.contadorPing === 298) {
+      this.obtenerFechaActual('updateCounter');
     }
     this.contadorPing++;
-    // console.log(this.contadorPing);
+    console.log(this.contadorPing);
   }
 
   private updatePing(data: any) {
     const syncTime = new Date(data.tiempoSincronizacion);
-    for (let equipo of this.listaEsquipo) {
+    for (let equipo of this.listaEsquipo){
       if (equipo.ipEquipo === data.ip) {
         equipo.estadoPing = data.estadoPing;
         equipo.tiempoSincronizacion = data.tiempoSincronizacion;
@@ -417,36 +408,36 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     }
   }
 
-  alertTrans(item: any) {
-    let validarhora = this.calcularTiempoDesdeAhora(this.numHorasAlertTrans, item.fechaUltimaTrans);
-    if (validarhora) {
+  alertTrans(item: any){
+    let validarhora = this.calcularTiempoDesdeAhora(this.numHorasAlertTrans,item.fechaUltimaTrans);
+    if(validarhora){
       let tipo = 'Monitoreo Trans TimeSincro';
-      let msj = 'No se ha realizado transacciones en ' + this.numHorasAlertTrans + 'h';
+      let msj  = 'No se ha realizado transacciones en ' + this.numHorasAlertTrans + 'h';
       let colorbg = 'red';
       let serie = item.serieEquipo;
-      this.controlalerts(tipo, msj, colorbg, serie);
+      this.controlalerts( tipo, msj, colorbg, serie);
     }
   }
 
-  alertTimeSincro(item: any) {
+  alertTimeSincro(item: any){
     let newMesj = `Ha estado desactivado por más de ${this.numHorasAlertTimeSincro}h`;
     let alerta: any;
     let validateTimeSincro = this.calcularTiempoDesdeAhora(this.numHorasAlertTimeSincro, item.tiempoSincronizacion);
-    if (validateTimeSincro) {
-      alerta = this.listalertas.find((itemAlerta: any) =>
+    if(validateTimeSincro){
+      alerta = this.listalertas.find((itemAlerta:any) =>
         itemAlerta.tipo === 'Monitoreo Trans TimeSincro' &&
         itemAlerta.nserie === item.serieEquipo
       );
-      if (alerta) {
+      if(alerta) {
         let arrayMsj = newMesj.split(" ");
         let validateMsj = arrayMsj.every(palabra => alerta.msj.includes(palabra));
-        if (!validateMsj) alerta.msj = alerta.msj + '\n' + newMesj;
+        if(!validateMsj) alerta.msj = alerta.msj + '\n' + newMesj;
       }
       let tipo = 'Monitoreo Trans TimeSincro';
-      let msj = newMesj;
+      let msj  = newMesj;
       let colorbg = 'red';
       let serie = item.serieEquipo;
-      this.controlalerts(tipo, msj, colorbg, serie);
+      this.controlalerts( tipo, msj, colorbg, serie);
     }
   }
 
@@ -456,43 +447,60 @@ export class MaquinariaMonitoreoComponent implements OnInit {
     const diferenciaEnHoras = diferenciaEnMilisegundos / (1000 * 60 * 60);
     return diferenciaEnHoras > horas;
   }
-
-  eliminarAlerta(i: number) {
+  
+  eliminarAlerta( i:number ) {
     this.listalertas.splice(i, 1);
     this.nuevoObjectalerts.splice(i, 1);
   }
-
-  eliminarAllAlerts() {
+  
+  eliminarAllAlerts(){
     this.listalertas.splice(0);
     this.nuevoObjectalerts.splice(0);
   }
 
-  getColor(estadoPing: any) {
-    if (estadoPing === 1) return 'GREEN';
-    if (estadoPing === 0) return 'RED';
+  getColor(estadoPing: any){
+    if(estadoPing === 1) return 'GREEN';
+    if(estadoPing === 0) return 'RED';
     return estadoPing;
   }
 
-  getTipoTrans(tipoTrans: any) {
-    if (tipoTrans == 'A') return 'Automático';
-    if (tipoTrans == 'M') return 'Manual';
-    if (tipoTrans == 'R') return 'Retiro';
+  getTipoTrans(tipoTrans: any){
+    if(tipoTrans == 'A') return 'Automático';
+    if(tipoTrans == 'M') return 'Manual';
+    if(tipoTrans == 'R') return 'Retiro';
     return tipoTrans;
   }
 
-  getClientes() {
+  getClientes(){
     this.clienteService.ObtenerClienteSelect().subscribe({
       next: (cliente) => this.listaCliente = cliente,
       error: (e) => console.error(e),
-      complete: () => this.obtenerFechaActual()
+      complete: () => this.obtenerFechaActual('moneq')
     })
   }
-
-  obtenerFechaActual() {
+  
+  obtenerFechaActual(action: any){
     this.equiposerv.obtenerHoraActual().subscribe({
       next: (data: any) => this.fechaActual = new Date(data),
       error: (e) => console.error('Error obteniendo la hora actual:', e),
-      complete: () => this.obtenerEquiposMoneq()
+      complete: () => {
+        if (action === 'moneq') this.obtenerEquiposMoneq();
+        if (action === 'rangoHora') this.numHorasAlertTrans = 12;
+        if (action === 'updateCounter') {
+          const arrOnline = [];
+          const arrOffline = [];
+          const arrMaqError = [];
+          for (const element of this.listaEsquipo) {
+            let validarhora = this.calcularTiempoDesdeAhora(this.numHorasAlertTrans,element.fechaUltimaTrans);
+            if (element.estadoPing === 1) arrOnline.push(element);
+            if (element.estadoPing === 0) arrOffline.push(element);
+            if (validarhora) arrMaqError.push(element);
+          }
+          this.estadosMonitoreo[0].count = arrOnline.length;
+          this.estadosMonitoreo[1].count = arrOffline.length;
+          this.estadosMonitoreo[2].count = arrMaqError.length;
+        }
+      }
     });
   }
 }

@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
 import * as jsonwebtoken from 'jsonwebtoken';
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
-export class JwtService {
 
+export class JwtService {
   constructor() { }
 
   // Función para decodificar un token JWT y obtener los datos del usuario
@@ -34,6 +34,4 @@ export class JwtService {
     const currentTime = Date.now() / 1000; // Tiempo actual en segundos
     return decoded.exp && decoded.exp > currentTime;
   }
-
-
 }

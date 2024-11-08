@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { NavsideExpDataComponent } from './navside-exp-data.component';
 
 describe('NavsideExpDataComponent', () => {

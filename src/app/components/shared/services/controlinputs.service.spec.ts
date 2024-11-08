@@ -1,6 +1,5 @@
-import { TestBed } from '@angular/core/testing';
-
 import { ControlinputsService } from './controlinputs.service';
+import { TestBed } from '@angular/core/testing';
 
 describe('ControlinputsService', () => {
   let service: ControlinputsService;

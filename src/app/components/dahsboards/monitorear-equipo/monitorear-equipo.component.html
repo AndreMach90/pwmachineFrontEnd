@@ -12,9 +12,7 @@
         <label for="codigoClienteidFk" class="form-label m-0 d-flex align-items-center"
           [style]="'width:' + width_title">
           <span class="text-secondary fs-6">
-            <strong>
-              {{ title_msj }} Cliente
-            </strong>
+            <strong>{{ title_msj }} Cliente</strong>
           </span>
           <span class="text-danger" *ngIf="">*</span>
         </label>
@@ -218,9 +216,7 @@
         </table>
       </div>
     </div>
-
     <div class="monitoreo-box-a d-flex">
-
       <div class="table-responsive p-1">
         <div class="w-100 bg-warning p-1 rounded-top-2 d-flex justify-content-between align-items-center">
           <span> <strong> Transacciones Manuales (Billetes) </strong></span>
@@ -295,15 +291,13 @@
           </tbody>
         </table>
       </div>
-
       <div class="table-responsive p-1">
         <div class="w-100 bg-warning p-1 rounded-top-2 d-flex justify-content-between align-items-center ">
           <span>
             <strong> Transacciones Manuales (Monedas) </strong>
           </span>
           <span>
-            <div [style]="'background-image: url( '+coin+' )' " class="icono m-1">
-            </div>
+            <div [style]="'background-image: url( '+coin+' )'" class="icono m-1"></div>
           </span>
         </div>
         <table class="table table-primary table-bordered table-striped-columns">
@@ -364,7 +358,6 @@
         </table>
       </div>
     </div>
-
   </div>
   <div class="dashworks rounded-2 p-3" [ngStyle]="{ 'background-color': 'whitesmoke' }">
     <div class="filtros">
@@ -380,41 +373,40 @@
             </div>
           </section>
         </div>
-        <div class="d-flex" *ngIf="listaTrsansaccionesTabla.length > 0">
-          <div class="d-flex justify-content-start">
-            <button title="Ayuda técnica" (click)="openDialogAyuda('color')"
-              class="btn btn-warning d-flex align-item-center m-1">
-              <mat-icon>help</mat-icon>
-            </button>
-            <button (click)="numlist = !numlist" title="Enumerar tabla transaccional"
-              class="btn btn-warning d-flex align-item-center m-1">
-              <mat-icon>format_list_numbered</mat-icon>
-            </button>
-          </div>
-          &nbsp;
-          <div style="width: 280px;"
-            class=" animate__animated animate__fadeIn d-flex justify-content-between align-items-center p-2 bg-warning rounded-2 shadow-sm fs-5 "
-            *ngIf="totalSum > 0">
-            <mat-icon>contrast_square</mat-icon>
+        <div *ngIf="true" class="d-flex w-50 justify-content-end align-items-center">
+          <div class="d-flex" *ngIf="listaTrsansaccionesTabla.length > 0">
+            <div class="d-flex justify-content-start">
+              <button title="Ayuda técnica" (click)="openDialogAyuda('color')"
+                class="btn btn-warning d-flex align-item-center m-1">
+                <mat-icon>help</mat-icon>
+              </button>
+              <button (click)="numlist = !numlist" title="Enumerar tabla transaccional"
+                class="btn btn-warning d-flex align-item-center m-1">
+                <mat-icon>format_list_numbered</mat-icon>
+              </button>
+            </div>
             &nbsp;
-            <span>
-              <strong> $ {{totalSum | number : '1.2-2'}} </strong>
-            </span>
+            <div style="width: 280px;"
+              class=" animate__animated animate__fadeIn d-flex justify-content-between align-items-center p-2 bg-warning rounded-2 shadow-sm fs-5 "
+              *ngIf="totalSum > 0">
+              <mat-icon>contrast_square</mat-icon>
+              &nbsp;
+              <span>
+                <strong> $ {{totalSum | number : '1.2-2'}} </strong>
+              </span>
+            </div>
           </div>
-        </div>
-        <div *ngIf="true" class="d-flex w-50 justify-content-end align-items-end ">
           <form [formGroup]="filterDateForm">
-            <div class="d-flex align-items-end">
+            <div class="d-flex align-items-center">
               <div class="date-input p-1">
                 <input type="date" class="form-control" formControlName="startDate" #startDate id="startDate"
                   (change)="validarRangoDeFechas()" />
               </div>
               <div class="date-input p-1">
-                <div class="animate__animated animate__fadeIn p-2 rounded-2 shadow-sm"
+                <div class="d-flex justify-content-center animate__animated animate__fadeIn rounded-2 shadow-sm p-1"
                   [style]="'background-color:' + color_alert +'; color: white;'" *ngIf="show_alert_msj">
-                  <small class="d-flex -align-item-center">
-                    <mat-icon>{{icon_alert}}</mat-icon>
-                    &nbsp;&nbsp;
+                  <small class="d-flex align-item-center">
+                    <mat-icon class="fs-5">{{icon_alert}}</mat-icon>
                     {{ dias_estimados }}
                   </small>
                 </div>
@@ -423,18 +415,16 @@
               </div>
             </div>
           </form>
-          <div class="d-flex">
-            <button class="btn btn-warning m-1" [disabled]="disButton" (click)="filterByDateRange()">
-              Buscar
-            </button>
-            <button class="btn btn-success m-1 d-flex align-items-center animate__animated animate__fadeIn"
-              (click)="exportarTablaAExcel()" *ngIf="show_button_exportar_excel">
-              <img src="../../../../assets/excel.png" width="50px">
-              <div>
-                Exportar a excel
-              </div>
-            </button>
-          </div>
+        </div>
+        <div class="d-flex">
+          <button class="btn btn-warning m-1" [disabled]="disButton" (click)="filterByDateRange()">
+            Buscar
+          </button>
+          <button class="btn btn-success m-1 d-flex align-items-center animate__animated animate__fadeIn"
+            (click)="exportarTablaAExcel()" *ngIf="show_button_exportar_excel" style="width: 170px;">
+            <img src="../../../../assets/excel.png" width="40px">
+            <span>Exportar a excel</span>
+          </button>
         </div>
       </div>
     </div>
@@ -447,70 +437,30 @@
             <th class="p-1">Hora </th>
             <th class="p-1">Cliente </th>
             <th class="p-1">Tienda </th>
-            <th class="p-1" title="Número de transacción">
-              N. Trans.
-            </th>
+            <th class="p-1" title="Número de transacción">N. Trans.</th>
             <th class="p-1" title="Número de serie del equipo o nombre del equipo">N. Serie Equipo</th>
             <th class="p-1">Usuario </th>
             <th>Establecimiento </th>
             <th>Cod. Establecimiento</th>
-            <th class="p-1" title="Actividad del usuario creado en máquina">
-              Actividad
-            </th>
-            <th class="p-1" title="Número de cuenta bancaria">
-              Cta. Bancaria
-            </th>
-            <th class="p-1" title="Nombre del banco">
-              Nom. Banco
-            </th>
-            <th class="p-1" title="Tipo de cuenta bancaria">
-              T. Cuenta
-            </th>
-            <th class="p-1">
-              $1
-            </th>
-            <th class="p-1">
-              $2
-            </th>
-            <th class="p-1">
-              $5
-            </th>
-            <th class="p-1">
-              $10
-            </th>
-            <th class="p-1">
-              $20
-            </th>
-            <th class="p-1">
-              $50
-            </th>
-            <th class="p-1">
-              $100
-            </th>
-            <th class="p-1">
-              $0.01
-            </th>
-            <th class="p-1">
-              $0.05
-            </th>
-            <th class="p-1">
-              $0.10
-            </th>
-            <th class="p-1">
-              $0.25
-            </th>
-            <th class="p-1">
-              $0.50
-            </th>
-            <th class="p-1">
-              $1.00
-            </th>
-            <th class="p-1">
-              Total
-            </th>
-            <th class="p-1" title="Tipo de transacción">
-              T.T.
-            </th>
+            <th class="p-1" title="Actividad del usuario creado en máquina">Actividad</th>
+            <th class="p-1" title="Número de cuenta bancaria">Cta. Bancaria</th>
+            <th class="p-1" title="Nombre del banco">Nom. Banco</th>
+            <th class="p-1" title="Tipo de cuenta bancaria">T. Cuenta</th>
+            <th class="p-1">$1</th>
+            <th class="p-1">$2</th>
+            <th class="p-1">$5</th>
+            <th class="p-1">$10</th>
+            <th class="p-1">$20</th>
+            <th class="p-1">$50</th>
+            <th class="p-1">$100</th>
+            <th class="p-1">$0.01</th>
+            <th class="p-1">$0.05</th>
+            <th class="p-1">$0.10</th>
+            <th class="p-1">$0.25</th>
+            <th class="p-1">$0.50</th>
+            <th class="p-1">$1.00</th>
+            <th class="p-1">Total</th>
+            <th class="p-1" title="Tipo de transacción">T.T.</th>
           </thead>
           <tbody>
             <tr *ngFor="let transac of listaTrsansaccionesTabla; let i = index;">
@@ -598,22 +548,16 @@
                 (click)="toggleSelection(transac, i)" id="tabsum">
                 <div class="d-flex justify-content-between">
                   <span> $ </span>
-                  <span>
-                    {{ transac.total | number : '1.2-2' }}
-                  </span>
+                  <span>{{ transac.total | number : '1.2-2' }}</span>
                 </div>
               </td>
               <td [style]="'background-color:' + transac.colorRow + '; font-size: 9pt;'">
                 <strong> {{ transac.tipoTransaccion | slice:0:1 }} </strong>
               </td>
-
             </tr>
-
           </tbody>
         </table>
       </div>
     </div>
-
   </div>
-
 </div>

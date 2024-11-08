@@ -18,9 +18,6 @@ export class ModalConfigExcelComponent implements OnInit {
   checktiendas: boolean = false;
   choicetiendas: boolean = false;
   _show_spinner: boolean = false;
-  // public exportconForm = new FormGroup({
-
-  // })
 
   public exportdateform = new FormGroup({
     dateini: new FormControl(''),
@@ -36,7 +33,6 @@ export class ModalConfigExcelComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
     private clienteserv: ClientesService,
     private tiendaservs: TiendaService,
-    private monitoreo: MonitoreoService,
     private transacciones: TransaccionesTiendaService,
     public dialog: MatDialog,
     //  public dialogRef: MatDialogRef<FiltrotransaccionalComponent>,
@@ -95,7 +91,7 @@ export class ModalConfigExcelComponent implements OnInit {
         result.filter((element: any) => {
           this.dataExportarExcel.push(element);
           this.dataExportarExcelGhost.push(element);
-          //////// console.log(this.dataExportarExcel)
+          // console.log(this.dataExportarExcel)
         });
       }
       this.obtenerTransacTabla();

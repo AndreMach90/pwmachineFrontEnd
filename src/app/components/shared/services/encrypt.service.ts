@@ -44,5 +44,4 @@ export class EncryptService {
 
     return decryptedValue;
   }
-
 }

@@ -45,10 +45,6 @@ export class EquipoService {
   }
 
   obtenerEquipoConteoTran(option: any, model: any[]) {
-    // console.warn('==========================================================================')
-    // console.warn('MI API REPORTE SIN ACREDITAR')
-    // console.warn(this.env.apiurl() + 'EquiposNoTransaccion/Conteo/' + option, model)
-    // console.warn('==========================================================================')
     return this.http.post(this.env.apiurl() + 'EquiposNoTransaccion/Conteo/' + option, model, { headers: this.headers });
   }
 
@@ -61,7 +57,6 @@ export class EquipoService {
   }
 
   obtenerUsuariosIp(ip: string) {
-    // console.warn('API: ' + this.env.apiurl() + 'Usuario/ObtenerUsuarioIP/' + ip)
     return this.http.get(this.env.apiurl() + 'Usuario/ObtenerUsuarioIP/' + ip, { headers: this.headers })
   }
 

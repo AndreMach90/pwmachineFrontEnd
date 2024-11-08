@@ -11,19 +11,15 @@ import { EncryptService } from '../../shared/services/encrypt.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalAyudaComponent } from '../../shared/modal-ayuda/modal-ayuda.component';
 
-export interface Transac {
-  total: number;
-  colorRow: string;
-  // ... otros campos
-  isSelected?: boolean; // Añade esta propiedad
-}
+export interface Transac {total: number; colorRow: string; isSelected?: boolean;}
+
 @Component({
   selector: 'app-monitorear-equipo',
   templateUrl: './monitorear-equipo.component.html',
   styleUrls: ['./monitorear-equipo.component.scss']
 })
-export class MonitorearEquipoComponent implements OnInit {
 
+export class MonitorearEquipoComponent implements OnInit {
   @Output() listaTransaccionesEmitGrafica: EventEmitter<any[]> = new EventEmitter<any[]>();
   @Output() listaTransaccionesEmitTabla: EventEmitter<any[]> = new EventEmitter<any[]>();
   @Output() typeFilter: EventEmitter<any> = new EventEmitter<any>();
@@ -149,17 +145,12 @@ export class MonitorearEquipoComponent implements OnInit {
 
 
   openDialogAyuda(data: any): void {
-
     const dialogRef = this.dialog.open(ModalAyudaComponent, {
       height: '430px',
       width: '20%',
       data: data,
     });
-
-    dialogRef.afterClosed().subscribe(result => {
-
-    });
-
+    dialogRef.afterClosed().subscribe(result => {});
   }
 
   @HostListener('document:keydown.control', ['$event'])
@@ -189,7 +180,6 @@ export class MonitorearEquipoComponent implements OnInit {
             t.isSelected = false;
           }
         });
-
         // Resetear para una nueva selección de rango
         this.firstSelectedIndex = null;
       }
@@ -207,7 +197,6 @@ export class MonitorearEquipoComponent implements OnInit {
         next: (x: any) => {
           this.listaEquipo = x;
           this.listaEquipoGhost = x;
-          //// console.warn(this.listaEquipo);
         }, error: (e) => {
           console.error(e);
         }, complete: () => {
@@ -224,10 +213,8 @@ export class MonitorearEquipoComponent implements OnInit {
 
   width_title: string = '250px;';
   obtenerCliente(opt: number) {
-
     this.clientelista = [];
     this._show_spinner = true;
-
     this.clienteserv.ObtenerClienteSelect().subscribe({
       next: (cliente) => {
         this.clienteListaGhost = cliente;
@@ -240,7 +227,6 @@ export class MonitorearEquipoComponent implements OnInit {
       complete: () => {
         if (opt == 1) {
           this.clienteListaGhost.filter((element: any) => {
-
             let arr: any = {
               id: element.id,
               codigoCliente: element.codigoCliente,
@@ -251,17 +237,14 @@ export class MonitorearEquipoComponent implements OnInit {
               emailcontacto: element.emailcontacto,
               nombrecontacto: element.nombrecontacto,
             };
-
             this.clientelista.unshift(arr);
             this.title_msj = 'Escoge el';
             this.importantatr = true;
             this.width_title = '250px';
-
           });
         } else if (opt == 0) {
           this.clienteListaGhost.filter((element: any) => {
             if (element.codigoCliente == this.env.codCerveceria) {
-
               let arr: any = {
                 id: element.id,
                 codigoCliente: element.codigoCliente,
@@ -272,7 +255,6 @@ export class MonitorearEquipoComponent implements OnInit {
                 emailcontacto: element.emailcontacto,
                 nombrecontacto: element.nombrecontacto,
               };
-
               this.clientelista.unshift(arr);
               this.tiendaForm.controls['codigoClienteidFk'].setValue(element.codigoCliente);
               this.tiendaForm.controls['codigoClienteidFk'].disable();
@@ -280,12 +262,9 @@ export class MonitorearEquipoComponent implements OnInit {
               this.importantatr = false;
               this.width_title = '120px';
               this.obtenerEquipos();
-
             }
-
           });
         }
-
       },
     });
   }
@@ -382,13 +361,9 @@ export class MonitorearEquipoComponent implements OnInit {
 
   // #region [ASIGNACION A VARIABLES PARA EL CUADRO DE VALORES]
   asignacionDeDatosTablaCuadre(model: any) {
-
-    // this.mensajeEstatusTransac = 'Este equipo no tiene actividad transaccional recientemente.'
-
     this.show_alert = false;
     model.forEach((x: any) => {
       this.machineSn = x.machineSn || 0;
-      // this.ipEquipo = x.ipEquipo || 0;
       this.depositoCant100 = x.depositoCant100 || 0;
       this.depositoCant50 = x.depositoCant50 || 0;
       this.depositoCant20 = x.depositoCant20 || 0;
@@ -436,7 +411,6 @@ export class MonitorearEquipoComponent implements OnInit {
       this.totalManualCoinCant = x.totalManualCoinCant || 0;
       this.totalManualCoinMont = x.totalManualCoinMont || 0;
     });
-
   }
 
   limpiarData() {
@@ -548,10 +522,8 @@ export class MonitorearEquipoComponent implements OnInit {
   }
 
   exportarTablaAExcel() {
-
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Transacciones');
-
     // Agregar encabezados de las columnas
     worksheet.columns = [
       { header: 'Fecha', key: 'fechaTransaccion', width: 15 },
@@ -586,7 +558,6 @@ export class MonitorearEquipoComponent implements OnInit {
 
     // Agregar filas con los datos y aplicar estilo basado en la condición
     this.listaTrsansaccionesTabla.forEach((transac: any) => {
-
       let fechatran: any = transac.fechaTransaccion.toString().split('T');
       const row = worksheet.addRow({
         fechaTransaccion: fechatran[0],
@@ -686,7 +657,6 @@ export class MonitorearEquipoComponent implements OnInit {
         });
       }
     });
-
     // Guardar el archivo Excel utilizando la función downloadExcelFile
     workbook.xlsx.writeBuffer().then((buffer: any) => {
       this.downloadExcelFile(buffer, 'transacciones_historial.xlsx');
@@ -705,36 +675,26 @@ export class MonitorearEquipoComponent implements OnInit {
   }
 
   filterByDateRange() {
-
     this._show_spinner = true;
     this.listaTrsansaccionesTabla = [];
     const fechaFin = new Date(this.filterDateForm.controls['endDate'].value);
     fechaFin.setDate(fechaFin.getDate() + 1);
-
     let modelRange: any = {
       "tipo": "1",
       "Machine_Sn": this.nserie,
       "FechaInicio": this.filterDateForm.controls['startDate'].value,
       "FechaFin": fechaFin
     }
-
     this.transacciones.filtroTransaccionesRango(modelRange).subscribe({
       next: (x) => {
         this.listaTransacciones = x;
         this.listaTrsansaccionesTablaGhost = x;
-        console.table('}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}');
-        console.table(this.listaTrsansaccionesTablaGhost);
-        console.table('}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}');
-      }, error: (e) => {
-        console.error(e);
-      }, complete: () => {
-
-        if (this.listaTrsansaccionesTablaGhost.length > 0) {
-          this.show_button_exportar_excel = true;
-        } else {
-          this.show_button_exportar_excel = false;
-        }
-
+        console.log('}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}filtroTransaccionesRango');
+        console.log(this.listaTrsansaccionesTablaGhost);
+        console.log('}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}');
+      }, error: (e) => console.error(e), 
+      complete: () => {
+        this.show_button_exportar_excel = (this.listaTrsansaccionesTablaGhost.length > 0) ? true : false;
         this.listaTrsansaccionesTablaGhost.filter((element: any) => {
           let xdate = element.fechaTransaccion.toString().split('T');
           element.hora = xdate[1].slice(0, 8);
@@ -761,7 +721,6 @@ export class MonitorearEquipoComponent implements OnInit {
             this.totalSum = 0;
           }
         })
-
       }
     })
   }
@@ -786,10 +745,8 @@ export class MonitorearEquipoComponent implements OnInit {
     this.listaTrsansaccionesTablaGhost = [];
     this.listaTrsansaccionesTabla = [];
     this.transacciones.obtenerTransaccionesTienda(id, 2).subscribe({
-      next: (transactab: any) => {
-        this.listaTrsansaccionesTablaGhost = transactab;
-      },
-      error: (e) => { console.error(e); },
+      next: (transactab: any) => this.listaTrsansaccionesTablaGhost = transactab,
+      error: (e) => console.error(e),
       complete: () => {
         this.sumatoriaNoRecollect = 0;
         this.listaTrsansaccionesTablaGhost.filter((element: any) => {
@@ -800,13 +757,8 @@ export class MonitorearEquipoComponent implements OnInit {
           if (element.acreditada == 'N') element.colorRow = '#F1E3D8';
           if (element.acreditada == 'R') element.colorRow = '#F1C590';
           this.listaTrsansaccionesTabla.push(element);
-        }
-        )
+        })
       }
-    }
-    );
+    });
   }
-
-
-
 }

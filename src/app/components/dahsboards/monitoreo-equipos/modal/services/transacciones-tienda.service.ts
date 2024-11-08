@@ -24,7 +24,6 @@ export class TransaccionesTiendaService {
   }
 
   filtroTransaccionesRango(model: any[]) {
-    // console.warn(this.env.apiurl() + 'FiltroFechas/Filtrar', model);
     return this.http.post(this.env.apiurl() + 'FiltroFechas/Filtrar', model, { headers: this.headers });
   }
 

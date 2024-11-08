@@ -76,18 +76,16 @@ export class ModalDataEquiposComponent implements OnInit {
       fechaIni: this.data.fecchaIni,
       fechaFin: this.data.fechaFin
     }
-    this.equiposerv.obtenerEquipoConteoTran(xi, this.modelFilterTranEqipos).subscribe(
-      {
+    this.equiposerv.obtenerEquipoConteoTran(xi, this.modelFilterTranEqipos).subscribe({
         next: (equipo) => {
           this.listaEsquipoGhost = equipo;
-          // console.warn('ESTA ES MI LISTA DE EQUIPOS!!!!!!!!!!!!!!!!!!!1');
-          // console.warn(this.listaEsquipoGhost);
+          // console.log('ESTA ES MI LISTA DE EQUIPOS!!!!!!!!!!!!!!!!!!!1');
+          // console.log(this.listaEsquipoGhost);
         },
         error: (e) => {
           console.error(e);
         },
         complete: () => {
-
           this.listaEsquipoGhost.filter((x: any) => {
             // x.localidad.toString().trim()
             // // console.log('localidad: ' + x.localidad.toString().trim() + '|')
@@ -95,7 +93,6 @@ export class ModalDataEquiposComponent implements OnInit {
           // this.listaEsquipo.filter((x: any) => x.localidad.toString().trim())
 
           if (this.data.codigocliente !== null) {
-
             if (this.data.equiposExistentes == null || this.data.equiposExistentes.length == 0) {
               this.listaEsquipo = this.listaEsquipoGhost.filter((x: any) => x.idCliente2 == this.data.codigocliente);
             }
@@ -105,9 +102,7 @@ export class ModalDataEquiposComponent implements OnInit {
                 return !this.result.some((element: any) => element.machine_Sn === x.machine_Sn);
               });
             }
-
             // console.log(this.listaEsquipo)
-
           }
 
           this.localidadesEncontradas = [];
@@ -123,8 +118,8 @@ export class ModalDataEquiposComponent implements OnInit {
 
             this.equiposRepet.filter((y: any) => {
               if (element.machine_Sn == y.machineSn) {
-                //// console.warn ( 'Estos son los equipos con transacciones repetidas' );
-                //// console.warn ( element);
+                //// console.log( 'Estos son los equipos con transacciones repetidas' );
+                //// console.log( element);
                 element.disabled_check = false;
                 element.color = 'red !important';
               }

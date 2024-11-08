@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { TokenJWTService } from './token-jwt.service';
 
 describe('TokenJWTService', () => {

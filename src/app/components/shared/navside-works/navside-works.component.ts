@@ -1,6 +1,4 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { LoginService } from '../../login/services/login.service';
-import { Router } from '@angular/router';
 import { Environments } from '../../environments/environments';
 
 export interface Modulo {
