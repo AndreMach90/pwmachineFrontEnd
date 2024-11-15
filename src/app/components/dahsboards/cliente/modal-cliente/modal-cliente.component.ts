@@ -1,12 +1,12 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ClienteComponent } from '../cliente.component';
-import { CuentasBancariasService } from './services/cuentas-bancarias.service';
 import { ServicesSharedService } from 'src/app/components/shared/services-shared/services-shared.service';
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { Environments } from 'src/app/components/environments/environments';
-import Swal from 'sweetalert2'
 import { ControlinputsService } from 'src/app/components/shared/services/controlinputs.service';
+import { CuentasBancariasService } from './services/cuentas-bancarias.service';
+import { Environments } from 'src/app/components/environments/environments';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
+import { ClienteComponent } from '../cliente.component';
+import Swal from 'sweetalert2';
 
 const Toast = Swal.mixin({
   toast: true,
